@@ -400,7 +400,6 @@ def smooth_trajectories(scenario, config,
       (b) speed is continuous (to model no impact)
       (c) speed is small at stop events
       (d) bounds on speed
-      (e) acceleration is bounded (to model bounded torque)
     """
     car2frame2simDistance = {car: frame_to_distance(sim_trajectories[car])
                              for car in sim_trajectories}
@@ -549,49 +548,6 @@ def smooth_trajectories(scenario, config,
             #                 3*(dr-dq2)/(tr-tq) <= maxSpeed]  # instantaneous speed
             constraints += [(dr-dq)/(tr-tq) <= Real(maxSpeed)]  # average speed
 
-    # 2. (e)
-    # Let am<0 and aM>0 be maximum deceleration and acceleration. Then we require
-    # am <= 6(dr-2dr1+dr2)/(ts-tr)**2 <= aM and
-    # am <= 6(dr1-2dr2+ds)/(ts-tr)**2 <= aM.
-    # for car in new_cars:
-    #     am = Real(config[car]['minAcceleration']) # -8 is used in RSS
-    #     aM = Real(config[car]['maxAcceleration']) # 4 is used in RSS
-    #     for i in range(len(t_list[car])-3):
-    #         tr, ts = tuple(t_list[car][i:i+2])
-    #         dr, dr1, dr2, ds = tuple(d_list[car][3*i:3*i+4])
-    #         constraints += [am*(ts-tr)*(ts-tr) <= 6*(dr-2*dr1+dr2),
-    #                         6*(dr-2*dr1+dr2) <= aM*(ts-tr)*(ts-tr),
-    #                         am*(ts-tr)*(ts-tr) <= 6*(dr1-2*dr2+ds),
-    #                         6*(dr1-2*dr2+ds) <= aM*(ts-tr)*(ts-tr)]
-
-    # Collision-avoidance
-    # min_dist = 2
-    # for i in range(len(new_cars)-1):
-    #     for j in range(i+1, len(new_cars)):
-    #         car1, car2 = new_cars[i], new_cars[j]
-    #         if car1 == 'illegal' or car2 == 'illegal':
-    #             continue
-    #         for m in range(1, len(t_list[car1])-1):
-    #             for n in range(1, len(t_list[car2])-1):
-    #                 dm, dn = d_list[car1][3*m], d_list[car2][3*n]
-    #                 if type(dm) != int and type(dm) != float:
-    #                     continue
-    #                 if type(dn) != int and type(dn) != float:
-    #                     continue
-    #                 tm, tn = t_list[car1][m], t_list[car2][n]
-    #                 f1 = car2time2events[car1][str(tm)][0].frame
-    #                 f2 = car2time2events[car2][str(tn)][0].frame
-    #                 pose1 = sim_trajectories[car1][f1][car1]
-    #                 pose2 = sim_trajectories[car2][f2][car2]
-    #                 x1, y1 = pose1[0].x, pose1[0].y
-    #                 x2, y2 = pose2[0].x, pose2[0].y
-    #                 dist = math.sqrt((x1-x2)**2+(y1-y2)**2)
-    #                 if dist < min_dist:
-    #                     delta = round_down(1/(min_dist - dist))
-    #                     print(
-    #                         f'Collision constraint: {z3.Or(tm-tn > delta, tm-tn < -delta)}')
-    #                     constraints += [z3.Or(tm-tn > delta, tm-tn < -delta)]
-
     with Solver(name=solver_name, logic=QF_NRA):
         m = get_model(And(constraints))
         if m == None:
@@ -661,15 +617,6 @@ def solution(scenario, config,
     if len(models) == 0:
         raise NoASPSolutionError('No ASP solution found!')
 
-    # from scenic.domains.driving.roads import Network
-    # from visualization import draw_intersection
-    # import carla
-    # client = carla.Client('127.0.0.1', 2000)
-    # world = client.load_world(scenario.map_name)
-    # network = Network.fromFile(scenario.map_path)
-    # intersection = network.elements[scenario.intersection_uid]
-    # draw_intersection(world, intersection)
-
     # Find trajectories that preserve the order of events in the logical solution
     import copy
     old_nonegos = {car for car in scenario.events if not car in {
@@ -684,7 +631,6 @@ def solution(scenario, config,
             new_events, curves = smooth_trajectories(scenario, config,
                                                      sim_trajectories,
                                                      constraints, car2time2events_updated)
-            break
             if has_collision(scenario, sim_trajectories, curves, car_sizes):
                 print('Collision in SMT solution. Trying next ASP solution...')
             else:
