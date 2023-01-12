@@ -4,7 +4,6 @@ import math
 from scenic.simulators.carla.utils.utils import scenicToCarlaLocation
 from scenic.core.object_types import Point
 from scenic.core.regions import RectangularRegion
-import carla
 from visualization import draw_rect
 try:
     from PIL import Image, ImageDraw, ImageFont
@@ -165,6 +164,40 @@ def spline_to_traj(degree, ctrlpts, knotvector, sample_size, sim_traj):
         frame2distance, frame2simDistance, sim_traj)
     return traj
 
+def sample_spline(ctrlpts, sample_size, degree=3):
+    curve = BSpline.Curve()
+    curve.degree = degree
+    curve.ctrlpts = [[t,d] for t,d in ctrlpts]
+    kv = [0., 0., 0., 0.]
+    for i in range(1, len(ctrlpts)//degree-1):
+        kv += [ctrlpts[i].t, ctrlpts[i].t, ctrlpts[i].t]
+    kv += [ctrlpts[-1].t, ctrlpts[-1].t, ctrlpts[-1].t, ctrlpts[-1].t]
+    curve.knotvector = kv
+    curve.sample_size = sample_size
+    return [p[1] for p in curve.evalpts]
+
+def sample_route(lanes, ctrlpts, sample_size):
+    from scenic.domains.driving.roads import LinearElement
+    from scenic.core.regions import PolygonalRegion, PolylineRegion
+    from scenic.core.object_types import OrientedPoint
+    d0 = ctrlpts[0].d
+    route = LinearElement(
+        id=f'route_{lanes}_{d0}',
+        polygon=PolygonalRegion.unionAll(lanes).polygons,
+        centerline=PolylineRegion.unionAll([l.centerline for l in lanes]),
+        leftEdge=PolylineRegion.unionAll([l.leftEdge for l in lanes]),
+        rightEdge=PolylineRegion.unionAll([l.rightEdge for l in lanes])
+        )
+    p = route.centerline.pointAlongBy(d0)
+    h = route._defaultHeadingAt(p)
+    route_sample = [OrientedPoint(position=p, heading=h)]
+    distances = sample_spline(ctrlpts, sample_size)
+    delta_distances = [pii - pi for pi, pii in zip(distances[:-1], distances[1:])]
+    for d in delta_distances:
+        p = route.flowFrom(p, d)
+        h = route._defaultHeadingAt(p)
+        route_sample.append(OrientedPoint(position=p, heading=h))
+    return route_sample
 
 def curves_to_trajectories(curves, sim_trajs, sample_size):
     new_trajs = {}
@@ -181,8 +214,6 @@ def curves_to_trajectories(curves, sim_trajs, sample_size):
 def collision(traj1, size1, traj2, size2):
     w1, l1 = size1['width'], size1['length']
     w2, l2 = size2['width'], size2['length']
-    # client = carla.Client('127.0.0.1', 2000)
-    # world = client.get_world()
     for i, (pose1, pose2) in enumerate(zip(traj1, traj2)):
         p1, h1 = pose1[0], pose1[1]
         p2, h2 = pose2[0], pose2[1]
@@ -191,8 +222,6 @@ def collision(traj1, size1, traj2, size2):
         bCollision = rect1.intersects(rect2)
         if bCollision:
             print('Collision at time step {i}')
-            # draw_rect(world, rect1, i*.04)
-            # draw_rect(world, rect2, i*.04)
             return True
     return False
 

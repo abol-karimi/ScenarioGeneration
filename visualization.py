@@ -58,7 +58,7 @@ def draw_intersection(world, intersection, draw_lanes=False, arrival_distance=4,
 
     # Bird-eye view of the intersection
     centroid = polygon.centroid  # a Shapely point
-    loc = carla.Location(centroid.x, -centroid.y, 25)
+    loc = carla.Location(centroid.x, -centroid.y, 30)
     rot = carla.Rotation(pitch=-90)
     world.get_spectator().set_transform(carla.Transform(loc, rot))
 
@@ -80,6 +80,10 @@ def draw_trajectories(world, sim_trajectory):
             loc = carla.Location(position.x, -position.y, 0.1)
             world.debug.draw_point(loc)
 
+def draw_points(world, points):
+    for p in points:
+        loc = carla.Location(p.x, -p.y, 0.2)
+        world.debug.draw_point(loc)        
 
 def draw_rect(world, rect, height=0.1):
     corners = [carla.Location(p.x, -p.y, height) for p in rect.corners]
