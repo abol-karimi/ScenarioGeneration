@@ -5,15 +5,19 @@ import importlib
 import argparse
 import pickle
 import jsonpickle
+import numpy as np
+from geomdl import BSpline
 
 # Scenic modules
 from scenic.domains.driving.roads import Network
 
 # My modules
 import seed
-# import mutator
+import mutators
 import fuzzers
+import schedulers
 from signals import SignalType
+from utils import route_length
 
 # Mutator configs
 config = {}
@@ -25,8 +29,10 @@ config['map_name'] = 'Town05'
 config['intersection_uid'] = 'intersection396'
 config['rules_path'] = '4way-stopOnAll.lp'
 config['arrival_distance'] = 4
+config['interpolation_degree'] = 2
+config['interpolation_max_ctrlpts'] = 10
 config['network'] = Network.fromFile(config['map_path'])
-# mutator = mutator.Mutator(config)
+mutator = mutators.RandomMutator(config)
 
 network = config['network']
 intersection = network.elements[config['intersection_uid']]
@@ -35,21 +41,28 @@ routes = [(m.startLane, m.connectingLane, m.endLane)
 config['ego_route']= [l.uid for l in routes[0]]
 config['ego_distance'] = 10
 
-final_time = config['maxSteps']*config['timestep']
-
-def route_length(route):
-  return sum([l.centerline.length for l in route])
+T = config['maxSteps']*config['timestep']
 
 route0 = routes[1]
-curve0 = seed.ParameterizedCurve([seed.ControlPoint(0, 0),
-                                  seed.ControlPoint(final_time/3, 0),
-                                  seed.ControlPoint(final_time*2/3, 0),
-                                  seed.ControlPoint(final_time, 2/3*route_length(route0))])
-seed0 = seed.Seed(routes=[[l.uid for l in route0]], curves=[curve0], signals=[SignalType.LEFT])
+D = route_length(route0)
+degree = config['interpolation_degree']
+ts = [T*i/degree for i in range(degree+1)]
+ds = [D*i/degree for i in range(degree+1)]
+curve0 = BSpline.Curve(normalize_kv = False)
+curve0.degree = degree
+curve0.ctrlpts = [[t, d] for t,d in zip(ts,ds)]
+curve0.knotvector = [ts[0] for i in range(degree)] \
+              + list(np.linspace(ts[0], ts[-1], num=len(ts)-degree+1)) \
+              + [ts[-1] for i in range(degree)]
+seed0 = seed.Seed(routes=[seed.Route(lanes=[l.uid for l in route0])], 
+                  curves=[curve0], 
+                  signals=[SignalType.LEFT])
 initial_seeds = [seed0]
 
+scheduler = schedulers.RandomScheduler()
+
 num_fuzzing_steps = 2
-fuzzer = fuzzers.RandomFuzzer(config=config)
+fuzzer = fuzzers.RandomFuzzer(config=config, mutator=mutator, scheduler=scheduler)
 seeds = fuzzer.run(initial_seeds, num_fuzzing_steps)
 
 # Write to file

@@ -164,23 +164,11 @@ def spline_to_traj(degree, ctrlpts, knotvector, sample_size, sim_traj):
         frame2distance, frame2simDistance, sim_traj)
     return traj
 
-def sample_spline(ctrlpts, sample_size, degree=3):
-    curve = BSpline.Curve()
-    curve.degree = degree
-    curve.ctrlpts = [[t,d] for t,d in ctrlpts]
-    kv = [0., 0., 0., 0.]
-    for i in range(1, len(ctrlpts)//degree-1):
-        kv += [ctrlpts[i].t, ctrlpts[i].t, ctrlpts[i].t]
-    kv += [ctrlpts[-1].t, ctrlpts[-1].t, ctrlpts[-1].t, ctrlpts[-1].t]
-    curve.knotvector = kv
-    curve.sample_size = sample_size
-    return [p[1] for p in curve.evalpts]
-
-def sample_route(lanes, ctrlpts, sample_size):
+def sample_route(lanes, spline, sample_size):
     from scenic.domains.driving.roads import LinearElement
     from scenic.core.regions import PolygonalRegion, PolylineRegion
     from scenic.core.object_types import OrientedPoint
-    d0 = ctrlpts[0].d
+    d0 = spline.ctrlpts[0][1]
     route = LinearElement(
         id=f'route_{lanes}_{d0}',
         polygon=PolygonalRegion.unionAll(lanes).polygons,
@@ -191,7 +179,8 @@ def sample_route(lanes, ctrlpts, sample_size):
     p = route.centerline.pointAlongBy(d0)
     h = route._defaultHeadingAt(p)
     route_sample = [OrientedPoint(position=p, heading=h)]
-    distances = sample_spline(ctrlpts, sample_size)
+    spline.sample_size = sample_size
+    distances = [p[1] for p in spline.evalpts]
     delta_distances = [pii - pi for pi, pii in zip(distances[:-1], distances[1:])]
     for d in delta_distances:
         p = route.flowFrom(p, d)
@@ -266,3 +255,7 @@ def has_collision(scenario, new_poses, new_curves, new_sizes):
             return True
 
     return False
+
+
+def route_length(route):
+  return sum([l.centerline.length for l in route])

@@ -31,16 +31,17 @@ behavior AnimateBehavior():
 		visualization.label_car(carla_world, self)
 
 cars = []
-for route, distance_curve, signal in zip(seed.routes, seed.curves, seed.signals):
-	d0 = distance_curve.control_points[0].d
-	lanes = [network.elements[l_id] for l_id in route]
-	route_sample = sample_route(lanes, distance_curve.control_points, sample_size)
+for route, spline, signal in zip(seed.routes, seed.curves, seed.signals):
+	lanes = [network.elements[l_id] for l_id in route.lanes]
+	route_sample = sample_route(lanes, spline, sample_size)
+	d0 = spline.ctrlpts[0][1]
 	p0 = route_sample[0]
 	car = Car at p0,
-	  with name str(route) + str(d0),
+	  with name str(route.lanes) + '_' + str(d0),
 		with color Color(0, 0, 1),
 		with behavior AnimateBehavior(),
 		with physics False,
+		with allowCollisions True,
 		with route_sample route_sample,
 		with signal signal
 	cars.append(car)
