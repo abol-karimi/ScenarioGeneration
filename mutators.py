@@ -29,6 +29,7 @@ class RandomMutator():
     """Adds a non-ego to the scenario, using a random route through the intersection,
     and starting at a random location along the route.
     """
+    print('Adding vehicle to the seed...')
     mutant = copy.deepcopy(seed)
     route = random.choice(self.routes)
     degree = self.config['interpolation_degree']
@@ -54,6 +55,7 @@ class RandomMutator():
   def remove_vehicle(self, seed):
     """Removes a random non-ego from the scenario.
     """
+    print('removing vehicle from the seed...')
     mutant = copy.deepcopy(seed)
     idx = random.randrange(len(mutant.routes))
     mutant.routes.pop(idx)
@@ -64,6 +66,7 @@ class RandomMutator():
   def move_controlpoint_vertically(self, seed):
     """Move a control-point vertically (in the t-d plane).
     """
+    print('Moving a control point vertically...')
     mutant = copy.deepcopy(seed)
     v_idx = random.randrange(len(mutant.routes))
     ctrlpts = mutant.curves[v_idx].ctrlpts

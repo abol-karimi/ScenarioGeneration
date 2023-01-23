@@ -34,6 +34,7 @@ class RandomFuzzer:
       # settings.no_rendering_mode = True
       # simulator.world.apply_settings(settings)
       sim_result = simulator.simulate(scene, maxSteps=config['maxSteps'])
+      del scenic_scenario, scene
 
       for events in event_monitor.events.values():
         for e in events:

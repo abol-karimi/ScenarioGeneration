@@ -24,7 +24,7 @@ from utils import sample_route
 
 behavior AnimateBehavior():
 	lights = self.signal.to_vehicleLightState()
-	take SetVehicleLightStateAction(lights)
+	#take SetVehicleLightStateAction(lights)
 	carla_world = simulation().world
 	for pose in self.route_sample:
 		take SetTransformAction(pose.position, pose.heading)
@@ -37,7 +37,7 @@ for route, spline, signal in zip(seed.routes, seed.curves, seed.signals):
 	d0 = spline.ctrlpts[0][1]
 	p0 = route_sample[0]
 	car = Car at p0,
-	  with name str(route.lanes) + '_' + str(d0),
+	  with name '_'.join(route.lanes + [str(d0)]),
 		with color Color(0, 0, 1),
 		with behavior AnimateBehavior(),
 		with physics False,
