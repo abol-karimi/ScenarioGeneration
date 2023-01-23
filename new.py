@@ -63,7 +63,7 @@ scheduler = schedulers.RandomScheduler()
 
 num_fuzzing_steps = 2
 fuzzer = fuzzers.RandomFuzzer(config=config, mutator=mutator, scheduler=scheduler)
-seeds = fuzzer.run(initial_seeds, num_fuzzing_steps)
+seeds = fuzzer.run(initial_seeds, num_fuzzing_steps, render=True)
 
 # Write to file
 # with open('seeds.', 'wb') as outFile:

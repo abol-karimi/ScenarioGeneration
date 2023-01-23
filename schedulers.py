@@ -16,10 +16,10 @@ class FIFOScheduler:
 
 
 class RandomScheduler:
-  seeds : List[Seed]
+  seeds : List[Seed] = []
 
   def choose(self):
     return random.choice(self.seeds)
   
-  def add(self, seed):
+  def add(self, seed, events):
     self.seeds.append(seed)

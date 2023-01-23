@@ -34,7 +34,7 @@ cars = []
 for route, spline, signal in zip(seed.routes, seed.curves, seed.signals):
 	lanes = [network.elements[l_id] for l_id in route.lanes]
 	route_sample = sample_route(lanes, spline, sample_size)
-	d0 = spline.ctrlpts[0][1]
+	d0 = int(spline.ctrlpts[0][1])
 	p0 = route_sample[0]
 	car = Car at p0,
 	  with name '_'.join(route.lanes + [str(d0)]),
