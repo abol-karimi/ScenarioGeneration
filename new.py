@@ -16,6 +16,7 @@ import seed
 import mutators
 import fuzzers
 import schedulers
+import coverages
 from signals import SignalType
 from utils import route_length
 
@@ -32,8 +33,16 @@ config['arrival_distance'] = 4
 config['interpolation_degree'] = 2
 config['interpolation_max_ctrlpts'] = 10
 config['network'] = Network.fromFile(config['map_path'])
-mutator = mutators.RandomMutator(config)
 
+# Instantiate a fuzzer
+mutator = mutators.RandomMutator(config)
+coverage = coverages.PredicateNameCoverage(config=config)
+scheduler = schedulers.PriorityScheduler(config=config)
+fuzzer = fuzzers.ModularFuzzer(config=config,
+                              coverage=coverage,
+                              mutator=mutator,
+                              scheduler=scheduler)
+# Initial seeds for the fuzzing
 network = config['network']
 intersection = network.elements[config['intersection_uid']]
 routes = [(m.startLane, m.connectingLane, m.endLane)
@@ -58,12 +67,10 @@ seed0 = seed.Seed(routes=[seed.Route(lanes=[l.uid for l in route0])],
                   curves=[curve0], 
                   signals=[SignalType.LEFT])
 initial_seeds = [seed0]
+iterations = 2
 
-scheduler = schedulers.RandomScheduler()
-
-num_fuzzing_steps = 2
-fuzzer = fuzzers.RandomFuzzer(config=config, mutator=mutator, scheduler=scheduler)
-seeds = fuzzer.run(initial_seeds, num_fuzzing_steps, render=True)
+# Run the fuzzer
+seeds = fuzzer.run(initial_seeds, iterations, render=True)
 
 # Write to file
 # with open('seeds.', 'wb') as outFile:

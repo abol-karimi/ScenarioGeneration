@@ -62,7 +62,7 @@ monitor intersection_events:
 			
 			if (not arrived[car]) and (distance from (front of car) to intersection) < config['arrival_distance']:
 				arrived[car] = True
-				event_monitor.on_arrival(car.name, car.lane.uid, car.signal, currentTime)
+				event_monitor.on_arrival(car.name, car.lane.uid, car.signal.name.lower(), currentTime)
 			if inIntersection[car] and not entered[car]:
 				entered[car] = True
 				event_monitor.on_entrance(car.name, car.lane.uid, currentTime)

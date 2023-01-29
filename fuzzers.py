@@ -1,27 +1,39 @@
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, Any
 import scenic
 
 # This project
-from mutators import RandomMutator
-from schedulers import RandomScheduler
+
 
 @dataclass
-class RandomFuzzer:
+class ModularFuzzer:
   config : Dict
-  mutator : RandomMutator
-  scheduler : RandomScheduler
+  coverage : Any # For both evaluation and seed generation purposes
+  mutator : Any
+  scheduler : Any
 
-  def run(self, initial_seeds, num_steps, render=False):
+  def run(self, initial_seeds, iterations, render=False):
     seed = initial_seeds[0]
-    for i in range(num_steps):
-      seed = self.mutator.mutate(seed)
+    for i in range(iterations):
+      # Run the simulation with the current seed
+      print(f'Simulating seed {i}')
       events = self.simulate(seed, render=render)
-      self.scheduler.add(seed, events)
-      seed = self.scheduler.choose()
 
-      for e in events:
-          print(e.withTime(e.frame))
+      # Compute the predicate coverage of the current seed
+      predicates = self.coverage.compute(seed, events)
+      print(predicates)
+
+      # Add the seed and its predicate coverage to the scheduler
+      self.scheduler.add(seed, predicates)
+
+      # Choose a seed to mutate for the next iteration
+      print(seed)
+      seed = self.scheduler.choose()
+      print(seed)
+      seed = self.mutator.mutate(seed)
+
+      for p in predicates:
+          print(p)
 
     return None
 
