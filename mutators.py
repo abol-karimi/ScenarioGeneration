@@ -20,10 +20,15 @@ class RandomMutator():
     self.network = network
     self.intersection = intersection
     self.routes = routes
+    self.route_lengths = [utils.route_length(r) for r in routes]
     self.final_time = final_time
     self.mutators = [self.add_vehicle,
                     self.remove_vehicle,
-                    self.move_controlpoint_vertically]
+                    self.move_first_controlpoint_vertically,
+                    self.move_last_controlpoint_vertically,
+                    self.move_mid_controlpoint_vertically,
+                    self.add_controlpoint
+                    ]
 
   def add_vehicle(self, seed):
     """Adds a non-ego to the scenario, using a random route through the intersection,
@@ -31,9 +36,10 @@ class RandomMutator():
     """
     print('Adding vehicle to the seed...')
     mutant = copy.deepcopy(seed)
-    route = random.choice(self.routes)
+    idx = random.randrange(len(self.routes))
+    route = self.routes[idx]
     degree = self.config['interpolation_degree']
-    D = utils.route_length(route)
+    D = self.route_lengths[idx]
     D1 = random.uniform(0, D)
     D2 = random.uniform(D1, D)
     T = self.final_time
@@ -63,28 +69,62 @@ class RandomMutator():
     mutant.signals.pop(idx)
     return mutant
 
-  def move_controlpoint_vertically(self, seed):
-    """Move a control-point vertically (in the t-d plane).
+  def move_first_controlpoint_vertically(self, seed):
+    """Move the first control-point (of a random car) vertically in the t-d plane.
     """
-    print('Moving a control point vertically...')
+    print('Moving the first control point vertically...')
     mutant = copy.deepcopy(seed)
-    v_idx = random.randrange(len(mutant.routes))
-    ctrlpts = mutant.curves[v_idx].ctrlpts
-    p_idx = random.randrange(len(ctrlpts))
-    ctrlpts[p_idx] = [ctrlpts[p_idx][0],
-                      ctrlpts[p_idx][1]+random.uniform(-1, 1)
-                      ]
+    idx = random.randrange(len(mutant.routes))
+    ctrlpts = mutant.curves[idx].ctrlpts
+    t0, d1 = ctrlpts[0][0], ctrlpts[1][1]
+    ctrlpts[0] = [t0, random.uniform(0, d1)]
     return mutant
 
-  def add_controlpoints(self, seed):
-    """Selects a randome vehicle, then
-    adds a bezier segment at a random position in the composite curve.
+  def move_last_controlpoint_vertically(self, seed):
+    """Move the last control-point (of a random car) vertically in the t-d plane.
+    """
+    print('Moving the first control point vertically...')
+    mutant = copy.deepcopy(seed)
+    idx = random.randrange(len(mutant.routes))
+    ctrlpts = mutant.curves[idx].ctrlpts
+    ctrlpts[-1][1] = random.uniform(ctrlpts[-2][1], self.route_lengths[idx])
+    return mutant
+
+  def move_mid_controlpoint_vertically(self, seed):
+    """Move an intermediate control-point vertically (in the t-d plane).
+    """
+    print('Moving an intermediate control point vertically...')
+    mutant = copy.deepcopy(seed)
+    idx = random.randrange(len(mutant.routes))
+    ctrlpts = mutant.curves[idx].ctrlpts
+    p_idx = random.randrange(1, len(ctrlpts)-1)
+    ctrlpts[p_idx][1] = random.uniform(ctrlpts[p_idx-1][1], ctrlpts[p_idx+1][1])
+    return mutant
+
+
+  # def move_controlpoint_horizontally(self, seed):
+  #   """Move a control-point horizontally (in the t-d plane).
+  #   """
+  #   print('Moving a control point horizontally...')
+  #   mutant = copy.deepcopy(seed)
+  #   v_idx = random.randrange(len(mutant.routes))
+  #   ctrlpts = mutant.curves[v_idx].ctrlpts
+  #   p_idx = random.randrange(len(ctrlpts))
+  #   ctrlpts[p_idx] = [ctrlpts[p_idx][0]+random.uniform(-1, 1),
+  #                     ctrlpts[p_idx][1]]
+  #   return mutant
+
+  def add_controlpoint(self, seed):
+    """Selects a random vehicle, then
+    adds a control point at a random position in the composite curve.
     """
     mutant = copy.deepcopy(seed)
-    v_idx = random.randint(0, len(mutant.routes))
-    ctrlpts = mutant.curves[v_idx].ctrlpts
-    p_idx = random.randrange(len(ctrlpts))
-    ctrlpts[p_idx].d += random.uniform(-1, 1)
+    valid_indices = [i for i in range(len(mutant.curves))
+                      if len(mutant.curves[i].ctrlpts) < self.config['interpolation_max_ctrlpts']]
+    nonego_idx = random.choice(valid_indices)
+    curve = mutant.curves[nonego_idx]
+    t = random.randrange(curve.ctrlpts[0][0], curve.ctrlpts[-1][0])
+    curve.insert_knot(t)
     return mutant
 
   def mutate(self, seed):

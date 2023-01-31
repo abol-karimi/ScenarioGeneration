@@ -67,10 +67,10 @@ seed0 = seed.Seed(routes=[seed.Route(lanes=[l.uid for l in route0])],
                   curves=[curve0], 
                   signals=[SignalType.LEFT])
 initial_seeds = [seed0]
-iterations = 2
+iterations = 4
 
 # Run the fuzzer
-seeds = fuzzer.run(initial_seeds, iterations, render=True)
+seeds = fuzzer.run(initial_seeds, iterations, render=False)
 
 # Write to file
 # with open('seeds.', 'wb') as outFile:

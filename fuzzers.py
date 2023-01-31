@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict, Any
 import scenic
+import time
 
 # This project
 
@@ -15,25 +16,24 @@ class ModularFuzzer:
   def run(self, initial_seeds, iterations, render=False):
     seed = initial_seeds[0]
     for i in range(iterations):
+      start_time = time.time()
+      print('-'*10 + f'Iteration {i}' + '-'*10)
+
       # Run the simulation with the current seed
-      print(f'Simulating seed {i}')
+      print(f'Simulating the seed...')
       events = self.simulate(seed, render=render)
 
       # Compute the predicate coverage of the current seed
       predicates = self.coverage.compute(seed, events)
-      print(predicates)
 
       # Add the seed and its predicate coverage to the scheduler
       self.scheduler.add(seed, predicates)
 
       # Choose a seed to mutate for the next iteration
-      print(seed)
       seed = self.scheduler.choose()
-      print(seed)
       seed = self.mutator.mutate(seed)
 
-      for p in predicates:
-          print(p)
+      print(f'Iteration took {time.time()-start_time} seconds.\n')
 
     return None
 
