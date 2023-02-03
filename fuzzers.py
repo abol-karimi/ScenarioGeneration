@@ -24,8 +24,13 @@ class ModularFuzzer:
     for i in range(iterations):
       print('-'*20 + f'Iteration {i}' + '-'*20)
       seed = self.mutator.mutate(self.scheduler.choose())
-      events = self.simulate(seed, render=render)
-      # TODO: collision-detection (or validity, in general)
+      try:
+        events = self.simulate(seed, render=render)
+      except Exception as err:
+        print(err)
+        # TODO if two nonegos collide, discard seed
+        # else if the ego collides with the mutant, add seed to corpus
+        continue
       predicates, is_novel = self.compute_coverage(seed, events)
       self.scheduler.add(seed, predicates)
       if is_novel:
@@ -50,7 +55,7 @@ class ModularFuzzer:
         'nonegos.scenic', params=params)
     print(f'Compilation took {round(time.time()-start_time, 3)} seconds.')
 
-    scene, _ = scenic_scenario.generate()
+    scene, _ = scenic_scenario.generate(maxIterations=1)
     simulator = scenic_scenario.getSimulator()
     if not render:
       settings = simulator.world.get_settings()
@@ -58,7 +63,12 @@ class ModularFuzzer:
       simulator.world.apply_settings(settings)
 
     start_time = time.time()
-    sim_result = simulator.simulate(scene, maxSteps=self.config['maxSteps'])
+    sim_result = simulator.simulate(
+                    scene,
+                    maxSteps=self.config['maxSteps'],
+                    maxIterations=1,
+                    raiseGuardViolations=True
+                    )
     print(f'Simulation took {round(time.time()-start_time, 3)} seconds.')
 
     del scenic_scenario, scene

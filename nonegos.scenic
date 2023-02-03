@@ -41,7 +41,7 @@ for route, spline, signal in zip(seed.routes, seed.curves, seed.signals):
 		with color Color(0, 0, 1),
 		with behavior AnimateBehavior(),
 		with physics False,
-		with allowCollisions True,
+		with allowCollisions False,
 		with route_sample route_sample,
 		with signal signal
 	cars.append(car)
