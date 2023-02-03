@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, Any
+from typing import Dict, Any, Set
 import scenic
 import time
 
@@ -12,32 +12,31 @@ class ModularFuzzer:
   coverage : Any # For both evaluation and seed generation purposes
   mutator : Any
   scheduler : Any
+  seed_corpus : Any
+  predicate_coverage = set()
 
-  def run(self, initial_seeds, iterations, render=False):
-    seed = initial_seeds[0]
-    for i in range(iterations):
-      start_time = time.time()
-      print('-'*20 + f'Iteration {i}' + '-'*20)
-
-      # Run the simulation with the current seed
-      print(f'Simulating the seed...')
+  def run(self, iterations, render=False):
+    for seed in self.seed_corpus.seeds:
       events = self.simulate(seed, render=render)
-
-      # Compute the predicate coverage of the current seed
       predicates = self.coverage.compute(seed, events)
-
-      # Add the seed and its predicate coverage to the scheduler
       self.scheduler.add(seed, predicates)
 
-      # Choose a seed to mutate for the next iteration
-      seed = self.scheduler.choose()
-      seed = self.mutator.mutate(seed)
+    for i in range(iterations):
+      print('-'*20 + f'Iteration {i}' + '-'*20)
+      seed = self.mutator.mutate(self.scheduler.choose())
+      events = self.simulate(seed, render=render)
+      # TODO: collision-detection (or validity, in general)
+      predicates, is_novel = self.compute_coverage(seed, events)
+      self.scheduler.add(seed, predicates)
+      if is_novel:
+        self.seed_corpus.add(seed)
+        self.predicate_coverage.update(predicates)
 
-      print(f'Iteration {i} took {round(time.time()-start_time, 3)} seconds.\n')
-
-    return None
+    return self.seed_corpus
 
   def simulate(self, seed, simulate_ego=False, render=False):
+    print(f'Simulating the seed...')
+
     # Run the scenario on the seed
     from intersection_monitor import Monitor
     event_monitor = Monitor()
@@ -65,6 +64,13 @@ class ModularFuzzer:
     del scenic_scenario, scene
 
     return event_monitor.get_events()
+
+  def compute_coverage(self, seed, events):
+    predicates = self.coverage.compute(seed, events)
+    is_novel = (0 == len(predicates - self.predicate_coverage))
+    return predicates, is_novel
+    
+
 
 
 

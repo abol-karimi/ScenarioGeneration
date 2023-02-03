@@ -24,10 +24,21 @@ class Seed:
       return False
     if len(self.routes) != len(self.signals):
       return False
-    if len(self.signals) == 0:
+    if len(self.routes) == 0:
       return False
       
     return True
 
+@dataclass
+class SeedCorpus:
+  seeds : List[Seed] = None
 
+  def load(self, filename):
+    pass
+
+  def add(self, seed):
+    self.seeds.append(seed)
+
+  def save(self, filename):
+    pass
 

@@ -6,7 +6,7 @@ import numpy as np
 # This project
 import utils
 from signals import SignalType
-from seed import Route
+from seed_corpus import Route
 
 class RandomMutator():
   def __init__(self, config):
@@ -27,7 +27,8 @@ class RandomMutator():
                     self.move_first_controlpoint_vertically,
                     self.move_last_controlpoint_vertically,
                     self.move_mid_controlpoint_vertically,
-                    self.add_controlpoint
+                    self.add_controlpoint,
+                    self.remove_controlpoint
                     ]
 
   def add_vehicle(self, seed):
@@ -62,11 +63,13 @@ class RandomMutator():
     """Removes a random non-ego from the scenario.
     """
     print('removing vehicle from the seed...')
+    if len(seed.routes) == 1:
+      raise MutationError('Empty seeds are not allowed!')
     mutant = copy.deepcopy(seed)
-    idx = random.randrange(len(mutant.routes))
-    mutant.routes.pop(idx)
-    mutant.curves.pop(idx)
-    mutant.signals.pop(idx)
+    nonego_idx = random.randrange(len(mutant.routes))
+    mutant.routes.pop(nonego_idx)
+    mutant.curves.pop(nonego_idx)
+    mutant.signals.pop(nonego_idx)
     return mutant
 
   def move_first_controlpoint_vertically(self, seed):
@@ -74,8 +77,8 @@ class RandomMutator():
     """
     print('Moving the first control point vertically...')
     mutant = copy.deepcopy(seed)
-    idx = random.randrange(len(mutant.routes))
-    ctrlpts = mutant.curves[idx].ctrlpts
+    nonego_idx = random.randrange(len(mutant.routes))
+    ctrlpts = mutant.curves[nonego_idx].ctrlpts
     t0, d1 = ctrlpts[0][0], ctrlpts[1][1]
     ctrlpts[0] = [t0, random.uniform(0, d1)]
     return mutant
@@ -85,9 +88,9 @@ class RandomMutator():
     """
     print('Moving the first control point vertically...')
     mutant = copy.deepcopy(seed)
-    idx = random.randrange(len(mutant.routes))
-    ctrlpts = mutant.curves[idx].ctrlpts
-    ctrlpts[-1][1] = random.uniform(ctrlpts[-2][1], self.route_lengths[idx])
+    nonego_idx = random.randrange(len(mutant.routes))
+    ctrlpts = mutant.curves[nonego_idx].ctrlpts
+    ctrlpts[-1][1] = random.uniform(ctrlpts[-2][1], self.route_lengths[nonego_idx])
     return mutant
 
   def move_mid_controlpoint_vertically(self, seed):
@@ -95,45 +98,58 @@ class RandomMutator():
     """
     print('Moving an intermediate control point vertically...')
     mutant = copy.deepcopy(seed)
-    idx = random.randrange(len(mutant.routes))
-    ctrlpts = mutant.curves[idx].ctrlpts
+    nonego_idx = random.randrange(len(mutant.routes))
+    curve = mutant.curves[nonego_idx]
+    ctrlpts = curve.ctrlpts
     p_idx = random.randrange(1, len(ctrlpts)-1)
     ctrlpts[p_idx][1] = random.uniform(ctrlpts[p_idx-1][1], ctrlpts[p_idx+1][1])
     return mutant
 
-
-  # def move_controlpoint_horizontally(self, seed):
-  #   """Move a control-point horizontally (in the t-d plane).
-  #   """
-  #   print('Moving a control point horizontally...')
-  #   mutant = copy.deepcopy(seed)
-  #   v_idx = random.randrange(len(mutant.routes))
-  #   ctrlpts = mutant.curves[v_idx].ctrlpts
-  #   p_idx = random.randrange(len(ctrlpts))
-  #   ctrlpts[p_idx] = [ctrlpts[p_idx][0]+random.uniform(-1, 1),
-  #                     ctrlpts[p_idx][1]]
-  #   return mutant
-
   def add_controlpoint(self, seed):
     """Selects a random vehicle, then
-    adds a control point at a random position in the composite curve.
+    adds a control point at a random position in the curve.
     """
     mutant = copy.deepcopy(seed)
-    valid_indices = [i for i in range(len(mutant.curves))
-                      if len(mutant.curves[i].ctrlpts) < self.config['interpolation_max_ctrlpts']]
-    nonego_idx = random.choice(valid_indices)
+    nonego_idx = random.randrange(len(mutant.routes))
     curve = mutant.curves[nonego_idx]
+    if len(curve.ctrlpts) == self.config['max_ctrlpts']:
+      raise MutationError('Cannot add any more controlpoints to the curve!')
     t = random.randrange(curve.ctrlpts[0][0], curve.ctrlpts[-1][0])
     curve.insert_knot(t)
     return mutant
 
+  def remove_controlpoint(self, seed):
+    """Selects a random vehicle, then
+    removes a random control point from the curve.
+    """
+    mutant = copy.deepcopy(seed)
+    nonego_idx = random.randrange(len(mutant.routes))
+    curve = mutant.curves[nonego_idx]
+    endpoint_knots = curve.degree + 1
+    if len(curve.knotvector) <= 2*endpoint_knots:
+      raise MutationError('Not enough controlpoints to remove!')
+    knot = random.choice(curve.knotvector[endpoint_knots:-endpoint_knots])
+    curve.remove_knot(knot)
+    return mutant
+
   def mutate(self, seed):
-    while True:
+    mutant = seed
+    mutations = random.randint(1, self.config['max_mutations_per_iteration'])
+    for i in range(mutations):
       mutator = random.choice(self.mutators)
-      mutant = mutator(seed)
-      if mutant.is_valid():
-        break
+      try:
+        mutant = mutator(mutant)
+      except MutationError as err:
+        print('Mutation error: ' + err.message)
     return mutant
     
     
 
+class MutationError(Exception):
+    """Exception raised for errors in mutating a seed.
+    Attributes:
+        message -- explanation of the error
+    """
+
+    def __init__(self, message):
+        self.message = message

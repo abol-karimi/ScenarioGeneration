@@ -12,7 +12,7 @@ from geomdl import BSpline
 from scenic.domains.driving.roads import Network
 
 # My modules
-import seed
+import seed_corpus
 import mutators
 import fuzzers
 import schedulers
@@ -31,18 +31,15 @@ config['intersection_uid'] = 'intersection396'
 config['rules_path'] = '4way-stopOnAll.lp'
 config['arrival_distance'] = 4
 config['interpolation_degree'] = 2
-config['interpolation_max_ctrlpts'] = 10
+config['max_ctrlpts'] = 10
+config['max_mutations_per_iteration'] = 4
 config['network'] = Network.fromFile(config['map_path'])
 
 # Instantiate a fuzzer
 mutator = mutators.RandomMutator(config)
 coverage = coverages.PredicateNameCoverage(config=config)
 scheduler = schedulers.PriorityScheduler(config=config)
-fuzzer = fuzzers.ModularFuzzer(config=config,
-                              coverage=coverage,
-                              mutator=mutator,
-                              scheduler=scheduler)
-# Initial seeds for the fuzzing
+# Initial seed corpus
 network = config['network']
 intersection = network.elements[config['intersection_uid']]
 routes = [(m.startLane, m.connectingLane, m.endLane)
@@ -63,14 +60,20 @@ curve0.ctrlpts = [[t, d] for t,d in zip(ts,ds)]
 curve0.knotvector = [ts[0] for i in range(degree)] \
               + list(np.linspace(ts[0], ts[-1], num=len(ts)-degree+1)) \
               + [ts[-1] for i in range(degree)]
-seed0 = seed.Seed(routes=[seed.Route(lanes=[l.uid for l in route0])], 
+seed0 = seed_corpus.Seed(routes=[seed_corpus.Route(lanes=[l.uid for l in route0])], 
                   curves=[curve0], 
                   signals=[SignalType.LEFT])
-initial_seeds = [seed0]
+corpus = seed_corpus.SeedCorpus([seed0])
+fuzzer = fuzzers.ModularFuzzer(config=config,
+                              coverage=coverage,
+                              mutator=mutator,
+                              scheduler=scheduler,
+                              seed_corpus=corpus)
+
 iterations = 4
 
 # Run the fuzzer
-seeds = fuzzer.run(initial_seeds, iterations, render=False)
+seeds = fuzzer.run(iterations, render=False)
 
 # Write to file
 # with open('seeds.', 'wb') as outFile:

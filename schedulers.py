@@ -5,7 +5,7 @@ from queue import Queue, PriorityQueue
 import random
 
 # This project
-from seed import Seed
+from seed_corpus import Seed
 
 class FIFOScheduler:
   seeds = Queue() # Queue
