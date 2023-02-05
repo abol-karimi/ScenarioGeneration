@@ -70,10 +70,11 @@ fuzzer = fuzzers.ModularFuzzer(config=config,
                               scheduler=scheduler,
                               seed_corpus=corpus)
 
-iterations = 4
+iterations = 1
 
 # Run the fuzzer
-seeds = fuzzer.run(iterations, render=False)
+fuzzer.run(iterations, render=True)
+corpus.save('trial1.json')
 
 # Write to file
 # with open('seeds.', 'wb') as outFile:

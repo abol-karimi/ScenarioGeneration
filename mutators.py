@@ -35,7 +35,7 @@ class RandomMutator():
     """Adds a non-ego to the scenario, using a random route through the intersection,
     and starting at a random location along the route.
     """
-    print('Adding vehicle to the seed...')
+    print('Adding a vehicle to the seed...')
     mutant = copy.deepcopy(seed)
     idx = random.randrange(len(self.routes))
     route = self.routes[idx]
