@@ -2,9 +2,6 @@ from typing import Dict
 from dataclasses import dataclass
 import clingo
 
-# This project
-from generator import geometry_atoms
-
 @dataclass
 class PredicateNameCoverage:
   config : Dict

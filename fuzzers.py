@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Dict, Any, Set
 import scenic
 import time
+from scenic.simulators.newtonian import NewtonianSimulator
 
 # This project
 
@@ -52,15 +53,13 @@ class ModularFuzzer:
 
     start_time = time.time()
     scenic_scenario = scenic.scenarioFromFile(
-        'nonegos.scenic', params=params)
+        'nonegos_newtonian.scenic', 
+        params=params, 
+        model='scenic.simulators.newtonian.driving_model')
     print(f'Compilation took {round(time.time()-start_time, 3)} seconds.')
 
     scene, _ = scenic_scenario.generate(maxIterations=1)
-    simulator = scenic_scenario.getSimulator()
-    if not render:
-      settings = simulator.world.get_settings()
-      settings.no_rendering_mode = True
-      simulator.world.apply_settings(settings)
+    simulator = NewtonianSimulator()
 
     start_time = time.time()
     sim_result = simulator.simulate(

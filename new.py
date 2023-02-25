@@ -50,7 +50,7 @@ config['ego_distance'] = 10
 T = config['maxSteps']*config['timestep']
 
 route0 = routes[1]
-D = route_length(route0)
+D = route_length(route0)*3/4
 degree = config['interpolation_degree']
 ts = [T*i/degree for i in range(degree+1)]
 ds = [D*i/degree for i in range(degree+1)]
@@ -73,7 +73,7 @@ fuzzer = fuzzers.ModularFuzzer(config=config,
 iterations = 1
 
 # Run the fuzzer
-fuzzer.run(iterations, render=True)
+fuzzer.run(iterations, render=False)
 corpus.save('trial1.json')
 
 # Write to file
