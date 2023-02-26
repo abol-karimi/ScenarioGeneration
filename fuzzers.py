@@ -17,13 +17,16 @@ class ModularFuzzer:
   predicate_coverage = set()
 
   def run(self, iterations, render=False):
+    start_time = time.time()
+
     for seed in self.seed_corpus.seeds:
       events = self.simulate(seed, render=render)
       predicates = self.coverage.compute(seed, events)
       self.scheduler.add(seed, predicates)
 
     for i in range(iterations):
-      print('-'*20 + f'Iteration {i}' + '-'*20)
+      print(f'Total elapsed time: {round(time.time()-start_time, 3)} seconds.')
+      print('-'*20 + f'Starting iteration {i}/{iterations}' + '-'*20)
       seed = self.mutator.mutate(self.scheduler.choose())
       try:
         events = self.simulate(seed, render=render)
@@ -51,12 +54,10 @@ class ModularFuzzer:
             'render': False,
             'seed': seed}
 
-    start_time = time.time()
     scenic_scenario = scenic.scenarioFromFile(
         'nonegos_newtonian.scenic', 
         params=params, 
         model='scenic.simulators.newtonian.driving_model')
-    print(f'Compilation took {round(time.time()-start_time, 3)} seconds.')
 
     scene, _ = scenic_scenario.generate(maxIterations=1)
     simulator = NewtonianSimulator()
@@ -68,7 +69,6 @@ class ModularFuzzer:
                     maxIterations=1,
                     raiseGuardViolations=True
                     )
-    print(f'Simulation took {round(time.time()-start_time, 3)} seconds.')
 
     del scenic_scenario, scene
 

@@ -47,7 +47,7 @@ fuzzer = fuzzers.ModularFuzzer(config=config,
                               scheduler=scheduler,
                               seed_corpus=corpus)
 
-iterations = 10
+iterations = 7200
 
 # Run the fuzzer
 fuzzer.run(iterations, render=False)

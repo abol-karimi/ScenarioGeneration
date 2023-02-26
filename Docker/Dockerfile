@@ -37,21 +37,15 @@ RUN python3 -m pip install --upgrade pip ; \
 RUN . ~/.venv/bin/activate ; \
   python -m pip install carla==0.9.13
 
-# Set up Scenic
-RUN git clone https://github.com/BerkeleyLearnVerify/Scenic.git
-WORKDIR /home/carla/Scenic
-RUN . ~/.venv/bin/activate ; \
-  pip install cython ; \
-  pip install numpy scipy pybind11 wheel; \
-  python -m pip install -e .
-
 # Binary version of Z3 to be used by PySMT
 WORKDIR /home/carla
 COPY --chown=carla:carla z3-4.8.10-x64-ubuntu-18.04 /home/carla/z3-4.8.10-x64-ubuntu-18.04
 RUN  echo "\n" >> .bashrc ; \
   echo 'export PATH=$HOME/z3-4.8.10-x64-ubuntu-18.04/bin:$PATH' >> .bashrc
 
-CMD bash
+# Entrypoint script
+COPY --chown=carla:carla entrypoint.sh /home/carla/entrypoint.sh
+ENTRYPOINT [ "/bin/bash", "-c", "/home/carla/entrypoint.sh" ]
 
 
 
