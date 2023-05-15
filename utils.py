@@ -124,6 +124,17 @@ def frame_to_distance(trajectory):
 
     return frame2distance
 
+def car_to_distances(sim_result, init_distances):
+    traj = sim_result.trajectory
+    car2distances = [[d]*len(traj) for d in init_distances]
+    for i in range(len(traj)-1):
+        si = traj[i] # The i-th state of the simulation
+        sii = traj[i+1] # The (i+1)-th state of the simulation
+        for j in range(len(sim_result.objects)):
+            pi, pii = si[j], sii[j]
+            car2distances[j][i+1] = car2distances[j][i] + pi.distanceTo(pii)
+    return car2distances
+
 
 def distance_to_pose(distances, sim_distances, traj):
     """ For each frame, we are given a distance in 'sim_distances' and a corresponding pose in 'traj'.

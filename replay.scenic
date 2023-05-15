@@ -27,7 +27,7 @@ behavior AnimateBehavior():
 	for pose in self.route_sample:
 		take SetTransformAction(pose.position, pose.heading)
 		visualization.label_car(carla_world, self)
-		time.sleep(1)
+		#time.sleep(.5)
 
 cars = []
 for route, spline, signal in zip(seed.routes, seed.curves, seed.signals):
