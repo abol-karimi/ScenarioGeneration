@@ -1,14 +1,16 @@
+# Standard libraries
 from collections import OrderedDict
 import math
-from solver import NoASPSolutionError
-from utils import has_collision, frame_to_distance
-
 from pysmt.logics import QF_NRA
 from pysmt.shortcuts import get_env, Solver, get_model, Symbol, Equals, And, Real
 from pysmt.typing import REAL
 import pysmt
 import fractions
 import clingo
+
+# My modules
+from solver import NoASPSolutionError
+from utils import has_collision, frame_to_distance
 
 solver_name = "z3-binary"
 path = ["z3", "-in", "-smt2"]  # tested with z3-4.8.10-x64-ubuntu-18.04
@@ -600,10 +602,7 @@ def smooth_trajectories(scenario, config,
     return new_events, curves
 
 
-def solution(scenario, config,
-             sim_events,
-             sim_trajectories,
-             car_sizes):
+def solution(config, sim_events, sim_trajectories):
     # All the given and new events
     import copy
     sim_events['illegal'] = []
@@ -612,7 +611,7 @@ def solution(scenario, config,
         event_ill.vehicle = 'illegal'
         sim_events['illegal'] += [event_ill]
 
-    models, car2time2events = logical_solution(scenario, config, sim_events)
+    models, car2time2events = logical_solution(config, sim_events)
 
     if len(models) == 0:
         raise NoASPSolutionError('No ASP solution found!')
@@ -631,7 +630,7 @@ def solution(scenario, config,
             new_events, curves = smooth_trajectories(scenario, config,
                                                      sim_trajectories,
                                                      constraints, car2time2events_updated)
-            if has_collision(scenario, sim_trajectories, curves, car_sizes):
+            if has_collision(scenario, sim_trajectories, curves):
                 print('Collision in SMT solution. Trying next ASP solution...')
             else:
                 print('No collision in SMT solution.')
@@ -648,94 +647,57 @@ def solution(scenario, config,
     return sim_events, curves
 
 
-def extend(scenario, config):
+def new(config):
     import intersection_monitor
     monitor = intersection_monitor.Monitor()
+   
+    params = {'intersection_uid': config['intersection_uid'],
+              'timestep': config['timestep'],
+              'weather': config['weather'],
+              'render': True,
+              'event_monitor': monitor}
+
+    print(f'Simulate trajectories...')
 
     import scenic
-    params = {'map': scenario.map_path,
-              'carla_map': scenario.map_name,
-              'intersection_uid': scenario.intersection_uid,
-              'timestep': scenario.timestep,
-              'weather': scenario.weather,
-              'render': False,
-              'event_monitor': monitor}
-    sim_result = {}
-    config['ego']['maneuver_uid'] = scenario.maneuver_uid['ego']
-    config['ego']['blueprint'] = scenario.blueprints['ego']
-    car_sizes = {car: {'width': 0, 'length': 0}
-                 for car in config['cars']}  # output parameter of simulation
-    # TODO skip simulating ego by using the solvability evidence of the old scenario
-    for car in config['cars']:
-        print(f'Simulate {car}\'s trajectory...')
-        params['car_name'] = car
-        params['maneuver_uid'] = config[car]['maneuver_uid']
-        params['spawn_distance'] = config[car]['spawn_distance']
-        params['car_blueprint'] = config[car]['blueprint']
-        params['car_size'] = car_sizes[car]  # output parameter
+    from scenic.simulators.newtonian import NewtonianSimulator
+    from scenic.domains.driving.roads import Network
+    simulator = NewtonianSimulator()
+    network = Network.fromFile(config['map_path'])
+    intersection = network.elements[config['intersection_uid']]
+
+    for maneuver in intersection.maneuvers:
+        params['lanes'] = [
+            maneuver.startLane, 
+            maneuver.connectingLane, 
+            maneuver.endLane]
         scenic_scenario = scenic.scenarioFromFile(
             'trajectory.scenic', params=params)
         scene, _ = scenic_scenario.generate()
-        simulator = scenic_scenario.getSimulator()
-        settings = simulator.world.get_settings()
-        settings.no_rendering_mode = True
-        simulator.world.apply_settings(settings)
-        sim_result[car] = simulator.simulate(scene, maxSteps=scenario.maxSteps)
-        del scenic_scenario, scene
+        sim_result = simulator.simulate(scene, maxSteps=config['maxSteps'])
 
     # Find a strict extension of the given scenario
     sim_trajectories = {}
     for car in config['cars']:
         sim_trajectories[car] = [state[car]
-                                 for state in sim_result[car].trajectory]
-    sim_trajectories['illegal'] = sim_trajectories['ego']
+                                 for state in sim_result.trajectory]
 
     new_events, new_curves = solution(
-        scenario,
         config,
         monitor.events,
-        sim_trajectories,
-        car_sizes)
+        sim_trajectories)
 
     from scenario import Scenario
-    scenario_ext = Scenario()
-    scenario_ext.maxSteps = scenario.maxSteps
-    scenario_ext.timestep = scenario.timestep
-    scenario_ext.weather = scenario.weather
-    scenario_ext.map_path = scenario.map_path
-    scenario_ext.map_name = scenario.map_name
-    scenario_ext.intersection_uid = scenario.intersection_uid
-    scenario_ext.rules_path = scenario.rules_path
-    scenario_ext.blueprints = dict(
-        scenario.blueprints, **{car: config[car]['blueprint'] for car in config['cars']})
-    scenario_ext.car_sizes = dict(scenario.car_sizes, **car_sizes)
-    scenario_ext.maneuver_uid = dict(
-        scenario.maneuver_uid, **{car: config[car]['maneuver_uid'] for car in config['cars']})
-    scenario_ext.events = dict(scenario.events, **new_events)
-    scenario_ext.curves = dict(scenario.curves, **new_curves)
-    scenario_ext.sim_trajectories = dict(
-        scenario.sim_trajectories, **sim_trajectories)
+    scenario_new = Scenario()
+    scenario_new.maxSteps = config['maxSteps']
+    scenario_new.timestep = config['timestep']
+    scenario_new.weather = config['weather']
+    scenario_new.map_path = config['map_path']
+    scenario_new.map_name = config['map_name']
+    scenario_new.intersection_uid = config['intersection_uid']
+    scenario_new.rules_path = config['rules_path']
+    scenario_new.events = new_events
+    scenario_new.curves = new_curves
+    scenario_new.sim_trajectories = sim_trajectories
 
-    return scenario_ext
-
-
-def new(config):
-    from scenario import Scenario
-    scenario = Scenario()
-    scenario.maxSteps = config['maxSteps']
-    scenario.timestep = config['timestep']
-    scenario.weather = config['weather']
-    scenario.map_path = config['map_path']
-    scenario.map_name = config['map_name']
-    scenario.intersection_uid = config['intersection_uid']
-    scenario.rules_path = config['rules_path']
-    scenario.blueprints = {car: config[car]
-                           ['blueprint'] for car in config['cars']}
-    scenario.car_sizes = {}
-    scenario.maneuver_uid = {
-        car: config[car]['maneuver_uid'] for car in config['cars']}
-    scenario.events = {}
-    scenario.curves = {}
-    scenario.sim_trajectories = {}
-
-    return extend(scenario, config)
+    return scenario_new

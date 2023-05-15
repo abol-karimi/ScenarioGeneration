@@ -7,6 +7,7 @@
 
 3way, T, stop on minor:
   Town05, intersection224 (simple enough for a working example)
+    intersection359 (Carla 0.9.13)
   Town05, intersection1162 (mixed with other side of the road)
 
 3way, T, stop on minor and one of the majors:
@@ -34,5 +35,6 @@
   Town04, intersection1452
 
   Town05, intersection245 (four lanes per road)
+    intersection396 (Carla 0.9.13)
   Town05, intersection334 (four lanes per road)
   Town05, intersection685 (four lanes per three roads, two lanes for the other road)

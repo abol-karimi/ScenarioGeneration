@@ -41,7 +41,7 @@ config['timestep'] = 0.05
 config['weather'] = 'CloudySunset'
 config['map_path'] = './maps/Town05.xodr'
 config['map_name'] = 'Town05'
-config['intersection_uid'] = 'intersection224'
+config['intersection_uid'] = 'intersection359'
 config['rules_path'] = '3way-T_stopOnMinor.lp'
 config['constraints'] = [f'lessThan(T1, T2) :- arrivedAtForkAtTime(car1, F, T1), arrivedAtForkAtTime(car2, F, T2)',
                          f'lessThan(T1, T2) :- arrivedAtForkAtTime(car2, F, T1), arrivedAtForkAtTime(car3, F, T2)',

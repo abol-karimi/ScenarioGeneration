@@ -1,28 +1,27 @@
 """ Scenario Description
-Ego-vehicle driven by Carla's autopilot.
-All nonegos' behaviors are predetermined.
+Ego-vehicle arrives at an intersection.
 """
 param map = localPath('./maps/Town05.xodr')  # or other CARLA map that definitely works
 param carla_map = 'Town05'
 model scenic.simulators.carla.model
 
-# Python imports
-import time
-import visualization
-from rss_sensor import RssSensor
-import carla
-from signals import SignalType
-from utils import sample_route
-from agents.navigation.behavior_agent import BehaviorAgent
-from scenic.simulators.carla.utils.utils import scenicToCarlaLocation
+param config = None
+config = globalParameters.config
 
-behavior AnimateBehavior():
-	lights = self.signal.to_vehicleLightState()
-	#take SetVehicleLightStateAction(lights)
-	carla_world = simulation().world
-	for pose in self.route_sample:
-		take SetTransformAction(pose.position, pose.heading)
-		visualization.label_car(carla_world, self)
+param seed = None
+seed = globalParameters.seed
+
+param event_monitor = None
+event_monitor = globalParameters.event_monitor
+
+intersection = network.elements[config['intersection_uid']]
+sample_size = int(config['maxSteps'])+1
+
+# Python imports
+import visualization
+from signals import SignalType
+from scenic.core.vectors import PiecewiseVectorField
+from utils import sample_spline
 
 behavior CarlaBehaviorAgent():
 	take SetVehicleLightStateAction(signal.to_vehicleLightState())
@@ -49,33 +48,39 @@ behavior CarlaBehaviorAgent():
 		wait
 		agent.update_information()
 
-cars = []
-for route, spline, signal in zip(seed.routes, seed.curves, seed.signals):
-	lanes = [network.elements[l_id] for l_id in route.lanes]
-	route_sample = sample_route(lanes, spline, sample_size)
-	d0 = int(spline.ctrlpts[0][1])
-	p0 = route_sample[0]
-	car = Car at p0,
-	  with name '_'.join(route.lanes + [str(d0)]),
-		with color Color(0, 0, 1),
-		with behavior AnimateBehavior(),
-		with physics False,
-		with allowCollisions True,
-		with route_sample route_sample,
-		with signal signal
-	cars.append(car)
+behavior ReplayBehavior():
+	carla_world = simulation().world
+	while True:
+		p0 = self.lanes[0].centerline[0]
+		t = simulation().currentTime
+		d = self.curve_sampled[t]
+		pose = OrientedPoint following PiecewiseVectorField(name=self.route, regions=self.lanes) from p0 for d0
+		take SetTransformAction(pose.position, pose.heading)
 
-ego = Car at p0,
-	  with name 'ego',
+		visualization.label_car(carla_world, self)
+
+route = config['ego_route']
+lanes = [network.elements[l_id] for l_id in route]
+p0 = lanes[0].centerline[1]
+d0 = config['ego_distance']
+ego = Car following PiecewiseVectorField(route, lanes) from p0 for d0,
+		with name 'ego',
 		with color Color(0, 1, 0),
 		with behavior CarlaBehaviorAgent(),
-		with physics True,
-		with allowCollisions True,
-		with route_sample route_sample,
-		with signal signal
-cars.append(ego)
+		with physics True
 
-
+for route, curve in zip(seed.routes, seed.curves):
+	d0 = curve.ctrlpts[0].d
+	lanes = [network.elements[l_id] for l_id in route]
+	p0 = lanes[0].centerline[1]
+	route_id = str(route)
+	car = Car following PiecewiseVectorField(route_id, lanes) from p0 for d0,
+		with color Color(0, 0, 1),
+		with behavior ReplayBehavior(),
+		with physics False,
+		with route route,
+		with curve_sampled sample_spline(curve.ctrlpts, sample_size),
+		with lanes lanes
 
 monitor showIntersection:
 	carla_world = simulation().world
