@@ -33,15 +33,14 @@ RUN python3 -m pip install --upgrade pip ; \
   . .venv/bin/activate ; \
   python -m pip install --upgrade pip
 
-# Set up Carla
-RUN . ~/.venv/bin/activate ; \
-  python -m pip install carla==0.9.13
-
 # Binary version of Z3 to be used by PySMT
 WORKDIR /home/carla
 COPY --chown=carla:carla z3-4.8.10-x64-ubuntu-18.04 /home/carla/z3-4.8.10-x64-ubuntu-18.04
 RUN  echo "\n" >> .bashrc ; \
   echo 'export PATH=$HOME/z3-4.8.10-x64-ubuntu-18.04/bin:$PATH' >> .bashrc
+
+# Carla RSS python module
+COPY --chown=carla:carla PythonAPI /home/carla/PythonAPI
 
 # Entrypoint script
 COPY --chown=carla:carla entrypoint.sh /home/carla/entrypoint.sh
