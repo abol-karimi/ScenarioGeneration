@@ -6,6 +6,15 @@ param map = localPath('./maps/Town05.xodr')  # or other CARLA map that definitel
 param carla_map = 'Town05'
 model scenic.simulators.carla.model
 
+param config = None
+config = globalParameters.config
+
+param seed = None
+seed = globalParameters.seed
+
+intersection = network.elements[config['intersection_uid']]
+sample_size = int(config['maxSteps'])+1
+
 # Python imports
 import time
 import visualization
@@ -27,19 +36,20 @@ behavior AnimateBehavior():
 behavior CarlaBehaviorAgent():
 	take SetVehicleLightStateAction(signal.to_vehicleLightState())
 	take SetAutopilotAction(True)
-	agent = BehaviorAgent(self.carlaActor, behavior=aggressiveness)
+	agent = BehaviorAgent(self.carlaActor, behavior=config['aggressiveness'])
 	carla_world = simulation().world
-	src = scenicToCarlaLocation(trajectory[self.name][0][0], world=carla_world)
-	dest = scenicToCarlaLocation(trajectory[self.name][-1][0], world=carla_world)
-	agent.set_destination(src, dest, clean=True)
+	src = scenicToCarlaLocation(self.position, world=carla_world)
+	dest = scenicToCarlaLocation(self.destination, world=carla_world)
+	agent.set_destination(dest, src)
+	rss_enabled = config['rss_enabled']
 	if rss_enabled:
 		transforms = [pair[0].transform for pair in agent._local_planner.waypoints_queue]
 		rss_sensor = RssSensor(self.carlaActor, carla_world, None, None, None, routing_targets=transforms)
 		restrictor = carla.RssRestrictor()
 		vehicle_physics = self.carlaActor.get_physics_control()
-	agent.update_information()
-	while agent.incoming_waypoint:
+	while not agent.done():
 		control = agent.run_step()
+		control.manual_gear_shift = False
 		if rss_enabled:
 			rss_proper_response = rss_sensor.proper_response if rss_sensor.response_valid else None
 			if rss_proper_response:
@@ -47,7 +57,6 @@ behavior CarlaBehaviorAgent():
 						control, rss_proper_response, rss_sensor.ego_dynamics_on_route, vehicle_physics)
 		self.carlaActor.apply_control(control)
 		wait
-		agent.update_information()
 
 cars = []
 for route, spline, signal in zip(seed.routes, seed.curves, seed.signals):
@@ -65,14 +74,15 @@ for route, spline, signal in zip(seed.routes, seed.curves, seed.signals):
 		with signal signal
 	cars.append(car)
 
-ego = Car at p0,
+ego_lane = network.elements[config['ego_route'][0]]
+ego = Car following roadDirection from ego_lane.centerline[-1] for -15,
 	  with name 'ego',
 		with color Color(0, 1, 0),
 		with behavior CarlaBehaviorAgent(),
 		with physics True,
 		with allowCollisions True,
-		with route_sample route_sample,
-		with signal signal
+		with signal signal,
+		with destination (Point on network.elements[config['ego_route'][1]])
 cars.append(ego)
 
 

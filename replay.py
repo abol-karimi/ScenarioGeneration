@@ -1,10 +1,7 @@
 #!/usr/bin/env python3.8
-from generator import car_to_time_to_events
 from scenic.domains.driving.roads import Network
-from solver import ASPSolver
 import argparse
 import scenic
-from generator import geometry_atoms
 
 # This project
 import seed_corpus
