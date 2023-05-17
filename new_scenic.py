@@ -6,8 +6,6 @@ import argparse
 import pickle
 import jsonpickle
 import numpy as np
-from geomdl import BSpline, fitting
-import geomdl
 
 # Scenic modules
 import scenic
@@ -16,7 +14,7 @@ from scenic.simulators.newtonian import NewtonianSimulator
 
 # My modules
 import seed_corpus
-from utils import car_to_distances
+from utils import spacetime_trajectories, spline_approximation
 
 #----------Main Script----------
 parser = argparse.ArgumentParser(description='Make a seed from a scenic scenario.')
@@ -46,27 +44,10 @@ sim_result = simulator.simulate(
 # Convert the result to a seed
 routes = sim_result.records['routes']
 signals = sim_result.records['turn_signals']
-init_distances = sim_result.records['init_distances']
-car2distances = car_to_distances(sim_result, init_distances)
 timestep = scene.params['timestep']
-ts = np.arange(0, timestep*(args.maxSteps+1), timestep).tolist()
-curves = []
-degree = args.spline_degree
-knotvector = [ts[0] for i in range(degree)] \
-              + list(np.linspace(ts[0], ts[-1], num=len(ts)-degree+1)) \
-              + [ts[-1] for i in range(degree)]
-for ds in car2distances:
-  points = [(t,d) for t,d in zip(ts, ds)]
-  approx = fitting.approximate_curve(points, 
-                                    degree, 
-                                    ctrlpts_size=args.ctrlpts_size)
-  curve = geomdl.BSpline.Curve(normalize_kv=False)
-  curve.degree = approx.degree
-  curve.ctrlpts = approx.ctrlpts
-  T = timestep*args.maxSteps
-  curve.knotvector = [k*T for k in approx.knotvector]
-  curves.append(curve)
-  
+spacetime_trajs = spacetime_trajectories(sim_result, timestep)
+curves = [spline_approximation(traj, args.spline_degree, args.ctrlpts_size) 
+          for traj in spacetime_trajs]
 seed = seed_corpus.Seed(routes=routes, curves=curves, signals=signals)
 corpus = seed_corpus.SeedCorpus([seed])
 corpus.save(args.corpus_file)

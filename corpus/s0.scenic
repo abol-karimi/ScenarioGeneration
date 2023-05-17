@@ -23,8 +23,10 @@ route_right = seed_corpus.Route(lanes=['road8_lane1', 'road415_lane1', 'road9_la
 turn_signals = [SignalType.OFF, SignalType.OFF]
 
 behavior StopBehavior():
-	while True:
-		take SetBrakeAction(1.0)
+  while True:
+    take SetThrottleAction(0)
+    take SetBrakeAction(1)
+    take SetHandBrakeAction(True)
 
 behavior PassBehavior(speed, trajectory):
 	arrived = False
@@ -34,7 +36,7 @@ behavior PassBehavior(speed, trajectory):
 		arrived = True
 		do StopBehavior() for 5 seconds
 
-p0_dist = 10
+p0_dist = 15
 trajectory = [network.elements[l] for l in route_left.lanes]
 p0 = trajectory[0].centerline.pointAlongBy(p0_dist)
 car_left = Car at p0, facing roadDirection,
@@ -42,7 +44,7 @@ car_left = Car at p0, facing roadDirection,
   with physics True,
   with allowCollisions False,
   with signal turn_signals[0],
-  with behavior PassBehavior(3, trajectory)
+  with behavior PassBehavior(4, trajectory)
 
 p1_dist = 10
 trajectory = [network.elements[l] for l in route_right.lanes]
@@ -52,11 +54,10 @@ car_right = Car at p1, facing roadDirection,
   with physics True,
   with allowCollisions False,
   with signal turn_signals[1],
-  with behavior PassBehavior(3, trajectory)
+  with behavior PassBehavior(4, trajectory)
 
 ego = car_left
 
 #--- Output parameters
 record initial [route_left, route_right] as routes
 record initial turn_signals as turn_signals
-record initial [p0_dist, p1_dist] as init_distances

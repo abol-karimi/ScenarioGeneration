@@ -1,9 +1,11 @@
-from geomdl import BSpline
+import geomdl
+from geomdl import fitting, operations
 import numpy as np
-import math
 from scenic.simulators.carla.utils.utils import scenicToCarlaLocation
-from scenic.core.object_types import Point
+from scenic.core.object_types import OrientedPoint
+from scenic.core.vectors import Vector
 from scenic.core.regions import RectangularRegion
+from scenic.core.geometry import headingOfSegment
 from visualization import draw_rect
 try:
     from PIL import Image, ImageDraw, ImageFont
@@ -178,7 +180,6 @@ def spline_to_traj(degree, ctrlpts, knotvector, sample_size, sim_traj):
 def sample_route(lanes, spline, sample_size):
     from scenic.domains.driving.roads import LinearElement
     from scenic.core.regions import PolygonalRegion, PolylineRegion
-    from scenic.core.object_types import OrientedPoint
     d0 = spline.ctrlpts[0][1]
     route = LinearElement(
         id=f'route_{lanes}_{d0}',
@@ -326,3 +327,41 @@ def geometry_atoms(network, intersection_uid):
         geometry += [f'hasStopSign({lane.uid})' for lane in incomings]
             
     return geometry
+
+def spacetime_trajectories(sim_result, timestep):
+    cars_num = len(sim_result.trajectory[0])
+    spacetime_trajs = [[] for i in range(cars_num)]
+    for i, sim_state in enumerate(sim_result.trajectory):
+        time = i * timestep
+        for j, car_state in enumerate(sim_state):
+            x = car_state[0]
+            y = car_state[1]
+            spacetime_trajs[j].append((x, y, time))
+    return spacetime_trajs
+
+def spline_approximation(spacetime_traj, degree, ctrlpts_size):
+    # The approximation will normalize the parameter range to [0,1]
+    approx = geomdl.fitting.approximate_curve(spacetime_traj,
+                                        degree, 
+                                        ctrlpts_size=ctrlpts_size)
+    # Rescale the parameter range to the time range
+    curve = geomdl.BSpline.Curve(normalize_kv=False)
+    curve.degree = approx.degree
+    curve.ctrlpts = approx.ctrlpts
+    T = spacetime_traj[-1][2]
+    curve.knotvector = [k*T for k in approx.knotvector]
+
+    return curve
+
+def sample_trajectory(spline, sample_size):
+    ts = list(np.linspace(spline.evalpts[0][2], 
+                          spline.evalpts[-1][2], 
+                          num=sample_size))
+    sample = geomdl.operations.tangent(spline, ts)
+    traj = []
+    for s in sample:
+        p = Vector(s[0][0], s[0][1])
+        h = headingOfSegment((0, 0), (s[1][0], s[1][1]))
+        traj.append(OrientedPoint(position=p, heading=h))
+
+    return traj
