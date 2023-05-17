@@ -2,6 +2,7 @@
 import matplotlib.pyplot as plt
 import argparse
 from mscatter import mscatter
+from geomdl import operations
 
 # This project
 import seed_corpus
@@ -12,10 +13,12 @@ parser.add_argument('seed', type=int, help='seed number to replay')
 parser.add_argument('--resolution', type=int, default=701, help='Discretization resolution')
 args = parser.parse_args()
 
+# Load the seed
 corpus = seed_corpus.SeedCorpus([])
 corpus.load(args.corpus)
 seed = corpus.seeds[args.seed]
 
+# Sample the t-d curves
 curves = seed.curves
 frame2distance = []
 for curve in curves:
@@ -34,4 +37,4 @@ for j, curve in enumerate(curves):
     t = [p[0] for p in points]
     d = [p[1] for p in points]
     mscatter(t, d, c='r', s=10, m='d', ax=axs[j])
-plt.savefig('trajectory.png')
+plt.savefig('plot_t-d.png')

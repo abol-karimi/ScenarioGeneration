@@ -43,8 +43,10 @@ behavior CarlaBehaviorAgent():
 	agent.set_destination(dest, src)
 	rss_enabled = config['rss_enabled']
 	if rss_enabled:
-		transforms = [pair[0].transform for pair in agent._local_planner.waypoints_queue]
-		rss_sensor = RssSensor(self.carlaActor, carla_world, None, None, None, routing_targets=transforms)
+		transforms = [pair[0].transform for pair in agent._local_planner._waypoints_queue]
+		rss_sensor = RssSensor(self.carlaActor, carla_world, 
+														None, None, None,
+														routing_targets=transforms)
 		restrictor = carla.RssRestrictor()
 		vehicle_physics = self.carlaActor.get_physics_control()
 	while not agent.done():

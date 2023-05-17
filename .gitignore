@@ -3,6 +3,7 @@ __pycache__
 *.snet
 *.sc
 *.jpg
+*.png
 *.log
 
 Docker/Carla
