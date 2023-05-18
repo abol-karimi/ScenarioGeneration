@@ -61,7 +61,7 @@ behavior CarlaBehaviorAgent():
 		wait
 
 cars = []
-for route, spline, signal in zip(seed.routes, seed.curves, seed.signals):
+for route, spline, signal in zip(seed.routes, seed.trajectories, seed.signals):
 	lanes = [network.elements[l_id] for l_id in route.lanes]
 	traj_sample = sample_trajectory(spline, sample_size)
 	p0 = traj_sample[0]

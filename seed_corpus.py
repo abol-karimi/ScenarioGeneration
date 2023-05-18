@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 from collections import namedtuple
 from geomdl import BSpline
 import jsonpickle
@@ -15,13 +15,13 @@ class Route:
 @dataclass
 class Seed:
   routes: List[Route] = None
-  curves: List = None
+  trajectories: List = None
   signals: List[SignalType] = None
   
   def is_valid(self):
     """Check some necessary (but not sufficient) conditions.
     """
-    if len(self.routes) != len(self.curves):
+    if len(self.routes) != len(self.trajectories):
       return False
     if len(self.routes) != len(self.signals):
       return False
@@ -43,7 +43,7 @@ class SeedCorpus:
       curves_data = [{'degree':c.degree,
                       'ctrlpts': c.ctrlpts,
                       'knotvector':[float(r) for r in c.knotvector]}
-                  for c in seed.curves]
+                  for c in seed.trajectories]
       signals = [s.name for s in seed.signals]
       seed_data = {'routes':routes, 'curves_data':curves_data, 'signals':signals}
       seeds_data.append(seed_data)
@@ -66,7 +66,7 @@ class SeedCorpus:
         curve.knotvector = curve_data['knotvector']
         curves.append(curve)
       seed = Seed(routes=seed_data['routes'],
-                  curves=curves,
+                  trajectories=curves,
                   signals=[SignalType[s] for s in seed_data['signals']])
       self.seeds.append(seed)
 

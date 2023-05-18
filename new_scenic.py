@@ -1,11 +1,7 @@
 #!/usr/bin/env python3.8
 
 # Standard libraries
-import importlib
 import argparse
-import pickle
-import jsonpickle
-import numpy as np
 
 # Scenic modules
 import scenic
@@ -46,8 +42,8 @@ routes = sim_result.records['routes']
 signals = sim_result.records['turn_signals']
 timestep = scene.params['timestep']
 spacetime_trajs = spacetime_trajectories(sim_result, timestep)
-curves = [spline_approximation(traj, args.spline_degree, args.ctrlpts_size) 
+trajectories = [spline_approximation(traj, args.spline_degree, args.ctrlpts_size) 
           for traj in spacetime_trajs]
-seed = seed_corpus.Seed(routes=routes, curves=curves, signals=signals)
+seed = seed_corpus.Seed(routes=routes, trajectories=trajectories, signals=signals)
 corpus = seed_corpus.SeedCorpus([seed])
 corpus.save(args.corpus_file)
