@@ -76,7 +76,7 @@ for route, spline, signal in zip(seed.routes, seed.curves, seed.signals):
 	cars.append(car)
 
 ego_lane = network.elements[config['ego_route'][0]]
-ego = Car following roadDirection from ego_lane.centerline[-1] for -15,
+ego = Car following roadDirection from ego_lane.centerline[-1] for -40,
 	  with name 'ego',
 		with color Color(0, 1, 0),
 		with behavior CarlaBehaviorAgent(),
@@ -91,4 +91,5 @@ cars.append(ego)
 monitor showIntersection:
 	carla_world = simulation().world
 	visualization.draw_intersection(carla_world, intersection, draw_lanes=True)
+	visualization.set_camera(carla_world, intersection, height=50)
 	wait

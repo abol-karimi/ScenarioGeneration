@@ -26,15 +26,18 @@ behavior StopBehavior():
   while True:
     take SetThrottleAction(0)
     take SetBrakeAction(1)
-    take SetHandBrakeAction(True)
 
 behavior PassBehavior(speed, trajectory):
-	arrived = False
-	try:
-		do FollowTrajectoryBehavior(speed, trajectory)
-	interrupt when (not arrived) and (distance from self to trajectory[1]) <= arrival_distance:
-		arrived = True
-		do StopBehavior() for 5 seconds
+  arrived = False
+  do FollowTrajectoryBehavior(speed, trajectory)
+  # try:
+  #   do FollowTrajectoryBehavior(speed, trajectory)
+  # interrupt when (not arrived) and (distance from self to trajectory[1]) <= arrival_distance:
+  #   arrived = True
+  #   do StopBehavior() for 5 seconds
+  # interrupt when (distance from self to trajectory[1]) <= .5:
+  #   take SetBrakeAction(0)
+  #   take SetHandBrakeAction(False)
 
 p0_dist = 15
 trajectory = [network.elements[l] for l in route_left.lanes]

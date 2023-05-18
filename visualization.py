@@ -56,17 +56,16 @@ def draw_intersection(world, intersection, draw_lanes=False, arrival_distance=4,
         world.debug.draw_line(
             loc_l, loc_r, thickness=0.1, life_time=1000)
 
-    # Bird-eye view of the intersection
-    centroid = polygon.centroid  # a Shapely point
-    loc = carla.Location(centroid.x, -centroid.y, 30)
-    rot = carla.Rotation(pitch=-90)
-    world.get_spectator().set_transform(carla.Transform(loc, rot))
-
     if draw_lanes:
         for m in intersection.maneuvers:
             l = m.connectingLane
             draw_lane(world, l, height=height)
 
+def set_camera(world, intersection, height=30):
+    centroid = intersection.polygon.centroid  # a Shapely point
+    loc = carla.Location(centroid.x, -centroid.y, height)
+    rot = carla.Rotation(pitch=-90)
+    world.get_spectator().set_transform(carla.Transform(loc, rot))
 
 def label_car(world, car):
     loc = carla.Location(car.position.x, -car.position.y, 1.5)
