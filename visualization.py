@@ -79,10 +79,24 @@ def draw_trajectories(world, sim_trajectory):
             loc = carla.Location(position.x, -position.y, 0.1)
             world.debug.draw_point(loc)
 
+def draw_point_3d(world, point, height, size=0.1, color=carla.Color(255, 0, 0), lifetime=-1.0):
+        loc = carla.Location(point.x, -point.y, height)
+        world.debug.draw_point(loc, size, color, lifetime)
+
 def draw_points(world, points):
     for p in points:
         loc = carla.Location(p.x, -p.y, 0.2)
-        world.debug.draw_point(loc)        
+        world.debug.draw_point(loc)
+
+def draw_points_3d(world, points):
+    for p in points:
+        if p is list:
+            x, y, z = p[0], -p[1], p[2]
+        else:
+            x, y, z = p[0], -p[1], p[2]
+        loc = carla.Location(p[0], -p[1], p[2])
+        world.debug.draw_point(loc)
+
 
 def draw_rect(world, rect, height=0.1):
     corners = [carla.Location(p.x, -p.y, height) for p in rect.corners]

@@ -2,6 +2,7 @@
 
 # Standard libraries
 import argparse
+import pickle
 
 # Scenic modules
 import scenic
@@ -43,6 +44,11 @@ routes = sim_result.records['routes']
 signals = sim_result.records['turn_signals']
 timestep = scene.params['timestep']
 spacetime_trajs = spacetime_trajectories(sim_result, timestep)
+
+#debug
+with open('spacetime_trajectories.pickle', 'wb') as outFile:
+    pickle.dump(spacetime_trajs, outFile)
+
 trajectories = [spline_approximation(traj, args.spline_degree, args.ctrlpts_size) 
           for traj in spacetime_trajs]
 seed = seed_corpus.Seed(routes=routes, trajectories=trajectories, signals=signals)

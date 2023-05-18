@@ -19,6 +19,8 @@ import visualization
 from signals import SignalType
 from utils import sample_trajectory
 import time
+import pickle
+import carla
 
 behavior AnimateBehavior():
 	lights = self.signal.to_vehicleLightState()
@@ -48,4 +50,19 @@ monitor showIntersection:
 	carla_world = simulation().world
 	visualization.draw_intersection(carla_world, intersection, draw_lanes=True)
 	visualization.set_camera(carla_world, intersection, height=50)
+
+	#debug
+	with open('spacetime_trajectories.pickle', 'rb') as inFile:
+		spacetime_trajectories = pickle.load(inFile)
+	
+	#--- Draw the simulated trajectories
+	for tj in spacetime_trajectories:
+		visualization.draw_points_3d(carla_world, tj)
+	
+	#--- Draw the spline approximation of the trajectories
+	for car in cars:
+		tj = car.traj_sample
+		for i, p in enumerate(tj):
+			visualization.draw_point_3d(carla_world, p, i*config['timestep'], 0.1, carla.Color(0, 0, 255))
+
 	wait
