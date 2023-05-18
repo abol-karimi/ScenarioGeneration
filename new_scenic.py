@@ -16,6 +16,7 @@ from utils import spacetime_trajectories, spline_approximation
 parser = argparse.ArgumentParser(description='Make a seed from a scenic scenario.')
 parser.add_argument('scenic_file', help='Scenic file specifying the scenario')
 parser.add_argument('corpus_file', help='Seed corpus to save the generated seed in')
+parser.add_argument('--append', action='store_true', help='add the new seed to the corpus')
 parser.add_argument('--maxSteps', default=700, type=int)
 parser.add_argument('--weather', default = 'CloudySunset')
 parser.add_argument('--map_path', default = './maps/Town05.xodr')
@@ -45,5 +46,9 @@ spacetime_trajs = spacetime_trajectories(sim_result, timestep)
 trajectories = [spline_approximation(traj, args.spline_degree, args.ctrlpts_size) 
           for traj in spacetime_trajs]
 seed = seed_corpus.Seed(routes=routes, trajectories=trajectories, signals=signals)
-corpus = seed_corpus.SeedCorpus([seed])
+# Store the corpus
+corpus = seed_corpus.SeedCorpus()
+if args.append:
+    corpus.load(args.corpus_file)
+corpus.add(seed)
 corpus.save(args.corpus_file)

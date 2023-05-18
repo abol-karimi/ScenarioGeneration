@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Optional
 from collections import namedtuple
 from geomdl import BSpline
@@ -33,7 +33,7 @@ class Seed:
 
 @dataclass
 class SeedCorpus:
-  seeds : List[Seed] = None
+  seeds : List[Seed] = field(default_factory=list)
 
   def save(self, filename):
     """"Save the corpus to a json file."""
