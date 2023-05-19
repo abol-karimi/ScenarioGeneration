@@ -340,28 +340,13 @@ def spacetime_trajectories(sim_result, timestep):
             spacetime_trajs[j].append((x, y, time))
     return spacetime_trajs
 
-def spline_approximation(spacetime_traj, degree, ctrlpts_size):
-    # The approximation will normalize the parameter range to [0,1]
-    approx = geomdl.fitting.approximate_curve(spacetime_traj,
-                                        degree, 
-                                        ctrlpts_size=ctrlpts_size)
-    # Rescale the parameter range to the time range
-    curve = geomdl.BSpline.Curve(normalize_kv=False)
-    curve.degree = approx.degree
-    curve.ctrlpts = approx.ctrlpts
-    T = spacetime_traj[-1][2]
-    curve.knotvector = [k*T for k in approx.knotvector]
-
-    return curve
-
-def spline_approximation_scipy(spacetime_traj, degree=3, knots_size=20):
+def spline_approximation(spacetime_traj, degree=3, knots_size=20):
     x = [p[0] for p in spacetime_traj]
     y = [p[1] for p in spacetime_traj]
     z = [p[2] for p in spacetime_traj]
     dx = np.diff(x, n=1, append=x[-1])
     dy = np.diff(y, n=1, append=y[-1])
     w = 1/(abs(dx)+abs(dy)+.01)
-    print(w)
     tck, u = scipy.interpolate.splprep([x, y, z], 
                                        w=w,
                                        u=z, 
@@ -377,7 +362,6 @@ def spline_approximation_scipy(spacetime_traj, degree=3, knots_size=20):
     curve.knotvector = tck[0]
 
     return curve
-
 
 def sample_trajectory(spline, sample_size):
     ts = list(np.linspace(spline.evalpts[0][2], 

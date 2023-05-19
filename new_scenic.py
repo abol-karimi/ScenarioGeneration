@@ -11,7 +11,7 @@ from scenic.simulators.newtonian import NewtonianSimulator
 
 # My modules
 import seed_corpus
-from utils import spacetime_trajectories, spline_approximation_scipy, spline_approximation
+from utils import spacetime_trajectories, spline_approximation
 
 #----------Main Script----------
 parser = argparse.ArgumentParser(description='Make a seed from a scenic scenario.')
@@ -49,9 +49,7 @@ spacetime_trajs = spacetime_trajectories(sim_result, timestep)
 with open('spacetime_trajectories.pickle', 'wb') as outFile:
     pickle.dump(spacetime_trajs, outFile)
 
-# trajectories = [spline_approximation(traj, args.spline_degree, args.parameters_size) 
-#           for traj in spacetime_trajs]
-trajectories = [spline_approximation_scipy(traj,
+trajectories = [spline_approximation(traj,
                                      degree=args.spline_degree,
                                      knots_size=args.parameters_size)
           for traj in spacetime_trajs]
