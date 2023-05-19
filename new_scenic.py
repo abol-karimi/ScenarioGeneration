@@ -11,7 +11,7 @@ from scenic.simulators.newtonian import NewtonianSimulator
 
 # My modules
 import seed_corpus
-from utils import spacetime_trajectories, spline_approximation
+from utils import spacetime_trajectories, spline_approximation_scipy, spline_approximation
 
 #----------Main Script----------
 parser = argparse.ArgumentParser(description='Make a seed from a scenic scenario.')
@@ -23,7 +23,7 @@ parser.add_argument('--weather', default = 'CloudySunset')
 parser.add_argument('--map_path', default = './maps/Town05.xodr')
 parser.add_argument('--map_name', default = 'Town05')
 parser.add_argument('--spline_degree', default = 3, type=int)
-parser.add_argument('--ctrlpts_size', default = 10, type=int)
+parser.add_argument('--parameters_size', default = 50, type=int)
 args = parser.parse_args()
 
 # Run the scenario
@@ -49,7 +49,11 @@ spacetime_trajs = spacetime_trajectories(sim_result, timestep)
 with open('spacetime_trajectories.pickle', 'wb') as outFile:
     pickle.dump(spacetime_trajs, outFile)
 
-trajectories = [spline_approximation(traj, args.spline_degree, args.ctrlpts_size) 
+# trajectories = [spline_approximation(traj, args.spline_degree, args.parameters_size) 
+#           for traj in spacetime_trajs]
+trajectories = [spline_approximation_scipy(traj,
+                                     degree=args.spline_degree,
+                                     knots_size=args.parameters_size)
           for traj in spacetime_trajs]
 seed = seed_corpus.Seed(routes=routes, trajectories=trajectories, signals=signals)
 # Store the corpus

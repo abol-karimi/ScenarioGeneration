@@ -1,12 +1,13 @@
 import geomdl
 from geomdl import fitting, operations
 import numpy as np
+import scipy
+
 from scenic.simulators.carla.utils.utils import scenicToCarlaLocation
 from scenic.core.object_types import OrientedPoint
 from scenic.core.vectors import Vector
 from scenic.core.regions import RectangularRegion
 from scenic.core.geometry import headingOfSegment
-from visualization import draw_rect
 try:
     from PIL import Image, ImageDraw, ImageFont
 except ImportError:
@@ -352,6 +353,31 @@ def spline_approximation(spacetime_traj, degree, ctrlpts_size):
     curve.knotvector = [k*T for k in approx.knotvector]
 
     return curve
+
+def spline_approximation_scipy(spacetime_traj, degree=3, knots_size=20):
+    x = [p[0] for p in spacetime_traj]
+    y = [p[1] for p in spacetime_traj]
+    z = [p[2] for p in spacetime_traj]
+    dx = np.diff(x, n=1, append=x[-1])
+    dy = np.diff(y, n=1, append=y[-1])
+    w = 1/(abs(dx)+abs(dy)+.01)
+    print(w)
+    tck, u = scipy.interpolate.splprep([x, y, z], 
+                                       w=w,
+                                       u=z, 
+                                       k=degree, 
+                                       task=-1, 
+                                       t=np.linspace(z[0], z[-1], knots_size))
+    
+    # Convert to geomdl BSpline
+    curve = geomdl.BSpline.Curve(normalize_kv=False)
+    curve.degree = degree
+    curve.ctrlpts = [[x,y,z] for x,y,z in zip(tck[1][0], tck[1][1], tck[1][2])]
+    T = spacetime_traj[-1][2]
+    curve.knotvector = tck[0]
+
+    return curve
+
 
 def sample_trajectory(spline, sample_size):
     ts = list(np.linspace(spline.evalpts[0][2], 

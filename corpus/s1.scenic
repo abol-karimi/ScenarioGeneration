@@ -22,10 +22,16 @@ route_left = seed_corpus.Route(lanes=['road44_lane1', 'road552_lane1', 'road45_l
 route_right = seed_corpus.Route(lanes=['road8_lane1', 'road415_lane1', 'road9_lane1'])
 turn_signals = [SignalType.OFF, SignalType.OFF]
 
-behavior PassBehavior(speed, trajectory):
-  do FollowTrajectoryBehavior(speed, trajectory) until (distance from self to trajectory[1]) <= arrival_distance
+behavior StopBehavior():
   take SetThrottleAction(0)
   take SetBrakeAction(1)
+  while True:
+    wait
+
+behavior PassBehavior(speed, trajectory):
+  do FollowTrajectoryBehavior(speed, trajectory) until (distance from (front of self) to trajectory[1]) <= arrival_distance
+  do StopBehavior() until self.speed <= 0.1
+  do FollowTrajectoryBehavior(speed, trajectory)
 
 p0_dist = 15
 trajectory = [network.elements[l] for l in route_left.lanes]
