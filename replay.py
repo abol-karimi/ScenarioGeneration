@@ -9,7 +9,9 @@ import seed_corpus
 parser = argparse.ArgumentParser(description='play the given scenario.')
 parser.add_argument('corpus', help='filename of the corpus of seeds')
 parser.add_argument('seed', type=int, help='seed number to replay')
-parser.add_argument('--timestep', type=float, default=0.05, help='length of each simulation step, controls replay speed.')
+parser.add_argument('--timestep', type=float, 
+                    default=0.05, 
+                    help='length of each simulation step, controls replay speed.')
 duration = parser.add_mutually_exclusive_group()
 duration.add_argument('--steps', type=int, help='max number of steps to replay')
 duration.add_argument('--seconds', type=float, help='max seconds to replay')

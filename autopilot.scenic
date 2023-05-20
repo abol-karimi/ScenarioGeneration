@@ -13,7 +13,7 @@ param seed = None
 seed = globalParameters.seed
 
 intersection = network.elements[config['intersection_uid']]
-sample_size = int(config['maxSteps'])+1
+sample_size = int(config['steps'])+1
 
 # Python imports
 import time
@@ -63,7 +63,10 @@ behavior CarlaBehaviorAgent():
 cars = []
 for route, spline, signal in zip(seed.routes, seed.trajectories, seed.signals):
 	lanes = [network.elements[l_id] for l_id in route.lanes]
-	traj_sample = sample_trajectory(spline, sample_size)
+	traj_sample = sample_trajectory(spline, 
+																	int(config['steps'])+1,
+																	0, 
+																	config['timestep']*config['steps'])
 	p0 = traj_sample[0]
 	car = Car at p0,
 	  with name '_'.join(route.lanes + [str(p0)]),
@@ -85,7 +88,6 @@ ego = Car following roadDirection from ego_lane.centerline[-1] for -40,
 		with signal signal,
 		with destination (Point on network.elements[config['ego_route'][1]])
 cars.append(ego)
-
 
 
 monitor showIntersection:
