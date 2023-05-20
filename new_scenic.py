@@ -18,7 +18,7 @@ parser = argparse.ArgumentParser(description='Make a seed from a scenic scenario
 parser.add_argument('scenic_file', help='Scenic file specifying the scenario')
 parser.add_argument('corpus_file', help='Seed corpus to save the generated seed in')
 parser.add_argument('--append', action='store_true', help='add the new seed to the corpus')
-parser.add_argument('--maxSteps', default=700, type=int)
+parser.add_argument('--maxSteps', default=400, type=int)
 parser.add_argument('--weather', default = 'CloudySunset')
 parser.add_argument('--map_path', default = './maps/Town05.xodr')
 parser.add_argument('--map_name', default = 'Town05')

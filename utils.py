@@ -363,10 +363,8 @@ def spline_approximation(spacetime_traj, degree=3, knots_size=20):
 
     return curve
 
-def sample_trajectory(spline, sample_size):
-    ts = list(np.linspace(spline.evalpts[0][2], 
-                          spline.evalpts[-1][2], 
-                          num=sample_size))
+def sample_trajectory(spline, sample_size, umin, umax):
+    ts = list(np.linspace(umin, umax, num=sample_size))
     sample = geomdl.operations.tangent(spline, ts)
     traj = []
     for s in sample:
