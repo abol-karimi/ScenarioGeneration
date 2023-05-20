@@ -22,23 +22,18 @@ import pickle
 import carla
 
 behavior AnimateBehavior():
-	lights = self.signal.to_vehicleLightState()
+	#lights = self.signal.to_vehicleLightState()
 	#take SetVehicleLightStateAction(lights)
-	carla_world = simulation().world
 	for pose in self.traj_sample:
 		take SetTransformAction(pose.position, pose.heading)
-		visualization.label_car(carla_world, self)
 
 cars = []
-for route, spline, signal in zip(seed.routes, seed.trajectories, seed.signals):
-	lanes = [network.elements[l_id] for l_id in route.lanes]
-	traj_sample = sample_trajectory(spline, 
+for spline, signal in zip(seed.trajectories, seed.signals):
+	traj_sample = sample_trajectory(spline,
 																	int(config['steps'])+1,
-																	0, 
+																	0,
 																	config['timestep']*config['steps'])
-	p0 = traj_sample[0]
-	car = Car at p0,
-	  with name '_'.join(route.lanes + [str(p0)]),
+	car = Car at traj_sample[0],
 		with color Color(0, 0, 1),
 		with behavior AnimateBehavior(),
 		with physics False,

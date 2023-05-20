@@ -35,12 +35,13 @@ corpus.load(args.corpus)
 seed = corpus.seeds[args.seed]
 
 # Default duration is the whole scenario:
-steps = seed.trajectories[0].ctrlpts[-1][2]//args.timestep
-# Restric the duration if requested:
+seconds = seed.trajectories[0].ctrlpts[-1][2]
+# Override with custom duration:
 if args.steps:
-    steps = min(steps, args.steps)
+    seconds = args.steps * args.timestep
 elif args.seconds:
-    steps = min(steps, args.seconds*args.timestep)
+    seconds = args.seconds
+steps = seconds // args.timestep
 
 config = {}
 config['steps'] = steps
