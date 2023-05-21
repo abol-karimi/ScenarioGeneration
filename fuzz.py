@@ -34,13 +34,17 @@ duration.add_argument('--maxSteps', type=int,
                       help='maximum allowed scenario duration in steps. Note that each scenario can have a different duration.')
 duration.add_argument('--maxSeconds', type=float, 
                       help='maximum allowed scenario duration in seconds. Note that each scenario can have a different duration.')
+parser.add_argument('--max_nonegos', type=int, default=5,
+                      help='maximum number of non-egos allowed')
 parser.add_argument('--ego',
                     help='simulate an ego together with the nonegos')
 parser.add_argument('--weather', default = 'CloudySunset')
 parser.add_argument('--map_path', default = './maps/Town05.xodr')
 parser.add_argument('--map_name', default = 'Town05')
-parser.add_argument('--spline_degree', default = 3, type=int)
-parser.add_argument('--max_parameters_size', default = 50, type=int)
+parser.add_argument('--spline_degree', default=3, type=int)
+parser.add_argument('--max_parameters_size', default=50, type=int)
+parser.add_argument('--max_mutations_per_iteration', default=4, type=int)
+parser.add_argument('--arrival_distance', default=4., type=float)
 args = parser.parse_args()
 
 # Default maximum:
@@ -61,10 +65,11 @@ config['map_path'] = './maps/Town05.xodr'
 config['map_name'] = 'Town05'
 config['intersection_uid'] = 'intersection396'
 config['rules_path'] = '4way-stopOnAll.lp'
-config['arrival_distance'] = 4
+config['arrival_distance'] = args.arrival_distance
 config['spline_degree'] = args.spline_degree
 config['max_parameters_size'] = args.max_parameters_size
-config['max_mutations_per_iteration'] = 4
+config['max_mutations_per_iteration'] = args.max_mutations_per_iteration
+config['max_nonegos'] = args.max_nonegos
 config['network'] = Network.fromFile(config['map_path'])
 
 # Instantiate a fuzzer
