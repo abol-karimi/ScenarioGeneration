@@ -2,6 +2,9 @@ import random
 import copy
 from geomdl import BSpline
 import numpy as np
+from scenic.domains.driving.roads import LinearElement
+from scenic.core.regions import PolygonalRegion, PolylineRegion
+from scenic.core.vectors import Vector
 
 # This project
 import utils
@@ -9,54 +12,75 @@ from signals import SignalType
 from seed_corpus import Route
 
 class RandomMutator():
+  """Randomly change the the trajectories using their parameters.
+  
+  Guarantees:
+  * Vehicles never back up,
+  i.e. the velocity and heading vectors make an acute angle.
+
+  * Conservation of matter,
+  i.e. vehicles don't spawn or disappear after a scenario starts till it ends.
+
+  * The created scenarios' durations don't exceed config['maxSeconds']
+
+  * Trajectories remain on route (e.g. don't change lanes)
+  """
   def __init__(self, config):
     network = config['network']
     intersection = network.elements[config['intersection_uid']]
     routes = [(m.startLane, m.connectingLane, m.endLane)
               for m in intersection.maneuvers]
-    final_time = config['maxSteps']*config['timestep']
 
     self.config = config
     self.network = network
     self.intersection = intersection
     self.routes = routes
     self.route_lengths = [utils.route_length(r) for r in routes]
-    self.final_time = final_time
-    self.mutators = [self.add_vehicle,
+    self.mutators = [self.copy_lon,
                     self.remove_vehicle,
-                    self.move_first_controlpoint_vertically,
-                    self.move_last_controlpoint_vertically,
-                    self.move_mid_controlpoint_vertically,
+                    # self.move_first_controlpoint_vertically,
+                    # self.move_last_controlpoint_vertically,
+                    # self.move_mid_controlpoint_vertically,
                     self.add_controlpoint,
                     self.remove_controlpoint
                     ]
 
-  def add_vehicle(self, seed):
-    """Adds a non-ego to the scenario, using a random route through the intersection,
-    and starting at a random location along the route.
+  def copy_lon(self, seed):
+    """Copy a trajectory and add some longitudinal offset along the route.
     """
-    print('Adding a vehicle to the seed...')
+    print('Copying a vehicle and adding to the seed...')
     mutant = copy.deepcopy(seed)
-    idx = random.randrange(len(self.routes))
-    route = self.routes[idx]
-    degree = self.config['interpolation_degree']
-    D = self.route_lengths[idx]
-    D1 = random.uniform(0, D)
-    D2 = random.uniform(D1, D)
-    T = self.final_time
-    ts = [T*i/degree for i in range(degree+1)]
-    ds = [D1 + (D2-D1)*i/degree for i in range(degree+1)]
-    curve = BSpline.Curve(normalize_kv = False)
-    curve.degree = degree
-    curve.ctrlpts = [[t, d] for t,d in zip(ts,ds)]
-    curve.knotvector = [ts[0] for i in range(degree)] \
-                  + list(np.linspace(ts[0], ts[-1], num=len(ts)-degree+1)) \
-                  + [ts[-1] for i in range(degree)]
-    signal = random.choice(list(SignalType))
+    nonego_idx = random.randrange(len(mutant.trajectories))
+    
+    route = mutant.routes[nonego_idx]
+    traj = mutant.trajectories[nonego_idx]
 
-    mutant.routes.append(Route(lanes=[l.uid for l in route]))
-    mutant.curves.append(curve)
-    mutant.signals.append(signal)
+    lanes = [self.network.elements[lane_id] 
+             for lane_id in route.lanes]
+    min_dist = 6 # TODO change to the half of the length of the copied non-ego
+    max_dist = 20 # TODO change to the distance of the last control point to the end of the route
+    # TODO return if min_dist > max_dist
+    delta = random.uniform(min_dist, max_dist)
+    route_region = LinearElement(
+      id=f'route_{lanes}_{delta}',
+      polygon=PolygonalRegion.unionAll(lanes).polygons,
+      centerline=PolylineRegion.unionAll([l.centerline for l in lanes]),
+      leftEdge=PolylineRegion.unionAll([l.leftEdge for l in lanes]),
+      rightEdge=PolylineRegion.unionAll([l.rightEdge for l in lanes])
+      )
+    ctrlpts_copy_2d = [route_region.flowFrom(Vector(p[0], p[1]), delta)
+                       for p in traj.ctrlpts]
+    ctrlpts_copy = [[pc.x, pc.y, p[2]]
+                    for pc, p in zip(ctrlpts_copy_2d, traj.ctrlpts)]
+
+    traj_c = BSpline.Curve(normalize_kv = False)
+    traj_c.degree = traj.degree
+    traj_c.ctrlpts = ctrlpts_copy
+    traj_c.knotvector = [k for k in traj.knotvector]
+
+    mutant.routes.append(copy.deepcopy(route))
+    mutant.trajectories.append(traj_c)
+    mutant.signals.append(mutant.signals[nonego_idx])
     return mutant
   
   def remove_vehicle(self, seed):
@@ -68,7 +92,7 @@ class RandomMutator():
     mutant = copy.deepcopy(seed)
     nonego_idx = random.randrange(len(mutant.routes))
     mutant.routes.pop(nonego_idx)
-    mutant.curves.pop(nonego_idx)
+    mutant.trajectories.pop(nonego_idx)
     mutant.signals.pop(nonego_idx)
     return mutant
 
@@ -78,7 +102,7 @@ class RandomMutator():
     print('Moving the first control point vertically...')
     mutant = copy.deepcopy(seed)
     nonego_idx = random.randrange(len(mutant.routes))
-    ctrlpts = mutant.curves[nonego_idx].ctrlpts
+    ctrlpts = mutant.trajectories[nonego_idx].ctrlpts
     t0, d1 = ctrlpts[0][0], ctrlpts[1][1]
     ctrlpts[0] = [t0, random.uniform(0, d1)]
     return mutant
@@ -89,7 +113,7 @@ class RandomMutator():
     print('Moving the first control point vertically...')
     mutant = copy.deepcopy(seed)
     nonego_idx = random.randrange(len(mutant.routes))
-    ctrlpts = mutant.curves[nonego_idx].ctrlpts
+    ctrlpts = mutant.trajectories[nonego_idx].ctrlpts
     ctrlpts[-1][1] = random.uniform(ctrlpts[-2][1], self.route_lengths[nonego_idx])
     return mutant
 
@@ -99,7 +123,7 @@ class RandomMutator():
     print('Moving an intermediate control point vertically...')
     mutant = copy.deepcopy(seed)
     nonego_idx = random.randrange(len(mutant.routes))
-    curve = mutant.curves[nonego_idx]
+    curve = mutant.trajectories[nonego_idx]
     ctrlpts = curve.ctrlpts
     p_idx = random.randrange(1, len(ctrlpts)-1)
     ctrlpts[p_idx][1] = random.uniform(ctrlpts[p_idx-1][1], ctrlpts[p_idx+1][1])
@@ -111,10 +135,10 @@ class RandomMutator():
     """
     mutant = copy.deepcopy(seed)
     nonego_idx = random.randrange(len(mutant.routes))
-    curve = mutant.curves[nonego_idx]
-    if len(curve.ctrlpts) == self.config['max_ctrlpts']:
+    curve = mutant.trajectories[nonego_idx]
+    if len(curve.ctrlpts) == self.config['max_parameters_size']:
       raise MutationError('Cannot add any more controlpoints to the curve!')
-    t = random.randrange(curve.ctrlpts[0][0], curve.ctrlpts[-1][0])
+    t = random.uniform(curve.ctrlpts[0][2], curve.ctrlpts[-1][2])
     curve.insert_knot(t)
     return mutant
 
@@ -124,7 +148,7 @@ class RandomMutator():
     """
     mutant = copy.deepcopy(seed)
     nonego_idx = random.randrange(len(mutant.routes))
-    curve = mutant.curves[nonego_idx]
+    curve = mutant.trajectories[nonego_idx]
     endpoint_knots = curve.degree + 1
     if len(curve.knotvector) <= 2*endpoint_knots:
       raise MutationError('Not enough controlpoints to remove!')

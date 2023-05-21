@@ -37,7 +37,7 @@ class ModularFuzzer:
         continue
       predicates, is_novel = self.compute_coverage(seed, events)
       self.scheduler.add(seed, predicates)
-      if is_novel:
+      if True: #is_novel:
         self.seed_corpus.add(seed)
         self.predicate_coverage.update(predicates)
 

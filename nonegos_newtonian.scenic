@@ -16,31 +16,34 @@ event_monitor = globalParameters.event_monitor
 
 network = config['network']
 intersection = network.elements[config['intersection_uid']]
-sample_size = int(config['maxSteps'])+1
+
+seconds = seed.trajectories[0].ctrlpts[-1][2]
+steps = int(seconds / config['timestep'])
 
 # Python imports
 import visualization
 from signals import SignalType
-from utils import sample_route
+from utils import sample_trajectory
 
 behavior AnimateBehavior():
 	lights = self.signal.to_vehicleLightState()
-	for pose in self.route_sample:
+	for pose in self.traj_sample:
 		take SetPositionAction(pose.position), SetHeadingAction(pose.heading)
 
 cars = []
-for route, spline, signal in zip(seed.routes, seed.curves, seed.signals):
-	lanes = [network.elements[l_id] for l_id in route.lanes]
-	route_sample = sample_route(lanes, spline, sample_size)
+for route, spline, signal in zip(seed.routes, seed.trajectories, seed.signals):
+	traj_sample = sample_trajectory(spline, 
+																	steps+1,
+																	0, 
+																	seconds)
 	d0 = int(spline.ctrlpts[0][1])
-	p0 = route_sample[0]
-	car = Car at p0,
+	car = Car at traj_sample[0],
 	  with name '_'.join(route.lanes + [str(d0)]),
 		with color Color(0, 0, 1),
 		with behavior AnimateBehavior(),
 		with physics False,
 		with allowCollisions False,
-		with route_sample route_sample,
+		with traj_sample traj_sample,
 		with signal signal
 	cars.append(car)
 ego = cars[0]

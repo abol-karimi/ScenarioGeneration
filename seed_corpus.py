@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Optional
-from collections import namedtuple
+from typing import List, Dict
 from geomdl import BSpline
 import jsonpickle
 
@@ -34,6 +33,7 @@ class Seed:
 @dataclass
 class SeedCorpus:
   seeds : List[Seed] = field(default_factory=list)
+  config : Dict = field(default_factory=dict)
 
   def save(self, filename):
     """"Save the corpus to a json file."""
@@ -45,18 +45,24 @@ class SeedCorpus:
                       'knotvector':[float(r) for r in c.knotvector]}
                   for c in seed.trajectories]
       signals = [s.name for s in seed.signals]
-      seed_data = {'routes':routes, 'curves_data':curves_data, 'signals':signals}
+      seed_data = {'routes':routes, 
+                   'curves_data':curves_data, 
+                   'signals':signals}
       seeds_data.append(seed_data)
+    
+    corpus_data = {'seeds_data': seeds_data,
+                   'config': self.config}
 
     with open(filename, 'w') as f:
-      seeds_json = jsonpickle.encode(seeds_data)
-      f.write(seeds_json)
+      corpus_json = jsonpickle.encode(corpus_data)
+      f.write(corpus_json)
 
   def load(self, filename):
     """"Load the corpus from a json file."""
     with open(filename, 'r') as f:
-      seeds_data = jsonpickle.decode(f.read())
+      corpus_data = jsonpickle.decode(f.read())
 
+    seeds_data = corpus_data['seeds_data']
     for seed_data in seeds_data:
       curves = []
       for curve_data in seed_data['curves_data']:
@@ -69,6 +75,8 @@ class SeedCorpus:
                   trajectories=curves,
                   signals=[SignalType[s] for s in seed_data['signals']])
       self.seeds.append(seed)
+
+    self.config = corpus_data['config']
 
 
   def add(self, seed):

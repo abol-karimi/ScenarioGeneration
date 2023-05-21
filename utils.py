@@ -341,6 +341,7 @@ def spacetime_trajectories(sim_result, timestep):
     return spacetime_trajs
 
 def spline_approximation(spacetime_traj, degree=3, knots_size=20):
+    print(type(spacetime_traj[0]), spacetime_traj[0])
     x = [p[0] for p in spacetime_traj]
     y = [p[1] for p in spacetime_traj]
     z = [p[2] for p in spacetime_traj]

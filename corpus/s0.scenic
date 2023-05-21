@@ -23,21 +23,15 @@ route_right = seed_corpus.Route(lanes=['road8_lane1', 'road415_lane1', 'road9_la
 turn_signals = [SignalType.OFF, SignalType.OFF]
 
 behavior StopBehavior():
+  take SetThrottleAction(0)
+  take SetBrakeAction(1)
   while True:
-    take SetThrottleAction(0)
-    take SetBrakeAction(1)
+    wait
 
 behavior PassBehavior(speed, trajectory):
-  arrived = False
+  do FollowTrajectoryBehavior(speed, trajectory) until (distance from (front of self) to trajectory[1]) <= arrival_distance
+  do StopBehavior() until self.speed <= 0.1
   do FollowTrajectoryBehavior(speed, trajectory)
-  # try:
-  #   do FollowTrajectoryBehavior(speed, trajectory)
-  # interrupt when (not arrived) and (distance from self to trajectory[1]) <= arrival_distance:
-  #   arrived = True
-  #   do StopBehavior() for 5 seconds
-  # interrupt when (distance from self to trajectory[1]) <= .5:
-  #   take SetBrakeAction(0)
-  #   take SetHandBrakeAction(False)
 
 p0_dist = 15
 trajectory = [network.elements[l] for l in route_left.lanes]
