@@ -1,0 +1,152 @@
+{
+  "vehicle.audi.a2": {
+    "width": 1.788678526878357,
+    "length": 3.705369472503662
+  },
+  "vehicle.audi.tt": {
+    "width": 1.9941171407699585,
+    "length": 4.181210041046143
+  },
+  "vehicle.ford.ambulance": {
+    "width": 2.3511743545532227,
+    "length": 6.36564302444458
+  },
+  "vehicle.carlamotors.firetruck": {
+    "width": 2.8910882472991943,
+    "length": 8.46804141998291
+  },
+  "vehicle.ford.crown": {
+    "width": 1.8007241487503052,
+    "length": 5.365678787231445
+  },
+  "vehicle.mini.cooper_s": {
+    "width": 1.970275640487671,
+    "length": 3.805800199508667
+  },
+  "vehicle.lincoln.mkz_2017": {
+    "width": 2.128324270248413,
+    "length": 4.901683330535889
+  },
+  "vehicle.chevrolet.impala": {
+    "width": 2.033202886581421,
+    "length": 5.357479572296143
+  },
+  "vehicle.micro.microlino": {
+    "width": 1.4809197187423706,
+    "length": 2.2072951793670654
+  },
+  "vehicle.dodge.charger_2020": {
+    "width": 1.8816219568252563,
+    "length": 5.0078253746032715
+  },
+  "vehicle.jeep.wrangler_rubicon": {
+    "width": 1.9051965475082397,
+    "length": 3.866220712661743
+  },
+  "vehicle.volkswagen.t2_2021": {
+    "width": 1.77456533908844,
+    "length": 4.442183971405029
+  },
+  "vehicle.mercedes.sprinter": {
+    "width": 1.9884328842163086,
+    "length": 5.91519021987915
+  },
+  "vehicle.volkswagen.t2": {
+    "width": 2.069315195083618,
+    "length": 4.4804368019104
+  },
+  "vehicle.tesla.cybertruck": {
+    "width": 2.3895740509033203,
+    "length": 6.273553371429443
+  },
+  "vehicle.kawasaki.ninja": {
+    "width": 0.8025798797607422,
+    "length": 2.0333523750305176
+  },
+  "vehicle.tesla.model3": {
+    "width": 2.163450002670288,
+    "length": 4.791779518127441
+  },
+  "vehicle.diamondback.century": { "width": 0.0, "length": 1.6428436040878296 },
+  "vehicle.vespa.zx125": { "width": 0.0, "length": 1.8046669960021973 },
+  "vehicle.dodge.charger_police_2020": {
+    "width": 1.9297595024108887,
+    "length": 5.237514495849609
+  },
+  "vehicle.mercedes.coupe_2020": {
+    "width": 1.8118125200271606,
+    "length": 4.673638820648193
+  },
+  "vehicle.nissan.patrol_2021": {
+    "width": 2.1499669551849365,
+    "length": 5.565828800201416
+  },
+  "vehicle.audi.etron": {
+    "width": 2.0327565670013428,
+    "length": 4.855708599090576
+  },
+  "vehicle.mini.cooper_s_2021": {
+    "width": 2.097072124481201,
+    "length": 4.552699089050293
+  },
+  "vehicle.gazelle.omafiets": {
+    "width": 0.3289288878440857,
+    "length": 1.8354405164718628
+  },
+  "vehicle.yamaha.yzf": {
+    "width": 0.8670341968536377,
+    "length": 2.2094459533691406
+  },
+  "vehicle.bh.crossbike": {
+    "width": 0.8592574596405029,
+    "length": 1.4872888326644897
+  },
+  "vehicle.harley-davidson.low_rider": {
+    "width": 0.7636788487434387,
+    "length": 2.3557403087615967
+  },
+  "vehicle.toyota.prius": {
+    "width": 2.006814479827881,
+    "length": 4.513522624969482
+  },
+  "vehicle.seat.leon": {
+    "width": 1.8161858320236206,
+    "length": 4.1928300857543945
+  },
+  "vehicle.nissan.patrol": {
+    "width": 1.9315929412841797,
+    "length": 4.6045098304748535
+  },
+  "vehicle.nissan.micra": {
+    "width": 1.845113754272461,
+    "length": 3.633375883102417
+  },
+  "vehicle.mercedes.coupe": {
+    "width": 2.1515462398529053,
+    "length": 5.0267767906188965
+  },
+  "vehicle.dodge.charger_police": {
+    "width": 2.0384011268615723,
+    "length": 4.974244117736816
+  },
+  "vehicle.bmw.grandtourer": {
+    "width": 2.241713285446167,
+    "length": 4.611005783081055
+  },
+  "vehicle.ford.mustang": {
+    "width": 1.894826889038086,
+    "length": 4.717525005340576
+  },
+  "vehicle.citroen.c3": {
+    "width": 1.8508483171463013,
+    "length": 3.987684965133667
+  },
+  "vehicle.lincoln.mkz_2020": {
+    "width": 1.8367133140563965,
+    "length": 4.89238166809082
+  },
+  "vehicle.carlamotors.carlacola": {
+    "width": 2.6269896030426025,
+    "length": 5.203838348388672
+  }
+}

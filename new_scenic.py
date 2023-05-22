@@ -60,6 +60,8 @@ sim_result = simulator.simulate(
 # Convert the result to a seed
 routes = sim_result.records['routes']
 signals = sim_result.records['turn_signals']
+lengths = sim_result.records['lengths']
+widths = sim_result.records['widths']
 spacetime_trajs = spacetime_trajectories(sim_result, args.timestep)
 
 #for debugging
@@ -70,7 +72,11 @@ trajectories = [spline_approximation(traj,
                                      degree=args.spline_degree,
                                      knots_size=args.parameters_size)
           for traj in spacetime_trajs]
-seed = seed_corpus.Seed(routes=routes, trajectories=trajectories, signals=signals)
+seed = seed_corpus.Seed(routes=routes, 
+                        trajectories=trajectories, 
+                        signals=signals,
+                        lengths=lengths, 
+                        widths=widths)
 # Store the corpus
 corpus = seed_corpus.SeedCorpus()
 if args.append:

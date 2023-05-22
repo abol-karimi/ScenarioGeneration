@@ -2,6 +2,8 @@
 from scenic.domains.driving.roads import Network
 import argparse
 import scenic
+import jsonpickle
+import random
 
 # This project
 import seed_corpus
@@ -30,7 +32,19 @@ elif args.seconds:
     seconds = args.seconds
 steps = seconds // args.timestep
 
-
+# Choose a blueprint of an appropriate size for each non-ego
+with open('carla_blueprint_library', 'r') as f:
+    blueprints = jsonpickle.decode(f.read())
+dim2bp = {}
+for b, dims in blueprints.items():
+    length = int(100*dims['length'])
+    width = int(100*dims['width'])
+    if not (length, width) in dim2bp:
+        dim2bp[(length, width)] = [b]
+    else:
+        dim2bp[(length, width)].append(b)
+bps = [random.choice(dim2bp[(int(l*100), int(w*100))])
+       for l, w in zip(seed.lengths, seed.widths)]
 
 config = {}
 config['steps'] = steps
@@ -41,6 +55,7 @@ config['map_name'] = 'Town05'
 config['intersection_uid'] = 'intersection396'
 config['arrival_distance'] = 4
 config['network'] = Network.fromFile(config['map_path'])
+config['blueprints'] = bps
 
 # Run the scenario on the seed
 params = {'config': config,

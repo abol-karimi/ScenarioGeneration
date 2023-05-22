@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from geomdl import BSpline
 import jsonpickle
 
@@ -16,6 +16,8 @@ class Seed:
   routes: List[Route] = None
   trajectories: List = None
   signals: List[SignalType] = None
+  lengths: List[float] = None
+  widths: List[float] = None
   
   def is_valid(self):
     """Check some necessary (but not sufficient) conditions.
@@ -47,7 +49,9 @@ class SeedCorpus:
       signals = [s.name for s in seed.signals]
       seed_data = {'routes':routes, 
                    'curves_data':curves_data, 
-                   'signals':signals}
+                   'signals':signals,
+                   'lengths': seed.lengths,
+                   'widths': seed.widths}
       seeds_data.append(seed_data)
     
     corpus_data = {'seeds_data': seeds_data,
@@ -73,7 +77,9 @@ class SeedCorpus:
         curves.append(curve)
       seed = Seed(routes=seed_data['routes'],
                   trajectories=curves,
-                  signals=[SignalType[s] for s in seed_data['signals']])
+                  signals=[SignalType[s] for s in seed_data['signals']],
+                  lengths=seed_data['lengths'],
+                  widths=seed_data['widths'])
       self.seeds.append(seed)
 
     self.config = corpus_data['config']

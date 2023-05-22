@@ -28,7 +28,7 @@ behavior AnimateBehavior():
 		take SetTransformAction(pose.position, pose.heading)
 
 cars = []
-for spline, signal in zip(seed.trajectories, seed.signals):
+for spline, signal, l, w, b in zip(seed.trajectories, seed.signals, seed.lengths, seed.widths, config['blueprints']):
 	traj_sample = sample_trajectory(spline,
 																	int(config['steps'])+1,
 																	0,
@@ -39,7 +39,10 @@ for spline, signal in zip(seed.trajectories, seed.signals):
 		with physics False,
 		with allowCollisions True,
 		with traj_sample traj_sample,
-		with signal signal
+		with signal signal,
+		with length l,
+		with width w,
+		with blueprint b
 	cars.append(car)
 ego = cars[0]
 
