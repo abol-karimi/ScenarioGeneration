@@ -1,6 +1,8 @@
 """ Scenario Description
 Ego-vehicle arrives at an intersection.
 """
+
+# Parameters
 param map = localPath('./maps/Town05.xodr')
 param carla_map = 'Town05'
 model scenic.domains.driving.model
@@ -11,19 +13,17 @@ config = globalParameters.config
 param seed = None
 seed = globalParameters.seed
 
-param event_monitor = None
-event_monitor = globalParameters.event_monitor
-
-network = config['network']
-intersection = network.elements[config['intersection_uid']]
-
-seconds = seed.trajectories[0].ctrlpts[-1][2]
-steps = int(seconds / config['timestep'])
-
 # Python imports
 import visualization
 from signals import SignalType
 from utils import sample_trajectory
+from event_logger import EventLogger
+
+network = config['network']
+intersection = network.elements[config['intersection_uid']]
+seconds = seed.trajectories[0].ctrlpts[-1][2]
+steps = int(seconds / config['timestep'])
+event_logger = EventLogger()
 
 behavior AnimateBehavior():
 	lights = self.signal.to_vehicleLightState()
@@ -62,13 +62,13 @@ monitor intersection_events:
 			
 			if (not arrived[car]) and (distance from (front of car) to intersection) < config['arrival_distance']:
 				arrived[car] = True
-				event_monitor.on_arrival(car.name, car.lane.uid, car.signal.name.lower(), currentTime)
+				event_logger.on_arrival(car.name, car.lane.uid, car.signal.name.lower(), currentTime)
 			if inIntersection[car] and not entered[car]:
 				entered[car] = True
-				event_monitor.on_entrance(car.name, car.lane.uid, currentTime)
+				event_logger.on_entrance(car.name, car.lane.uid, currentTime)
 			if entered[car] and (not exited[car]) and not inIntersection[car]:
 				exited[car] = True
-				event_monitor.on_exit(car.name, car.lane.uid, currentTime)
+				event_logger.on_exit(car.name, car.lane.uid, currentTime)
 
 			for maneuver in maneuvers:
 				lane = maneuver.connectingLane
@@ -76,10 +76,11 @@ monitor intersection_events:
 				isOnLane = lane.intersects(car)
 				if isOnLane and not wasOnLane:
 					lanes[car].add(lane.uid)
-					event_monitor.on_enterLane(car.name, lane.uid, currentTime)
+					event_logger.on_enterLane(car.name, lane.uid, currentTime)
 				elif wasOnLane and not isOnLane:
 					lanes[car].remove(lane.uid)
-					event_monitor.on_exitLane(car.name, lane.uid, currentTime)
+					event_logger.on_exitLane(car.name, lane.uid, currentTime)
 		wait
 
-
+#--- Output parameters
+record final event_logger.get_events() as events

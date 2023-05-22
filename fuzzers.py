@@ -30,10 +30,14 @@ class ModularFuzzer:
       seed = self.mutator.mutate(self.scheduler.choose())
       try:
         events = self.simulate(seed, render=render)
-      except Exception as err:
-        print(err)
-        # TODO if two nonegos collide, discard seed
-        # else if the ego collides with the mutant, add seed to corpus
+      except Exception as err: # TODO non-ego nonego collision
+        # if two nonegos collide, discard the seed:
+        print('\tInvalid mutant, discarding it:')
+        print(f'\t{err}')
+      # TODO
+      # except EgoCollision:
+      #   classify: ego's fault, or non-ego's fault
+      #   add seed to corpus if ego's fault
         continue
       predicates, is_novel = self.compute_coverage(seed, events)
       self.scheduler.add(seed, predicates)
@@ -47,32 +51,26 @@ class ModularFuzzer:
     print(f'Simulating the seed...')
 
     # Run the scenario on the seed
-    from intersection_monitor import Monitor
-    event_monitor = Monitor()
     params = {'config': self.config,
-            'event_monitor': event_monitor,
             'render': False,
-            'seed': seed}
-
+            'timestep': self.config['timestep'],
+            'seed': seed}  
+    seconds = seed.trajectories[0].ctrlpts[-1][2]
+  
     scenic_scenario = scenic.scenarioFromFile(
-        'nonegos_newtonian.scenic', 
-        params=params, 
-        model='scenic.simulators.newtonian.driving_model')
-
+                        'nonegos_newtonian.scenic', 
+                        params=params, 
+                        model='scenic.simulators.newtonian.driving_model')
     scene, _ = scenic_scenario.generate(maxIterations=1)
     simulator = NewtonianSimulator()
-
-    start_time = time.time()
     sim_result = simulator.simulate(
                     scene,
-                    maxSteps=self.config['maxSteps'],
+                    maxSteps=int(seconds / self.config['timestep']),
                     maxIterations=1,
-                    raiseGuardViolations=True
-                    )
-
+                    raiseGuardViolations=True)
+    events = sim_result.records['events']
     del scenic_scenario, scene
-
-    return event_monitor.get_events()
+    return events
 
   def compute_coverage(self, seed, events):
     predicates = self.coverage.compute(seed, events)

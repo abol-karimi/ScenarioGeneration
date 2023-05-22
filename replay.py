@@ -33,7 +33,7 @@ elif args.seconds:
 steps = seconds // args.timestep
 
 # Choose a blueprint of an appropriate size for each non-ego
-with open('carla_blueprint_library', 'r') as f:
+with open('carla_blueprint_library.json', 'r') as f:
     blueprints = jsonpickle.decode(f.read())
 dim2bp = {}
 for b, dims in blueprints.items():
@@ -60,6 +60,7 @@ config['blueprints'] = bps
 # Run the scenario on the seed
 params = {'config': config,
         'render': True,
+        'timestep': args.timestep,
         'seed': seed}
 
 scenic_scenario = scenic.scenarioFromFile(

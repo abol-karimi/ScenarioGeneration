@@ -59,8 +59,9 @@ config['ego_route'] = args.ego_route
 
 # Run the scenario on the seed
 params = {'config': config,
-        'render': True,
-        'seed': seed}
+          'timestep': args.timestep,
+          'render': True,
+          'seed': seed}
 
 print('Play an autopilot ego in the scenario...')
 scenic_scenario = scenic.scenarioFromFile(

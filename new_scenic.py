@@ -47,7 +47,8 @@ steps = seconds // args.timestep
 # Run the scenario
 scenic_scenario = scenic.scenarioFromFile(
     args.scenic_file,
-    model='scenic.simulators.newtonian.driving_model')
+    model='scenic.simulators.newtonian.driving_model',
+    params = {'timestep': args.timestep})
 scene, _ = scenic_scenario.generate(maxIterations=1)
 simulator = NewtonianSimulator()
 sim_result = simulator.simulate(

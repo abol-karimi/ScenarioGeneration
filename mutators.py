@@ -37,7 +37,9 @@ class RandomMutator():
     self.routes = routes
     self.route_lengths = [utils.route_length(r) for r in routes]
     self.mutators = [self.copy_lon,
-                    self.remove_vehicle,
+                    # self.invalid,        
+                    # self.remove_vehicle,
+                    # self.add_slowdown,
                     # self.move_first_controlpoint_vertically,
                     # self.move_last_controlpoint_vertically,
                     # self.move_mid_controlpoint_vertically,
@@ -45,6 +47,40 @@ class RandomMutator():
                     self.remove_controlpoint
                     ]
 
+  def invalid(self, seed):
+    """Creates an invalid scenario for debugging.
+    """
+    print('Creating an invalid scenario...')
+    mutant = copy.deepcopy(seed)
+    nonego_idx = random.randrange(len(mutant.trajectories))
+    
+    route = mutant.routes[nonego_idx]
+    traj = mutant.trajectories[nonego_idx]
+    lanes = [self.network.elements[lane_id] 
+             for lane_id in route.lanes]
+    delta = 2
+    route_region = LinearElement(
+      id=f'route_{lanes}_{delta}',
+      polygon=PolygonalRegion.unionAll(lanes).polygons,
+      centerline=PolylineRegion.unionAll([l.centerline for l in lanes]),
+      leftEdge=PolylineRegion.unionAll([l.leftEdge for l in lanes]),
+      rightEdge=PolylineRegion.unionAll([l.rightEdge for l in lanes])
+      )
+    ctrlpts_copy_2d = [route_region.flowFrom(Vector(p[0], p[1]), delta)
+                       for p in traj.ctrlpts]
+    ctrlpts_copy = [[pc.x, pc.y, p[2]]
+                    for pc, p in zip(ctrlpts_copy_2d, traj.ctrlpts)]
+
+    traj_c = BSpline.Curve(normalize_kv = False)
+    traj_c.degree = traj.degree
+    traj_c.ctrlpts = ctrlpts_copy
+    traj_c.knotvector = [k for k in traj.knotvector]
+
+    mutant.routes.append(copy.deepcopy(route))
+    mutant.trajectories.append(traj_c)
+    mutant.signals.append(mutant.signals[nonego_idx])
+    return mutant
+  
   def copy_lon(self, seed):
     """Copy a trajectory and add some longitudinal offset along the route.
     """
@@ -54,10 +90,11 @@ class RandomMutator():
     
     route = mutant.routes[nonego_idx]
     traj = mutant.trajectories[nonego_idx]
+    length = mutant.lengths[nonego_idx]
 
     lanes = [self.network.elements[lane_id] 
              for lane_id in route.lanes]
-    min_dist = 6 # TODO change to the half of the length of the copied non-ego
+    min_dist = length
     max_dist = 20 # TODO change to the distance of the last control point to the end of the route
     # TODO return if min_dist > max_dist
     delta = random.uniform(min_dist, max_dist)
@@ -81,6 +118,8 @@ class RandomMutator():
     mutant.routes.append(copy.deepcopy(route))
     mutant.trajectories.append(traj_c)
     mutant.signals.append(mutant.signals[nonego_idx])
+    mutant.lengths.append(length)
+    mutant.widths.append(mutant.widths[nonego_idx])
     return mutant
   
   def remove_vehicle(self, seed):
