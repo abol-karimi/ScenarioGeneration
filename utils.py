@@ -323,9 +323,6 @@ def geometry_atoms(network, intersection_uid):
             continue
         geometry += [
             f'isOnRightOf({right}, {left})' for left in lefts for right in rights]
-    
-    if intersection_uid == 'intersection396':
-        geometry += [f'hasStopSign({lane.uid})' for lane in incomings]
             
     return geometry
 
