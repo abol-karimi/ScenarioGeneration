@@ -2,7 +2,11 @@ import carla
 from scenic.core.geometry import _RotatedRectangle as RRect
 
 
-def draw_lane(world, lane, color=carla.Color(255, 0, 0), life_time=-1, height=0.2):
+def draw_lane(world, lane, 
+              color=carla.Color(255, 0, 0), 
+              life_time=-1, 
+              height=0.2, 
+              label=False):
     locations = [carla.Location(p[0], -p[1], height)
                  for p in lane.leftEdge.lineString.coords]
     for i in range(len(locations)-1):
@@ -17,9 +21,17 @@ def draw_lane(world, lane, color=carla.Color(255, 0, 0), life_time=-1, height=0.
         end = locations[i+1]
         world.debug.draw_line(
             begin, end, thickness=0.1, color=color, life_time=life_time)
+    if label:
+        c = lane.polygon.centroid
+        loc = carla.Location(c.x, -c.y, height)
+        world.debug.draw_string(
+            loc, lane.uid, draw_shadow=False, life_time=1000)      
 
 
-def draw_intersection(world, intersection, draw_lanes=False, arrival_distance=4, height=0.1):
+def draw_intersection(world, intersection, 
+                      draw_lanes=False, 
+                      arrival_distance=4, 
+                      height=0.1):
     polygon = intersection.polygon
 
     # Boundaries of the intersection
