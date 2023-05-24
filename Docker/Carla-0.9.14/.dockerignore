@@ -121,5 +121,3 @@ venv.bak/
 dmypy.json
 
 *.cproject
-
-PythonAPI
