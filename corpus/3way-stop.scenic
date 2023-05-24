@@ -2,6 +2,7 @@
 Two non-egos arrive at a 3way all-way-stop intersection,
 	one from the major road and one from the minor road.
 """
+
 #--- Python imports
 import jsonpickle
 from signals import SignalType
@@ -18,8 +19,8 @@ route_major2minor = seed_corpus.Route(lanes=['road3_lane1', 'road1946_lane0', 'r
 turn_signals = [SignalType.OFF, SignalType.LEFT]
 
 #--- Scenic parameters
-param map = localPath(f'../maps/{carla_map}.xodr')
 param carla_map = carla_map
+param map = f'/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/{carla_map}.xodr'
 model scenic.domains.driving.model
 
 #--- Derived constants
@@ -28,6 +29,10 @@ route_major_lanes = [network.elements[l] for l in route_major.lanes]
 route_major_centerline = PolylineRegion.unionAll([l.centerline for l in route_major_lanes])
 route_major2minor_lanes = [network.elements[l] for l in route_major2minor.lanes]
 route_major2minor_centerline = PolylineRegion.unionAll([l.centerline for l in route_major2minor_lanes])
+config = {'carla_map': carla_map,
+          'map': globalParameters.map,
+          'intersection': intersection_uid,
+          'ego_route': ego_route}
 
 with open('carla_blueprint_library.json', 'r') as f:
   blueprints = jsonpickle.decode(f.read())
@@ -73,9 +78,4 @@ record initial [route_major, route_major2minor] as routes
 record initial turn_signals as turn_signals
 record initial [car_left.length, car_right.length] as lengths
 record initial [car_left.width, car_right.width] as widths
-
-config = {'carla_map': carla_map,
-          'map': globalParameters.map,
-          'intersection': intersection_uid,
-          'ego_route': ego_route}
 record initial config as config
