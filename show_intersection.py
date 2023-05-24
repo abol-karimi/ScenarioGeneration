@@ -15,6 +15,7 @@ drawings.add_argument('--src',
                     help='Draw the maneuvers starting from the incoming lane')
 drawings.add_argument('--dest',
                     help='Draw the maneuvers ending in the outgoing lane')
+parser.add_argument('--height', default=30, type=float)
 args = parser.parse_args()
 
 client = carla.Client('127.0.0.1', 2000)
@@ -32,7 +33,7 @@ else:
 
 # Disable synchronous mode
 settings = world.get_settings()
-settings.synchronous_mode = True
+settings.synchronous_mode = False
 world.apply_settings(settings)
 
 intersection = network.elements[args.intersection_uid]
@@ -55,4 +56,9 @@ elif args.all:
                       draw_lanes=True, 
                       label_lanes=True)
 
-set_camera(world, intersection, 20)
+set_camera(world, intersection, args.height)
+
+# Enable synchronous mode
+settings = world.get_settings()
+settings.synchronous_mode = True
+world.apply_settings(settings)
