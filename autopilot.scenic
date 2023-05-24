@@ -2,8 +2,6 @@
 Ego-vehicle driven by Carla's autopilot.
 All nonegos' behaviors are predetermined.
 """
-param map = localPath('./maps/Town05.xodr')  # or other CARLA map that definitely works
-param carla_map = 'Town05'
 model scenic.simulators.carla.model
 
 param config = None
@@ -12,8 +10,7 @@ config = globalParameters.config
 param seed = None
 seed = globalParameters.seed
 
-intersection = network.elements[config['intersection_uid']]
-sample_size = int(config['steps'])+1
+intersection = network.elements[config['intersection']]
 
 # Python imports
 import time
@@ -21,29 +18,27 @@ import visualization
 from rss_sensor import RssSensor
 import carla
 from signals import SignalType
-from utils import sample_trajectory
+from utils import sample_trajectory, get_trace
 from agents.navigation.behavior_agent import BehaviorAgent
 from scenic.simulators.carla.utils.utils import scenicToCarlaLocation
 
 behavior AnimateBehavior():
 	lights = self.signal.to_vehicleLightState()
 	#take SetVehicleLightStateAction(lights)
-	carla_world = simulation().world
 	for pose in self.traj_sample:
 		take SetTransformAction(pose.position, pose.heading)
-		visualization.label_car(carla_world, self)
 
 behavior CarlaBehaviorAgent():
 	take SetVehicleLightStateAction(signal.to_vehicleLightState())
 	take SetAutopilotAction(True)
 	agent = BehaviorAgent(self.carlaActor, behavior=config['aggressiveness'])
 	carla_world = simulation().world
-	src = scenicToCarlaLocation(self.position, world=carla_world)
-	dest = scenicToCarlaLocation(self.destination, world=carla_world)
-	agent.set_destination(dest, src)
+	route_lanes = [network.elements[l] for l in config['ego_route']]
+	dest = scenicToCarlaLocation(route_lanes[-1].centerline[-1], world=carla_world)
+	agent.set_destination(dest)
 	rss_enabled = config['rss_enabled']
 	if rss_enabled:
-		transforms = [pair[0].transform for pair in agent._local_planner._waypoints_queue]
+		transforms = [pair[0].transform for pair in plan]
 		rss_sensor = RssSensor(self.carlaActor, carla_world, 
 														None, None, None,
 														routing_targets=transforms)
@@ -61,32 +56,35 @@ behavior CarlaBehaviorAgent():
 		wait
 
 cars = []
-for route, spline, signal in zip(seed.routes, seed.trajectories, seed.signals):
-	lanes = [network.elements[l_id] for l_id in route.lanes]
-	traj_sample = sample_trajectory(spline, 
+for spline, signal, l, w, b in zip(seed.trajectories, seed.signals, seed.lengths, seed.widths, config['blueprints']):
+	traj_sample = sample_trajectory(spline,
 																	int(config['steps'])+1,
-																	0, 
+																	0,
 																	config['timestep']*config['steps'])
 	p0 = traj_sample[0]
 	car = Car at p0,
-	  with name '_'.join(route.lanes + [str(p0)]),
 		with color Color(0, 0, 1),
 		with behavior AnimateBehavior(),
 		with physics False,
-		with allowCollisions True,
+		with allowCollisions False,
 		with traj_sample traj_sample,
-		with signal signal
+		with signal signal,
+		with length l,
+		with width w,
+		with blueprint b
 	cars.append(car)
 
-ego_lane = network.elements[config['ego_route'][0]]
-ego = Car following roadDirection from ego_lane.centerline[-1] for -40,
+ego_lanes = [network.elements[l] for l in config['ego_route']]
+ego_centerline = PolylineRegion.unionAll([l.centerline for l in ego_lanes])
+ego_init_pos = ego_centerline.pointAlongBy(config['ego_init_progress'])
+ego = Car at ego_init_pos,
 	  with name 'ego',
 		with color Color(0, 1, 0),
 		with behavior CarlaBehaviorAgent(),
 		with physics True,
 		with allowCollisions True,
 		with signal signal,
-		with destination (Point on network.elements[config['ego_route'][1]])
+		with route config['ego_route']
 cars.append(ego)
 
 

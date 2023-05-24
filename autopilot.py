@@ -1,10 +1,13 @@
 #!/usr/bin/env python3.8
+import random
+import jsonpickle
 from scenic.domains.driving.roads import Network
 import scenic
 import argparse
 
 # This project
 import seed_corpus
+from utils import get_trace
 
 parser = argparse.ArgumentParser(
     description='play the given scenario with a Carla autopilot driving the ego.')
@@ -25,8 +28,9 @@ parser.add_argument('-a', '--aggressiveness',
                     default='normal', 
                     help='aggressiveness of Carla BehaviorAgent')
 parser.add_argument('-r', '--ego_route',
-                    default=('road9_lane2', 'road45_lane1'), 
-                    help='ego route (incoming lane, outgoing lane)')
+                    help='ego route (list of lane id\'s)')
+parser.add_argument('--ego_init_progress', default=30, type=float,
+                    help='ego\'s initial progress along its route')
 parser.add_argument('--rss', action='store_true', help='enable RSS restrictor')
 args = parser.parse_args()
 
@@ -43,22 +47,37 @@ elif args.seconds:
     seconds = args.seconds
 steps = seconds // args.timestep
 
+# Choose a blueprint of an appropriate size for each non-ego
+with open('carla_blueprint_library.json', 'r') as f:
+    blueprints = jsonpickle.decode(f.read())
+dim2bp = {}
+for b, dims in blueprints.items():
+    length = int(100*dims['length'])
+    width = int(100*dims['width'])
+    if not (length, width) in dim2bp:
+        dim2bp[(length, width)] = [b]
+    else:
+        dim2bp[(length, width)].append(b)
+bps = [random.choice(dim2bp[(int(l*100), int(w*100))])
+       for l, w in zip(seed.lengths, seed.widths)]
+
 config = {}
 config['steps'] = steps
 config['timestep'] = args.timestep
 config['weather'] = 'CloudySunset'
-config['map_path'] = './maps/Town05.xodr'
-config['map_name'] = 'Town05'
-config['intersection_uid'] = 'intersection396'
+config['intersection'] = corpus.config['intersection']
 config['arrival_distance'] = 4
-config['network'] = Network.fromFile(config['map_path'])
 config['stop_speed_threshold'] = 0.5  # meters/seconds
 config['aggressiveness'] =  args.aggressiveness
 config['rss_enabled'] = args.rss
-config['ego_route'] = args.ego_route
+config['ego_route'] = args.ego_route if args.ego_route else corpus.config['ego_route']
+config['ego_init_progress'] = args.ego_init_progress
+config['blueprints'] = bps
 
 # Run the scenario on the seed
-params = {'config': config,
+params = {'carla_map': corpus.config['carla_map'],
+          'map': corpus.config['map'],
+          'config': config,
           'timestep': args.timestep,
           'render': True,
           'seed': seed}

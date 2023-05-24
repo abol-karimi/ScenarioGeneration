@@ -9,11 +9,11 @@ parser = argparse.ArgumentParser(
 parser.add_argument('intersection_uid', help='Scenic uid for the intersection')
 parser.add_argument('-m', '--map_name', help='Scenic uid of the Carla map')
 drawings = parser.add_mutually_exclusive_group()
-parser.add_argument('--all_lanes', action='store_true',
+drawings.add_argument('--all', action='store_true',
                     help='Draw all lane boundaries')
-parser.add_argument('--src',
+drawings.add_argument('--src',
                     help='Draw the maneuvers starting from the incoming lane')
-parser.add_argument('--dest',
+drawings.add_argument('--dest',
                     help='Draw the maneuvers ending in the outgoing lane')
 args = parser.parse_args()
 
@@ -29,23 +29,30 @@ else:
     carla_map = world.get_map()
     carla_map.save_to_disk('loaded_map.xodr')
     network = Network.fromFile('loaded_map.xodr')
+
+# Disable synchronous mode
+settings = world.get_settings()
+settings.synchronous_mode = True
+world.apply_settings(settings)
+
 intersection = network.elements[args.intersection_uid]
 
 lanes_to_draw = []
 if args.src:
-    lanes_to_draw.append(network.elements[args.src])
+    draw_lane(world, network.elements[args.src])
     for m in intersection.maneuvers:
         if m.startLane.uid == args.src:
-            lanes_to_draw.append(m.connectingLane)
-            lanes_to_draw.append(m.endLane)
+            draw_lane(world, m.connectingLane)
+            draw_lane(world, m.endLane)
 elif args.dest:
-    lanes_to_draw.append(network.elements[args.dest])
+    draw_lane(world, network.elements[args.dest])
     for m in intersection.maneuvers:
         if m.endLane.uid == args.dest:
-            lanes_to_draw.append(m.connectingLane)
-            lanes_to_draw.append(m.startLane)
-for l in lanes_to_draw:
-    draw_lane(world, l, label=True)
+            draw_lane(world, m.connectingLane)
+            draw_lane(world, m.startLane)
+elif args.all:
+    draw_intersection(world, intersection, 
+                      draw_lanes=True, 
+                      label_lanes=True)
 
-draw_intersection(world, intersection, draw_lanes=args.all_lanes)
 set_camera(world, intersection, 20)

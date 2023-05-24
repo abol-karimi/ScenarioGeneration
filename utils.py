@@ -2,7 +2,9 @@ import geomdl
 from geomdl import fitting, operations
 import numpy as np
 import scipy
+import carla
 
+from agents.navigation.global_route_planner import GlobalRoutePlanner
 from scenic.simulators.carla.utils.utils import scenicToCarlaLocation
 from scenic.core.object_types import OrientedPoint
 from scenic.core.vectors import Vector
@@ -370,3 +372,17 @@ def sample_trajectory(spline, sample_size, umin, umax):
         traj.append(OrientedPoint(position=p, heading=h))
 
     return traj
+
+def get_trace(world, planner, route):
+    """"Get a list of waypoints along a route (a list of lanes)"""
+    route_trace = []
+    for lane in route:
+        src = scenicToCarlaLocation(lane.centerline[0], world=world)
+        dest = scenicToCarlaLocation(lane.centerline[-1], world=world)
+        trace = planner.trace_route(src, dest)
+        route_trace += trace[1:]
+    return route_trace
+
+
+def classify_intersection(intersection):
+    return

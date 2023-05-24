@@ -28,9 +28,6 @@ duration.add_argument('--seconds', type=float,
                       help='The duration of the scenario in seconds')
 parser.add_argument('--timestep', default=0.05, type=float, 
                     help='The length of one simulation step')
-parser.add_argument('--weather', default = 'CloudySunset')
-parser.add_argument('--map_path', default = './maps/Town05.xodr')
-parser.add_argument('--map_name', default = 'Town05')
 parser.add_argument('--spline_degree', default = 3, type=int)
 parser.add_argument('--parameters_size', default = 50, type=int)
 args = parser.parse_args()
@@ -78,9 +75,12 @@ seed = seed_corpus.Seed(routes=routes,
                         signals=signals,
                         lengths=lengths, 
                         widths=widths)
-# Store the corpus
-corpus = seed_corpus.SeedCorpus()
+# Store the seed to corpus
 if args.append:
+    corpus = seed_corpus.SeedCorpus()
     corpus.load(args.corpus_file)
-corpus.add(seed)
+    corpus.add(seed)
+else:
+    corpus = seed_corpus.SeedCorpus(seeds=[seed],
+                                    config=sim_result.records['config'])
 corpus.save(args.corpus_file)

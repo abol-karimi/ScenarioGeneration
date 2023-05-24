@@ -1,9 +1,10 @@
 #!/usr/bin/env python3.8
-from scenic.domains.driving.roads import Network
 import argparse
-import scenic
 import jsonpickle
 import random
+import scenic
+from scenic.domains.driving.roads import Network
+from scenic.syntax.veneer import localPath
 
 # This project
 import seed_corpus
@@ -50,18 +51,16 @@ config = {}
 config['steps'] = steps
 config['timestep'] = args.timestep
 config['weather'] = 'CloudySunset'
-config['map_path'] = './maps/Town05.xodr'
-config['map_name'] = 'Town05'
-config['intersection_uid'] = 'intersection396'
-config['arrival_distance'] = 4
-config['network'] = Network.fromFile(config['map_path'])
+config['intersection'] = corpus.config['intersection']
 config['blueprints'] = bps
 
 # Run the scenario on the seed
-params = {'config': config,
-        'render': True,
-        'timestep': args.timestep,
-        'seed': seed}
+params = {'carla_map': corpus.config['carla_map'],
+          'map': corpus.config['map'],
+          'config': config,
+          'timestep': args.timestep,
+          'render': True,
+          'seed': seed}
 
 scenic_scenario = scenic.scenarioFromFile(
     'replay.scenic', params=params)

@@ -1,8 +1,6 @@
 """ Scenario Description
 Ego-vehicle arrives at an intersection.
 """
-param map = localPath('./maps/Town05.xodr')  # or other CARLA map that definitely works
-param carla_map = 'Town05'
 model scenic.simulators.carla.model
 
 param config = None
@@ -11,7 +9,7 @@ config = globalParameters.config
 param seed = None
 seed = globalParameters.seed
 
-intersection = network.elements[config['intersection_uid']]
+intersection = network.elements[config['intersection']]
 
 # Python imports
 import visualization
@@ -37,7 +35,7 @@ for spline, signal, l, w, b in zip(seed.trajectories, seed.signals, seed.lengths
 		with color Color(0, 0, 1),
 		with behavior AnimateBehavior(),
 		with physics False,
-		with allowCollisions True,
+		with allowCollisions False,
 		with traj_sample traj_sample,
 		with signal signal,
 		with length l,

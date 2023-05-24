@@ -22,6 +22,5 @@ else:
     network = Network.fromFile('loaded_map.xodr')
 
 for i in network.intersections:
-    centroid = i.polygon.centroid
-    loc = carla.Location(centroid.x, -centroid.y, 0.5)
-    world.debug.draw_string(loc, i.uid, life_time=1000)
+    signals = [(s.type, s.isTrafficLight) for s in i.signals]
+    print(i.uid, signals)

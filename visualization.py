@@ -2,26 +2,31 @@ import carla
 from scenic.core.geometry import _RotatedRectangle as RRect
 
 
-def draw_lane(world, lane, 
+def draw_lane(world, lane,
+              boundaries=True,
+              label=True,
               color=carla.Color(255, 0, 0), 
               life_time=-1, 
-              height=0.2, 
-              label=False):
-    locations = [carla.Location(p[0], -p[1], height)
-                 for p in lane.leftEdge.lineString.coords]
-    for i in range(len(locations)-1):
-        begin = locations[i]
-        end = locations[i+1]
-        world.debug.draw_line(
-            begin, end, thickness=0.1, color=color, life_time=life_time)
-    locations = [carla.Location(p[0], -p[1], height)
-                 for p in lane.rightEdge.lineString.coords]
-    for i in range(len(locations)-1):
-        begin = locations[i]
-        end = locations[i+1]
-        world.debug.draw_line(
-            begin, end, thickness=0.1, color=color, life_time=life_time)
+              height=0.2):
+
+    if boundaries:
+    # Draw lane boundaries
+        locations = [carla.Location(p[0], -p[1], height)
+                    for p in lane.leftEdge.lineString.coords]
+        for i in range(len(locations)-1):
+            begin = locations[i]
+            end = locations[i+1]
+            world.debug.draw_line(
+                begin, end, thickness=0.1, color=color, life_time=life_time)
+        locations = [carla.Location(p[0], -p[1], height)
+                    for p in lane.rightEdge.lineString.coords]
+        for i in range(len(locations)-1):
+            begin = locations[i]
+            end = locations[i+1]
+            world.debug.draw_line(
+                begin, end, thickness=0.1, color=color, life_time=life_time)
     if label:
+    # Draw lane label
         c = lane.polygon.centroid
         loc = carla.Location(c.x, -c.y, height)
         world.debug.draw_string(
@@ -29,33 +34,32 @@ def draw_lane(world, lane,
 
 
 def draw_intersection(world, intersection, 
-                      draw_lanes=False, 
+                      draw_lanes=False,
+                      label_lanes=False,
+                      draw_crossings=False,
                       arrival_distance=4, 
-                      height=0.1):
-    polygon = intersection.polygon
-
+                      height=0.1,
+                      life_time=-1
+                      ):
     # Boundaries of the intersection
     locs = [carla.Location(p[0], -p[1], height)
-            for p in polygon.exterior.coords]
+            for p in intersection.polygon.exterior.coords]
     for i in range(len(locs)):
         p0 = locs[i]
         p1 = locs[(i+1) % len(locs)]
         world.debug.draw_line(
             p0, p1, color=carla.Color(0, 0, 255), life_time=0)
+    
+    # Pedestrian crossings
+    for cross in intersection.crossings:
+        locs = [carla.Location(p[0], -p[1], height)
+                for p in cross.polygon.exterior.coords]
+        for i in range(len(locs)):
+            p0 = locs[i]
+            p1 = locs[(i+1) % len(locs)]
+            world.debug.draw_line(
+                p0, p1, color=carla.Color(0, 255, 0), life_time=0)
 
-    # Draw lane names
-    for lane in intersection.incomingLanes:
-        c = lane.centerline[-1]
-        v = lane.flowFrom(c, -1)
-        loc = carla.Location(v.x, -v.y, height)
-        world.debug.draw_string(
-            loc, lane.uid, draw_shadow=False, life_time=1000)
-    for lane in intersection.outgoingLanes:
-        c = lane.centerline[0]
-        v = lane.flowFrom(c, 1)
-        loc = carla.Location(v.x, -v.y, height)
-        world.debug.draw_string(
-            loc, lane.uid, draw_shadow=False, life_time=1000)
 
     # Draw arrival boxes
     for lane in intersection.incomingLanes:
@@ -68,7 +72,13 @@ def draw_intersection(world, intersection,
         world.debug.draw_line(
             loc_l, loc_r, thickness=0.1, life_time=1000)
 
-    if draw_lanes:
+    if label_lanes:
+    # Draw lane names
+        for lane in intersection.incomingLanes + intersection.outgoingLanes:
+            draw_lane(world, lane, life_time=life_time, label=label_lanes)
+
+    elif draw_lanes:
+    # Draw connecting lanes
         for m in intersection.maneuvers:
             l = m.connectingLane
             draw_lane(world, l, height=height)
