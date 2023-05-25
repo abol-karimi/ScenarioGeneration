@@ -12,10 +12,13 @@ import seed_corpus
 #--- Constants
 carla_map = 'Town05'
 intersection_uid = 'intersection396'
+traffic_rules = '4way-uncontrolled.lp'
 arrival_distance = 4
 route_left = seed_corpus.Route(lanes=['road44_lane1', 'road552_lane1', 'road45_lane1'])
 route_right = seed_corpus.Route(lanes=['road8_lane1', 'road415_lane1', 'road9_lane1'])
 turn_signals = [SignalType.OFF, SignalType.OFF]
+ego_route = seed_corpus.Route(lanes=['road9_lane2', 'road455_lane0', 'road45_lane1'])
+ego_init_progress = 90
 
 #--- Scenic parameters
 param carla_map = carla_map
@@ -27,7 +30,9 @@ intersection = network.elements[intersection_uid]
 config = {'carla_map': carla_map,
           'map': globalParameters.map,
           'intersection': intersection_uid,
-          'ego_route': ego_route}
+          'traffic_rules': traffic_rules,
+          'ego_route': ego_route,
+          'ego_init_progress': ego_init_progress}
 
 with open('carla_blueprint_library.json', 'r') as f:
   blueprints = jsonpickle.decode(f.read())

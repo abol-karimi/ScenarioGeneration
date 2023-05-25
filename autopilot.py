@@ -29,7 +29,7 @@ parser.add_argument('-a', '--aggressiveness',
                     help='aggressiveness of Carla BehaviorAgent')
 parser.add_argument('-r', '--ego_route',
                     help='ego route (list of lane id\'s)')
-parser.add_argument('--ego_init_progress', default=30, type=float,
+parser.add_argument('--ego_init_progress', type=float,
                     help='ego\'s initial progress along its route')
 parser.add_argument('--rss', action='store_true', help='enable RSS restrictor')
 args = parser.parse_args()
@@ -71,7 +71,7 @@ config['stop_speed_threshold'] = 0.5  # meters/seconds
 config['aggressiveness'] =  args.aggressiveness
 config['rss_enabled'] = args.rss
 config['ego_route'] = args.ego_route if args.ego_route else corpus.config['ego_route']
-config['ego_init_progress'] = args.ego_init_progress
+config['ego_init_progress'] = args.ego_init_progress if args.ego_init_progress else corpus.config['ego_init_progress']
 config['blueprints'] = bps
 
 # Run the scenario on the seed

@@ -12,7 +12,7 @@ import seed_corpus
 carla_map = 'Town05'
 intersection_uid = 'intersection1930'
 traffic_rules = '3way-T_stopOnAll.lp'
-ego_route = ('road9_lane1', 'road10_lane1', 'road1940_lane0', 'road3_lane2')
+ego_route = seed_corpus.Route(lanes=('road9_lane1', 'road10_lane1', 'road1940_lane0', 'road3_lane2'))
 ego_init_progress = 40
 arrival_distance = 4
 route_major = seed_corpus.Route(lanes=['road24_lane0', 'road11_lane3', 'road1985_lane1', 'road10_lane3', 'road9_lane3'])
@@ -33,8 +33,10 @@ route_major2minor_centerline = PolylineRegion.unionAll([l.centerline for l in ro
 config = {'carla_map': carla_map,
           'map': globalParameters.map,
           'intersection': intersection_uid,
+          'traffic_rules': traffic_rules,
           'ego_route': ego_route,
-          'traffic_rules': traffic_rules}
+          'ego_init_progress': ego_init_progress
+          }
 
 with open('carla_blueprint_library.json', 'r') as f:
   blueprints = jsonpickle.decode(f.read())
