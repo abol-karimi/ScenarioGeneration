@@ -2,7 +2,7 @@ import random
 import copy
 from geomdl import BSpline
 import numpy as np
-from scenic.domains.driving.roads import LinearElement
+from scenic.domains.driving.roads import LinearElement, Network
 from scenic.core.regions import PolygonalRegion, PolylineRegion
 from scenic.core.vectors import Vector
 
@@ -23,11 +23,10 @@ class RandomMutator():
 
   * The created scenarios' durations don't exceed config['maxSeconds']
 
-  * Trajectories remain on route (e.g. don't change lanes)
   """
   def __init__(self, config):
-    network = config['network']
-    intersection = network.elements[config['intersection_uid']]
+    network = Network.fromFile(config['map'])
+    intersection = network.elements[config['intersection']]
     routes = [(m.startLane, m.connectingLane, m.endLane)
               for m in intersection.maneuvers]
 

@@ -2,16 +2,8 @@
 Ego-vehicle arrives at an intersection.
 """
 
-# Parameters
-param map = localPath('./maps/Town05.xodr')
-param carla_map = 'Town05'
+# Scenic parameters
 model scenic.domains.driving.model
-
-param config = None
-config = globalParameters.config
-
-param seed = None
-seed = globalParameters.seed
 
 # Python imports
 import visualization
@@ -19,8 +11,14 @@ from signals import SignalType
 from utils import sample_trajectory
 from event_logger import EventLogger
 
-network = config['network']
-intersection = network.elements[config['intersection_uid']]
+param config = None
+config = globalParameters.config
+
+param seed = None
+seed = globalParameters.seed
+
+# Derived constants
+intersection = network.elements[config['intersection']]
 seconds = seed.trajectories[0].ctrlpts[-1][2]
 steps = int(seconds / config['timestep'])
 event_logger = EventLogger()

@@ -1,6 +1,7 @@
 from typing import Dict
 from dataclasses import dataclass
 import clingo
+from scenic.domains.driving.roads import Network
 
 # This project
 from utils import geometry_atoms
@@ -10,18 +11,18 @@ class PredicateNameCoverage:
   config : Dict
 
   def compute(self, seed, events):
+    network = Network.fromFile(self.config['map'])
     atoms = []
-    atoms += geometry_atoms(self.config['network'], 
-                            self.config['intersection_uid'])
+    atoms += geometry_atoms(network,
+                            self.config['intersection'])
     atoms += [f'{e.withTime(e.frame)}' for e in events]
     program = '.\n'.join(atoms)+'.\n'
 
     ctl = clingo.Control()
-    ctl.load(self.config['rules_path'])
+    ctl.load(self.config['traffic_rules'])
     ctl.add("base", [], program)
     ctl.ground([("base", [])])
     ctl.configuration.solve.models = "1"
-    models = []
     predicates = set()
     with ctl.solve(yield_=True) as handle:
         for model in handle:

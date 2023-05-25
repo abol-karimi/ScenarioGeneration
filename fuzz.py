@@ -1,12 +1,8 @@
 #!/usr/bin/env python3.8
 
 # Standard libraries
-import importlib
 import argparse
-import pickle
-import jsonpickle
-import numpy as np
-from geomdl import BSpline
+import copy
 
 # Scenic modules
 from scenic.domains.driving.roads import Network
@@ -39,8 +35,6 @@ parser.add_argument('--max_nonegos', type=int, default=5,
 parser.add_argument('--ego',
                     help='simulate an ego together with the nonegos')
 parser.add_argument('--weather', default = 'CloudySunset')
-parser.add_argument('--map_path', default = './maps/Town05.xodr')
-parser.add_argument('--map_name', default = 'Town05')
 parser.add_argument('--spline_degree', default=3, type=int)
 parser.add_argument('--max_parameters_size', default=50, type=int)
 parser.add_argument('--max_mutations_per_iteration', default=4, type=int)
@@ -55,35 +49,36 @@ if args.maxSteps:
 elif args.maxSeconds:
     maxSteps = args.maxSeconds*args.timestep
 
+in_corpus = seed_corpus.SeedCorpus([])
+in_corpus.load(args.in_corpus)
 
-# Mutator configs
+# Fuzzer configs
 config = {}
 config['maxSteps'] = maxSteps
 config['timestep'] = args.timestep
-config['weather'] = 'CloudySunset'
-config['map_path'] = './maps/Town05.xodr'
-config['map_name'] = 'Town05'
-config['intersection_uid'] = 'intersection396'
-config['rules_path'] = '4way-stopOnAll.lp'
+config['weather'] = args.weather
 config['arrival_distance'] = args.arrival_distance
 config['spline_degree'] = args.spline_degree
 config['max_parameters_size'] = args.max_parameters_size
 config['max_mutations_per_iteration'] = args.max_mutations_per_iteration
 config['max_nonegos'] = args.max_nonegos
-config['network'] = Network.fromFile(config['map_path'])
+config['iterations'] = args.iterations
+config['carla_map'] = in_corpus.config['carla_map']
+config['map'] = in_corpus.config['map']
+config['intersection'] = in_corpus.config['intersection']
+config['traffic_rules'] = in_corpus.config['traffic_rules']
 
 # Instantiate a fuzzer
 mutator = mutators.RandomMutator(config)
 coverage = coverages.PredicateNameCoverage(config=config)
 scheduler = schedulers.PriorityScheduler(config=config)
-corpus = seed_corpus.SeedCorpus([])
-corpus.load(args.in_corpus)
-fuzzer = fuzzers.ModularFuzzer(config=config,
-                              coverage=coverage,
-                              mutator=mutator,
-                              scheduler=scheduler,
-                              seed_corpus=corpus)
+fuzzer = fuzzers.ModularFuzzer(corpus=in_corpus,
+                               config=config,
+                               coverage=coverage,
+                               mutator=mutator,
+                               scheduler=scheduler)
 
 # Run the fuzzer
-fuzzer.run(args.iterations, render=False)
-corpus.save(args.out_corpus)
+fuzzer.run()
+# Save the resulting seed corpus
+fuzzer.save(args.out_corpus)

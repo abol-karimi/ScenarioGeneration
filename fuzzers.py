@@ -5,7 +5,7 @@ import time
 from scenic.simulators.newtonian import NewtonianSimulator
 
 # This project
-
+import seed_corpus
 
 @dataclass
 class ModularFuzzer:
@@ -13,23 +13,23 @@ class ModularFuzzer:
   coverage : Any # For both evaluation and seed generation purposes
   mutator : Any
   scheduler : Any
-  seed_corpus : Any
+  corpus : Any
   predicate_coverage = set()
 
-  def run(self, iterations, render=False):
+  def run(self):
     start_time = time.time()
 
-    for seed in self.seed_corpus.seeds:
-      events = self.simulate(seed, render=render)
+    for seed in self.corpus.seeds:
+      events = self.simulate(seed, render=False)
       predicates = self.coverage.compute(seed, events)
       self.scheduler.add(seed, predicates)
 
-    for i in range(iterations):
+    for i in range(self.config['iterations']):
       print(f'Total elapsed time: {round(time.time()-start_time, 3)} seconds.')
-      print('-'*20 + f'Starting iteration {i}/{iterations}' + '-'*20)
+      print('-'*20 + f'Starting iteration {i+1}/{self.config["iterations"]}' + '-'*20)
       seed = self.mutator.mutate(self.scheduler.choose())
       try:
-        events = self.simulate(seed, render=render)
+        events = self.simulate(seed, render=False)
       except Exception as err: # TODO non-ego nonego collision
         # if two nonegos collide, discard the seed:
         print('\tInvalid mutant, discarding it:')
@@ -42,27 +42,30 @@ class ModularFuzzer:
       predicates, is_novel = self.compute_coverage(seed, events)
       self.scheduler.add(seed, predicates)
       if True: #is_novel:
-        self.seed_corpus.add(seed)
+        self.corpus.add(seed)
         self.predicate_coverage.update(predicates)
 
-    return self.seed_corpus
+    return self.corpus
 
   def simulate(self, seed, simulate_ego=False, render=False):
-    print(f'Simulating the seed...')
-
     # Run the scenario on the seed
-    params = {'config': self.config,
-            'render': False,
-            'timestep': self.config['timestep'],
-            'seed': seed}  
+    params = {'carla_map': self.corpus.config['carla_map'],
+              'map': self.corpus.config['map'],
+              'render': False,
+              'timestep': self.config['timestep'],
+              'config': self.config,
+              'seed': seed}
     seconds = seed.trajectories[0].ctrlpts[-1][2]
   
     scenic_scenario = scenic.scenarioFromFile(
                         'nonegos_newtonian.scenic', 
                         params=params, 
                         model='scenic.simulators.newtonian.driving_model')
+    print(f'Initializing the scenario...')
     scene, _ = scenic_scenario.generate(maxIterations=1)
     simulator = NewtonianSimulator()
+
+    print(f'Simulating the scenario...')
     sim_result = simulator.simulate(
                     scene,
                     maxSteps=int(seconds / self.config['timestep']),
@@ -77,7 +80,8 @@ class ModularFuzzer:
     is_novel = (0 == len(predicates - self.predicate_coverage))
     return predicates, is_novel
     
-
+  def save(self, out_corpus):
+    self.corpus.save(out_corpus)
 
 
 

@@ -5,6 +5,8 @@ __pycache__
 *.jpg
 *.png
 *.log
+*.pickle
+*.xodr
 
 Docker/Carla
 Docker/Carla*/PythonAPI
