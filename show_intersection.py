@@ -2,18 +2,26 @@
 import argparse
 from scenic.domains.driving.roads import Network
 import carla
-from visualization import draw_intersection, set_camera, draw_lane
+from visualization import draw_intersection, set_camera, draw_lane      
 
 parser = argparse.ArgumentParser(
     description='Show a bird-eye view of the intersection.')
 parser.add_argument('intersection_uid', help='Scenic uid for the intersection')
-parser.add_argument('-m', '--map_name', help='Scenic uid of the Carla map')
+parser.add_argument('-m', '--map_name', help='Name of the Carla map')
+parser.add_argument('--no_boundaries', action='store_true',
+                    help='Draw lane boundaries')
+parser.add_argument('--no_labels', action='store_true',
+                    help='Draw lane boundaries')
 drawings = parser.add_mutually_exclusive_group()
+drawings.add_argument('--outside', action='store_true',
+                    help='Draw the incoming and outgoing lanes')
+drawings.add_argument('--inside', action='store_true',
+                    help='Draw the connecting lanes')
 drawings.add_argument('--all', action='store_true',
-                    help='Draw all lane boundaries')
-drawings.add_argument('--src',
+                    help='Draw both the incoming and outgoing lanes')
+drawings.add_argument('--src', action='store_true',
                     help='Draw the maneuvers starting from the incoming lane')
-drawings.add_argument('--dest',
+drawings.add_argument('--dest', action='store_true',
                     help='Draw the maneuvers ending in the outgoing lane')
 parser.add_argument('--height', default=30, type=float)
 args = parser.parse_args()
@@ -39,7 +47,20 @@ world.apply_settings(settings)
 intersection = network.elements[args.intersection_uid]
 
 lanes_to_draw = []
-if args.src:
+boundaries = not args.no_boundaries
+label = not args.no_labels
+if args.outside:
+    for lane in intersection.incomingLanes + intersection.outgoingLanes:
+        draw_lane(world, lane, boundaries=boundaries, label=label)
+elif args.inside:
+    for m in intersection.maneuvers:
+        draw_lane(world, m.connectingLane, boundaries=boundaries, label=args.no_labels)
+elif args.all:
+    for lane in intersection.incomingLanes + intersection.outgoingLanes:
+        draw_lane(world, lane, boundaries=boundaries, label=label)
+    for m in intersection.maneuvers:
+        draw_lane(world, m.connectingLane, boundaries=boundaries, label=label)
+elif args.src:
     draw_lane(world, network.elements[args.src])
     for m in intersection.maneuvers:
         if m.startLane.uid == args.src:
@@ -51,10 +72,6 @@ elif args.dest:
         if m.endLane.uid == args.dest:
             draw_lane(world, m.connectingLane)
             draw_lane(world, m.startLane)
-elif args.all:
-    draw_intersection(world, intersection, 
-                      draw_lanes=True, 
-                      label_lanes=True)
 
 set_camera(world, intersection, args.height)
 
