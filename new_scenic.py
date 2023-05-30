@@ -75,7 +75,7 @@ seed = seed_corpus.Seed(routes=routes,
                         signals=signals,
                         lengths=lengths, 
                         widths=widths)
-# Store the seed to corpus
+# Store the seed to the corpus
 if args.append:
     corpus = seed_corpus.SeedCorpus()
     corpus.load(args.corpus_file)

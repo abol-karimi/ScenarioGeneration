@@ -1,3 +1,19 @@
+#script(python)
+# Model parameters
+min_perceptible_time = 0.5
+
+import clingo
+from event_logger import term_to_time
+
+def lessThan(S, T):
+  lt = min_perceptible_time < term_to_time[T.name] - term_to_time[S.name]
+  return clingo.Number(1) if lt else clingo.Number(0)
+
+def equal(S, T):
+  eq = abs(term_to_time[S.name] - term_to_time[T.name]) < {min_perceptible_time}
+  return clingo.Number(1) if eq else clingo.Number(0)
+#end.
+
 %----------------------------------------------
 %---Auxiliary predicates for geometric facts---
 %----------------------------------------------
@@ -74,31 +90,9 @@ violatesRightOfForRule(V1, V2, leftTurnFromContinuingHighway):-
   overlaps(L1, L2),
   arrivedAtTime(V2, Ta),
   enteredLaneAtTime(V1, L2, Te1),
-  lessThan(Ta, Te1),
+  1 = @lessThan(Ta, Te1),
   leftLaneAtTime(V2, L1, Tl2),
-  lessThan(Te1, Tl2).
-
-#count {0:equal(Ta, Te1); 1:lessThan(Ta, Te1); 2:lessThan(Te1, Ta)} = 1 :-
-  V1 != V2,
-  signaledLeft(V1),
-  arrivedFromOppositeDirection(V1, V2),
-  requestedLane(V1, L1),
-  requestedLane(V2, L2),
-  overlaps(L1, L2),
-  arrivedAtTime(V2, Ta),
-  enteredLaneAtTime(V1, L2, Te1).
-
-#count {0:equal(Tl2, Te1); 1:lessThan(Tl2, Te1); 2:lessThan(Te1, Tl2)} = 1 :-
-  V1 != V2,
-  signaledLeft(V1),
-  arrivedFromOppositeDirection(V1, V2),
-  requestedLane(V1, L1),
-  requestedLane(V2, L2),
-  overlaps(L1, L2),
-  arrivedAtTime(V2, Ta),
-  enteredLaneAtTime(V1, L2, Te1),
-  lessThan(Ta, Te1),
-  leftLaneAtTime(V2, L1, Tl2).
+  1 = @lessThan(Te1, Tl2).
 
 % 21801 (b):
 % A driver having yielded as prescribed in subdivision (a),
@@ -115,33 +109,10 @@ violatesRightOfForRule(V2, V1, yieldToLeftTurnFromContinuingHighway):-
   overlaps(L1, L2),
   arrivedAtTime(V2, Ta),
   enteredLaneAtTime(V1, L2, Te1),
-  lessThan(Te1, Ta), % V1 enters the overlap earlier than V2 arrives at the intersection
+  1 = @lessThan(Te1, Ta), % V1 enters the overlap earlier than V2 arrives at the intersection
   leftLaneAtTime(V1, L2, Tl1),
   enteredLaneAtTime(V2, L1, Te2),
-  lessThan(Te2, Tl1). % V2 enters the overlap earlier than V1 leaves it
-
-#count {0:equal(Ta, Te1); 1:lessThan(Ta, Te1); 2:lessThan(Te1, Ta)} = 1 :-
-  V1 != V2,
-  signaledLeft(V1),
-  arrivedFromOppositeDirection(V1, V2),
-  requestedLane(V1, L1),
-  requestedLane(V2, L2),
-  overlaps(L1, L2),
-  arrivedAtTime(V2, Ta),
-  enteredLaneAtTime(V1, L2, Te1).
-
-#count {0:equal(Tl1, Te2); 1:lessThan(Tl1, Te2); 2:lessThan(Te2, Tl1)} = 1 :-
-  V1 != V2,
-  signaledLeft(V1),
-  arrivedFromOppositeDirection(V1, V2),
-  requestedLane(V1, L1),
-  requestedLane(V2, L2),
-  overlaps(L1, L2),
-  arrivedAtTime(V2, Ta),
-  enteredLaneAtTime(V1, L2, Te1),
-  lessThan(Te1, Ta), % V1 enters the overlap earlier than V2 arrives at the intersection
-  leftLaneAtTime(V1, L2, Tl1),
-  enteredLaneAtTime(V2, L1, Te2).
+  1 = @lessThan(Te2, Tl1). % V2 enters the overlap earlier than V1 leaves it
 
 % 22450 (a):
 % The driver of any vehicle approaching a stop sign at the entrance to, or within, an intersection
@@ -173,33 +144,10 @@ violatesRightOfForRule(V1, V2, yieldToCrossing):-
   overlaps(L1, L2),
   arrivedAtTime(V2, Ta),
   enteredAtTime(V1, Te),
-  lessThan(Ta, Te), % V2 arrives earlier than V1 enters
+  1 = @lessThan(Ta, Te), % V2 arrives earlier than V1 enters
   enteredLaneAtTime(V1, L2, Tle),
   leftLaneAtTime(V2, L1, Tll),
-  lessThan(Tle, Tll). % V1 enters the overlap earlier than V2 leaves it
-
-#count {0:equal(Ta, Te); 1:lessThan(Ta, Te); 2:lessThan(Te, Ta)} = 1 :-
-  V1 != V2,
-  arrivedFromTerminatingHighway(V1),
-  arrivedFromContinuingHighway(V2),
-  requestedLane(V1, L1),
-  requestedLane(V2, L2),
-  overlaps(L1, L2),
-  arrivedAtTime(V2, Ta),
-  enteredAtTime(V1, Te).
-
-#count {0:equal(Tll, Tle); 1:lessThan(Tll, Tle); 2:lessThan(Tle, Tll)} = 1 :-
-  V1 != V2,
-  arrivedFromTerminatingHighway(V1),
-  arrivedFromContinuingHighway(V2),
-  requestedLane(V1, L1),
-  requestedLane(V2, L2),
-  overlaps(L1, L2),
-  arrivedAtTime(V2, Ta),
-  enteredAtTime(V1, Te),
-  lessThan(Ta, Te), % V2 arrives earlier than V1 enters
-  enteredLaneAtTime(V1, L2, Tle),
-  leftLaneAtTime(V2, L1, Tll).
+  1 = @lessThan(Tle, Tll). % V1 enters the overlap earlier than V2 leaves it
 
 % 21802 (b):
 % A driver having yielded as prescribed in subdivision (a) may proceed to enter the intersection,
@@ -216,25 +164,14 @@ violatesRightOfForRule(V2, V1, yieldToYieldedToCrossing):-
   overlaps(L1, L2),
   enteredAtTime(V1, Te),
   arrivedAtTime(V2, Ta),
-  lessThan(Te, Ta), % V1 enters before V2 arrives
+  1 = @lessThan(Te, Ta), % V1 enters before V2 arrives
   enteredLaneAtTime(V2, L1, Tle),
   leftLaneAtTime(V1, L2, Tll),
-  lessThan(Tle, Tll). % V2 enters the overlap earlier than V1 leaves it
-
-#count {0:equal(Tll, Tle); 1:lessThan(Tll, Tle); 2:lessThan(Tle, Tll)} = 1 :-
-  V1 != V2,
-  arrivedFromTerminatingHighway(V1),
-  arrivedFromContinuingHighway(V2),
-  requestedLane(V1, L1),
-  requestedLane(V2, L2),
-  overlaps(L1, L2),
-  enteredAtTime(V1, Te),
-  arrivedAtTime(V2, Ta),
-  lessThan(Te, Ta), % V1 enters before V2 arrives
-  enteredLaneAtTime(V2, L1, Tle),
-  leftLaneAtTime(V1, L2, Tll).
+  1 = @lessThan(Tle, Tll). % V2 enters the overlap earlier than V1 leaves it
 
 %-------------------------------------------------
 violatesRightOf(V1, V2):-
   violatesRightOfForRule(V1, V2, _).
+
+
 

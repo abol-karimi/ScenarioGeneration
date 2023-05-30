@@ -29,15 +29,13 @@ behavior AnimateBehavior():
 		take SetPositionAction(pose.position), SetHeadingAction(pose.heading)
 
 cars = []
-for route, spline, signal in zip(seed.routes, seed.trajectories, seed.signals):
+for i, (route, spline, signal) in enumerate(zip(seed.routes, seed.trajectories, seed.signals)):
 	traj_sample = sample_trajectory(spline, 
 																	steps+1,
 																	0, 
 																	seconds)
-	d0 = int(spline.ctrlpts[0][1])
 	car = Car at traj_sample[0],
-	  with name '_'.join(route.lanes + [str(d0)]),
-		with color Color(0, 0, 1),
+	  with name '_'.join(route.lanes + [str(i)]),
 		with behavior AnimateBehavior(),
 		with physics False,
 		with allowCollisions False,
@@ -54,7 +52,7 @@ monitor intersection_events:
 	lanes = {car: set() for car in cars}
 	inIntersection = {car: False for car in cars}
 	while True:
-		currentTime = simulation().currentTime
+		currentTime = simulation().currentTime * config['timestep']
 		for car in cars:
 			inIntersection[car] = intersection.intersects(car)
 			

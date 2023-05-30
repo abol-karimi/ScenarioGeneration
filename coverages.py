@@ -15,7 +15,7 @@ class PredicateNameCoverage:
     atoms = []
     atoms += geometry_atoms(network,
                             self.config['intersection'])
-    atoms += [f'{e.withTime(e.frame)}' for e in events]
+    atoms += [str(e) for e in events]
     program = '.\n'.join(atoms)+'.\n'
 
     ctl = clingo.Control()
