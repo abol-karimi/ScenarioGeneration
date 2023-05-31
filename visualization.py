@@ -1,11 +1,15 @@
+import numpy as np
+import random
 import carla
 from scenic.core.geometry import _RotatedRectangle as RRect
 
 
 def draw_lane(world, lane,
               boundaries=True,
+              centerlines=False,
               label=True,
-              color=carla.Color(255, 0, 0), 
+              boundary_color=carla.Color(255, 0, 0),
+              centerline_color=carla.Color(0, 255, 0),
               life_time=-1, 
               height=0.2):
 
@@ -17,20 +21,31 @@ def draw_lane(world, lane,
             begin = locations[i]
             end = locations[i+1]
             world.debug.draw_line(
-                begin, end, thickness=0.1, color=color, life_time=life_time)
+                begin, end, thickness=0.1, color=boundary_color, life_time=life_time)
         locations = [carla.Location(p[0], -p[1], height)
                     for p in lane.rightEdge.lineString.coords]
         for i in range(len(locations)-1):
             begin = locations[i]
             end = locations[i+1]
             world.debug.draw_line(
-                begin, end, thickness=0.1, color=color, life_time=life_time)
+                begin, end, thickness=0.1, color=boundary_color, life_time=life_time)
+    if centerlines:
+        locations = [carla.Location(p[0], -p[1], height)
+                    for p in lane.centerline.lineString.coords]
+        for i in range(len(locations)-1):
+            begin = locations[i]
+            end = locations[i+1]
+            world.debug.draw_line(
+                begin, end, thickness=0.05, color=centerline_color, life_time=life_time)        
     if label:
     # Draw lane label
-        c = lane.polygon.centroid
-        loc = carla.Location(c.x, -c.y, height)
-        world.debug.draw_string(
-            loc, lane.uid, draw_shadow=False, life_time=1000)      
+        ds = list(np.arange(random.uniform(1, 2), lane.centerline.length-random.uniform(1, 2), random.uniform(6, 8)))
+        ps = [lane.centerline.pointAlongBy(d)
+              for d in ds]
+        locs = [carla.Location(p.x, -p.y, 0.5)
+                for p in ps]
+        for loc in locs:
+            world.debug.draw_string(loc, lane.uid, life_time=1000)
 
 
 def draw_intersection(world, intersection, 
