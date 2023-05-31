@@ -4,13 +4,16 @@ import numpy as np
 from scenic.domains.driving.roads import Network
 import carla
 
+# This project
+from visualization import draw_lane
+
 parser = argparse.ArgumentParser(description='label the intersections.')
 parser.add_argument('-m', '--map_name',
                     help='Carla map name')
 parser.add_argument('-i', '--intersections', action='store_true',
-                    help='Label intersections')
+                    help='Draw intersections')
 parser.add_argument('-l', '--lanes', action='store_true',
-                    help='Label intersections')
+                    help='Draw lanes')
 args = parser.parse_args()
 
 client = carla.Client('127.0.0.1', 2000)
@@ -34,10 +37,4 @@ if args.intersections:
 
 if args.lanes:
     for lane in network.lanes:
-        ds = list(np.arange(1, lane.centerline.length-1, 3))
-        ps = [lane.centerline.pointAlongBy(d)
-              for d in ds]
-        locs = [carla.Location(p.x, -p.y, 0.5)
-                for p in ps]
-        for loc in locs:
-            world.debug.draw_string(loc, lane.uid, life_time=1000)
+        draw_lane(world, lane)
