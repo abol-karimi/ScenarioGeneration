@@ -53,7 +53,7 @@ behavior PassBehavior(speed, trajectory):
   do FollowTrajectoryBehavior(speed, trajectory)
   do FollowLaneBehavior(speed)
 
-p0_init_progress = 60
+p0_init_progress = 70
 p0 = route_major_centerline.pointAlongBy(p0_init_progress)
 car_left = Car at p0, facing roadDirection,
   with name 'nonego_left',
