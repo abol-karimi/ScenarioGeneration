@@ -3,8 +3,7 @@ import argparse
 import jsonpickle
 import random
 import scenic
-from scenic.domains.driving.roads import Network
-from scenic.syntax.veneer import localPath
+import carla
 
 # This project
 import seed_corpus
@@ -64,6 +63,11 @@ params = {'carla_map': corpus.config['carla_map'],
 
 scenic_scenario = scenic.scenarioFromFile(
     'replay.scenic', params=params)
+
+client = carla.Client('127.0.0.1', 2000)
+loaded_map = client.get_world().get_map().name
+if loaded_map != corpus.config['carla_map']:
+    client.load_world(corpus.config['carla_map'])
 
 scene, _ = scenic_scenario.generate(maxIterations=1)
 simulator = scenic_scenario.getSimulator()
