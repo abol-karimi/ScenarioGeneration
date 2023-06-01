@@ -35,7 +35,7 @@ for i, (route, spline, signal) in enumerate(zip(seed.routes, seed.trajectories, 
 																	0, 
 																	seconds)
 	car = Car at traj_sample[0],
-	  with name '_'.join(route.lanes + [str(i)]),
+		with name '_'.join(route.lanes + [str(i)]),
 		with behavior AnimateBehavior(),
 		with physics False,
 		with allowCollisions False,
