@@ -20,7 +20,7 @@ class ModularFuzzer:
     start_time = time.time()
 
     for seed in self.corpus.seeds:
-      events = self.simulate(seed, render=False)
+      events = self.simulate(seed)
       predicates = self.coverage.compute(seed, events)
       self.scheduler.add(seed, predicates)
 
@@ -29,7 +29,7 @@ class ModularFuzzer:
       print('-'*20 + f'Starting iteration {i+1}/{self.config["iterations"]}' + '-'*20)
       seed = self.mutator.mutate(self.scheduler.choose())
       try:
-        events = self.simulate(seed, render=False)
+        events = self.simulate(seed)
       except Exception as err: # TODO non-ego nonego collision
         # if two nonegos collide, discard the seed:
         print('\tInvalid mutant, discarding it:')
@@ -47,7 +47,7 @@ class ModularFuzzer:
 
     return self.corpus
 
-  def simulate(self, seed, simulate_ego=False, render=False):
+  def simulate(self, seed):
     # Run the scenario on the seed
     params = {'carla_map': self.corpus.config['carla_map'],
               'map': self.corpus.config['map'],

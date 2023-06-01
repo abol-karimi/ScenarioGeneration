@@ -32,8 +32,8 @@ duration.add_argument('--maxSeconds', type=float,
                       help='maximum allowed scenario duration in seconds. Note that each scenario can have a different duration.')
 parser.add_argument('--max_nonegos', type=int, default=5,
                       help='maximum number of non-egos allowed')
-parser.add_argument('--ego',
-                    help='simulate an ego together with the nonegos')
+parser.add_argument('--ego', 
+                    help='simulate the given ego together with the nonegos')
 parser.add_argument('--weather', default = 'CloudySunset')
 parser.add_argument('--spline_degree', default=3, type=int)
 parser.add_argument('--max_parameters_size', default=50, type=int)
@@ -54,6 +54,10 @@ in_corpus.load(args.in_corpus)
 
 # Fuzzer configs
 config = {}
+config['carla_map'] = in_corpus.config['carla_map']
+config['map'] = in_corpus.config['map']
+config['intersection'] = in_corpus.config['intersection']
+config['traffic_rules'] = in_corpus.config['traffic_rules']
 config['maxSteps'] = maxSteps
 config['timestep'] = args.timestep
 config['weather'] = args.weather
@@ -63,10 +67,7 @@ config['max_parameters_size'] = args.max_parameters_size
 config['max_mutations_per_iteration'] = args.max_mutations_per_iteration
 config['max_nonegos'] = args.max_nonegos
 config['iterations'] = args.iterations
-config['carla_map'] = in_corpus.config['carla_map']
-config['map'] = in_corpus.config['map']
-config['intersection'] = in_corpus.config['intersection']
-config['traffic_rules'] = in_corpus.config['traffic_rules']
+config['ego'] = args.ego
 
 # Instantiate a fuzzer
 mutator = mutators.RandomMutator(config)

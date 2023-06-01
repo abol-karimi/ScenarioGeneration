@@ -1,13 +1,11 @@
 #!/usr/bin/env python3.8
 import random
 import jsonpickle
-from scenic.domains.driving.roads import Network
 import scenic
 import argparse
 
 # This project
 import seed_corpus
-from utils import get_trace
 
 parser = argparse.ArgumentParser(
     description='play the given scenario with a Carla autopilot driving the ego.')
@@ -15,9 +13,8 @@ parser.add_argument('corpus',
                     help='filename of the corpus of seeds')
 parser.add_argument('seed', type=int, 
                     help='seed number to replay')
-parser.add_argument('--timestep', type=float, 
-                    default=0.05, 
-                    help='length of each simulation step, controls simulation speed.')
+parser.add_argument('--timestep', type=float, default=0.05,
+                    help='length of each simulation step')
 duration = parser.add_mutually_exclusive_group()
 duration.add_argument('--steps', type=int, 
                       help='max number of simulation steps')
