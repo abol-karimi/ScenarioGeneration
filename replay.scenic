@@ -20,8 +20,6 @@ import pickle
 import carla
 
 behavior AnimateBehavior():
-	#lights = self.signal.to_vehicleLightState()
-	#take SetVehicleLightStateAction(lights)
 	for pose in self.traj_sample:
 		take SetTransformAction(pose.position, pose.heading)
 

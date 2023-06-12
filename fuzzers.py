@@ -48,19 +48,24 @@ class ModularFuzzer:
     return self.corpus
 
   def simulate(self, seed):
-    # Run the scenario on the seed
+    """ Runs the scenario on the given seed.
+    Returns the discrete-time trajectories.
+    """
+    # Sample the nonego splines.
+    seconds = seed.trajectories[0].ctrlpts[-1][2]
+    
+    # For closed-loop fuzzing, simulate the ego too.
     params = {'carla_map': self.corpus.config['carla_map'],
               'map': self.corpus.config['map'],
-              'render': False,
+              'render': True,
               'timestep': self.config['timestep'],
-              'config': self.config,
-              'seed': seed}
-    seconds = seed.trajectories[0].ctrlpts[-1][2]
-  
+              'config': {'seed': seed, **self.config},
+              }
+
     scenic_scenario = scenic.scenarioFromFile(
-                        'nonegos_newtonian.scenic', 
-                        params=params, 
-                        model='scenic.simulators.newtonian.driving_model')
+                        'run_seed.scenic',
+                        scenario='ClosedLoop' if self.config['ego'] else 'OpenLoop',
+                        params=params)
     print(f'Initializing the scenario...')
     scene, _ = scenic_scenario.generate(maxIterations=1)
     simulator = NewtonianSimulator()
