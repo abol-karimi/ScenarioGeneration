@@ -17,6 +17,11 @@ parser.add_argument('--timestep', type=float,
 duration = parser.add_mutually_exclusive_group()
 duration.add_argument('--steps', type=int, help='max number of steps to replay')
 duration.add_argument('--seconds', type=float, help='max seconds to replay')
+simulator = parser.add_mutually_exclusive_group()
+duration.add_argument('--newtonian', action='store_const', dest='simulator', const='newtonian', 
+                      help='replay in the newtonian simulator')
+duration.add_argument('--carla', action='store_const', dest='simulator', const='carla',
+                      help='replay in the carla simulator')
 args = parser.parse_args()
 
 corpus = seed_corpus.SeedCorpus([])
@@ -62,7 +67,7 @@ params = {'carla_map': corpus.config['carla_map'],
           'seed': seed}
 
 scenic_scenario = scenic.scenarioFromFile(
-    'replay.scenic', params=params)
+    f'replay_{args.simulator}.scenic', params=params)
 
 client = carla.Client('127.0.0.1', 2000)
 loaded_map = client.get_world().get_map().name
