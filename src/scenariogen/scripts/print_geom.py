@@ -1,7 +1,7 @@
 #!/usr/bin/env python3.8
 
 from scenic.domains.driving.roads import Network
-from utils import geometry_atoms
+from src.scenariogen.core.utils import geometry_atoms
 import argparse
 import carla
 

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3.8
 import matplotlib.pyplot as plt
 import argparse
-from mscatter import mscatter
+from src.scenariogen.core.mscatter import mscatter
 from geomdl import operations
-from utils import sample_trajectory
+from src.scenariogen.core.utils import sample_trajectory
 
 # This project
-import seed_corpus
+import src.scenariogen.core.seed_corpus as seed_corpus
 
 parser = argparse.ArgumentParser(description='Plot frame-distance curve of a car.')
 parser.add_argument('corpus', help='filename of the corpus of seeds')

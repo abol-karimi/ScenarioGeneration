@@ -1,6 +1,6 @@
-pysmt
 geomdl
 numpy
-z3-solver==4.8.10
 networkx
 jsonpickle
+pythonfuzz
+atheris

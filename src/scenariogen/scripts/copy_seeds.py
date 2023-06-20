@@ -4,7 +4,7 @@
 import argparse
 
 # My modules
-import seed_corpus
+import src.scenariogen.core.seed_corpus as seed_corpus
 
 parser = argparse.ArgumentParser(description='Copy a subset of seeds from one corpus to another.')
 parser.add_argument('in_corpus', 

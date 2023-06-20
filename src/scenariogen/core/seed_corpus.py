@@ -4,7 +4,7 @@ from geomdl import BSpline
 import jsonpickle
 
 # This project
-from signals import SignalType
+from src.scenariogen.core.signals import SignalType
 
 
 @dataclass
@@ -22,13 +22,18 @@ class Seed:
   def is_valid(self):
     """Check some necessary (but not sufficient) conditions.
     """
-    if len(self.routes) != len(self.trajectories):
+    n = len(self.routes)
+    if n == 0:
       return False
-    if len(self.routes) != len(self.signals):
+    if n != len(self.trajectories):
       return False
-    if len(self.routes) == 0:
+    if n != len(self.signals):
       return False
-      
+    if n != len(self.lengths):
+      return False
+    if n != len(self.widths):
+      return False
+
     return True
 
 

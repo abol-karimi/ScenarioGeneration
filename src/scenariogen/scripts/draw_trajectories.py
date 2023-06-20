@@ -5,9 +5,9 @@ import carla
 import pickle
 
 # This project
-import seed_corpus
+import src.scenariogen.core.seed_corpus as seed_corpus
 import visualization
-from utils import sample_trajectory
+from src.scenariogen.core.utils import sample_trajectory
 
 parser = argparse.ArgumentParser(description='play the given scenario.')
 parser.add_argument('corpus', 

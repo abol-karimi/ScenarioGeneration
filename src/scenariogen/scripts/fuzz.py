@@ -8,13 +8,13 @@ import copy
 from scenic.domains.driving.roads import Network
 
 # My modules
-import seed_corpus
-import mutators
-import fuzzers
-import schedulers
-import coverages
-from signals import SignalType
-from utils import route_length
+import src.scenariogen.core.seed_corpus as seed_corpus
+import src.scenariogen.core.mutators as mutators
+import src.scenariogen.core.fuzzers as fuzzers
+import src.scenariogen.core.schedulers as schedulers
+import src.scenariogen.core.coverages as coverages
+from src.scenariogen.core.signals import SignalType
+from src.scenariogen.core.utils import route_length
 
 parser = argparse.ArgumentParser(description='Make new seeds by fuzzing the given seed corpus.')
 parser.add_argument('in_corpus', 

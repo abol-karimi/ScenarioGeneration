@@ -5,7 +5,7 @@ from queue import Queue, PriorityQueue
 import random
 
 # This project
-from seed_corpus import Seed
+from src.scenariogen.core.seed_corpus import Seed
 
 class FIFOScheduler:
   seeds = Queue() # Queue
@@ -37,17 +37,17 @@ class PriorityScheduler:
     score, insertion_order, seed = self.seeds.queue[0]
     return seed
 
-  def add(self, seed, predicates):
-    score = self.priority_score(seed, predicates)
+  def add(self, seed, coverage):
+    score = self.priority_score(seed, coverage)
     self.seeds.put((score, self.seeds.qsize(), seed))
     
     # Update the coverage
-    for p in predicates:
+    for p in coverage:
       if p in self.coverage:
         self.coverage[p] += 1
       else:
         self.coverage[p] = 1
   
   def priority_score(self, seed, predicates):
-    return len(predicates)
+    return len(predicates) # simplest priority score
 

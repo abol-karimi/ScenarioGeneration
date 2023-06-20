@@ -278,7 +278,7 @@ def route_length(route):
 
 def geometry_atoms(network, intersection_uid):
     """Assumes the correct map is loaded in CARLA server."""
-    from signals import SignalType
+    from src.scenariogen.core.signals import SignalType
     intersection = network.elements[intersection_uid]
     maneuvers = intersection.maneuvers
     geometry = []
@@ -386,3 +386,8 @@ def get_trace(world, planner, route):
 
 def classify_intersection(intersection):
     return
+
+def connecting_lane(network, start, end):
+    for m in network.elements[start].maneuvers:
+        if m.endLane.uid == end:
+            return m.connectingLane.uid
