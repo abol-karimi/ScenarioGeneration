@@ -5,7 +5,7 @@ from scenic.domains.driving.roads import Network
 import carla
 
 # This project
-from visualization import draw_lane
+from scenariogen.simulators.carla.visualization import draw_lane
 
 parser = argparse.ArgumentParser(description='label the intersections.')
 parser.add_argument('-m', '--map_name',

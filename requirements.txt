@@ -1,5 +1,4 @@
 geomdl
-numpy
 networkx
 jsonpickle
 pythonfuzz

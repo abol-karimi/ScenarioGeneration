@@ -2,7 +2,7 @@
 import argparse
 from scenic.domains.driving.roads import Network
 import carla
-from visualization import draw_intersection, set_camera, draw_lane      
+from scenariogen.simulators.carla.visualization import draw_intersection, set_camera, draw_lane
 
 parser = argparse.ArgumentParser(
     description='Show a bird-eye view of the intersection.')

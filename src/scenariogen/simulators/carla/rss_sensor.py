@@ -19,7 +19,7 @@ import inspect
 import carla
 from carla import ad
 import math
-from rss_visualization import RssDebugVisualizer # pylint: disable=relative-import
+from scenariogen.simulators.carla.rss_visualization import RssDebugVisualizer # pylint: disable=relative-import
 
 
 # ==============================================================================
