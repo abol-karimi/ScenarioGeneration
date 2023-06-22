@@ -5,8 +5,8 @@ Two non-egos arrive at a 3way all-way-stop intersection,
 
 #--- Python imports
 import jsonpickle
-from signals import SignalType
-import seed_corpus
+from scenariogen.core.signals import SignalType
+import scenariogen.core.seed_corpus as seed_corpus
 
 #--- Defined constants
 carla_map = 'Town05'
@@ -38,7 +38,7 @@ config = {'carla_map': carla_map,
           'ego_init_progress': ego_init_progress
           }
 
-with open('carla_blueprint_library.json', 'r') as f:
+with open('src/scenariogen/simulators/carla/blueprint_library.json', 'r') as f:
   blueprints = jsonpickle.decode(f.read())
 
 behavior StopBehavior():

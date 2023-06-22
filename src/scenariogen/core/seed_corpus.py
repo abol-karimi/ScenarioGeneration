@@ -4,7 +4,7 @@ from geomdl import BSpline
 import jsonpickle
 
 # This project
-from src.scenariogen.core.signals import SignalType
+from scenariogen.core.signals import SignalType
 
 
 @dataclass

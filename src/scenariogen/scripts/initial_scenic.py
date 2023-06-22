@@ -10,8 +10,8 @@ from scenic.domains.driving.roads import Network
 from scenic.simulators.newtonian import NewtonianSimulator
 
 # My modules
-import src.scenariogen.core.seed_corpus as seed_corpus
-from src.scenariogen.core.utils import spacetime_trajectories, spline_approximation
+import scenariogen.core.seed_corpus as seed_corpus
+from scenariogen.core.utils import spacetime_trajectories, spline_approximation
 
 #----------Main Script----------
 parser = argparse.ArgumentParser(description='Make a seed from a scenic scenario.')
@@ -19,12 +19,12 @@ parser.add_argument('scenic_file',
                     help='Scenic file specifying the scenario')
 parser.add_argument('corpus_file', 
                     help='Seed corpus to save the generated seed in')
-parser.add_argument('--append', action='store_true', 
+parser.add_argument('--append', action='store_true',
                     help='add the new seed to the corpus')
 duration = parser.add_mutually_exclusive_group()
 duration.add_argument('--steps', type=int,
                       help='The duration of the scenario in steps')
-duration.add_argument('--seconds', type=float, 
+duration.add_argument('--seconds', type=float,
                       help='The duration of the scenario in seconds')
 parser.add_argument('--timestep', default=0.05, type=float, 
                     help='The length of one simulation step')
