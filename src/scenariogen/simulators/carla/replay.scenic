@@ -12,12 +12,12 @@ seed = globalParameters.seed
 intersection = network.elements[config['intersection']]
 
 # Python imports
-import visualization
-from signals import SignalType
-from utils import sample_trajectory
 import time
 import pickle
 import carla
+import visualization
+from scenariogen.core.signals import SignalType
+from scenariogen.core.utils import sample_trajectory
 
 behavior AnimateBehavior():
 	for pose in self.traj_sample:

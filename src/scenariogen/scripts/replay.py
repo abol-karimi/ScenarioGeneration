@@ -47,7 +47,7 @@ if args.simulator == 'carla':
         client.load_world(corpus.config['carla_map'])
 
     # Choose a blueprint of an appropriate size for each non-ego
-    with open('blueprint_library.json', 'r') as f:
+    with open('src/scenariogen/simulators/carla/blueprint_library.json', 'r') as f:
         blueprints = jsonpickle.decode(f.read())
     dim2bp = {}
     for b, dims in blueprints.items():
