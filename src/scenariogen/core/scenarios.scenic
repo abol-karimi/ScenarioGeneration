@@ -1,18 +1,7 @@
-model scenic.simulators.newtonian.driving_model
-
-# Scenario parameters
-param config = None
-config = globalParameters.config
-
 # Python imports
-from events import *
-from utils import sample_trajectory
-from signals import SignalType
-
-# Derived constants
-seed = config['seed']
-seconds = seed.trajectories[0].ctrlpts[-1][2]
-steps = int(seconds / config['timestep'])
+from scenariogen.core.events import *
+from scenariogen.core.utils import sample_trajectory
+from scenariogen.core.signals import SignalType
 
 behavior AnimateBehavior():
 	for pose in self.traj_sample:

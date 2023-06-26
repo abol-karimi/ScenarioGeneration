@@ -14,13 +14,13 @@ intersection = network.elements[config['intersection']]
 
 # Python imports
 import time
-import visualization
-from rss_sensor import RssSensor
 import carla
-from signals import SignalType
-from utils import sample_trajectory, get_trace
 from agents.navigation.behavior_agent import BehaviorAgent
 from scenic.simulators.carla.utils.utils import scenicToCarlaLocation
+import scenariogen.simulators.carla.visualization as visualization
+from scenariogen.simulators.carla.rss_sensor import RssSensor
+from scenariogen.core.signals import SignalType
+from scenariogen.core.utils import sample_trajectory, get_trace
 
 behavior AnimateBehavior():
 	lights = self.signal.to_vehicleLightState()

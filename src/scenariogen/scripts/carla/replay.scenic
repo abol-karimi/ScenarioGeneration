@@ -13,7 +13,7 @@ intersection = network.elements[config['intersection']]
 import time
 import pickle
 import carla
-import visualization
+import scenariogen.simulators.carla.visualization as visualization
 from scenariogen.core.signals import SignalType
 from scenariogen.core.utils import sample_trajectory
 
