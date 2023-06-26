@@ -9,7 +9,7 @@ from scenic.core.vectors import Vector
 # This project
 import src.scenariogen.core.utils as utils
 from src.scenariogen.core.signals import SignalType
-from src.scenariogen.core.seed_corpus import Route
+from scenariogen.core.seed import Route
 
 class RandomMutator():
   """Randomly change the the trajectories using their parameters.

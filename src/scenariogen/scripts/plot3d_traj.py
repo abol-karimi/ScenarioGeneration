@@ -6,7 +6,7 @@ from geomdl import operations
 from src.scenariogen.core.utils import sample_trajectory
 
 # This project
-import src.scenariogen.core.seed_corpus as seed_corpus
+import scenariogen.core.seed as seed
 
 parser = argparse.ArgumentParser(description='Plot frame-distance curve of a car.')
 parser.add_argument('corpus', help='filename of the corpus of seeds')
@@ -15,7 +15,7 @@ parser.add_argument('--resolution', type=int, default=701, help='Discretization 
 args = parser.parse_args()
 
 # Load the seed
-corpus = seed_corpus.SeedCorpus([])
+corpus = seed.SeedCorpus([])
 corpus.load(args.corpus)
 seed = corpus.seeds[args.seed]
 

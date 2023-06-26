@@ -1,0 +1,18 @@
+{
+  "carla_map": "Town05",
+  "map": "/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/Town05.xodr",
+  "intersection": "intersection1930",
+  "traffic_rules": "3way-T_stopOnAll.lp",
+  "ego_route": {
+    "py/object": "scenariogen.core.seed.Route",
+    "lanes": {
+      "py/tuple": [
+        "road9_lane1",
+        "road10_lane1",
+        "road1940_lane0",
+        "road3_lane2"
+      ]
+    }
+  },
+  "ego_init_progress": 40
+}

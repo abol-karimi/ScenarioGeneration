@@ -2,25 +2,23 @@
 
 # Standard libraries
 import argparse
-import pickle
+import jsonpickle, pickle
+from pathlib import Path
 
 # Scenic modules
 import scenic
-from scenic.domains.driving.roads import Network
 from scenic.simulators.newtonian import NewtonianSimulator
 
 # My modules
-import scenariogen.core.seed_corpus as seed_corpus
+from scenariogen.core.seed import Seed
 from scenariogen.core.utils import spacetime_trajectories, spline_approximation
 
 #----------Main Script----------
 parser = argparse.ArgumentParser(description='Make a seed from a scenic scenario.')
 parser.add_argument('scenic_file', 
-                    help='Scenic file specifying the scenario')
-parser.add_argument('corpus_file', 
-                    help='Seed corpus to save the generated seed in')
-parser.add_argument('--append', action='store_true',
-                    help='add the new seed to the corpus')
+                    help='Path of the Scenic file specifying the scenario')
+parser.add_argument('--save_config', action='store_true',
+                    help='Save the config into a file')
 duration = parser.add_mutually_exclusive_group()
 duration.add_argument('--steps', type=int,
                       help='The duration of the scenario in steps')
@@ -60,27 +58,28 @@ routes = sim_result.records['routes']
 signals = sim_result.records['turn_signals']
 lengths = sim_result.records['lengths']
 widths = sim_result.records['widths']
+config = sim_result.records['config']
 spacetime_trajs = spacetime_trajectories(sim_result, args.timestep)
 
-#for debugging
+# Save the simulated trajectories for debugging
 with open('spacetime_trajectories.pickle', 'wb') as outFile:
     pickle.dump(spacetime_trajs, outFile)
 
 trajectories = [spline_approximation(traj,
-                                     degree=args.spline_degree,
-                                     knots_size=args.parameters_size)
-          for traj in spacetime_trajs]
-seed = seed_corpus.Seed(routes=routes, 
-                        trajectories=trajectories, 
-                        signals=signals,
-                        lengths=lengths, 
-                        widths=widths)
-# Store the seed to the corpus
-if args.append:
-    corpus = seed_corpus.SeedCorpus()
-    corpus.load(args.corpus_file)
-    corpus.add(seed)
-else:
-    corpus = seed_corpus.SeedCorpus(seeds=[seed],
-                                    config=sim_result.records['config'])
-corpus.save(args.corpus_file)
+                                    degree=args.spline_degree,
+                                    knots_size=args.parameters_size)
+                for traj in spacetime_trajs]
+seed = Seed(routes=routes, 
+            trajectories=trajectories,
+            signals=signals,
+            lengths=lengths, 
+            widths=widths)
+
+# Store the seed
+scenic_path = Path(args.scenic_file)
+with open(scenic_path.with_name(scenic_path.stem + '.json'), 'w') as f:
+    f.write(jsonpickle.encode(seed))
+
+if args.save_config:
+    with open(scenic_path.with_name('config.json'), 'w') as f:
+        f.write(jsonpickle.encode(config))

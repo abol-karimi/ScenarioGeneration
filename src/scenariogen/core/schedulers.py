@@ -5,7 +5,7 @@ from queue import Queue, PriorityQueue
 import random
 
 # This project
-from src.scenariogen.core.seed_corpus import Seed
+from scenariogen.core.seed import Seed
 
 class FIFOScheduler:
   seeds = Queue() # Queue

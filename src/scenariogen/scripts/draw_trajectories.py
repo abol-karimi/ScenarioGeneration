@@ -5,7 +5,7 @@ import carla
 import pickle
 
 # This project
-import scenariogen.core.seed_corpus as seed_corpus
+import scenariogen.core.seed as seed
 import scenariogen.simulators.carla.visualization as visualization
 from scenariogen.core.utils import sample_trajectory
 
@@ -23,7 +23,7 @@ duration.add_argument('--steps', type=int, help='max number of steps to replay')
 duration.add_argument('--seconds', type=float, help='max seconds to replay')
 args = parser.parse_args()
 
-corpus = seed_corpus.SeedCorpus([])
+corpus = seed.SeedCorpus([])
 corpus.load(args.corpus)
 seed = corpus.seeds[args.seed]
 

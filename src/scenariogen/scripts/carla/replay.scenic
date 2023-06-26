@@ -6,9 +6,7 @@ model scenic.simulators.carla.model
 param config = None
 config = globalParameters.config
 
-param seed = None
-seed = globalParameters.seed
-
+seed = config['seed']
 intersection = network.elements[config['intersection']]
 
 # Python imports

@@ -8,7 +8,7 @@ import copy
 from scenic.domains.driving.roads import Network
 
 # My modules
-import src.scenariogen.core.seed_corpus as seed_corpus
+import scenariogen.core.seed as seed
 import src.scenariogen.core.mutators as mutators
 import src.scenariogen.core.fuzzers as fuzzers
 import src.scenariogen.core.schedulers as schedulers
@@ -49,7 +49,7 @@ if args.maxSteps:
 elif args.maxSeconds:
     maxSteps = args.maxSeconds*args.timestep
 
-in_corpus = seed_corpus.SeedCorpus([])
+in_corpus = seed.SeedCorpus([])
 in_corpus.load(args.in_corpus)
 
 # Fuzzer configs

@@ -3,7 +3,7 @@ from typing import Dict, Any, Set
 import time
 
 # This project
-import src.scenariogen.core.seed_corpus as seed_corpus
+import scenariogen.core.seed as seed
 from src.scenariogen.core.scenario import Scenario
 
 @dataclass

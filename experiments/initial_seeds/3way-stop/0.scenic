@@ -6,17 +6,17 @@ Two non-egos arrive at a 3way all-way-stop intersection,
 #--- Python imports
 import jsonpickle
 from scenariogen.core.signals import SignalType
-import scenariogen.core.seed_corpus as seed_corpus
+from scenariogen.core.seed import Route
 
 #--- Defined constants
 carla_map = 'Town05'
 intersection_uid = 'intersection1930'
 traffic_rules = '3way-T_stopOnAll.lp'
-ego_route = seed_corpus.Route(lanes=('road9_lane1', 'road10_lane1', 'road1940_lane0', 'road3_lane2'))
+ego_route = Route(lanes=('road9_lane1', 'road10_lane1', 'road1940_lane0', 'road3_lane2'))
 ego_init_progress = 40
 arrival_distance = 4
-route_major = seed_corpus.Route(lanes=['road24_lane0', 'road11_lane3', 'road1985_lane1', 'road10_lane3', 'road9_lane3'])
-route_major2minor = seed_corpus.Route(lanes=['road3_lane1', 'road1946_lane0', 'road11_lane1', 'road24_lane2'])
+route_major = Route(lanes=['road24_lane0', 'road11_lane3', 'road1985_lane1', 'road10_lane3', 'road9_lane3'])
+route_major2minor = Route(lanes=['road3_lane1', 'road1946_lane0', 'road11_lane1', 'road24_lane2'])
 turn_signals = [SignalType.OFF, SignalType.LEFT]
 
 #--- Scenic parameters

@@ -2,15 +2,15 @@
 import argparse
 import jsonpickle
 import random
+from pathlib import Path
 import scenic
 import carla
 
 # This project
-import scenariogen.core.seed_corpus as seed_corpus
+from scenariogen.core.seed import Seed
 
 parser = argparse.ArgumentParser(description='play the given scenario.')
-parser.add_argument('corpus', help='filename of the corpus of seeds')
-parser.add_argument('seed', type=int, help='seed number to replay')
+parser.add_argument('seed', help='relative path of the seed')
 parser.add_argument('--timestep', type=float, 
                     default=0.05, 
                     help='length of each simulation step, controls replay speed.')
@@ -24,9 +24,9 @@ simulator.add_argument('--carla', action='store_const', dest='simulator', const=
                       help='replay in the carla simulator')
 args = parser.parse_args()
 
-corpus = seed_corpus.SeedCorpus([])
-corpus.load(args.corpus)
-seed = corpus.seeds[args.seed]
+with open(args.seed, 'r') as f:
+    seed = jsonpickle.decode(f.read())
+    assert isinstance(seed, Seed)
 
 # Default duration is the whole scenario:
 seconds = seed.trajectories[0].ctrlpts[-1][2]
@@ -37,14 +37,16 @@ elif args.seconds:
     seconds = args.seconds
 steps = seconds // args.timestep
 
-config = {}
+# Load scenario config of the seed
+with open(Path(args.seed).parent / 'config.json', 'r') as f:
+    config = jsonpickle.decode(f.read())
 
 if args.simulator == 'carla':
     # Load the correct map to Carla, if necessary
     client = carla.Client('127.0.0.1', 2000)
     loaded_map = client.get_world().get_map().name
-    if loaded_map != corpus.config['carla_map']:
-        client.load_world(corpus.config['carla_map'])
+    if loaded_map != config['carla_map']:
+        client.load_world(config['carla_map'])
 
     # Choose a blueprint of an appropriate size for each non-ego
     with open('src/scenariogen/simulators/carla/blueprint_library.json', 'r') as f:
@@ -64,18 +66,18 @@ if args.simulator == 'carla':
 config['steps'] = steps
 config['timestep'] = args.timestep
 config['weather'] = 'CloudySunset'
-config['intersection'] = corpus.config['intersection']
+config['seed'] = seed
 
 # Run the scenario on the seed
-params = {'carla_map': corpus.config['carla_map'],
-          'map': corpus.config['map'],
+params = {'carla_map': config['carla_map'],
+          'map': config['map'],
           'config': config,
           'timestep': args.timestep,
-          'render': True,
-          'seed': seed}
+          'render': True
+          }
 
 scenic_scenario = scenic.scenarioFromFile(
-    f'src/scenariogen/simulators/{args.simulator}/replay.scenic', 
+    f'src/scenariogen/scripts/{args.simulator}/replay.scenic',
     params=params)
 
 scene, _ = scenic_scenario.generate(maxIterations=1)

@@ -1,10 +1,8 @@
 import geomdl
-from geomdl import fitting, operations
+from geomdl import operations, BSpline
 import numpy as np
 import scipy
-import carla
 
-from agents.navigation.global_route_planner import GlobalRoutePlanner
 from scenic.simulators.carla.utils.utils import scenicToCarlaLocation
 from scenic.core.object_types import OrientedPoint
 from scenic.core.vectors import Vector
@@ -19,6 +17,9 @@ except ImportError:
 from matplotlib import cm
 VIRIDIS = np.array(cm.get_cmap('viridis').colors)
 VID_RANGE = np.linspace(0.0, 1.0, VIRIDIS.shape[0])
+
+# This project
+from scenariogen.core.seed import Trajectory
 
 
 def draw_names(cars, image, camera):
@@ -346,23 +347,24 @@ def spline_approximation(spacetime_traj, degree=3, knots_size=20):
     dx = np.diff(x, n=1, append=x[-1])
     dy = np.diff(y, n=1, append=y[-1])
     w = 1/(abs(dx)+abs(dy)+.01)
-    tck, u = scipy.interpolate.splprep([x, y, z], 
+    tck, u = scipy.interpolate.splprep([x, y, z],
                                        w=w,
                                        u=z, 
                                        k=degree, 
                                        task=-1, 
                                        t=np.linspace(z[0], z[-1], knots_size))
+
+    traj = Trajectory(degree=degree,
+                      ctrlpts=[[float(x),float(y),float(z)] for x,y,z in zip(tck[1][0], tck[1][1], tck[1][2])],
+                      knotvector=[float(knot) for knot in tck[0]])
     
-    # Convert to geomdl BSpline
-    curve = geomdl.BSpline.Curve(normalize_kv=False)
-    curve.degree = degree
-    curve.ctrlpts = [[x,y,z] for x,y,z in zip(tck[1][0], tck[1][1], tck[1][2])]
-    T = spacetime_traj[-1][2]
-    curve.knotvector = tck[0]
+    return traj
 
-    return curve
-
-def sample_trajectory(spline, sample_size, umin, umax):
+def sample_trajectory(traj, sample_size, umin, umax):
+    spline = BSpline.Curve(normalize_kv = False)
+    spline.degree = traj.degree
+    spline.ctrlpts = traj.ctrlpts
+    spline.knotvector = traj.knotvector
     ts = list(np.linspace(umin, umax, num=sample_size))
     sample = geomdl.operations.tangent(spline, ts)
     traj = []

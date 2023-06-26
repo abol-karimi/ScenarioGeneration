@@ -5,7 +5,7 @@ import scenic
 import argparse
 
 # This project
-import src.scenariogen.core.seed_corpus as seed_corpus
+import scenariogen.core.seed as seed
 
 parser = argparse.ArgumentParser(
     description='play the given scenario with a Carla autopilot driving the ego.')
@@ -31,7 +31,7 @@ parser.add_argument('--ego_init_progress', type=float,
 parser.add_argument('--rss', action='store_true', help='enable RSS restrictor')
 args = parser.parse_args()
 
-corpus = seed_corpus.SeedCorpus([])
+corpus = seed.SeedCorpus([])
 corpus.load(args.corpus)
 seed = corpus.seeds[args.seed]
 

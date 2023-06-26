@@ -12,3 +12,7 @@ Docker/Carla
 Docker/Carla*/PythonAPI
 Docker/Scenic
 Docker/*/z3-4.8.10-x64-ubuntu-18.04
+
+.coverage
+htmlcov
+crash-*

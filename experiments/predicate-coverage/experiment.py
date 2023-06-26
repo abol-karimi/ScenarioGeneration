@@ -22,8 +22,9 @@
 # Experiment hypothesis:
 #  None of the available fuzzers acheive good predicate coverage
 
-# Available fuzzers:
+# Available python fuzzers:
 #  Atheris
 #  Pythonfuzz
 #  PyJFuzz, gramfuzz
 #  fuzzing
+#  python-afl
