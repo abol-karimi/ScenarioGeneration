@@ -58,7 +58,7 @@ bps = [random.choice(dim2bp[(int(l*100), int(w*100))])
        for l, w in zip(seed.lengths, seed.widths)]
 
 # Load scenario config of the seed
-with open(Path(args.seed).parent / 'config.json', 'r') as f:
+with open(Path(args.seed).with_suffix('.config'), 'r') as f:
     config = jsonpickle.decode(f.read())
 if args.ego_route:
     config['ego_route'] = args.ego_route

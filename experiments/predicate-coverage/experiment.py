@@ -24,6 +24,7 @@
 
 # Available python fuzzers:
 #  Atheris
+#  Hypothesis (rule-based stateful testing)
 #  Pythonfuzz
 #  PyJFuzz, gramfuzz
 #  fuzzing

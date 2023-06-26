@@ -17,8 +17,6 @@ from scenariogen.core.utils import spacetime_trajectories, spline_approximation
 parser = argparse.ArgumentParser(description='Make a seed from a scenic scenario.')
 parser.add_argument('scenic_file', 
                     help='Path of the Scenic file specifying the scenario')
-parser.add_argument('--save_config', action='store_true',
-                    help='Save the config into a file')
 duration = parser.add_mutually_exclusive_group()
 duration.add_argument('--steps', type=int,
                       help='The duration of the scenario in steps')
@@ -80,6 +78,5 @@ scenic_path = Path(args.scenic_file)
 with open(scenic_path.with_name(scenic_path.stem + '.json'), 'w') as f:
     f.write(jsonpickle.encode(seed))
 
-if args.save_config:
-    with open(scenic_path.with_name('config.json'), 'w') as f:
-        f.write(jsonpickle.encode(config))
+with open(scenic_path.with_suffix('.config'), 'w') as f:
+    f.write(jsonpickle.encode(config))

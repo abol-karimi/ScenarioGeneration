@@ -17,4 +17,6 @@ pip install -e .
 cd /home/carla/ScenarioGeneration
 pip install -r requirements.txt
 
+pip install --upgrade numpy
+
 /bin/bash "$@" 

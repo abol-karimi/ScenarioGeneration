@@ -11,17 +11,14 @@ from scenariogen.core.seed import Seed
 
 parser = argparse.ArgumentParser(description='play the given scenario.')
 parser.add_argument('seed', help='relative path of the seed')
+parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='newtonian',
+                    help='The simulator')
 parser.add_argument('--timestep', type=float, 
                     default=0.05, 
                     help='length of each simulation step, controls replay speed.')
 duration = parser.add_mutually_exclusive_group()
 duration.add_argument('--steps', type=int, help='max number of steps to replay')
 duration.add_argument('--seconds', type=float, help='max seconds to replay')
-simulator = parser.add_mutually_exclusive_group()
-simulator.add_argument('--newtonian', action='store_const', dest='simulator', const='newtonian', 
-                      help='replay in the newtonian simulator')
-simulator.add_argument('--carla', action='store_const', dest='simulator', const='carla',
-                      help='replay in the carla simulator')
 args = parser.parse_args()
 
 with open(args.seed, 'r') as f:
@@ -38,7 +35,7 @@ elif args.seconds:
 steps = seconds // args.timestep
 
 # Load scenario config of the seed
-with open(Path(args.seed).parent / 'config.json', 'r') as f:
+with open(Path(args.seed).with_suffix('.config'), 'r') as f:
     config = jsonpickle.decode(f.read())
 
 if args.simulator == 'carla':
