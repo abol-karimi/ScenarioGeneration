@@ -1,8 +1,5 @@
 model scenic.simulators.newtonian.driving_model
 
-param config = None
-config = globalParameters.config
-
 # Scenic imports
 from scenarios import IntersectionEvents
 
@@ -28,7 +25,7 @@ scenario Ego():
     with signal SignalType.OFF,
     with physics True
 
-scenario TestScenario():
+scenario Main():
   setup:
     sc0 = Ego()
     sc1 = Nonego('nonego', intersection.incomingLanes[3])

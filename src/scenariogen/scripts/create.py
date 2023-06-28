@@ -8,6 +8,9 @@ from pathlib import Path
 # Scenic modules
 import scenic
 from scenic.simulators.newtonian import NewtonianSimulator
+from scenic.core.simulators import SimulationCreationError
+from scenic.core.dynamics import GuardViolation
+
 
 # My modules
 from scenariogen.core.seed import Seed
@@ -40,16 +43,22 @@ steps = seconds // args.timestep
 # Run the scenario
 scenic_scenario = scenic.scenarioFromFile(
     args.scenic_file,
-    model='scenic.simulators.newtonian.driving_model',
     params = {'timestep': args.timestep})
 scene, _ = scenic_scenario.generate(maxIterations=1)
 simulator = NewtonianSimulator()
-sim_result = simulator.simulate(
-                scene,
-                maxSteps=steps,
-                maxIterations=1,
-                raiseGuardViolations=True
-                )
+try:
+    sim_result = simulator.simulate(
+                    scene,
+                    maxSteps=steps,
+                    maxIterations=1,
+                    raiseGuardViolations=True
+                    )
+except SimulationCreationError:
+    print('Failed to create scenario.')
+    exit()
+except GuardViolation:
+    print('Guard violated in simulation.')
+    exit()
 
 # Convert the result to a seed
 routes = sim_result.records['routes']
@@ -67,16 +76,14 @@ trajectories = [spline_approximation(traj,
                                     degree=args.spline_degree,
                                     knots_size=args.parameters_size)
                 for traj in spacetime_trajs]
-seed = Seed(routes=routes, 
+seed = Seed(config=config,
+            routes=routes,
             trajectories=trajectories,
             signals=signals,
-            lengths=lengths, 
+            lengths=lengths,
             widths=widths)
 
 # Store the seed
 scenic_path = Path(args.scenic_file)
 with open(scenic_path.with_name(scenic_path.stem + '.json'), 'w') as f:
-    f.write(jsonpickle.encode(seed))
-
-with open(scenic_path.with_suffix('.config'), 'w') as f:
-    f.write(jsonpickle.encode(config))
+    f.write(jsonpickle.encode(seed, indent=1))

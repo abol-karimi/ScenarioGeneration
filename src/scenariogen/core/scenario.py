@@ -1,37 +1,38 @@
 import scenic
-from scenic.simulators.newtonian import NewtonianSimulator
 
 class Scenario:
-  def __init__(self, config):
-    self.config = config
+  def __init__(self, seed):
+    self.seed = seed
   
-  def run(self):
+  def run(self, config={}):
     """ Runs the scenario.
     Returns the discrete-time trajectories.
     """
+    config = {**self.seed.config, **config}
+
     # Sample the nonego splines.
-    seconds = self.config['seed'].trajectories[0].ctrlpts[-1][2]
+    seconds = self.seed.trajectories[0].ctrlpts[-1][2]
     
     # For closed-loop fuzzing, simulate the ego too.
-    params = {'carla_map': self.corpus.config['carla_map'],
-              'map': self.corpus.config['map'],
+    params = {'carla_map': config['carla_map'],
+              'map': config['map'],
               'render': True,
-              'timestep': self.config['timestep'],
-              'config': self.config,
+              'timestep': config['timestep'],
+              'config': config,
               }
 
     scenic_scenario = scenic.scenarioFromFile(
-                        'run_seed.scenic',
-                        scenario='ClosedLoop' if self.config['ego'] else 'OpenLoop',
+                        f"{config['simulator']}/SUT.scenic",
+                        scenario='ClosedLoop' if config['ego'] else 'OpenLoop',
                         params=params)
     print(f'Initializing the scenario...')
     scene, _ = scenic_scenario.generate(maxIterations=1)
-    simulator = NewtonianSimulator() # TODO read the simulator type from config
+    simulator = scenic_scenario.getSimulator()
 
     print(f'Simulating the scenario...')
     sim_result = simulator.simulate(
                     scene,
-                    maxSteps=int(seconds / self.config['timestep']),
+                    maxSteps=int(seconds / config['timestep']),
                     maxIterations=1,
                     raiseGuardViolations=True)
 

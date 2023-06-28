@@ -1,13 +1,9 @@
 from dataclasses import dataclass
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 
 # This project
 from scenariogen.core.signals import SignalType
 
-
-@dataclass
-class Route:
-  lanes : List[str] = None
 
 @dataclass
 class Trajectory:
@@ -17,7 +13,8 @@ class Trajectory:
 
 @dataclass
 class Seed:
-  routes: List[Route] = None
+  config: Dict = None
+  routes: List[str] = None
   trajectories: List[Trajectory] = None
   signals: List[SignalType] = None
   lengths: List[float] = None

@@ -6,29 +6,38 @@ Two non-egos arrive at a 3way all-way-stop intersection,
 #--- Python imports
 import jsonpickle
 from scenariogen.core.signals import SignalType
-from scenariogen.core.seed import Route
 
 #--- Defined constants
 carla_map = 'Town05'
 intersection_uid = 'intersection1930'
 traffic_rules = '3way-T_stopOnAll.lp'
-ego_route = Route(lanes=('road9_lane1', 'road10_lane1', 'road1940_lane0', 'road3_lane2'))
+ego_route = ['road9_lane1', 
+              'road10_lane1',
+              'road1940_lane0',
+              'road3_lane2']
 ego_init_progress = 40
 arrival_distance = 4
-route_major = Route(lanes=['road24_lane0', 'road11_lane3', 'road1985_lane1', 'road10_lane3', 'road9_lane3'])
-route_major2minor = Route(lanes=['road3_lane1', 'road1946_lane0', 'road11_lane1', 'road24_lane2'])
+route_major = ['road24_lane0',
+                'road11_lane3',
+                'road1985_lane1',
+                'road10_lane3',
+                'road9_lane3']
+route_major2minor = ['road3_lane1', 
+                      'road1946_lane0',
+                      'road11_lane1',
+                      'road24_lane2']
 turn_signals = [SignalType.OFF, SignalType.LEFT]
 
 #--- Scenic parameters
 param carla_map = carla_map
 param map = f'/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/{carla_map}.xodr'
-model scenic.domains.driving.model
+model scenic.simulators.newtonian.driving_model
 
 #--- Derived constants
 intersection = network.elements[intersection_uid]
-route_major_lanes = [network.elements[l] for l in route_major.lanes]
+route_major_lanes = [network.elements[l] for l in route_major]
 route_major_centerline = PolylineRegion.unionAll([l.centerline for l in route_major_lanes])
-route_major2minor_lanes = [network.elements[l] for l in route_major2minor.lanes]
+route_major2minor_lanes = [network.elements[l] for l in route_major2minor]
 route_major2minor_centerline = PolylineRegion.unionAll([l.centerline for l in route_major2minor_lanes])
 config = {'carla_map': carla_map,
           'map': globalParameters.map,

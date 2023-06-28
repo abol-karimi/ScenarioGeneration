@@ -34,9 +34,11 @@ elif args.seconds:
     seconds = args.seconds
 steps = seconds // args.timestep
 
-# Load scenario config of the seed
-with open(Path(args.seed).with_suffix('.config'), 'r') as f:
-    config = jsonpickle.decode(f.read())
+config = {**seed.config}
+config['steps'] = steps
+config['timestep'] = args.timestep
+config['weather'] = 'CloudySunset'
+config['seed'] = seed
 
 if args.simulator == 'carla':
     # Load the correct map to Carla, if necessary
@@ -60,14 +62,9 @@ if args.simulator == 'carla':
         for l, w in zip(seed.lengths, seed.widths)]
     config['blueprints'] = bps
 
-config['steps'] = steps
-config['timestep'] = args.timestep
-config['weather'] = 'CloudySunset'
-config['seed'] = seed
-
 # Run the scenario on the seed
-params = {'carla_map': config['carla_map'],
-          'map': config['map'],
+params = {'carla_map': seed.config['carla_map'],
+          'map': seed.config['map'],
           'config': config,
           'timestep': args.timestep,
           'render': True

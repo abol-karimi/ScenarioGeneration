@@ -9,6 +9,7 @@ export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/
 export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/agents/:$PYTHONPATH
 export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/dist/${carla_egg}:$PYTHONPATH
 export PYTHONPATH=/home/carla/ScenarioGeneration/src/:$PYTHONPATH
+export PATH=/home/carla/ScenarioGeneration/:$PATH
 export PATH=/home/carla/ScenarioGeneration/src/scenariogen/scripts/:$PATH
 
 cd /home/carla/Scenic

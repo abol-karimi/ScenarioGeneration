@@ -57,29 +57,29 @@ for b, dims in blueprints.items():
 bps = [random.choice(dim2bp[(int(l*100), int(w*100))])
        for l, w in zip(seed.lengths, seed.widths)]
 
-# Load scenario config of the seed
-with open(Path(args.seed).with_suffix('.config'), 'r') as f:
-    config = jsonpickle.decode(f.read())
-if args.ego_route:
-    config['ego_route'] = args.ego_route
-if args.ego_init_progress:
-    config['ego_init_progress'] = args.ego_init_progress
+# Scenario config
+config = {**seed.config}
 config['steps'] = steps
 config['timestep'] = args.timestep
 config['weather'] = 'CloudySunset'
+config['seed'] = seed
 config['arrival_distance'] = 4
 config['stop_speed_threshold'] = 0.5  # meters/seconds
 config['aggressiveness'] =  args.aggressiveness
 config['rss_enabled'] = args.rss
 config['blueprints'] = bps
 
+if args.ego_route:
+    config['ego_route'] = args.ego_route
+if args.ego_init_progress:
+    config['ego_init_progress'] = args.ego_init_progress
+
 # Run the scenario on the seed
 params = {'carla_map': config['carla_map'],
           'map': config['map'],
           'config': config,
           'timestep': args.timestep,
-          'render': True,
-          'seed': seed}
+          'render': True}
 
 print('Play an autopilot ego in the scenario...')
 scenic_scenario = scenic.scenarioFromFile(

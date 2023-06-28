@@ -20,7 +20,7 @@ VID_RANGE = np.linspace(0.0, 1.0, VIRIDIS.shape[0])
 
 # This project
 from scenariogen.core.seed import Trajectory
-
+from scenariogen.core.signals import SignalType
 
 def draw_names(cars, image, camera):
     # Build the K projection matrix:
@@ -278,8 +278,6 @@ def route_length(route):
 
 
 def geometry_atoms(network, intersection_uid):
-    """Assumes the correct map is loaded in CARLA server."""
-    from src.scenariogen.core.signals import SignalType
     intersection = network.elements[intersection_uid]
     maneuvers = intersection.maneuvers
     geometry = []
@@ -393,3 +391,12 @@ def connecting_lane(network, start, end):
     for m in network.elements[start].maneuvers:
         if m.endLane.uid == end:
             return m.connectingLane.uid
+
+def is_collision_free(objects):
+  pairs = [(objects[i], objects[j]) 
+           for i in range(len(objects)) 
+           for j in range(i+1, len(objects))]
+  for c, d in pairs:
+    if c.intersects(d):
+      return False
+  return True

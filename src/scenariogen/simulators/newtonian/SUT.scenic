@@ -1,13 +1,14 @@
-""" Scenario Description
-Ego-vehicle arrives at an intersection.
+""" System Under Test
+Nonegos + optionally VUT (Vehicle Under Test, i.e. ego)
 """
 
 # Scenic parameters
 model scenic.simulators.newtonian.driving_model
 
 # Python imports
-from scenarios import EgoFollowingLanes, Nonegos, IntersectionEvents
-from signals import SignalType
+from scenariogen.core.scenarios import EgoFollowingLanes, Nonegos, IntersectionEvents
+from scenariogen.core.signals import SignalType
+from scenariogen.core.errors import EgoCollisionError, InvalidSeedError
 
 param config = None
 config = globalParameters.config
@@ -19,7 +20,7 @@ seconds = seed.trajectories[0].ctrlpts[-1][2]
 steps = int(seconds / config['timestep'])
 
 # Bookkeeping
-cars = []
+nonegos = []
 
 # Output
 events = []
@@ -37,10 +38,9 @@ scenario ClosedLoop():
               with physics True,
               with allowCollisions False,
               with signal SignalType.OFF
-    cars.append(ego)
     record final events as events
   compose:
-    do Nonegos(cars), IntersectionEvents(intersection, cars, events)
+    do Nonegos(nonegos), IntersectionEvents(intersection, [ego]+nonegos, events)
 
 #--- Only nonegos
 scenario OpenLoop():
@@ -52,4 +52,17 @@ scenario OpenLoop():
             with color Color(1, 1, 1)
     record final events as events
   compose:
-    do Nonegos(cars), IntersectionEvents(intersection, cars, events)
+    do Nonegos(nonegos), IntersectionEvents(intersection, nonegos, events)
+
+monitor collisions:
+  nonego_pairs = [(nonegos[i], nonegos[j]) 
+           for i in range(len(nonegos)) 
+           for j in range(i+1, len(nonegos))]
+  while True:
+    for c, d in nonego_pairs:
+      if c.intersects(d):
+        raise InvalidSeedError
+    for nonego in nonegos:
+      if nonego.intersects(self.ego):
+        raise EgoCollisionError
+    wait

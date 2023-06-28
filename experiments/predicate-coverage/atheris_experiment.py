@@ -2,25 +2,26 @@
 
 import sys
 import jsonpickle
+from pathlib import Path
 
 import atheris
 with atheris.instrument_imports():
   from scenariogen.core.scenario import Scenario
   import scenariogen.core.seed as seed
 
-# Experiment constants
-iterations = 10000
+from scenariogen.core.errors import EgoCollisionError, InvalidSeedError
 
-# Scenario config
-in_corpus_folder = 'experiments/initial_seeds/3way-stop'
-with open(f'{in_corpus_folder}/config.json', 'r') as f:
-  scenario_config = jsonpickle.decode(f.read())
+#--- Experiment constants ---
+iterations = 10000
 
 #-----------------------------------
 #---------- Default config ---------
 #-----------------------------------
+iteration = 0
 @atheris.instrument_func
 def PureAtheris(input_bytes):
+  iteration += 1
+
   fdp = atheris.FuzzedDataProvider(input_bytes)
   input_str = fdp.ConsumeUnicode(sys.maxsize)
 
@@ -37,16 +38,17 @@ def PureAtheris(input_bytes):
     return
 
   try:
-    sim_result = Scenario(scenario_config, seed).run()
-  except Exception as e:
-    print(e)
-    pass
-  # except EgoCollisionError:
-  #   # add seed to the corpus
-  #   pass
+    sim_result = Scenario(seed).run()
+  except InvalidSeedError:
+      print('Invalid seed, discarding it.')
+  except EgoCollisionError:
+      print('Ego collision. Saving the seed to corpus...')
+      with open(f'experiments/predicate-coverage/corpus_atheris/{iteration}.json', 'w') as f:
+        f.write(jsonpickle.encode(seed, indent=1))
+
 
 fuzzer_config = {'atheris_runs': iterations,
-          }
+                }
 atheris.Setup(sys.argv, PureAtheris, **fuzzer_config)
 atheris.Fuzz()
 

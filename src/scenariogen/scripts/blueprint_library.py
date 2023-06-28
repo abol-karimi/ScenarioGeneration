@@ -18,7 +18,7 @@ for bp, sp in zip(vehicle_blueprints, spawn_points):
     actor.destroy()
 
 with open('carla_blueprint_library.json', 'w') as f:
-  corpus_json = jsonpickle.encode(bp_properties)
+  corpus_json = jsonpickle.encode(bp_properties, indent=1)
   f.write(corpus_json)
 
 

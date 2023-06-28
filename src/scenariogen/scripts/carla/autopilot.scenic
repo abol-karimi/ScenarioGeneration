@@ -6,10 +6,7 @@ model scenic.simulators.carla.model
 
 param config = None
 config = globalParameters.config
-
-param seed = None
-seed = globalParameters.seed
-
+seed = config['seed']
 intersection = network.elements[config['intersection']]
 
 # Python imports
@@ -33,7 +30,7 @@ behavior CarlaBehaviorAgent():
 	take SetAutopilotAction(True)
 	agent = BehaviorAgent(self.carlaActor, behavior=config['aggressiveness'])
 	carla_world = simulation().world
-	route_lanes = [network.elements[l] for l in config['ego_route'].lanes]
+	route_lanes = [network.elements[l] for l in config['ego_route']]
 	dest = scenicToCarlaLocation(route_lanes[-1].centerline[-1], world=carla_world)
 	agent.set_destination(dest)
 	rss_enabled = config['rss_enabled']
@@ -74,7 +71,7 @@ for spline, signal, l, w, b in zip(seed.trajectories, seed.signals, seed.lengths
 		with blueprint b
 	cars.append(car)
 
-ego_lanes = [network.elements[l] for l in config['ego_route'].lanes]
+ego_lanes = [network.elements[l] for l in config['ego_route']]
 ego_centerline = PolylineRegion.unionAll([l.centerline for l in ego_lanes])
 ego_init_pos = ego_centerline.pointAlongBy(config['ego_init_progress'])
 ego = Car at ego_init_pos,
