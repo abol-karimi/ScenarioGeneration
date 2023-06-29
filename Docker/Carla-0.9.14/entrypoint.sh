@@ -12,6 +12,7 @@ export PYTHONPATH=/home/carla/ScenarioGeneration/src/:$PYTHONPATH
 export PYTHONPATH=/home/carla/ScenarioGeneration/:$PYTHONPATH
 export PATH=/home/carla/ScenarioGeneration/:$PATH
 export PATH=/home/carla/ScenarioGeneration/src/scenariogen/scripts/:$PATH
+export force_color_prompt=yes
 
 cd /home/carla/Scenic
 pip install -e .

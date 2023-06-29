@@ -11,22 +11,22 @@ from scenariogen.core.signals import SignalType
 carla_map = 'Town05'
 intersection_uid = 'intersection1930'
 traffic_rules = '3way-T_stopOnAll.lp'
-ego_route = ['road9_lane1', 
+ego_route = ('road9_lane1', 
               'road10_lane1',
               'road1940_lane0',
-              'road3_lane2']
+              'road3_lane2')
 ego_init_progress = 40
 arrival_distance = 4
-route_major = ['road24_lane0',
+route_major = ('road24_lane0',
                 'road11_lane3',
                 'road1985_lane1',
                 'road10_lane3',
-                'road9_lane3']
-route_major2minor = ['road3_lane1', 
+                'road9_lane3')
+route_major2minor = ('road3_lane1', 
                       'road1946_lane0',
                       'road11_lane1',
-                      'road24_lane2']
-turn_signals = [SignalType.OFF, SignalType.LEFT]
+                      'road24_lane2')
+turn_signals = (SignalType.OFF, SignalType.LEFT)
 
 #--- Scenic parameters
 param carla_map = carla_map
@@ -87,8 +87,8 @@ car_right = Car at p1, facing roadDirection,
 ego = car_left
 
 #--- Output parameters
-record initial [route_major, route_major2minor] as routes
+record initial (route_major, route_major2minor) as routes
 record initial turn_signals as turn_signals
-record initial [car_left.length, car_right.length] as lengths
-record initial [car_left.width, car_right.width] as widths
+record initial (car_left.length, car_right.length) as lengths
+record initial (car_left.width, car_right.width) as widths
 record initial config as config

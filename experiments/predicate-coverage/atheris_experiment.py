@@ -26,7 +26,6 @@ def PureAtheris(input_bytes):
   input_str = fdp.ConsumeUnicode(sys.maxsize)
 
   # Skip mutant if structurally invalid.
-  # TODO Alternatively, we can do grammar-based fuzzing to avoid structurally invalid seeds
   try:
     seed = jsonpickle.decode(input_str)
   except Exception as e:

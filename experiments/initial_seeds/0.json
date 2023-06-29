@@ -5,29 +5,37 @@
   "map": "/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/Town05.xodr",
   "intersection": "intersection1930",
   "traffic_rules": "3way-T_stopOnAll.lp",
-  "ego_route": [
-   "road9_lane1",
-   "road10_lane1",
-   "road1940_lane0",
-   "road3_lane2"
-  ],
+  "ego_route": {
+   "py/tuple": [
+    "road9_lane1",
+    "road10_lane1",
+    "road1940_lane0",
+    "road3_lane2"
+   ]
+  },
   "ego_init_progress": 40
  },
- "routes": [
-  [
-   "road24_lane0",
-   "road11_lane3",
-   "road1985_lane1",
-   "road10_lane3",
-   "road9_lane3"
-  ],
-  [
-   "road3_lane1",
-   "road1946_lane0",
-   "road11_lane1",
-   "road24_lane2"
+ "routes": {
+  "py/tuple": [
+   {
+    "py/tuple": [
+     "road24_lane0",
+     "road11_lane3",
+     "road1985_lane1",
+     "road10_lane3",
+     "road9_lane3"
+    ]
+   },
+   {
+    "py/tuple": [
+     "road3_lane1",
+     "road1946_lane0",
+     "road11_lane1",
+     "road24_lane2"
+    ]
+   }
   ]
- ],
+ },
  "trajectories": [
   {
    "py/object": "scenariogen.core.seed.Trajectory",
@@ -606,38 +614,44 @@
    ]
   }
  ],
- "signals": [
-  {
-   "py/reduce": [
-    {
-     "py/type": "scenariogen.core.signals.SignalType"
-    },
-    {
-     "py/tuple": [
-      1
-     ]
-    }
-   ]
-  },
-  {
-   "py/reduce": [
-    {
-     "py/type": "scenariogen.core.signals.SignalType"
-    },
-    {
-     "py/tuple": [
-      2
-     ]
-    }
-   ]
-  }
- ],
- "lengths": [
-  4.791779518127441,
-  5.365678787231445
- ],
- "widths": [
-  2.163450002670288,
-  1.8007241487503052
- ]
+ "signals": {
+  "py/tuple": [
+   {
+    "py/reduce": [
+     {
+      "py/type": "scenariogen.core.signals.SignalType"
+     },
+     {
+      "py/tuple": [
+       1
+      ]
+     }
+    ]
+   },
+   {
+    "py/reduce": [
+     {
+      "py/type": "scenariogen.core.signals.SignalType"
+     },
+     {
+      "py/tuple": [
+       2
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ "lengths": {
+  "py/tuple": [
+   4.791779518127441,
+   5.365678787231445
+  ]
+ },
+ "widths": {
+  "py/tuple": [
+   2.163450002670288,
+   1.8007241487503052
+  ]
+ }
 }
