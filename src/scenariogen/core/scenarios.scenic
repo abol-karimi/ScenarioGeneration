@@ -1,19 +1,18 @@
 # Scenic parameters
-model scenic.simulators.newtonian.driving_model
+model scenic.domains.driving.model
 param config = None
 config = globalParameters.config
-
-# Config
 intersection = network.elements[config['intersection']]
 
 # Python imports
 from scenariogen.core.events import *
 from scenariogen.core.utils import sample_trajectory
 from scenariogen.core.signals import SignalType
+from scenariogen.core.errors import EgoCollisionError, InvalidSeedError
 
 behavior AnimateBehavior():
 	for pose in self.traj_sample:
-		take SetPositionAction(pose.position), SetHeadingAction(pose.heading)
+		take SetTransformAction(pose.position, pose.heading)
 
 behavior StopAndPassIntersectionBehavior(speed, trajectory, intersection, arrival_distance=4):
   do FollowTrajectoryBehavior(speed, trajectory) until (distance from (front of self) to intersection) <= arrival_distance
@@ -25,7 +24,7 @@ scenario NonegosScenario():
   setup:
     cars = []
     seed = config['seed']
-    for i, (route, spline, signal) in enumerate(zip(seed.routes, seed.trajectories, seed.signals)):
+    for i, (route, spline, signal, bp) in enumerate(zip(seed.routes, seed.trajectories, seed.signals, config['blueprints'])):
       traj_sample = sample_trajectory(spline, 
                                       int(config['steps'])+1,
                                       0, 
@@ -36,7 +35,8 @@ scenario NonegosScenario():
         with physics False,
         with allowCollisions False,
         with traj_sample traj_sample,
-        with signal signal
+        with signal signal,
+        with blueprint bp
       cars.append(car)
     ego = cars[0]
 
@@ -79,4 +79,24 @@ scenario RecordEventsScenario(cars):
             elif wasOnLane and not isOnLane:
               lanes[car].remove(lane.uid)
               events.append(ExitedLaneEvent(car.name, lane.uid, currentTime))
+        wait
+
+scenario CheckCollisionsScenario(egos, nonegos):
+  setup:
+    ego = (egos+nonegos)[0]
+
+    monitor collisions:
+      nonego_pairs = ((nonegos[i], nonegos[j]) 
+              for i in range(len(nonegos)) 
+              for j in range(i+1, len(nonegos)))
+      egos_nonego_pairs = ((e, n) for e in egos for n in nonegos)
+      while True:
+        # Nonego-nonego collisions
+        for c, d in nonego_pairs:
+          if c.intersects(d):
+            raise InvalidSeedError
+        # Ego-nonego collisions
+        for e, n in egos_nonego_pairs:
+          if e.intersects(n):
+            raise EgoCollisionError
         wait

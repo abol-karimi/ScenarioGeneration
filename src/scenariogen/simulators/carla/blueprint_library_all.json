@@ -1,0 +1,798 @@
+{
+ "sensor.other.lane_invasion": {
+  "width": -Infinity,
+  "length": -Infinity
+ },
+ "vehicle.bmw.grandtourer": {
+  "width": 2.241713285446167,
+  "length": 4.611005783081055
+ },
+ "static.prop.haybalelb": {
+  "width": 1.2547167539596558,
+  "length": 1.185976505279541
+ },
+ "vehicle.jeep.wrangler_rubicon": {
+  "width": 1.9051965475082397,
+  "length": 3.866220712661743
+ },
+ "vehicle.yamaha.yzf": {
+  "width": 0.0,
+  "length": 0.0
+ },
+ "static.prop.barbeque": {
+  "width": 0.5002734065055847,
+  "length": 0.9449023008346558
+ },
+ "static.prop.plasticchair": {
+  "width": 0.7371484041213989,
+  "length": 0.7439062595367432
+ },
+ "vehicle.nissan.patrol": {
+  "width": 1.9315929412841797,
+  "length": 4.6045098304748535
+ },
+ "vehicle.seat.leon": {
+  "width": 1.8161858320236206,
+  "length": 4.1928300857543945
+ },
+ "vehicle.harley-davidson.low_rider": {
+  "width": 0.0,
+  "length": 0.0
+ },
+ "vehicle.kawasaki.ninja": {
+  "width": 0.0,
+  "length": 0.0
+ },
+ "vehicle.bh.crossbike": {
+  "width": 0.0,
+  "length": 0.0
+ },
+ "vehicle.tesla.cybertruck": {
+  "width": 2.3895740509033203,
+  "length": 6.273553371429443
+ },
+ "static.prop.plantpot08": {
+  "width": 0.5335351228713989,
+  "length": 0.527294933795929
+ },
+ "vehicle.volkswagen.t2": {
+  "width": 2.069315195083618,
+  "length": 4.4804368019104
+ },
+ "vehicle.lincoln.mkz_2017": {
+  "width": 2.128324270248413,
+  "length": 4.901683330535889
+ },
+ "walker.pedestrian.0044": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "static.prop.haybale": {
+  "width": 1.2480419874191284,
+  "length": 1.1930078268051147
+ },
+ "static.prop.mailbox": {
+  "width": 0.5264550447463989,
+  "length": 0.4386328160762787
+ },
+ "static.prop.mesh": {
+  "width": -Infinity,
+  "length": -Infinity
+ },
+ "static.prop.shoppingbag": {
+  "width": 0.474365234375,
+  "length": 0.24348144233226776
+ },
+ "static.prop.bench03": {
+  "width": 0.5087951421737671,
+  "length": 1.5847387313842773
+ },
+ "static.prop.bin": {
+  "width": 0.6368221640586853,
+  "length": 0.549755871295929
+ },
+ "static.prop.container": {
+  "width": 1.93142569065094,
+  "length": 1.013208031654358
+ },
+ "static.prop.fountain": {
+  "width": 8.398456573486328,
+  "length": 8.405174255371094
+ },
+ "static.prop.garbage03": {
+  "width": 0.05900390446186066,
+  "length": 0.060087889432907104
+ },
+ "walker.pedestrian.0019": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "static.prop.busstoplb": {
+  "width": 1.9281249046325684,
+  "length": 3.859023332595825
+ },
+ "controller.ai.walker": {
+  "width": -Infinity,
+  "length": -Infinity
+ },
+ "vehicle.nissan.patrol_2021": {
+  "width": 2.1499669551849365,
+  "length": 5.565828800201416
+ },
+ "walker.pedestrian.0027": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "static.prop.plantpot02": {
+  "width": 1.051308512687683,
+  "length": 0.4304296672344208
+ },
+ "walker.pedestrian.0041": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "static.prop.brokentile02": {
+  "width": 0.209716796875,
+  "length": 0.1522265523672104
+ },
+ "walker.pedestrian.0003": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "static.prop.brokentile04": {
+  "width": 0.1297656148672104,
+  "length": 0.12644530832767487
+ },
+ "vehicle.diamondback.century": {
+  "width": 0.0,
+  "length": 0.0
+ },
+ "static.prop.clothesline": {
+  "width": 6.652636528015137,
+  "length": 1.1161718368530273
+ },
+ "walker.pedestrian.0040": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "walker.pedestrian.0043": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "static.prop.chainbarrier": {
+  "width": 1.4942578077316284,
+  "length": 0.2381640523672104
+ },
+ "static.prop.trashcan05": {
+  "width": 0.784863293170929,
+  "length": 0.5856054425239563
+ },
+ "walker.pedestrian.0005": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "walker.pedestrian.0035": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "static.prop.plasticbag": {
+  "width": 0.30831053853034973,
+  "length": 0.404609352350235
+ },
+ "static.prop.trashcan04": {
+  "width": 0.7884960770606995,
+  "length": 0.5807128548622131
+ },
+ "static.prop.box02": {
+  "width": 0.6483007669448853,
+  "length": 0.6488280892372131
+ },
+ "static.prop.streetsign04": {
+  "width": 1.1707617044448853,
+  "length": 0.1253076195716858
+ },
+ "static.prop.slide": {
+  "width": 4.127070426940918,
+  "length": 0.9223339557647705
+ },
+ "static.prop.swingcouch": {
+  "width": 2.3691797256469727,
+  "length": 1.3455272912979126
+ },
+ "walker.pedestrian.0008": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "static.prop.bike helmet": {
+  "width": 0.27659469842910767,
+  "length": 0.1862231343984604
+ },
+ "walker.pedestrian.0042": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "static.prop.shoppingtrolley": {
+  "width": 0.5033007860183716,
+  "length": 0.3345703184604645
+ },
+ "static.prop.foodcart": {
+  "width": 2.252763509750366,
+  "length": 4.653984069824219
+ },
+ "static.prop.shoppingcart": {
+  "width": 0.6610937118530273,
+  "length": 1.2121093273162842
+ },
+ "walker.pedestrian.0022": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "vehicle.vespa.zx125": {
+  "width": 0.0,
+  "length": 0.0
+ },
+ "static.prop.streetfountain": {
+  "width": 0.6695812940597534,
+  "length": 0.28857421875
+ },
+ "vehicle.carlamotors.carlacola": {
+  "width": 2.6269896030426025,
+  "length": 5.203838348388672
+ },
+ "sensor.other.rss": {
+  "width": -Infinity,
+  "length": -Infinity
+ },
+ "static.prop.streetsign": {
+  "width": 0.12264709174633026,
+  "length": 1.0646483898162842
+ },
+ "static.prop.glasscontainer": {
+  "width": 2.0040271282196045,
+  "length": 1.9596874713897705
+ },
+ "walker.pedestrian.0046": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "static.prop.trampoline": {
+  "width": 4.121512413024902,
+  "length": 4.14163064956665
+ },
+ "vehicle.gazelle.omafiets": {
+  "width": 0.0,
+  "length": 0.0
+ },
+ "static.prop.trafficcone01": {
+  "width": 0.8800365924835205,
+  "length": 0.8849608898162842
+ },
+ "static.prop.swing": {
+  "width": 1.5815234184265137,
+  "length": 4.103417873382568
+ },
+ "walker.pedestrian.0030": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "static.prop.garbage05": {
+  "width": 0.2327929586172104,
+  "length": 0.23162108659744263
+ },
+ "walker.pedestrian.0001": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "walker.pedestrian.0038": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "walker.pedestrian.0032": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "vehicle.nissan.micra": {
+  "width": 1.845113754272461,
+  "length": 3.633375883102417
+ },
+ "walker.pedestrian.0025": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "static.prop.trafficwarning": {
+  "width": 2.295839786529541,
+  "length": 2.9330174922943115
+ },
+ "walker.pedestrian.0047": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "static.prop.calibrator": {
+  "width": 1.52859365940094,
+  "length": 0.7313330173492432
+ },
+ "static.prop.bench01": {
+  "width": 1.523828148841858,
+  "length": 0.77687007188797
+ },
+ "static.prop.warningaccident": {
+  "width": 1.2763476371765137,
+  "length": 1.089565396308899
+ },
+ "static.prop.wateringcan": {
+  "width": 0.06513671576976776,
+  "length": 0.19584961235523224
+ },
+ "static.prop.motorhelmet": {
+  "width": 0.1934179663658142,
+  "length": 0.26454100012779236
+ },
+ "static.prop.doghouse": {
+  "width": 1.0447264909744263,
+  "length": 1.300502896308899
+ },
+ "static.prop.kiosk_01": {
+  "width": 1.6501061916351318,
+  "length": 1.629270076751709
+ },
+ "static.prop.trashbag": {
+  "width": 0.4286383092403412,
+  "length": 0.3790150284767151
+ },
+ "walker.pedestrian.0049": {
+  "width": 0.5,
+  "length": 0.5
+ },
+ "static.prop.dirtdebris01": {
+  "width": 1.5094066858291626,
+  "length": 1.861116647720337
+ },
+ "walker.pedestrian.0013": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "sensor.lidar.ray_cast": {
+  "width": -Infinity,
+  "length": -Infinity
+ },
+ "vehicle.mercedes.coupe_2020": {
+  "width": 1.8118125200271606,
+  "length": 4.673638820648193
+ },
+ "static.prop.creasedbox03": {
+  "width": 0.7154492139816284,
+  "length": 1.6676464080810547
+ },
+ "static.trigger.friction": {
+  "width": -Infinity,
+  "length": -Infinity
+ },
+ "static.prop.plantpot07": {
+  "width": 0.47652342915534973,
+  "length": 0.4938853979110718
+ },
+ "static.prop.garbage02": {
+  "width": 0.05351562425494194,
+  "length": 0.05334716662764549
+ },
+ "static.prop.ironplank": {
+  "width": 1.1765624284744263,
+  "length": 1.4501018524169922
+ },
+ "static.prop.gnome": {
+  "width": 0.3760156035423279,
+  "length": 0.36619138717651367
+ },
+ "static.prop.table": {
+  "width": 2.154296875,
+  "length": 2.15380859375
+ },
+ "static.prop.gardenlamp": {
+  "width": 0.2815625071525574,
+  "length": 0.2969140410423279
+ },
+ "static.prop.brokentile01": {
+  "width": 0.17619140446186066,
+  "length": 0.13423827290534973
+ },
+ "static.prop.purse": {
+  "width": 0.15908202528953552,
+  "length": 0.3327587842941284
+ },
+ "vehicle.ford.ambulance": {
+  "width": 2.3511743545532227,
+  "length": 6.36564302444458
+ },
+ "walker.pedestrian.0015": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "walker.pedestrian.0048": {
+  "width": 0.5,
+  "length": 0.5
+ },
+ "static.prop.travelcase": {
+  "width": 0.3262280225753784,
+  "length": 0.5681250095367432
+ },
+ "static.prop.mobile": {
+  "width": 0.08042968809604645,
+  "length": 0.0078125
+ },
+ "static.prop.maptable": {
+  "width": 1.568935513496399,
+  "length": 0.6278710961341858
+ },
+ "vehicle.citroen.c3": {
+  "width": 1.8508483171463013,
+  "length": 3.987684965133667
+ },
+ "static.prop.plantpot04": {
+  "width": 0.7440820336341858,
+  "length": 4.966181755065918
+ },
+ "static.prop.pergola": {
+  "width": 5.092597484588623,
+  "length": 5.021718502044678
+ },
+ "static.prop.dirtdebris03": {
+  "width": 1.5167187452316284,
+  "length": 1.8551561832427979
+ },
+ "vehicle.dodge.charger_police_2020": {
+  "width": 1.9297595024108887,
+  "length": 5.237514495849609
+ },
+ "vehicle.tesla.model3": {
+  "width": 2.163450002670288,
+  "length": 4.791779518127441
+ },
+ "static.prop.advertisement": {
+  "width": 1.5517284870147705,
+  "length": 0.2730078101158142
+ },
+ "walker.pedestrian.0002": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "walker.pedestrian.0036": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "vehicle.dodge.charger_2020": {
+  "width": 1.8816219568252563,
+  "length": 5.0078253746032715
+ },
+ "static.prop.constructioncone": {
+  "width": 0.3347460925579071,
+  "length": 0.3531445264816284
+ },
+ "static.prop.plantpot03": {
+  "width": 1.051025390625,
+  "length": 0.4311474561691284
+ },
+ "static.prop.creasedbox01": {
+  "width": 0.8085058331489563,
+  "length": 0.7132617235183716
+ },
+ "static.prop.trafficcone02": {
+  "width": 0.3950781226158142,
+  "length": 0.4551452398300171
+ },
+ "sensor.other.gnss": {
+  "width": -Infinity,
+  "length": -Infinity
+ },
+ "sensor.camera.depth": {
+  "width": -Infinity,
+  "length": -Infinity
+ },
+ "static.prop.colacan": {
+  "width": 0.06880859285593033,
+  "length": 0.0710742175579071
+ },
+ "walker.pedestrian.0033": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "vehicle.audi.a2": {
+  "width": 1.788678526878357,
+  "length": 3.705369472503662
+ },
+ "static.prop.trashcan03": {
+  "width": 0.5462695360183716,
+  "length": 0.6284960508346558
+ },
+ "static.prop.streetsign01": {
+  "width": 0.29691770672798157,
+  "length": 2.471132755279541
+ },
+ "static.prop.bench02": {
+  "width": 0.5407812595367432,
+  "length": 1.5649999380111694
+ },
+ "static.prop.platformgarbage01": {
+  "width": 1.7025530338287354,
+  "length": 3.637382745742798
+ },
+ "static.prop.box01": {
+  "width": 0.6506068110466003,
+  "length": 0.6537890434265137
+ },
+ "walker.pedestrian.0031": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "walker.pedestrian.0029": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "walker.pedestrian.0009": {
+  "width": 0.5,
+  "length": 0.5
+ },
+ "walker.pedestrian.0028": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "sensor.camera.semantic_segmentation": {
+  "width": -Infinity,
+  "length": -Infinity
+ },
+ "vehicle.micro.microlino": {
+  "width": 1.4809197187423706,
+  "length": 2.2072951793670654
+ },
+ "walker.pedestrian.0034": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "walker.pedestrian.0026": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "sensor.camera.dvs": {
+  "width": -Infinity,
+  "length": -Infinity
+ },
+ "static.prop.busstop": {
+  "width": 3.8899974822998047,
+  "length": 1.864843726158142
+ },
+ "vehicle.chevrolet.impala": {
+  "width": 2.033202886581421,
+  "length": 5.357479572296143
+ },
+ "vehicle.mercedes.coupe": {
+  "width": 2.1515462398529053,
+  "length": 5.0267767906188965
+ },
+ "static.prop.plastictable": {
+  "width": 2.481210947036743,
+  "length": 2.4831933975219727
+ },
+ "walker.pedestrian.0024": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "walker.pedestrian.0017": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "sensor.other.obstacle": {
+  "width": -Infinity,
+  "length": -Infinity
+ },
+ "static.prop.plantpot06": {
+  "width": 1.7086328268051147,
+  "length": 1.468896508216858
+ },
+ "static.prop.barrel": {
+  "width": 0.4638085961341858,
+  "length": 0.4673241972923279
+ },
+ "static.prop.garbage01": {
+  "width": 0.05351562425494194,
+  "length": 0.053349606692790985
+ },
+ "walker.pedestrian.0023": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "static.prop.guitarcase": {
+  "width": 1.243105411529541,
+  "length": 0.11785156279802322
+ },
+ "walker.pedestrian.0018": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "vehicle.dodge.charger_police": {
+  "width": 2.0384011268615723,
+  "length": 4.974244117736816
+ },
+ "walker.pedestrian.0016": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "vehicle.mini.cooper_s": {
+  "width": 1.970275640487671,
+  "length": 3.805800199508667
+ },
+ "vehicle.ford.mustang": {
+  "width": 1.894826889038086,
+  "length": 4.717525005340576
+ },
+ "vehicle.audi.etron": {
+  "width": 2.0327565670013428,
+  "length": 4.855708599090576
+ },
+ "static.prop.briefcase": {
+  "width": 0.18390624225139618,
+  "length": 0.5424365401268005
+ },
+ "walker.pedestrian.0014": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "sensor.camera.normals": {
+  "width": -Infinity,
+  "length": -Infinity
+ },
+ "walker.pedestrian.0010": {
+  "width": 0.5,
+  "length": 0.5
+ },
+ "walker.pedestrian.0004": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "static.prop.warningconstruction": {
+  "width": 1.056542992591858,
+  "length": 1.303808569908142
+ },
+ "static.prop.garbage06": {
+  "width": 0.21388670802116394,
+  "length": 0.3658544719219208
+ },
+ "static.prop.brokentile03": {
+  "width": 0.15052734315395355,
+  "length": 0.14899902045726776
+ },
+ "sensor.camera.instance_segmentation": {
+  "width": -Infinity,
+  "length": -Infinity
+ },
+ "static.prop.vendingmachine": {
+  "width": 0.86004638671875,
+  "length": 1.1121093034744263
+ },
+ "static.prop.box03": {
+  "width": 0.6531835794448853,
+  "length": 0.6775683164596558
+ },
+ "sensor.camera.rgb": {
+  "width": -Infinity,
+  "length": -Infinity
+ },
+ "static.prop.clothcontainer": {
+  "width": 1.883516788482666,
+  "length": 1.2440234422683716
+ },
+ "static.prop.plantpot01": {
+  "width": 1.093347191810608,
+  "length": 0.46602538228034973
+ },
+ "sensor.lidar.ray_cast_semantic": {
+  "width": -Infinity,
+  "length": -Infinity
+ },
+ "walker.pedestrian.0045": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "walker.pedestrian.0011": {
+  "width": 0.5,
+  "length": 0.5
+ },
+ "sensor.other.radar": {
+  "width": -Infinity,
+  "length": -Infinity
+ },
+ "static.prop.creasedbox02": {
+  "width": 1.6248266696929932,
+  "length": 0.7318359017372131
+ },
+ "sensor.camera.optical_flow": {
+  "width": -Infinity,
+  "length": -Infinity
+ },
+ "static.prop.dirtdebris02": {
+  "width": 1.8521654605865479,
+  "length": 1.5203759670257568
+ },
+ "walker.pedestrian.0007": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "sensor.other.imu": {
+  "width": -Infinity,
+  "length": -Infinity
+ },
+ "walker.pedestrian.0020": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "static.prop.atm": {
+  "width": 0.8793163895606995,
+  "length": 0.7063866853713989
+ },
+ "static.prop.chainbarrierend": {
+  "width": 0.23695312440395355,
+  "length": 0.240234375
+ },
+ "sensor.other.collision": {
+  "width": -Infinity,
+  "length": -Infinity
+ },
+ "vehicle.mitsubishi.fusorosa": {
+  "width": 3.9441518783569336,
+  "length": 10.272685050964355
+ },
+ "vehicle.volkswagen.t2_2021": {
+  "width": 1.77456533908844,
+  "length": 4.442183971405029
+ },
+ "vehicle.toyota.prius": {
+  "width": 2.006814479827881,
+  "length": 4.513522624969482
+ },
+ "vehicle.ford.crown": {
+  "width": 1.8007241487503052,
+  "length": 5.365678787231445
+ },
+ "static.prop.trashcan01": {
+  "width": 0.5651562213897705,
+  "length": 0.6376855373382568
+ },
+ "static.prop.plantpot05": {
+  "width": 0.39851561188697815,
+  "length": 0.4019140601158142
+ },
+ "walker.pedestrian.0006": {
+  "width": 0.3753577768802643,
+  "length": 0.3753577768802643
+ },
+ "vehicle.audi.tt": {
+  "width": 1.9941171407699585,
+  "length": 4.181210041046143
+ },
+ "vehicle.mercedes.sprinter": {
+  "width": 1.9884328842163086,
+  "length": 5.91519021987915
+ },
+ "vehicle.mini.cooper_s_2021": {
+  "width": 2.097072124481201,
+  "length": 4.552699089050293
+ },
+ "static.prop.streetbarrier": {
+  "width": 1.204531192779541,
+  "length": 0.4040282964706421
+ },
+ "static.prop.trashcan02": {
+  "width": 0.5122782588005066,
+  "length": 0.5250830054283142
+ },
+ "static.prop.garbage04": {
+  "width": 0.0555419921875,
+  "length": 0.05741210654377937
+ },
+ "vehicle.carlamotors.firetruck": {
+  "width": 2.8910882472991943,
+  "length": 8.46804141998291
+ },
+ "vehicle.lincoln.mkz_2020": {
+  "width": 1.8367133140563965,
+  "length": 4.89238166809082
+ }
+}

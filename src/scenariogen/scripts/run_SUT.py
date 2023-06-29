@@ -18,7 +18,7 @@ parser.add_argument('--no_render', action='store_true',
                     help='disable rendering')
 parser.add_argument('--closedLoop', action='store_true',
                     help='simulate a VUT')
-parser.add_argument('--ego_module', default='scenariogen.simulators.newtonian.ego_followLane',
+parser.add_argument('--ego_module', default='experiments.agents.followLane',
                     help='the scenic file containing the ego scenario')
 parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='newtonian',
                     help='The simulator')
@@ -41,20 +41,6 @@ elif args.seconds:
     seconds = args.seconds
 steps = seconds // args.timestep
 
-# Choose a blueprint of an appropriate size for each non-ego
-with open('src/scenariogen/simulators/carla/blueprint_library.json', 'r') as f:
-    blueprints = jsonpickle.decode(f.read())
-dim2bp = {}
-for b, dims in blueprints.items():
-    length = int(100*dims['length'])
-    width = int(100*dims['width'])
-    if not (length, width) in dim2bp:
-        dim2bp[(length, width)] = [b]
-    else:
-        dim2bp[(length, width)].append(b)
-bps = [random.choice(dim2bp[(int(l*100), int(w*100))])
-       for l, w in zip(seed.lengths, seed.widths)]
-
 # Scenario config
 config = {**seed.config}
 config['steps'] = steps
@@ -63,7 +49,6 @@ config['weather'] = 'CloudySunset'
 config['seed'] = seed
 config['arrival_distance'] = 4
 config['stop_speed_threshold'] = 0.5  # meters/seconds
-config['blueprints'] = bps
 config['closedLoop'] = args.closedLoop
 config['ego_module'] = args.ego_module
 config['simulator'] = args.simulator

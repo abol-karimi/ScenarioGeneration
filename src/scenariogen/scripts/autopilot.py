@@ -77,9 +77,10 @@ if args.ego_init_progress:
 # Run the scenario on the seed
 params = {'carla_map': config['carla_map'],
           'map': config['map'],
-          'config': config,
+          'render': True,
           'timestep': args.timestep,
-          'render': True}
+          'config': config,
+          }
 
 print('Play an autopilot ego in the scenario...')
 scenic_scenario = scenic.scenarioFromFile(

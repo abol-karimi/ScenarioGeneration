@@ -10,7 +10,6 @@ seed = config['seed']
 intersection = network.elements[config['intersection']]
 
 # Python imports
-import time
 import carla
 from agents.navigation.behavior_agent import BehaviorAgent
 from scenic.simulators.carla.utils.utils import scenicToCarlaLocation
