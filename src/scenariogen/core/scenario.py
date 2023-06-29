@@ -22,8 +22,7 @@ class Scenario:
               }
 
     scenic_scenario = scenic.scenarioFromFile(
-                        f"{config['simulator']}/SUT.scenic",
-                        scenario='ClosedLoop' if config['ego'] else 'OpenLoop',
+                        f"src/scenariogen/simulators/{config['simulator']}/SUT.scenic",
                         params=params)
     print(f'Initializing the scenario...')
     scene, _ = scenic_scenario.generate(maxIterations=1)
