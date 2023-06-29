@@ -9,6 +9,7 @@ from scenariogen.core.events import *
 from scenariogen.core.utils import sample_trajectory
 from scenariogen.core.signals import SignalType
 from scenariogen.core.errors import EgoCollisionError, InvalidSeedError
+from scenariogen.core.utils import is_collision_free
 
 behavior AnimateBehavior():
 	for pose in self.traj_sample:
@@ -24,18 +25,20 @@ scenario NonegosScenario():
   setup:
     cars = []
     seed = config['seed']
-    for i, (route, spline, signal, bp) in enumerate(zip(seed.routes, seed.trajectories, seed.signals, config['blueprints'])):
-      traj_sample = sample_trajectory(spline, 
+    for i, (route, traj, signal, l, w, bp) in enumerate(zip(seed.routes, seed.trajectories, seed.signals, seed.lengths, seed.widths, config['blueprints'])):
+      traj_sample = sample_trajectory(traj,
                                       int(config['steps'])+1,
                                       0, 
                                       config['timestep']*config['steps'])
       car = Car at traj_sample[0],
-        with name '_'.join(route + [str(i)]),
+        with name '_'.join(route + (str(i),)),
         with behavior AnimateBehavior(),
         with physics False,
         with allowCollisions False,
         with traj_sample traj_sample,
         with signal signal,
+        with length l,
+        with width w,
         with blueprint bp
       cars.append(car)
     ego = cars[0]
@@ -45,6 +48,7 @@ events = []
 scenario RecordEventsScenario(cars):
   setup:
     ego = cars[0]
+    record final events as events
 
     monitor record_events:
       maneuvers = intersection.maneuvers
@@ -86,17 +90,17 @@ scenario CheckCollisionsScenario(egos, nonegos):
     ego = (egos+nonegos)[0]
 
     monitor collisions:
-      nonego_pairs = ((nonegos[i], nonegos[j]) 
+      nonego_pairs = [(nonegos[i], nonegos[j]) 
               for i in range(len(nonegos)) 
-              for j in range(i+1, len(nonegos)))
-      egos_nonego_pairs = ((e, n) for e in egos for n in nonegos)
+              for j in range(i+1, len(nonegos))]
+      ego_nonego_pairs = [(e, n) for e in egos for n in nonegos]
       while True:
         # Nonego-nonego collisions
         for c, d in nonego_pairs:
           if c.intersects(d):
-            raise InvalidSeedError
+            raise InvalidSeedError()
         # Ego-nonego collisions
-        for e, n in egos_nonego_pairs:
+        for e, n in ego_nonego_pairs:
           if e.intersects(n):
-            raise EgoCollisionError
+            raise EgoCollisionError()
         wait

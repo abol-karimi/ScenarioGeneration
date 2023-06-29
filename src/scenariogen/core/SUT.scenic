@@ -14,10 +14,8 @@ from scenariogen.core.signals import SignalType
 from scenic.core.vectors import Vector
 from scenariogen.core.scenarios import NonegosScenario, RecordEventsScenario, CheckCollisionsScenario
 
-# The module specifying VUT
-ego_module = importlib.import_module(config['ego_module'])
-
 if config['closedLoop']:
+  ego_module = importlib.import_module(config['ego_module'])
   ego_scenario = ego_module.EgoScenario()
 
 nonegos_scenario = NonegosScenario()

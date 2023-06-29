@@ -8,17 +8,17 @@ from scenariogen.core.signals import SignalType
 @dataclass
 class Trajectory:
   degree : int = None
-  ctrlpts : List[Tuple[float]] = None
-  knotvector : List[float] = None
+  ctrlpts : Tuple[Tuple[float]] = None
+  knotvector : Tuple[float] = None
 
 @dataclass
 class Seed:
   config: Dict = None
-  routes: List[str] = None
-  trajectories: List[Trajectory] = None
-  signals: List[SignalType] = None
-  lengths: List[float] = None
-  widths: List[float] = None
+  routes: Tuple[str] = None
+  trajectories: Tuple[Trajectory] = None
+  signals: Tuple[SignalType] = None
+  lengths: Tuple[float] = None
+  widths: Tuple[float] = None
   
 def is_valid(seed):
   """Check some necessary (but not sufficient) conditions.

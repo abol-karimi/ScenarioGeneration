@@ -1,6 +1,5 @@
 #!/usr/bin/env python3.8
 import argparse
-import random
 import jsonpickle
 
 # This project
@@ -59,7 +58,7 @@ except InvalidSeedError:
     print('Invalid seed.')
 except EgoCollisionError:
     print('SUT failure: VUT collision.')
-
-events = sim_result.records['events']
-for e in events:
-    print(e)
+else:
+    events = sim_result.records['events']
+    for e in events:
+        print(e)

@@ -5,29 +5,28 @@ Two platoons of vehicles cross each other and collide at the intersection.
 #--- Python imports
 import jsonpickle
 from scenariogen.core.signals import SignalType
-from scenariogen.core.seed import Route
 from scenariogen.core.utils import is_collision_free
 
 #--- Defined constants
 carla_map = 'Town05'
 intersection_uid = 'intersection396'
 traffic_rules = '4way-uncontrolled.lp'
-ego_route = Route(lanes=('road9_lane2', 'road455_lane0', 'road45_lane1'))
+ego_route = ('road9_lane2', 'road455_lane0', 'road45_lane1')
 ego_init_progress = 30
 arrival_distance = 4
-route_left = Route(lanes=['road44_lane1', 'road552_lane1', 'road45_lane1'])
-route_right = Route(lanes=['road8_lane1', 'road415_lane1', 'road9_lane1'])
+route_left = ('road44_lane1', 'road552_lane1', 'road45_lane1')
+route_right = ('road8_lane1', 'road415_lane1', 'road9_lane1')
 
 #--- Scenic parameters
 param carla_map = carla_map
 param map = f'/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/{carla_map}.xodr'
-model scenic.domains.driving.model
+model scenic.simulators.newtonian.driving_model
 
 #--- Derived constants
 intersection = network.elements[intersection_uid]
-route_left_lanes = [network.elements[l] for l in route_left.lanes]
+route_left_lanes = [network.elements[l] for l in route_left]
 route_left_centerline = PolylineRegion.unionAll([l.centerline for l in route_left_lanes])
-route_right_lanes = [network.elements[l] for l in route_right.lanes]
+route_right_lanes = [network.elements[l] for l in route_right]
 route_right_centerline = PolylineRegion.unionAll([l.centerline for l in route_right_lanes])
 config = {'carla_map': carla_map,
           'map': globalParameters.map,
@@ -76,14 +75,9 @@ for p, d in zip(spawn_points, distances):
 
 ego = cars[0]
 
-monitor collisions:
-  invariant: is_collision_free(cars)
-  while True:
-    wait
-
 #--- Output parameters
-record initial [car.route for car in cars] as routes
-record initial [car.signal for car in cars] as turn_signals
-record initial [car.length for car in cars] as lengths
-record initial [car.width for car in cars] as widths
+record initial (car.route for car in cars) as routes
+record initial (car.signal for car in cars) as turn_signals
+record initial (car.length for car in cars) as lengths
+record initial (car.width for car in cars) as widths
 record initial config as config
