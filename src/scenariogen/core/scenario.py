@@ -24,7 +24,11 @@ class Scenario:
     bps = [self.dim2bp[(int(l*100), int(w*100))][0]
        for l, w in zip(self.seed.lengths, self.seed.widths)]
     
-    config = {**self.seed.config, **config, 'blueprints': bps}
+    config = {**self.seed.config,
+              **config,
+              'blueprints': bps,
+              'seed': self.seed,
+              }
 
     # Sample the nonego splines.
     seconds = self.seed.trajectories[0].ctrlpts[-1][2]
