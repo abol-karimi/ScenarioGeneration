@@ -72,10 +72,11 @@ spacetime_trajs = spacetime_trajectories(sim_result, args.timestep)
 with open('spacetime_trajectories.pickle', 'wb') as outFile:
     pickle.dump(spacetime_trajs, outFile)
 
-trajectories = [spline_approximation(traj,
-                                    degree=args.spline_degree,
-                                    knots_size=args.parameters_size)
-                for traj in spacetime_trajs]
+trajectories = tuple(spline_approximation
+                            (traj,
+                            degree=args.spline_degree,
+                            knots_size=args.parameters_size)
+                    for traj in spacetime_trajs)
 seed = Seed(config=config,
             routes=routes,
             trajectories=trajectories,

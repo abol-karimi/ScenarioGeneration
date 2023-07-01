@@ -1,0 +1,22 @@
+https://llvm.org/docs/LibFuzzer.html#faq
+
+
+Q. When libFuzzer is not a good solution for a problem?
+
+    If the test inputs are validated by the target library and the validator asserts/crashes on invalid inputs, in-process fuzzing is not applicable.
+    
+    Bugs in the target library may accumulate without being detected. E.g. a memory corruption that goes undetected at first and then leads to a crash while testing another input. This is why it is highly recommended to run this in-process fuzzer with all sanitizers to detect most bugs on the spot.
+    
+    It is harder to protect the in-process fuzzer from excessive memory consumption and infinite loops in the target library (still possible).
+    
+    The target library should not have significant global state that is not reset between the runs.
+    
+    Many interesting target libraries are not designed in a way that supports the in-process fuzzer interface (e.g. require a file path instead of a byte array).
+    
+    If a single test run takes a considerable fraction of a second (or more) the speed benefit from the in-process fuzzer is negligible.
+    
+    If the target library runs persistent threads (that outlive execution of one test) the fuzzing results will be unreliable.
+
+Q. So, what exactly this Fuzzer is good for?
+
+This Fuzzer might be a good choice for testing libraries that have relatively small inputs, each input takes < 10ms to run, and the library code is not expected to crash on invalid inputs. Examples: regular expression matchers, text or binary format parsers, compression, network, crypto.

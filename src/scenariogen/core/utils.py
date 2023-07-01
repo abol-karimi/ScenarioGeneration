@@ -353,8 +353,10 @@ def spline_approximation(spacetime_traj, degree=3, knots_size=20):
                                        t=np.linspace(z[0], z[-1], knots_size))
 
     traj = Trajectory(degree=degree,
-                      ctrlpts=[[float(x),float(y),float(z)] for x,y,z in zip(tck[1][0], tck[1][1], tck[1][2])],
-                      knotvector=[float(knot) for knot in tck[0]])
+                      ctrlpts=tuple((float(x),float(y),float(z))
+                                    for x,y,z in zip(tck[1][0], tck[1][1], tck[1][2])),
+                      knotvector=tuple(float(knot) for knot in tck[0])
+                      )
     
     return traj
 

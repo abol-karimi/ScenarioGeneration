@@ -23,7 +23,7 @@
 #  None of the available fuzzers acheive good predicate coverage
 
 # Available python fuzzers:
-#  Atheris
+#  Atheris (based on libfuzzer)
 #  Hypothesis (rule-based stateful testing)
 #  Pythonfuzz
 #  PyJFuzz, gramfuzz
