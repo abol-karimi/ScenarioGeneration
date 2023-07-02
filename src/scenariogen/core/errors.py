@@ -4,8 +4,17 @@ class SUTError(Exception):
 
 class EgoCollisionError(SUTError):
     """Ego collides with another vehicle."""
-    pass
+    def __init__(self, ego, other):
+        self.ego = ego
+        self.other = other
+
+class NonegoNonegoCollisionError(SUTError):
+    """Two non-egos collide, so the seed is invalid."""
+    def __init__(self, nonego, other):
+        self.nonego = nonego
+        self.other = other
 
 class InvalidSeedError(SUTError):
-    """The seed is invalid, e.g. two non-egos collide."""
-    pass
+    """Seed validation faild."""
+    def __init__(self, message):
+        self.msg = message

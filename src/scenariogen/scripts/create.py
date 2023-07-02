@@ -18,8 +18,10 @@ from scenariogen.core.utils import spacetime_trajectories, spline_approximation
 
 #----------Main Script----------
 parser = argparse.ArgumentParser(description='Make a seed from a scenic scenario.')
-parser.add_argument('scenic_file', 
+parser.add_argument('scenario_path', 
                     help='Path of the Scenic file specifying the scenario')
+parser.add_argument('--out_path',
+                    help='Path where the generated seed will be stored')
 duration = parser.add_mutually_exclusive_group()
 duration.add_argument('--steps', type=int,
                       help='The duration of the scenario in steps')
@@ -42,7 +44,7 @@ steps = seconds // args.timestep
 
 # Run the scenario
 scenic_scenario = scenic.scenarioFromFile(
-    args.scenic_file,
+    args.scenario_path,
     params = {'timestep': args.timestep})
 scene, _ = scenic_scenario.generate(maxIterations=1)
 simulator = NewtonianSimulator()
@@ -85,6 +87,10 @@ seed = Seed(config=config,
             widths=widths)
 
 # Store the seed
-scenic_path = Path(args.scenic_file)
-with open(scenic_path.with_name(scenic_path.stem + '.json'), 'w') as f:
-    f.write(jsonpickle.encode(seed, indent=1))
+if args.out_path:
+    with open(args.out_path, 'w') as f:
+        f.write(jsonpickle.encode(seed, indent=1))    
+else:
+    scenario_path = Path(args.scenario_path)
+    with open(scenario_path.parents[1]/'initial_seeds'/f'{scenario_path.stem}.json', 'w') as f:
+        f.write(jsonpickle.encode(seed, indent=1))

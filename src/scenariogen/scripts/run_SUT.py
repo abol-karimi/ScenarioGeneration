@@ -4,7 +4,7 @@ import jsonpickle
 
 # This project
 from scenariogen.core.scenario import Scenario
-from scenariogen.core.errors import EgoCollisionError, InvalidSeedError
+from scenariogen.core.errors import EgoCollisionError, NonegoNonegoCollisionError
 
 
 parser = argparse.ArgumentParser(
@@ -54,10 +54,10 @@ config['simulator'] = args.simulator
 
 try:
     sim_result = Scenario(seed).run(config)
-except InvalidSeedError:
-    print('Invalid seed.')
-except EgoCollisionError:
-    print('SUT failure: VUT collision.')
+except NonegoNonegoCollisionError as err:
+    print(f'Collision between nonegos {err.nonego} and {err.other}.')
+except EgoCollisionError as err:
+    print(f'Ego collided with {err.other.name}.')
 else:
     events = sim_result.records['events']
     for e in events:

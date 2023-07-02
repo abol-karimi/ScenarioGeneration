@@ -8,7 +8,7 @@ intersection = network.elements[config['intersection']]
 from scenariogen.core.events import *
 from scenariogen.core.utils import sample_trajectory
 from scenariogen.core.signals import SignalType
-from scenariogen.core.errors import EgoCollisionError, InvalidSeedError
+from scenariogen.core.errors import EgoCollisionError, NonegoNonegoCollisionError
 from scenariogen.core.utils import is_collision_free
 
 behavior AnimateBehavior():
@@ -98,9 +98,9 @@ scenario CheckCollisionsScenario(egos, nonegos):
         # Nonego-nonego collisions
         for c, d in nonego_pairs:
           if c.intersects(d):
-            raise InvalidSeedError()
+            raise NonegoNonegoCollisionError(c, d)
         # Ego-nonego collisions
         for e, n in ego_nonego_pairs:
           if e.intersects(n):
-            raise EgoCollisionError()
+            raise EgoCollisionError(e, n)
         wait
