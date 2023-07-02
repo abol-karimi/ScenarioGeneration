@@ -29,7 +29,11 @@ def validate_trajectory(traj):
   if not isinstance(traj.ctrlpts, tuple):
     raise InvalidSeedError('Invalid seed: ctrlpts is not a tuple')
   for c in traj.ctrlpts:
-    if not (isinstance(c, tuple) and len(c) == 3):
+    if not isinstance(c, tuple):
+      print(c)
+      raise InvalidSeedError('Invalid seed: ctrlpt is not a tuple')
+    if len(c) != 3:
+      print(c)
       raise InvalidSeedError('Invalid seed: ctrlpt is not a triple')
   # knotvector type
   if not isinstance(traj.knotvector, tuple):

@@ -27,18 +27,23 @@ class RandomMutator():
   _networks_cache = {}
   _route_lengths_cache = {}
 
-  def __init__(self, mutator_config, randomizer_seed):
-    self.config = mutator_config
+  def __init__(self, max_parameters_size=50,
+                      max_mutations_per_iteration=1,
+                      randomizer_seed=0):
+    self.max_parameters_size = max_parameters_size
+    self.max_mutations_per_iteration = max_mutations_per_iteration
+    self.randomizer_seed = randomizer_seed
+
     self.random = Random(randomizer_seed)
     self.mutators = [self.copy_lon,
                     self.add_controlpoint,
                     self.remove_controlpoint,
-                    # self.remove_vehicle,
-                    # self.add_slowdown,
+                    self.remove_vehicle,
+                    self.speedup_interval,
+                    self.slowdown_interval,
                     # self.move_first_controlpoint_vertically,
                     # self.move_last_controlpoint_vertically,
                     # self.move_mid_controlpoint_vertically,                    
-                    # self.invalid,
                     ]
   @classmethod
   def get_network(cls, seed):
@@ -49,46 +54,7 @@ class RandomMutator():
       return network
     else:
       return cls._networks_cache[carla_map]
-    
-    routes = [(m.startLane, m.connectingLane, m.endLane)
-              for m in intersection.maneuvers]
-    self.route_lengths = [utils.route_length(r) for r in routes]
 
-
-  def invalid(self, seed):
-    """Creates an invalid scenario for debugging.
-    """
-    print('Creating an invalid scenario...')
-    mutant = copy.deepcopy(seed)
-    nonego_idx = self.self.random.randrange(len(mutant.trajectories))
-    
-    route = mutant.routes[nonego_idx]
-    traj = mutant.trajectories[nonego_idx]
-    lanes = [self.network.elements[lane_id] 
-             for lane_id in route.lanes]
-    delta = 2
-    route_region = LinearElement(
-      id=f'route_{lanes}_{delta}',
-      polygon=PolygonalRegion.unionAll(lanes).polygons,
-      centerline=PolylineRegion.unionAll([l.centerline for l in lanes]),
-      leftEdge=PolylineRegion.unionAll([l.leftEdge for l in lanes]),
-      rightEdge=PolylineRegion.unionAll([l.rightEdge for l in lanes])
-      )
-    ctrlpts_copy_2d = [route_region.flowFrom(Vector(p[0], p[1]), delta)
-                       for p in traj.ctrlpts]
-    ctrlpts_copy = [[pc.x, pc.y, p[2]]
-                    for pc, p in zip(ctrlpts_copy_2d, traj.ctrlpts)]
-
-    traj_c = BSpline.Curve(normalize_kv = False)
-    traj_c.degree = traj.degree
-    traj_c.ctrlpts = ctrlpts_copy
-    traj_c.knotvector = [k for k in traj.knotvector]
-
-    mutant.routes.append(copy.deepcopy(route))
-    mutant.trajectories.append(traj_c)
-    mutant.signals.append(mutant.signals[nonego_idx])
-    return mutant
-  
   def copy_lon(self, seed):
     """Copy a trajectory and add some longitudinal offset along the route.
     """
@@ -112,10 +78,10 @@ class RandomMutator():
       leftEdge=PolylineRegion.unionAll([l.leftEdge for l in lanes]),
       rightEdge=PolylineRegion.unionAll([l.rightEdge for l in lanes])
       )
-    ctrlpts_copy_2d = [route_region.flowFrom(Vector(p[0], p[1]), delta)
-                       for p in traj.ctrlpts]
-    ctrlpts_copy = [[pc.x, pc.y, p[2]]
-                    for pc, p in zip(ctrlpts_copy_2d, traj.ctrlpts)]
+    ctrlpts_copy_2d = (route_region.flowFrom(Vector(p[0], p[1]), delta)
+                       for p in traj.ctrlpts)
+    ctrlpts_copy = tuple((pc.x, pc.y, p[2])
+                          for pc, p in zip(ctrlpts_copy_2d, traj.ctrlpts))
 
     traj_c = Trajectory(degree=traj.degree,
                         ctrlpts=ctrlpts_copy,
@@ -135,14 +101,63 @@ class RandomMutator():
     """
     print('removing vehicle from the seed...')
     if len(seed.routes) == 1:
-      raise MutationError('Empty seeds are not allowed!')
-    mutant = copy.deepcopy(seed)
-    nonego_idx = self.random.randrange(len(mutant.routes))
-    mutant.routes.pop(nonego_idx)
-    mutant.trajectories.pop(nonego_idx)
-    mutant.signals.pop(nonego_idx)
+      raise MutationError('Cannot remove the singleton nonego, empty scenarios are not allowed!')
+    nonego_idx = self.random.randrange(len(seed.routes))
+    mutant = Seed(config=seed.config,
+                  routes=seed.routes[0:nonego_idx]+seed.routes[nonego_idx+1:],
+                  trajectories=seed.trajectories[0:nonego_idx]+seed.trajectories[nonego_idx+1:],
+                  signals=seed.signals[0:nonego_idx]+seed.signals[nonego_idx+1:],
+                  lengths=seed.lengths[0:nonego_idx]+seed.lengths[nonego_idx+1:],
+                  widths=seed.widths[0:nonego_idx]+seed.widths[nonego_idx+1:]
+                  )
     return mutant
 
+  def speedup_interval(self, seed):
+    """Speeds up a random nonego over a random time interval [a, b].
+    """
+    nonego_idx = self.random.randrange(len(seed.routes))
+    traj = seed.trajectories[nonego_idx]    
+    a = self.random.uniform(0, traj.ctrlpts[-1][2])
+    b = self.random.uniform(a, traj.ctrlpts[-1][2])
+    new_knots = tuple(np.linspace(a, b, num=traj.degree+1))
+    old_knots = (t for t in traj.knotvector if t > a and t < b and not t in new_knots)
+
+    spline = BSpline.Curve(normalize_kv = False)
+    spline.degree = traj.degree
+    spline.ctrlpts = traj.ctrlpts
+    spline.knotvector = traj.knotvector
+
+    # TODO perhaps refine_knots is a better alternative
+    for t in new_knots:
+      spline.insert_knot(t)
+    for t in old_knots:
+      spline.remove_knot(t)
+    
+    # Move the controlpoints that are swept in the interval vertically up
+    geomdl.operations.find_ctrlpts(spline, new_knots)
+
+    # Construct the new seed
+    traj_mutated = Trajectory(degree=spline.degree,
+                              ctrlpts=tuple(tuple(ctrlpt) for ctrlpt in spline.ctrlpts),
+                              knotvector=tuple(spline.knotvector)
+                              )
+
+    mutant = Seed(config=seed.config,
+                  routes=seed.routes,
+                  trajectories=
+                    seed.trajectories[0:nonego_idx] \
+                    + (traj_mutated,) \
+                    + seed.trajectories[nonego_idx+1:],
+                  signals=seed.signals,
+                  lengths=seed.lengths,
+                  widths=seed.widths
+                  )
+  
+    return mutant
+
+  def slowdown_interval(self, seed):
+    return seed
+  
   def move_first_controlpoint_vertically(self, seed):
     """Move the first control-point (of a random car) vertically in the t-d plane.
     """
@@ -151,7 +166,7 @@ class RandomMutator():
     nonego_idx = self.random.randrange(len(mutant.routes))
     ctrlpts = mutant.trajectories[nonego_idx].ctrlpts
     t0, d1 = ctrlpts[0][0], ctrlpts[1][1]
-    ctrlpts[0] = [t0, random.uniform(0, d1)]
+    ctrlpts[0] = (t0, self.random.uniform(0, d1))
     return mutant
 
   def move_last_controlpoint_vertically(self, seed):
@@ -182,7 +197,7 @@ class RandomMutator():
     """
     nonego_idx = self.random.randrange(len(seed.routes))
     traj = seed.trajectories[nonego_idx]
-    if len(traj.ctrlpts) == self.config['max_parameters_size']:
+    if len(traj.ctrlpts) == self.max_parameters_size:
       raise MutationError('Cannot add any more controlpoints to the traj!')
     t = self.random.uniform(traj.ctrlpts[0][2], traj.ctrlpts[-1][2])
     
@@ -194,7 +209,7 @@ class RandomMutator():
     spline.insert_knot(t)
 
     traj_mutated = Trajectory(degree=spline.degree,
-                              ctrlpts=tuple(spline.ctrlpts),
+                              ctrlpts=tuple(tuple(ctrlpt) for ctrlpt in spline.ctrlpts),
                               knotvector=tuple(spline.knotvector)
                               )
 
@@ -230,7 +245,7 @@ class RandomMutator():
     spline.remove_knot(knot)
 
     traj_mutated = Trajectory(degree=spline.degree,
-                              ctrlpts=tuple(spline.ctrlpts),
+                              ctrlpts=tuple(tuple(ctrlpt) for ctrlpt in spline.ctrlpts),
                               knotvector=tuple(spline.knotvector)
                               )
     mutant = Seed(config=seed.config,
@@ -247,13 +262,13 @@ class RandomMutator():
 
   def mutate(self, seed):
     mutant = seed
-    mutations = self.random.randint(1, self.config['max_mutations_per_iteration'])
+    mutations = self.random.randint(1, self.max_mutations_per_iteration)
     for i in range(mutations):
       mutator = self.random.choice(self.mutators)
       try:
         mutant = mutator(mutant)
       except MutationError as err:
-        print('Mutation error: ' + err.message)
+        print('Mutation error: ' + err.msg)
     return mutant
     
     
@@ -265,4 +280,4 @@ class MutationError(Exception):
     """
 
     def __init__(self, message):
-        self.message = message
+        self.msg = message

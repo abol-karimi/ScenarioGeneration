@@ -36,7 +36,7 @@ class Scenario:
     # For closed-loop fuzzing, simulate the ego too.
     params = {'carla_map': config['carla_map'],
               'map': config['map'],
-              'render': True,
+              'render': config['render'],
               'timestep': config['timestep'],
               'config': config,
               }

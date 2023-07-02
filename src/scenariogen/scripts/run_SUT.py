@@ -51,6 +51,7 @@ config['stop_speed_threshold'] = 0.5  # meters/seconds
 config['closedLoop'] = args.closedLoop
 config['ego_module'] = args.ego_module
 config['simulator'] = args.simulator
+config['render'] = not args.no_render
 
 try:
     sim_result = Scenario(seed).run(config)

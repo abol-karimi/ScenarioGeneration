@@ -11,14 +11,13 @@ import atheris
 # This project
 from scenariogen.core.errors import EgoCollisionError, NonegoNonegoCollisionError, InvalidSeedError
 from scenariogen.core.scenario import Scenario
-import scenariogen.core.seed
 from scenariogen.core.seed import validate_seed
-from scenariogen.core.mutators import RandomMutator, MutationError
+from scenariogen.core.mutators import RandomMutator
+from scenariogen.core.coverages import PredicateNameCoverage
 
-seed_mutator = RandomMutator({'max_parameters_size': 50,
-                              'max_mutations_per_iteration': 1
-                              },
-                              0)
+seed_mutator = RandomMutator(max_parameters_size=50,
+                              max_mutations_per_iteration=1,
+                              randomizer_seed=0)
 
 #-----------------------------------
 #---------- Default config ---------
@@ -83,19 +82,21 @@ def SeedMutator(data, max_size, seed):
     validate_seed(decoded)
   except InvalidSeedError as err:
     print(f'Iteration {iteration}, invalid input to mutator: {err}')
+    raise err
 
-  mutant = seed_mutator.mutate(decoded)
+  mutant = seed_mutator.mutate(decoded) # valid in, valid out
 
   try:
     validate_seed(mutant)
   except InvalidSeedError as err:
     print(f'Iteration {iteration}, invalid mutant: {err}')
+    raise err
 
   return bytes(jsonpickle.encode(mutant), encoding='utf-8')
 
 iteration = 0
 @atheris.instrument_func
-def GrammarBased(input_bytes):
+def StructureAware(input_bytes):
   global scenario_config
   global iteration
   iteration += 1
@@ -127,32 +128,46 @@ def GrammarBased(input_bytes):
   try:
     sim_result = Scenario(seed).run(scenario_config)
   except NonegoNonegoCollisionError as err:
-      print(f'Collision between nonegos {err.nonego} and {err.other}, discarding the seed.')
+      print(f'Iteration {iteration}: Collision between nonegos {err.nonego} and {err.other}, discarding the seed.')
   except EgoCollisionError as err:
-      print(f'Ego collided with {err.other.name}. Saving the seed to corpus...')
-      with open(f'experiments/predicate-coverage/corpus_atheris/{iteration}.json', 'w') as f:
+      print(f'Iteration {iteration}: Ego collided with {err.other.name}. Saving the seed to corpus...')
+      with open(f'experiments/predicate-coverage/corpus_atheris_StructureAware_egoCollisions/{iteration}.json', 'w') as f:
         f.write(jsonpickle.encode(seed, indent=1))
+  else: 
+    coverage = PredicateNameCoverage.from_sim(sim_result)
+    if coverage.is_novel_to(coverage_sum):
+      corpus.append(seed)
+      coverage_total += coverage
 
-  return
 
-def experiment(atheris_config={}, iterations=1, target=None):
+# Configurable experiment 
+def experiment(atheris_config={}, iterations=1, target=None, coverage_class=None):
   # atheris.instrument_all()
+  global corpus
+  global coverage_sum
+
+  corpus = []
+  coverage_sum = coverage_class()
 
   libfuzzer_config = [f'-atheris_runs={iterations}',
-                      f'-max_len={100000}',
-                      f'experiments/predicate-coverage/corpus_atheris',
+                      f'-max_len={1000000}',
+                      f'experiments/predicate-coverage/corpus_atheris_{target.__name__}',
                       f'experiments/initial_seeds',
                     ]
   atheris.Setup(sys.argv + libfuzzer_config, target, **atheris_config)
   atheris.Fuzz()
 
+  for i, seed in enumerate(corpus):
+    with open(f'experiments/predicate-coverage/corpus_atheris_{target.__name__}_{coverage_class.__name__}/{i}.json', 'w') as f:
+      f.write(jsonpickle.encode(seed))
+
 if __name__ == "__main__":
   #--- Experiment constants ---
-  iterations = 4
+  iterations = 100
 
   scenario_config = {
     'timestep': 0.05,
-    'no_render': True,
+    'render': False,
     'weather': 'CloudySunset',
     'arrival_distance': 4,
     'stop_speed_threshold': 0.5,
@@ -163,5 +178,8 @@ if __name__ == "__main__":
   atheris_config = {
     'custom_mutator': SeedMutator,
   }
-  experiment(atheris_config=atheris_config, iterations=iterations, target=GrammarBased)
+  experiment(atheris_config=atheris_config, 
+             iterations=iterations, 
+             target=StructureAware,
+             coverage_class=PredicateNameCoverage)
 
