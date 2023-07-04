@@ -50,10 +50,10 @@ network = Network.fromFile(seed.config['map'])
 
 seed_path = Path(args.seed_path)
 with open(seed_path.parents[1]/'initial_seeds_definitions'/f'{seed_path.stem}_sim_trajectories.pickle', 'rb') as f:
-    spacetime_trajectories = pickle.load(f)
+    sim_trajectories = pickle.load(f)
 
 #--- Draw the simulated trajectories
-for tj in spacetime_trajectories:
+for tj in sim_trajectories:
   for p in tj:
     visualization.draw_point(world,
                              p,

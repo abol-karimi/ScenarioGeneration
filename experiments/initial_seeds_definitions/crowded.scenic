@@ -44,7 +44,9 @@ with open('src/scenariogen/simulators/carla/blueprint_library.json', 'r') as f:
 cars = []
 routes = []
 for lane in intersection.incomingLanes:
-  distances = list(np.arange(random.uniform(0, 2), lane.centerline.length-random.uniform(0, 2), random.uniform(10, 30)))
+  distances = list(np.arange(random.uniform(0, 2),
+                              lane.centerline.length - random.uniform(4, 10),
+                              random.uniform(10, 30)))
   spawn_points = [lane.centerline.pointAlongBy(d)
                   for d in distances]
   maneuvers = random.choices(lane.maneuvers, k=len(spawn_points))
@@ -60,7 +62,7 @@ for lane in intersection.incomingLanes:
       with physics True,
       with allowCollisions False,
       with behavior AutopilotFollowRoute(route=r,
-                                        aggressiveness=random.choice(('cautious', 'normal', 'aggressive')),
+                                        aggressiveness='cautious',
                                         rss_enabled=False),
       with length car_blueprints[b]['length'],
       with width car_blueprints[b]['width'],
@@ -70,9 +72,18 @@ for lane in intersection.incomingLanes:
 
 ego = cars[0]
 
+headings = []
+monitor record_headings:
+  while True:
+    headings.append(tuple(car.heading for car in cars))
+    wait
+
 #--- Output parameters
 record initial tuple(car.route for car in cars) as routes
 record initial tuple(car.signal for car in cars) as turn_signals
 record initial tuple(car.length for car in cars) as lengths
 record initial tuple(car.width for car in cars) as widths
 record initial config as config
+
+#--- Record the headings of the cars for debugging purposes
+record final headings as headings

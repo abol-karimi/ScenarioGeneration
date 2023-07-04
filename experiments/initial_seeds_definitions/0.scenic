@@ -101,3 +101,12 @@ record initial (car_major.signal, car_minor.signal) as turn_signals
 record initial (car_major.length, car_minor.length) as lengths
 record initial (car_major.width, car_minor.width) as widths
 record initial config as config
+
+#--- Record the headings of the cars for debugging purposes
+headings = []
+monitor record_headings:
+  while True:
+    headings.append(tuple(car.heading for car in cars))
+    wait
+
+record final headings as headings

@@ -14,7 +14,7 @@ from scenic.core.dynamics import GuardViolation
 
 # My modules
 from scenariogen.core.seed import Seed
-from scenariogen.core.utils import spacetime_trajectories, spline_approximation
+from scenariogen.core.utils import sim_trajectories, spline_approximation
 
 #----------Main Script----------
 parser = argparse.ArgumentParser(description='Make a seed from a scenic scenario.')
@@ -77,13 +77,13 @@ signals = sim_result.records['turn_signals']
 lengths = sim_result.records['lengths']
 widths = sim_result.records['widths']
 config = sim_result.records['config']
-spacetime_trajs = spacetime_trajectories(sim_result, args.timestep)
+sim_trajs = sim_trajectories(sim_result, args.timestep)
 
 trajectories = tuple(spline_approximation
                             (traj,
                             degree=args.spline_degree,
                             knots_size=args.parameters_size)
-                    for traj in spacetime_trajs)
+                    for traj in sim_trajs)
 seed = Seed(config=config,
             routes=routes,
             trajectories=trajectories,
@@ -103,4 +103,4 @@ else:
 # Save the simulated trajectories for debugging
 if args.save_sim_trajectories:
     with open(scenario_path.with_name(f'{scenario_path.stem}_sim_trajectories.pickle'), 'wb') as f:
-        pickle.dump(spacetime_trajs, f)
+        pickle.dump(sim_trajs, f)

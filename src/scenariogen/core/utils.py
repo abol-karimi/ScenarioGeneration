@@ -327,21 +327,21 @@ def geometry_atoms(network, intersection_uid):
             
     return geometry
 
-def spacetime_trajectories(sim_result, timestep):
+def sim_trajectories(sim_result, timestep):
     cars_num = len(sim_result.trajectory[0])
-    spacetime_trajs = [[] for i in range(cars_num)]
-    for i, sim_state in enumerate(sim_result.trajectory):
+    sim_trajs = [[] for i in range(cars_num)]
+    for i, (sim_state, sim_state_headings) in enumerate(zip(sim_result.trajectory, sim_result.records['headings'])):
         time = i * timestep
-        for j, car_state in enumerate(sim_state):
+        for j, (car_state, heading) in enumerate(zip(sim_state, sim_state_headings)):
             x = car_state[0]
             y = car_state[1]
-            spacetime_trajs[j].append((x, y, time))
-    return spacetime_trajs
+            sim_trajs[j].append((x, y, heading, time))
+    return sim_trajs
 
 def spline_approximation(spacetime_traj, degree=3, knots_size=20):
     x = [p[0] for p in spacetime_traj]
     y = [p[1] for p in spacetime_traj]
-    z = [p[2] for p in spacetime_traj]
+    z = [p[3] for p in spacetime_traj] # p[2]: heading, p[3]: time
     dx = np.diff(x, n=1, append=x[-1])
     dy = np.diff(y, n=1, append=y[-1])
     w = 1/(abs(dx)+abs(dy)+.01)

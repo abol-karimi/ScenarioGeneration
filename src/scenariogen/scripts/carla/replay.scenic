@@ -22,11 +22,7 @@ behavior AnimateBehavior():
 		take SetTransformAction(pose.position, pose.heading)
 
 cars = []
-for spline, signal, l, w, b in zip(seed.trajectories, seed.signals, seed.lengths, seed.widths, config['blueprints']):
-	traj_sample = sample_trajectory(spline,
-																	int(config['steps'])+1,
-																	0,
-																	config['timestep']*config['steps'])
+for traj_sample, signal, l, w, b in zip(config['traj_samples'], seed.signals, seed.lengths, seed.widths, config['blueprints']):
 	car = Car at traj_sample[0],
 		with color Color(0, 0, 1),
 		with behavior AnimateBehavior(),

@@ -1,27 +1,32 @@
 #!/usr/bin/env python3.8
 import argparse
-import jsonpickle
+import jsonpickle, pickle
 import random
 from pathlib import Path
-import scenic
 import carla
+import scenic
+from scenic.core.object_types import OrientedPoint
+from scenic.core.vectors import Vector
 
 # This project
 from scenariogen.core.seed import Seed
+from scenariogen.core.utils import sample_trajectory
 
 parser = argparse.ArgumentParser(description='play the given scenario.')
-parser.add_argument('seed', help='relative path of the seed')
+parser.add_argument('seed_path', help='relative path of the seed')
 parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='newtonian',
                     help='The simulator')
 parser.add_argument('--timestep', type=float, 
                     default=0.05, 
                     help='length of each simulation step, controls replay speed.')
+parser.add_argument('--sim', action='store_true',
+                    help='Replay the original simulation if available, instead of the spline approximation')
 duration = parser.add_mutually_exclusive_group()
 duration.add_argument('--steps', type=int, help='max number of steps to replay')
 duration.add_argument('--seconds', type=float, help='max seconds to replay')
 args = parser.parse_args()
 
-with open(args.seed, 'r') as f:
+with open(args.seed_path, 'r') as f:
     seed = jsonpickle.decode(f.read())
     assert isinstance(seed, Seed)
 
@@ -32,13 +37,31 @@ if args.steps:
     seconds = args.steps * args.timestep
 elif args.seconds:
     seconds = args.seconds
-steps = seconds // args.timestep
+steps = int(seconds // args.timestep)
 
+if args.sim:
+    seed_path = Path(args.seed_path)
+    with open(seed_path.parents[1]/'initial_seeds_definitions'/f'{seed_path.stem}_sim_trajectories.pickle', 'rb') as f:
+        sim_trajs = pickle.load(f)
+    traj_samples = []
+    for traj in sim_trajs:
+        traj_sample = []
+        for s in traj:
+            p = Vector(s[0], s[1])
+            pose = OrientedPoint(position=p, heading=s[2])
+            traj_sample.append(pose)
+        traj_samples.append(traj_sample)
+else:
+    traj_samples = [sample_trajectory(spline, steps+1, 0, args.timestep*steps)
+                    for spline in seed.trajectories]
+    
 config = {**seed.config}
 config['steps'] = steps
 config['timestep'] = args.timestep
 config['weather'] = 'CloudySunset'
 config['seed'] = seed
+config['seed_path'] = args.seed_path
+config['traj_samples'] = traj_samples
 
 if args.simulator == 'carla':
     # Load the correct map to Carla, if necessary
