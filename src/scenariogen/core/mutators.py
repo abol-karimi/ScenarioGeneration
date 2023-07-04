@@ -41,6 +41,7 @@ class RandomMutator():
                     self.remove_vehicle,
                     self.speedup_interval,
                     self.slowdown_interval,
+                    # self.mutate_ego_route,
                     # self.move_first_controlpoint_vertically,
                     # self.move_last_controlpoint_vertically,
                     # self.move_mid_controlpoint_vertically,                    
@@ -156,6 +157,10 @@ class RandomMutator():
     return mutant
 
   def slowdown_interval(self, seed):
+    return seed
+  
+  def mutate_ego_route(self, seed):
+    """Used for closed-loop fuzzing."""
     return seed
   
   def move_first_controlpoint_vertically(self, seed):

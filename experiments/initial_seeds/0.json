@@ -1,39 +1,34 @@
 {
  "py/object": "scenariogen.core.seed.Seed",
  "config": {
+  "description": "\nTwo cars arrive at a 3way-stop T-intersection about the same time.\nOne car arrives from the minor road and turns left.\nThe other car arrives from the major road on the left side of the first car, and drives straight throught the intersection.\nVUT is intended to start on the major road, on the right side of the first car, and to make a left turn to the minor road.\n",
   "carla_map": "Town05",
   "map": "/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/Town05.xodr",
   "intersection": "intersection1930",
   "traffic_rules": "3way-T_stopOnAll.lp",
-  "ego_route": {
-   "py/tuple": [
-    "road9_lane1",
-    "road10_lane1",
-    "road1940_lane0",
-    "road3_lane2"
-   ]
-  },
+  "ego_route": [
+   "road9_lane1",
+   "road10_lane1",
+   "road1940_lane0",
+   "road3_lane2"
+  ],
   "ego_init_progress": 40
  },
  "routes": {
   "py/tuple": [
-   {
-    "py/tuple": [
-     "road24_lane0",
-     "road11_lane3",
-     "road1985_lane1",
-     "road10_lane3",
-     "road9_lane3"
-    ]
-   },
-   {
-    "py/tuple": [
-     "road3_lane1",
-     "road1946_lane0",
-     "road11_lane1",
-     "road24_lane2"
-    ]
-   }
+   [
+    "road24_lane0",
+    "road11_lane3",
+    "road1985_lane1",
+    "road10_lane3",
+    "road9_lane3"
+   ],
+   [
+    "road3_lane1",
+    "road1946_lane0",
+    "road11_lane1",
+    "road24_lane2"
+   ]
   ]
  },
  "trajectories": {

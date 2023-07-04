@@ -402,3 +402,29 @@ def is_collision_free(objects):
     if c.intersects(d):
       return False
   return True
+
+def route_from_turns(network, init_lane, turns):
+    """
+    init_lane: the first lane in the mission
+    turns: a tuple of turning directions of the route at each intersection
+    
+    Returns a tuple of lanes.
+    """
+    route = [init_lane]
+    current_lane = network.elements[init_lane]
+    for turn in turns:
+        while not current_lane.maneuvers[0].intersection:
+            route.append(current_lane.successor.uid)
+            current_lane = current_lane.successor
+        manuevers = tuple(filter(lambda i: i.type == turn, current_lane.maneuvers))
+        if len(manuevers) == 0:
+            print('The expected turn not available at the junction!')
+            exit()
+        current_lane = manuevers[0].connectingLane
+        route.append(current_lane.uid)
+    while not current_lane.maneuvers[0].intersection:
+        route.append(current_lane.successor.uid)
+        current_lane = current_lane.successor
+    return route
+
+    

@@ -5,41 +5,52 @@ Two non-egos arrive at a 3way all-way-stop intersection,
 
 #--- Python imports
 import jsonpickle
+from scenic.domains.driving.roads import ManeuverType
 from scenariogen.core.signals import SignalType
+from scenariogen.core.utils import route_from_turns
 
 #--- Defined constants
+description = """
+Two cars arrive at a 3way-stop T-intersection about the same time.
+One car arrives from the minor road and turns left.
+The other car arrives from the major road on the left side of the first car, and drives straight throught the intersection.
+VUT is intended to start on the major road, on the right side of the first car, and to make a left turn to the minor road.
+"""
 carla_map = 'Town05'
 intersection_uid = 'intersection1930'
 traffic_rules = '3way-T_stopOnAll.lp'
-ego_route = ('road9_lane1', 
-              'road10_lane1',
-              'road1940_lane0',
-              'road3_lane2')
-ego_init_progress = 40
 arrival_distance = 4
-route_major = ('road24_lane0',
-                'road11_lane3',
-                'road1985_lane1',
-                'road10_lane3',
-                'road9_lane3')
-route_major2minor = ('road3_lane1', 
-                      'road1946_lane0',
-                      'road11_lane1',
-                      'road24_lane2')
-turn_signals = (SignalType.OFF, SignalType.LEFT)
+ego_init_lane = 'road9_lane1'
+ego_turns = (ManeuverType.LEFT_TURN,)
+ego_init_progress = 40
+
+
+major_init_lane = 'road24_lane0'
+major_turns = (ManeuverType.STRAIGHT,)
+major_init_progress = 70
+major_signal = SignalType.OFF
+
+minor_init_lane = 'road3_lane1'
+minor_turns = (ManeuverType.LEFT_TURN,)
+minor_init_progress = 10
+minor_signal = SignalType.LEFT
 
 #--- Scenic parameters
 param carla_map = carla_map
 param map = f'/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/{carla_map}.xodr'
 model scenic.simulators.newtonian.driving_model
 
-#--- Derived constants
-intersection = network.elements[intersection_uid]
+# Derived constants
+ego_route = route_from_turns(network, ego_init_lane, ego_turns)
+route_major = route_from_turns(network, major_init_lane, major_turns)
+route_minor = route_from_turns(network, minor_init_lane, minor_turns)
 route_major_lanes = [network.elements[l] for l in route_major]
 route_major_centerline = PolylineRegion.unionAll([l.centerline for l in route_major_lanes])
-route_major2minor_lanes = [network.elements[l] for l in route_major2minor]
-route_major2minor_centerline = PolylineRegion.unionAll([l.centerline for l in route_major2minor_lanes])
-config = {'carla_map': carla_map,
+route_minor_lanes = [network.elements[l] for l in route_minor]
+route_minor_centerline = PolylineRegion.unionAll([l.centerline for l in route_minor_lanes])
+intersection = network.elements[intersection_uid]
+config = {'description': description,
+          'carla_map': carla_map,
           'map': globalParameters.map,
           'intersection': intersection_uid,
           'traffic_rules': traffic_rules,
@@ -62,33 +73,31 @@ behavior PassBehavior(speed, trajectory):
   do FollowTrajectoryBehavior(speed, trajectory)
   do FollowLaneBehavior(speed)
 
-p0_init_progress = 70
-p0 = route_major_centerline.pointAlongBy(p0_init_progress)
-car_left = Car at p0, facing roadDirection,
-  with name 'nonego_left',
+p0 = route_major_centerline.pointAlongBy(major_init_progress)
+car_major = Car at p0, facing roadDirection,
+  with name 'nonego_major',
   with physics True,
   with allowCollisions False,
-  with signal turn_signals[0],
+  with signal major_signal,
   with behavior PassBehavior(4, route_major_lanes),
   with length blueprints['vehicle.tesla.model3']['length'],
   with width blueprints['vehicle.tesla.model3']['width']
 
-p1_init_progress = 10
-p1 = route_major2minor_centerline.pointAlongBy(p1_init_progress)
-car_right = Car at p1, facing roadDirection,
-  with name 'nonego_right',
+p0 = route_minor_centerline.pointAlongBy(minor_init_progress)
+car_minor = Car at p0, facing roadDirection,
+  with name 'nonego_minor',
   with physics True,
   with allowCollisions False,
-  with signal turn_signals[1],
-  with behavior PassBehavior(4, route_major2minor_lanes),
+  with signal minor_signal,
+  with behavior PassBehavior(4, route_minor_lanes),
   with length blueprints['vehicle.ford.crown']['length'],
   with width blueprints['vehicle.ford.crown']['width']
 
-ego = car_left
+ego = car_major
 
 #--- Output parameters
-record initial (route_major, route_major2minor) as routes
-record initial turn_signals as turn_signals
-record initial (car_left.length, car_right.length) as lengths
-record initial (car_left.width, car_right.width) as widths
+record initial (route_major, route_minor) as routes
+record initial (car_major.signal, car_minor.signal) as turn_signals
+record initial (car_major.length, car_minor.length) as lengths
+record initial (car_major.width, car_minor.width) as widths
 record initial config as config
