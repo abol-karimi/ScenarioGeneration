@@ -1,3 +1,5 @@
+"""Run the SUT by plugging in a seed to a VUT.
+"""
 #!/usr/bin/env python3.8
 import argparse
 import jsonpickle

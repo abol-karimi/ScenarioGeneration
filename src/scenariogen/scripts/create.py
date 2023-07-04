@@ -20,8 +20,13 @@ from scenariogen.core.utils import spacetime_trajectories, spline_approximation
 parser = argparse.ArgumentParser(description='Make a seed from a scenic scenario.')
 parser.add_argument('scenario_path', 
                     help='Path of the Scenic file specifying the scenario')
+parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='newtonian',
+                    help='The simulator')
 parser.add_argument('--out_path',
                     help='Path where the generated seed will be stored')
+parser.add_argument('--save_sim_trajectories', action='store_true',
+                    help="""Save the simulated trajectories for debugging.
+                            Note that each trajectory saved in the seed is a spline approximation of the simulated counterpart.""")
 duration = parser.add_mutually_exclusive_group()
 duration.add_argument('--steps', type=int,
                       help='The duration of the scenario in steps')
@@ -42,12 +47,16 @@ elif args.seconds:
     seconds = args.seconds
 steps = seconds // args.timestep
 
+simulator2model = {'newtonian': 'scenic.simulators.newtonian.driving_model',
+                    'carla': 'scenic.simulators.carla.model'
+                    }
 # Run the scenario
 scenic_scenario = scenic.scenarioFromFile(
     args.scenario_path,
+    model=simulator2model[args.simulator],
     params = {'timestep': args.timestep})
 scene, _ = scenic_scenario.generate(maxIterations=1)
-simulator = NewtonianSimulator()
+simulator = scenic_scenario.getSimulator()
 try:
     sim_result = simulator.simulate(
                     scene,
@@ -70,10 +79,6 @@ widths = sim_result.records['widths']
 config = sim_result.records['config']
 spacetime_trajs = spacetime_trajectories(sim_result, args.timestep)
 
-# Save the simulated trajectories for debugging
-with open('spacetime_trajectories.pickle', 'wb') as outFile:
-    pickle.dump(spacetime_trajs, outFile)
-
 trajectories = tuple(spline_approximation
                             (traj,
                             degree=args.spline_degree,
@@ -94,3 +99,8 @@ else:
     scenario_path = Path(args.scenario_path)
     with open(scenario_path.parents[1]/'initial_seeds'/f'{scenario_path.stem}.json', 'w') as f:
         f.write(jsonpickle.encode(seed, indent=1))
+
+# Save the simulated trajectories for debugging
+if args.save_sim_trajectories:
+    with open(scenario_path.with_name(f'{scenario_path.stem}_sim_trajectories.pickle'), 'wb') as f:
+        pickle.dump(spacetime_trajs, f)

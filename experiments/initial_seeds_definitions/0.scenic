@@ -11,11 +11,11 @@ from scenariogen.core.utils import route_from_turns
 
 #--- Defined constants
 description = """
-Two cars arrive at a 3way-stop T-intersection about the same time.
-One car arrives from the minor road and turns left.
-The other car arrives from the major road on the left side of the first car, and drives straight throught the intersection.
-VUT is intended to start on the major road, on the right side of the first car, and to make a left turn to the minor road.
-"""
+  Two cars arrive at a 3way-stop T-intersection about the same time.
+  One car arrives from the minor road and turns left.
+  The other car arrives from the major road on the left side of the first car, and drives straight throught the intersection.
+  VUT is intended to start on the major road, on the right side of the first car, and to make a left turn to the minor road.
+  """
 carla_map = 'Town05'
 intersection_uid = 'intersection1930'
 traffic_rules = '3way-T_stopOnAll.lp'
