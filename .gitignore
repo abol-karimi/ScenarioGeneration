@@ -8,9 +8,8 @@ __pycache__
 *.pickle
 *.xodr
 
-Docker/Carla
-Docker/Carla*/PythonAPI
-Docker/Scenic
+Docker/dev*/PythonAPI
+Docker/prod*/PythonAPI
 Docker/*/z3-4.8.10-x64-ubuntu-18.04
 
 .coverage

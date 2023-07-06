@@ -1,8 +1,13 @@
 # ScenarioGeneration
 
-To run the Docker container:
-`sudo docker run --rm -it --privileged --gpus all --net=host -e DISPLAY=$DISPLAY -e SDL_VIDEODRIVER=x11 -v /tmp/.X11-unix:/tmp/.X11-unix:rw   --mount type=bind,source=/home/ak/ScenarioGeneration,target=/home/carla/ScenarioGeneration --mount type=bind,source=/home/ak/Scenic-latest,target=/home/carla/Scenic scenic:carla-0.9.14`
+To download the docker image, run: `docker pull`
 
-Run `./new.py -h` for making a new scenario
-Run `./replay.py -h` to play an existing scenario
-Run `./autopilot.py -h` to play an existing scenario with Carla's autopilot driving the ego vehicle
+To run the Docker container:
+`sudo docker run --rm -it --privileged --gpus all --net=host -e DISPLAY=$DISPLAY -e SDL_VIDEODRIVER=x11 -v /tmp/.X11-unix:/tmp/.X11-unix:rw`
+
+Run `~/CarlaUE4.sh & disown` to run the Carla simulator, before running scripts than need Carla.
+
+Run any script from `~/ScenarioGeneration` (i.e. the project root folder).
+* For running the experiment scripts in `experiments/` prefix them with the full relative path e.g. `experiments/predicate-coverage/experiment.py`. These scripts don't take CLI options, as all the parameters are set in the scripts.
+* For running the scripts in `src/scenariogen/scripts` just type the script name, as the folder is in `$PATH`. Run the scripts with the `-h` flag to see the options.
+
