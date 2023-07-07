@@ -42,7 +42,6 @@ with open('src/scenariogen/simulators/carla/blueprint_library.json', 'r') as f:
   car_blueprints = jsonpickle.decode(f.read())
 
 cars = []
-routes = []
 for lane in intersection.incomingLanes:
   distances = list(np.arange(random.uniform(0, 2),
                               lane.centerline.length - random.uniform(4, 10),

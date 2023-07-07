@@ -163,7 +163,7 @@ def experiment(atheris_config={}, iterations=1, target=None, coverage_class=None
 
 if __name__ == "__main__":
   #--- Experiment constants ---
-  iterations = 100
+  iterations = 50
 
   scenario_config = {
     'timestep': 0.05,

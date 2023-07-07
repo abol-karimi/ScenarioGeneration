@@ -1,5 +1,6 @@
 from random import Random
 import copy
+import geomdl
 from geomdl import BSpline
 import numpy as np
 from scenic.domains.driving.roads import LinearElement, Network
@@ -116,26 +117,26 @@ class RandomMutator():
   def speedup_interval(self, seed):
     """Speeds up a random nonego over a random time interval [a, b].
     """
+    print('Speeding up a nonego over an interval...')
     nonego_idx = self.random.randrange(len(seed.routes))
     traj = seed.trajectories[nonego_idx]    
-    a = self.random.uniform(0, traj.ctrlpts[-1][2])
-    b = self.random.uniform(a, traj.ctrlpts[-1][2])
-    new_knots = tuple(np.linspace(a, b, num=traj.degree+1))
-    old_knots = (t for t in traj.knotvector if t > a and t < b and not t in new_knots)
 
     spline = BSpline.Curve(normalize_kv = False)
     spline.degree = traj.degree
     spline.ctrlpts = traj.ctrlpts
     spline.knotvector = traj.knotvector
 
-    # TODO perhaps refine_knots is a better alternative
-    for t in new_knots:
-      spline.insert_knot(t)
-    for t in old_knots:
-      spline.remove_knot(t)
-    
-    # Move the controlpoints that are swept in the interval vertically up
-    geomdl.operations.find_ctrlpts(spline, new_knots)
+    # Choose a random interval
+    a = self.random.uniform(0, traj.ctrlpts[-1][2])
+    b = self.random.uniform(a, traj.ctrlpts[-1][2])
+
+    # Move the corresponding controlpoints vertically up
+    z_min = geomdl.operations.find_ctrlpts(spline, a)[-1][2]
+    z_max = geomdl.operations.find_ctrlpts(spline, b)[0][2]
+    interval_ctrlpts = tuple(p for p in spline.ctrlpts if p[2] >= z_min and p[2] <= z_max)
+    factor = self.random.uniform(.1, .9)
+    for pi, pii in zip(reversed(interval_ctrlpts[:-1]), reversed(interval_ctrlpts[1:])):
+      pi[2] = (1-factor)*pi[2] + factor*pii[2]
 
     # Construct the new seed
     traj_mutated = Trajectory(degree=spline.degree,
@@ -157,7 +158,45 @@ class RandomMutator():
     return mutant
 
   def slowdown_interval(self, seed):
-    return seed
+    print('Speeding up a nonego over an interval...')
+    nonego_idx = self.random.randrange(len(seed.routes))
+    traj = seed.trajectories[nonego_idx]    
+
+    spline = BSpline.Curve(normalize_kv = False)
+    spline.degree = traj.degree
+    spline.ctrlpts = traj.ctrlpts
+    spline.knotvector = traj.knotvector
+
+    # Choose a random interval
+    a = self.random.uniform(0, traj.ctrlpts[-1][2])
+    b = self.random.uniform(a, traj.ctrlpts[-1][2])
+
+    # Move the corresponding controlpoints vertically up
+    z_min = geomdl.operations.find_ctrlpts(spline, a)[-1][2]
+    z_max = geomdl.operations.find_ctrlpts(spline, b)[0][2]
+    interval_ctrlpts = tuple(p for p in spline.ctrlpts if p[2] >= z_min and p[2] <= z_max)
+    factor = self.random.uniform(.1, .9)
+    for pi, pii in zip(interval_ctrlpts[:-1], interval_ctrlpts[1:]):
+      pii[2] = factor*pi[2] + (1-factor)*pii[2]
+
+    # Construct the new seed
+    traj_mutated = Trajectory(degree=spline.degree,
+                              ctrlpts=tuple(tuple(ctrlpt) for ctrlpt in spline.ctrlpts),
+                              knotvector=tuple(spline.knotvector)
+                              )
+
+    mutant = Seed(config=seed.config,
+                  routes=seed.routes,
+                  trajectories=
+                    seed.trajectories[0:nonego_idx] \
+                    + (traj_mutated,) \
+                    + seed.trajectories[nonego_idx+1:],
+                  signals=seed.signals,
+                  lengths=seed.lengths,
+                  widths=seed.widths
+                  )
+  
+    return mutant
   
   def mutate_ego_route(self, seed):
     """Used for closed-loop fuzzing."""

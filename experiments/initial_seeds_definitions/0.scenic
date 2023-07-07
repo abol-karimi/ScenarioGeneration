@@ -76,6 +76,7 @@ behavior PassBehavior(speed, trajectory):
 p0 = route_major_centerline.pointAlongBy(major_init_progress)
 car_major = Car at p0, facing roadDirection,
   with name 'nonego_major',
+  with route route_major,
   with physics True,
   with allowCollisions False,
   with signal major_signal,
@@ -86,20 +87,21 @@ car_major = Car at p0, facing roadDirection,
 p0 = route_minor_centerline.pointAlongBy(minor_init_progress)
 car_minor = Car at p0, facing roadDirection,
   with name 'nonego_minor',
+  with route route_minor,
   with physics True,
   with allowCollisions False,
   with signal minor_signal,
   with behavior PassBehavior(4, route_minor_lanes),
   with length blueprints['vehicle.ford.crown']['length'],
   with width blueprints['vehicle.ford.crown']['width']
-
+cars = (car_major, car_minor)
 ego = car_major
 
 #--- Output parameters
-record initial (route_major, route_minor) as routes
-record initial (car_major.signal, car_minor.signal) as turn_signals
-record initial (car_major.length, car_minor.length) as lengths
-record initial (car_major.width, car_minor.width) as widths
+record initial tuple(car.route for car in cars) as routes
+record initial tuple(car.signal for car in cars) as turn_signals
+record initial tuple(car.length for car in cars) as lengths
+record initial tuple(car.width for car in cars) as widths
 record initial config as config
 
 #--- Record the headings of the cars for debugging purposes

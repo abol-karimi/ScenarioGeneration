@@ -31,7 +31,7 @@ scenario NonegosScenario():
                                       0, 
                                       config['timestep']*config['steps'])
       car = Car at traj_sample[0],
-        with name '_'.join(route + (str(i),)),
+        with name f'{route[0]}_{signal.name}_{i}',
         with behavior AnimateBehavior(),
         with physics False,
         with allowCollisions False,

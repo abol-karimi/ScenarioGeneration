@@ -1,7 +1,7 @@
 {
  "py/object": "scenariogen.core.seed.Seed",
  "config": {
-  "description": "\nTwo cars arrive at a 3way-stop T-intersection about the same time.\nOne car arrives from the minor road and turns left.\nThe other car arrives from the major road on the left side of the first car, and drives straight throught the intersection.\nVUT is intended to start on the major road, on the right side of the first car, and to make a left turn to the minor road.\n",
+  "description": "\n  Two cars arrive at a 3way-stop T-intersection about the same time.\n  One car arrives from the minor road and turns left.\n  The other car arrives from the major road on the left side of the first car, and drives straight throught the intersection.\n  VUT is intended to start on the major road, on the right side of the first car, and to make a left turn to the minor road.\n  ",
   "carla_map": "Town05",
   "map": "/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/Town05.xodr",
   "intersection": "intersection1930",
