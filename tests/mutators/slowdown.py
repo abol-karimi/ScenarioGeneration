@@ -34,7 +34,7 @@ visualization.draw_spline(world, position, timing, resolution, umin, umax,
 mutator = RandomMutator(max_parameters_size=50,
                               max_mutations_per_iteration=1,
                               randomizer_seed=0)
-mutant = mutator.speedup_with_params(seed, 0, (umin, umax/2), .9)
+mutant = mutator.slowdown_with_params(seed, 0, (umin, umax/2), .9)
 position, timing = mutant.positions[0], mutant.timings[0]
 visualization.draw_spline(world, position, timing, resolution, umin, umax,
                           size=0.1,
