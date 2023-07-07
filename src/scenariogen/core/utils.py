@@ -375,6 +375,15 @@ def sample_trajectory(traj, sample_size, umin, umax):
 
     return traj
 
+def sample_spline(traj, sample_size, umin, umax):
+    spline = BSpline.Curve(normalize_kv = False)
+    spline.degree = traj.degree
+    spline.ctrlpts = traj.ctrlpts
+    spline.knotvector = traj.knotvector
+    ts = list(np.linspace(umin, umax, num=sample_size))
+    sample = geomdl.operations.tangent(spline, ts)
+    return ((s[0][0], s[0][1], s[0][2]) for s in sample)
+
 def get_trace(world, planner, route):
     """"Get a list of waypoints along a route (a list of lanes)"""
     route_trace = []

@@ -1,7 +1,10 @@
+# External libraries
 import numpy as np
 import random
 import carla
-from scenic.core.geometry import _RotatedRectangle as RRect
+
+# This project
+from scenariogen.core.utils import sample_spline
 
 
 def draw_lane(world, lane,
@@ -135,3 +138,20 @@ def draw_rect(world, rect, height=0.1):
     corners = [carla.Location(p.x, -p.y, height) for p in rect.corners]
     for i in range(-1, len(corners)-1):
         world.debug.draw_line(corners[i], corners[i+1])
+
+def draw_spline(world, spline, resolution, interval,
+                size=0.1,
+                color=carla.Color(255, 0, 0),
+                lifetime=-1.0):
+    steps = int(interval[1] // resolution)
+    spline_sample = sample_spline(spline,
+                                steps+1,
+                                interval[0], 
+                                interval[1])
+    for i, p in enumerate(spline_sample):
+        draw_point(world,
+                   p[0:2], 
+                   p[2],
+                   size,
+                   color,
+                   lifetime)

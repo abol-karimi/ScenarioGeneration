@@ -37,10 +37,11 @@ class RandomMutator():
 
     self.random = Random(randomizer_seed)
     self.mutators = [self.copy_lon,
+                     # self.move_lon,
                     self.add_controlpoint,
                     self.remove_controlpoint,
                     self.remove_vehicle,
-                    self.speedup_interval,
+                    self.speedup,
                     self.slowdown_interval,
                     # self.mutate_ego_route,
                     # self.move_first_controlpoint_vertically,
@@ -114,36 +115,27 @@ class RandomMutator():
                   )
     return mutant
 
-  def speedup_interval(self, seed):
-    """Speeds up a random nonego over a random time interval [a, b].
-    """
-    print('Speeding up a nonego over an interval...')
-    nonego_idx = self.random.randrange(len(seed.routes))
-    traj = seed.trajectories[nonego_idx]    
+  def speedup_with_params(self, seed, nonego_idx, interval, factor):
+    traj = seed.trajectories[nonego_idx]
 
     spline = BSpline.Curve(normalize_kv = False)
     spline.degree = traj.degree
     spline.ctrlpts = traj.ctrlpts
     spline.knotvector = traj.knotvector
 
-    # Choose a random interval
-    a = self.random.uniform(0, traj.ctrlpts[-1][2])
-    b = self.random.uniform(a, traj.ctrlpts[-1][2])
-
     # Move the corresponding controlpoints vertically up
-    z_min = geomdl.operations.find_ctrlpts(spline, a)[-1][2]
-    z_max = geomdl.operations.find_ctrlpts(spline, b)[0][2]
+    z_min = geomdl.operations.find_ctrlpts(spline, interval[0])[-1][2]
+    z_max = geomdl.operations.find_ctrlpts(spline, interval[1])[0][2]
     interval_ctrlpts = tuple(p for p in spline.ctrlpts if p[2] >= z_min and p[2] <= z_max)
-    factor = self.random.uniform(.1, .9)
     for pi, pii in zip(reversed(interval_ctrlpts[:-1]), reversed(interval_ctrlpts[1:])):
       pi[2] = (1-factor)*pi[2] + factor*pii[2]
 
     # Construct the new seed
-    traj_mutated = Trajectory(degree=spline.degree,
+    traj_mutated = Trajectory(degree=traj.degree,
                               ctrlpts=tuple(tuple(ctrlpt) for ctrlpt in spline.ctrlpts),
-                              knotvector=tuple(spline.knotvector)
+                              knotvector=traj.knotvector
                               )
-
+    
     mutant = Seed(config=seed.config,
                   routes=seed.routes,
                   trajectories=
@@ -156,6 +148,22 @@ class RandomMutator():
                   )
   
     return mutant
+
+  def speedup(self, seed):
+    """Speeds up a random nonego over a random time interval [a, b].
+    """
+    print('Speeding up a nonego over an interval...')
+    nonego_idx = self.random.randrange(len(seed.routes))
+
+    # Choose a random interval
+    traj = seed.trajectories[nonego_idx]
+    a = self.random.uniform(0, traj.ctrlpts[-1][2])
+    b = self.random.uniform(a, traj.ctrlpts[-1][2])
+
+    # Speed up factor
+    factor = self.random.uniform(.1, .9)
+
+    return self.speedup_with_params(seed, nonego_idx, (a, b), factor)
 
   def slowdown_interval(self, seed):
     print('Speeding up a nonego over an interval...')
