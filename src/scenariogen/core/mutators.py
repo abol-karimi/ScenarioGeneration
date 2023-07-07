@@ -10,7 +10,7 @@ from scenic.core.vectors import Vector
 # This project
 import src.scenariogen.core.utils as utils
 from src.scenariogen.core.signals import SignalType
-from scenariogen.core.seed import Seed, Trajectory
+from scenariogen.core.seed import Seed, Spline
 
 class RandomMutator():
   """Randomly change the the trajectories using their parameters.
@@ -116,32 +116,33 @@ class RandomMutator():
     return mutant
 
   def speedup_with_params(self, seed, nonego_idx, interval, factor):
-    traj = seed.trajectories[nonego_idx]
+    timing = seed.timings[nonego_idx]
 
     spline = BSpline.Curve(normalize_kv = False)
-    spline.degree = traj.degree
-    spline.ctrlpts = traj.ctrlpts
-    spline.knotvector = traj.knotvector
+    spline.degree = timing.degree
+    spline.ctrlpts = timing.ctrlpts
+    spline.knotvector = timing.knotvector
 
     # Move the corresponding controlpoints vertically up
-    z_min = geomdl.operations.find_ctrlpts(spline, interval[0])[-1][2]
-    z_max = geomdl.operations.find_ctrlpts(spline, interval[1])[0][2]
-    interval_ctrlpts = tuple(p for p in spline.ctrlpts if p[2] >= z_min and p[2] <= z_max)
+    d_min = geomdl.operations.find_ctrlpts(spline, interval[0])[-1][1]
+    d_max = geomdl.operations.find_ctrlpts(spline, interval[1])[0][1]
+    interval_ctrlpts = tuple(p for p in spline.ctrlpts if p[1] >= d_min and p[1] <= d_max)
     for pi, pii in zip(reversed(interval_ctrlpts[:-1]), reversed(interval_ctrlpts[1:])):
-      pi[2] = (1-factor)*pi[2] + factor*pii[2]
+      pi[1] = (1-factor)*pi[1] + factor*pii[1]
 
     # Construct the new seed
-    traj_mutated = Trajectory(degree=traj.degree,
+    timing_mutated = Spline(degree=timing.degree,
                               ctrlpts=tuple(tuple(ctrlpt) for ctrlpt in spline.ctrlpts),
-                              knotvector=traj.knotvector
+                              knotvector=timing.knotvector
                               )
     
     mutant = Seed(config=seed.config,
                   routes=seed.routes,
-                  trajectories=
-                    seed.trajectories[0:nonego_idx] \
-                    + (traj_mutated,) \
-                    + seed.trajectories[nonego_idx+1:],
+                  positions=seed.positions,
+                  timings=
+                    seed.timings[0:nonego_idx] \
+                    + (timing_mutated,) \
+                    + seed.timings[nonego_idx+1:],
                   signals=seed.signals,
                   lengths=seed.lengths,
                   widths=seed.widths
@@ -156,9 +157,9 @@ class RandomMutator():
     nonego_idx = self.random.randrange(len(seed.routes))
 
     # Choose a random interval
-    traj = seed.trajectories[nonego_idx]
-    a = self.random.uniform(0, traj.ctrlpts[-1][2])
-    b = self.random.uniform(a, traj.ctrlpts[-1][2])
+    timing = seed.timings[nonego_idx]
+    a = self.random.uniform(0, timing.ctrlpts[-1][1])
+    b = self.random.uniform(a, timing.ctrlpts[-1][1])
 
     # Speed up factor
     factor = self.random.uniform(.1, .9)

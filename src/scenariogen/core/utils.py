@@ -19,7 +19,7 @@ VIRIDIS = np.array(cm.get_cmap('viridis').colors)
 VID_RANGE = np.linspace(0.0, 1.0, VIRIDIS.shape[0])
 
 # This project
-from scenariogen.core.seed import Trajectory
+from scenariogen.core.seed import Spline
 from scenariogen.core.signals import SignalType
 
 def draw_names(cars, image, camera):
@@ -341,48 +341,49 @@ def sim_trajectories(sim_result, timestep):
 def spline_approximation(spacetime_traj, degree=3, knots_size=20):
     x = [p[0] for p in spacetime_traj]
     y = [p[1] for p in spacetime_traj]
-    z = [p[3] for p in spacetime_traj] # p[2]: heading, p[3]: time
-    dx = np.diff(x, n=1, append=x[-1])
-    dy = np.diff(y, n=1, append=y[-1])
-    w = 1/(abs(dx)+abs(dy)+.01)
-    tck, u = scipy.interpolate.splprep([x, y, z],
-                                       w=w,
-                                       u=z, 
+    u = [p[3] for p in spacetime_traj] # p[2]: heading, p[3]: time
+    tck, u = scipy.interpolate.splprep([x, y],
+                                       u=u,
                                        k=degree, 
                                        task=-1, 
-                                       t=np.linspace(z[0], z[-1], knots_size))
+                                       t=np.linspace(u[0], u[-1], knots_size))
 
-    traj = Trajectory(degree=degree,
-                      ctrlpts=tuple((float(x),float(y),float(z))
-                                    for x,y,z in zip(tck[1][0], tck[1][1], tck[1][2])),
-                      knotvector=tuple(float(knot) for knot in tck[0])
-                      )
+    footprint = Spline(degree=degree,
+                  ctrlpts=tuple((float(x),float(y))
+                                for x,y in zip(tck[1][0], tck[1][1])),
+                  knotvector=tuple(float(knot) for knot in tck[0])
+                )
     
-    return traj
+    return footprint
 
-def sample_trajectory(traj, sample_size, umin, umax):
+def sample_trajectories(seed, sample_size, umin, umax):
+    trajectories = []
+    ts = np.linspace(umin, umax, num=sample_size)
+    for position, timing in zip(seed.positions, seed.timings):
+        sample = sample_spline(position, timing, ts)
+        traj = [OrientedPoint(position=Vector(x, y), heading=h)
+                for x, y, h in sample]
+        trajectories.append(traj)
+
+    return trajectories
+
+def sample_spline(position, timing, ts):
     spline = BSpline.Curve(normalize_kv = False)
-    spline.degree = traj.degree
-    spline.ctrlpts = traj.ctrlpts
-    spline.knotvector = traj.knotvector
-    ts = list(np.linspace(umin, umax, num=sample_size))
-    sample = geomdl.operations.tangent(spline, ts)
-    traj = []
-    for s in sample:
-        p = Vector(s[0][0], s[0][1])
-        h = headingOfSegment((0, 0), (s[1][0], s[1][1]))
-        traj.append(OrientedPoint(position=p, heading=h))
+    spline.degree = timing.degree
+    spline.ctrlpts = timing.ctrlpts
+    spline.knotvector = timing.knotvector
+    ts = tuple(t[1] for t in spline.evaluate_list(ts))
 
-    return traj
-
-def sample_spline(traj, sample_size, umin, umax):
-    spline = BSpline.Curve(normalize_kv = False)
-    spline.degree = traj.degree
-    spline.ctrlpts = traj.ctrlpts
-    spline.knotvector = traj.knotvector
-    ts = list(np.linspace(umin, umax, num=sample_size))
+    # Plug the timing output into the position input
+    spline.degree = position.degree
+    spline.ctrlpts = position.ctrlpts
+    spline.knotvector = position.knotvector
     sample = geomdl.operations.tangent(spline, ts)
-    return ((s[0][0], s[0][1], s[0][2]) for s in sample)
+    return ((s[0][0], # x
+             s[0][1], # y
+             headingOfSegment((0, 0), (s[1][0], s[1][1])), # heading
+             )
+             for s in sample)
 
 def get_trace(world, planner, route):
     """"Get a list of waypoints along a route (a list of lanes)"""

@@ -23,9 +23,9 @@ with open('experiments/initial_seeds/0.json', 'r') as f:
     assert isinstance(seed, Seed)
 
 resolution = 0.05
-interval = (0, seed.trajectories[0].ctrlpts[-1][2])
-spline = seed.trajectories[0]
-visualization.draw_spline(world, spline, resolution, interval,
+umin, umax = 0, seed.timings[0].ctrlpts[-1][1]
+position, timing = seed.positions[0], seed.timings[0]
+visualization.draw_spline(world, position, timing, resolution, umin, umax,
                           size=0.1,
                           color=carla.Color(0, 0, 255),
                           lifetime=120)
@@ -34,9 +34,9 @@ visualization.draw_spline(world, spline, resolution, interval,
 mutator = RandomMutator(max_parameters_size=50,
                               max_mutations_per_iteration=1,
                               randomizer_seed=0)
-mutant = mutator.speedup_with_params(seed, 0, (0, 10), 0.9)
-spline = mutant.trajectories[0]
-visualization.draw_spline(world, spline, resolution, interval,
+mutant = mutator.speedup_with_params(seed, 0, (umin, umax/2), .1)
+position, timing = mutant.positions[0], mutant.timings[0]
+visualization.draw_spline(world, position, timing, resolution, umin, umax,
                           size=0.1,
                           color=carla.Color(255, 0, 0),
                           lifetime=120)

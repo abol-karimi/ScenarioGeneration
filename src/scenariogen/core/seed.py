@@ -7,7 +7,7 @@ from scenariogen.core.errors import InvalidSeedError
 
 
 @dataclass
-class Trajectory:
+class Spline:
   degree : int = None
   ctrlpts : Tuple[Tuple[float]] = None
   knotvector : Tuple[float] = None
@@ -16,7 +16,8 @@ class Trajectory:
 class Seed:
   config: Dict = None
   routes: Tuple[str] = None
-  trajectories: Tuple[Trajectory] = None
+  positions: Tuple[Spline] = None # maps the timing output (below) to the location of the car
+  timings: Tuple[Spline] = None # maps time to the parameter value of the position spline
   signals: Tuple[SignalType] = None
   lengths: Tuple[float] = None
   widths: Tuple[float] = None

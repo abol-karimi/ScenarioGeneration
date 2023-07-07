@@ -10,7 +10,7 @@ from scenic.core.vectors import Vector
 
 # This project
 from scenariogen.core.seed import Seed
-from scenariogen.core.utils import sample_trajectory
+from scenariogen.core.utils import sample_trajectories
 
 parser = argparse.ArgumentParser(description='play the given scenario.')
 parser.add_argument('seed_path', help='relative path of the seed')
@@ -31,7 +31,7 @@ with open(args.seed_path, 'r') as f:
     assert isinstance(seed, Seed)
 
 # Default duration is the whole scenario:
-seconds = seed.trajectories[0].ctrlpts[-1][2]
+seconds = seed.timings[0].ctrlpts[-1][1]
 # Override with custom duration:
 if args.steps:
     seconds = args.steps * args.timestep
@@ -52,8 +52,7 @@ if args.sim:
             traj_sample.append(pose)
         traj_samples.append(traj_sample)
 else:
-    traj_samples = [sample_trajectory(spline, steps+1, 0, args.timestep*steps)
-                    for spline in seed.trajectories]
+    traj_samples = sample_trajectories(seed, steps+1, 0, args.timestep*steps)
     
 config = {**seed.config}
 config['steps'] = steps

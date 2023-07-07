@@ -41,9 +41,9 @@ for tj in sim_trajectories:
 
 #--- Draw the spline approximation of the trajectories, in blue
 resolution = 0.05
-interval = (0, seed.trajectories[0].ctrlpts[-1][2])
-for spline in seed.trajectories:
-    visualization.draw_spline(world, spline, resolution, interval,
+interval = (0, seed.timings[0].ctrlpts[-1][0])
+for position, timing in zip(seed.positions, seed.timings):
+    visualization.draw_spline(world, position, timing, resolution, interval[0], interval[1],
                               size=0.1,
                               color=carla.Color(0, 0, 255),
                               lifetime=args.lifetime)

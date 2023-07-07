@@ -6,7 +6,6 @@ import carla
 from agents.navigation.behavior_agent import BehaviorAgent
 from scenic.simulators.carla.utils.utils import scenicToCarlaLocation
 from scenariogen.simulators.carla.rss_sensor import RssSensor
-from scenariogen.core.utils import sample_trajectory
 
 behavior AutopilotFollowRoute(route, aggressiveness, rss_enabled):
 	take SetVehicleLightStateAction(self.signal.to_vehicleLightState())
