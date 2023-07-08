@@ -108,7 +108,8 @@ class RandomMutator():
     nonego_idx = self.random.randrange(len(seed.routes))
     mutant = Seed(config=seed.config,
                   routes=seed.routes[0:nonego_idx]+seed.routes[nonego_idx+1:],
-                  trajectories=seed.trajectories[0:nonego_idx]+seed.trajectories[nonego_idx+1:],
+                  positions=seed.positions[0:nonego_idx]+seed.positions[nonego_idx+1:],
+                  timings=seed.timings[0:nonego_idx]+seed.timings[nonego_idx+1:],                  
                   signals=seed.signals[0:nonego_idx]+seed.signals[nonego_idx+1:],
                   lengths=seed.lengths[0:nonego_idx]+seed.lengths[nonego_idx+1:],
                   widths=seed.widths[0:nonego_idx]+seed.widths[nonego_idx+1:]
@@ -219,107 +220,6 @@ class RandomMutator():
     """Used for closed-loop fuzzing."""
     return seed
   
-  def move_first_controlpoint_vertically(self, seed):
-    """Move the first control-point (of a random car) vertically in the t-d plane.
-    """
-    print('Moving the first control point vertically...')
-    mutant = copy.deepcopy(seed)
-    nonego_idx = self.random.randrange(len(mutant.routes))
-    ctrlpts = mutant.trajectories[nonego_idx].ctrlpts
-    t0, d1 = ctrlpts[0][0], ctrlpts[1][1]
-    ctrlpts[0] = (t0, self.random.uniform(0, d1))
-    return mutant
-
-  def move_last_controlpoint_vertically(self, seed):
-    """Move the last control-point (of a random car) vertically in the t-d plane.
-    """
-    print('Moving the first control point vertically...')
-    mutant = copy.deepcopy(seed)
-    nonego_idx = self.random.randrange(len(mutant.routes))
-    ctrlpts = mutant.trajectories[nonego_idx].ctrlpts
-    ctrlpts[-1][1] = self.random.uniform(ctrlpts[-2][1], self.route_lengths[nonego_idx])
-    return mutant
-
-  def move_mid_controlpoint_vertically(self, seed):
-    """Move an intermediate control-point vertically (in the t-d plane).
-    """
-    print('Moving an intermediate control point vertically...')
-    mutant = copy.deepcopy(seed)
-    nonego_idx = self.random.randrange(len(mutant.routes))
-    curve = mutant.trajectories[nonego_idx]
-    ctrlpts = curve.ctrlpts
-    p_idx = self.random.randrange(1, len(ctrlpts)-1)
-    ctrlpts[p_idx][1] = self.random.uniform(ctrlpts[p_idx-1][1], ctrlpts[p_idx+1][1])
-    return mutant
-
-  def add_controlpoint(self, seed):
-    """Selects a random vehicle, then
-    adds a control point at a random position in the curve.
-    """
-    nonego_idx = self.random.randrange(len(seed.routes))
-    traj = seed.trajectories[nonego_idx]
-    if len(traj.ctrlpts) == self.max_parameters_size:
-      raise MutationError('Cannot add any more controlpoints to the traj!')
-    t = self.random.uniform(traj.ctrlpts[0][2], traj.ctrlpts[-1][2])
-    
-    # Make a geomdl Spline, insert a knot, then extract the parameters to a Trajectory
-    spline = BSpline.Curve(normalize_kv = False)
-    spline.degree = traj.degree
-    spline.ctrlpts = traj.ctrlpts
-    spline.knotvector = traj.knotvector
-    spline.insert_knot(t)
-
-    traj_mutated = Trajectory(degree=spline.degree,
-                              ctrlpts=tuple(tuple(ctrlpt) for ctrlpt in spline.ctrlpts),
-                              knotvector=tuple(spline.knotvector)
-                              )
-
-    mutant = Seed(config=seed.config,
-                  routes=seed.routes,
-                  trajectories=
-                    seed.trajectories[0:nonego_idx] \
-                    + (traj_mutated,) \
-                    + seed.trajectories[nonego_idx+1:],
-                  signals=seed.signals,
-                  lengths=seed.lengths,
-                  widths=seed.widths
-                  )
-  
-    return mutant
-
-  def remove_controlpoint(self, seed):
-    """Selects a random vehicle, then
-    removes a random control point from the curve.
-    """
-    nonego_idx = self.random.randrange(len(seed.routes))
-    traj = seed.trajectories[nonego_idx]
-    endpoint_knots = traj.degree + 1
-    if len(traj.knotvector) <= 2*endpoint_knots:
-      raise MutationError('Not enough controlpoints to remove!')
-    knot = self.random.choice(traj.knotvector[endpoint_knots:-endpoint_knots])
-
-    # Make a geomdl Spline, remove the knot, then extract the parameters to a Trajectory
-    spline = BSpline.Curve(normalize_kv = False)
-    spline.degree = traj.degree
-    spline.ctrlpts = traj.ctrlpts
-    spline.knotvector = list(traj.knotvector)
-    spline.remove_knot(knot)
-
-    traj_mutated = Trajectory(degree=spline.degree,
-                              ctrlpts=tuple(tuple(ctrlpt) for ctrlpt in spline.ctrlpts),
-                              knotvector=tuple(spline.knotvector)
-                              )
-    mutant = Seed(config=seed.config,
-                  routes=seed.routes,
-                  trajectories=
-                    seed.trajectories[0:nonego_idx] \
-                    + (traj_mutated,) \
-                    + seed.trajectories[nonego_idx+1:],
-                  signals=seed.signals,
-                  lengths=seed.lengths,
-                  widths=seed.widths
-                  )
-    return mutant
 
   def mutate(self, seed):
     mutant = seed

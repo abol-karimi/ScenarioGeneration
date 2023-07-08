@@ -120,7 +120,7 @@ def StructureAware(input_bytes):
     print(err.msg)
     return
   
-  seconds = seed.trajectories[0].ctrlpts[-1][2]
+  seconds = seed.timings[0].ctrlpts[-1][1]
   scenario_config.update({
             'steps': seconds // scenario_config['timestep'],
             })

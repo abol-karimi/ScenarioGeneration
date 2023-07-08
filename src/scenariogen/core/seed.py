@@ -22,30 +22,30 @@ class Seed:
   lengths: Tuple[float] = None
   widths: Tuple[float] = None
   
-def validate_trajectory(traj):
+def validate_spline(spline):
   # Spline degree range
-  if traj.degree < 2 or traj.degree > 4:
-    raise InvalidSeedError('Invalid seed: traj.degree not in {2, 3, 4}')
+  if spline.degree < 2 or spline.degree > 4:
+    raise InvalidSeedError('Invalid seed: spline.degree not in {2, 3, 4}')
   # ctrlpts type (tuple of triples)
-  if not isinstance(traj.ctrlpts, tuple):
+  if not isinstance(spline.ctrlpts, tuple):
     raise InvalidSeedError('Invalid seed: ctrlpts is not a tuple')
-  for c in traj.ctrlpts:
+  for c in spline.ctrlpts:
     if not isinstance(c, tuple):
       print(c)
       raise InvalidSeedError('Invalid seed: ctrlpt is not a tuple')
-    if len(c) != 3:
+    if len(c) != 2:
       print(c)
-      raise InvalidSeedError('Invalid seed: ctrlpt is not a triple')
+      raise InvalidSeedError('Invalid seed: ctrlpt is not a pair')
   # knotvector type
-  if not isinstance(traj.knotvector, tuple):
+  if not isinstance(spline.knotvector, tuple):
     raise InvalidSeedError('Invalid seed: knotvector is not a tuple')
   # knots are nondecreasing
-  for i in range(len(traj.knotvector)-1):
-    if traj.knotvector[i+1] < traj.knotvector[i]:
+  for i in range(len(spline.knotvector)-1):
+    if spline.knotvector[i+1] < spline.knotvector[i]:
       raise InvalidSeedError('Invalid seed: knotvector is not nondecreasing')
 
   # relation between the number of knots and control points
-  if len(traj.knotvector) != traj.degree + len(traj.ctrlpts) + 1:
+  if len(spline.knotvector) != spline.degree + len(spline.ctrlpts) + 1:
     raise InvalidSeedError('Invalid seed: len(knotvector) != degree + len(ctrlpts) + 1')
   
 
@@ -61,8 +61,11 @@ def validate_seed(seed):
   if not isinstance(seed.routes, tuple):
     raise InvalidSeedError('Invalid seed: seed.routes not an instance of tuple')
 
-  if not isinstance(seed.trajectories, tuple):
-    raise InvalidSeedError('Invalid seed: seed.trajectories not an instance of tuple')
+  if not isinstance(seed.positions, tuple):
+    raise InvalidSeedError('Invalid seed: seed.positions not an instance of tuple')
+
+  if not isinstance(seed.timings, tuple):
+    raise InvalidSeedError('Invalid seed: seed.timings not an instance of tuple')
 
   if not isinstance(seed.signals, tuple):
     raise InvalidSeedError('Invalid seed: seed.signals not an instance of tuple')
@@ -77,9 +80,12 @@ def validate_seed(seed):
   if n == 0:
     raise InvalidSeedError('Invalid seed: len(seed.routes) = 0')
 
-  if n != len(seed.trajectories):
-    raise InvalidSeedError('Invalid seed: len(trajectories) != len(routes)')
+  if n != len(seed.positions):
+    raise InvalidSeedError('Invalid seed: len(positions) != len(routes)')
 
+  if n != len(seed.timings):
+    raise InvalidSeedError('Invalid seed: len(timings) != len(routes)')
+  
   if n != len(seed.signals):
     raise InvalidSeedError('Invalid seed: len(signals) != len(routes)')
 
@@ -89,6 +95,6 @@ def validate_seed(seed):
   if n != len(seed.widths):
     raise InvalidSeedError('Invalid seed: len(widths) != len(routes)')
 
-  for traj in seed.trajectories:
-    validate_trajectory(traj)
+  for spline in seed.positions + seed.timings:
+    validate_spline(spline)
 

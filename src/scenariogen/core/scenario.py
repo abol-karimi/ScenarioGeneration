@@ -31,7 +31,7 @@ class Scenario:
               }
 
     # Sample the nonego splines.
-    seconds = self.seed.trajectories[0].ctrlpts[-1][2]
+    seconds = self.seed.timings[0].ctrlpts[-1][1]
     
     # For closed-loop fuzzing, simulate the ego too.
     params = {'carla_map': config['carla_map'],

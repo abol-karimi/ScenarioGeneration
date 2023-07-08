@@ -6,7 +6,7 @@ intersection = network.elements[config['intersection']]
 
 # Python imports
 from scenariogen.core.events import *
-from scenariogen.core.utils import sample_trajectory
+from scenariogen.core.utils import sample_trajectories
 from scenariogen.core.signals import SignalType
 from scenariogen.core.errors import EgoCollisionError, NonegoNonegoCollisionError
 from scenariogen.core.utils import is_collision_free
@@ -25,17 +25,17 @@ scenario NonegosScenario():
   setup:
     cars = []
     seed = config['seed']
-    for i, (route, traj, signal, l, w, bp) in enumerate(zip(seed.routes, seed.trajectories, seed.signals, seed.lengths, seed.widths, config['blueprints'])):
-      traj_sample = sample_trajectory(traj,
-                                      int(config['steps'])+1,
-                                      0, 
-                                      config['timestep']*config['steps'])
-      car = Car at traj_sample[0],
+    tjs = sample_trajectories(seed,
+                              int(config['steps'])+1,
+                              0, 
+                              config['timestep']*config['steps'])
+    for i, (route, tj, signal, l, w, bp) in enumerate(zip(seed.routes, tjs, seed.signals, seed.lengths, seed.widths, config['blueprints'])):
+      car = Car at tj[0],
         with name f'{route[0]}_{signal.name}_{i}',
         with behavior AnimateBehavior(),
         with physics False,
         with allowCollisions False,
-        with traj_sample traj_sample,
+        with traj_sample tj,
         with signal signal,
         with length l,
         with width w,
