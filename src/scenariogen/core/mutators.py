@@ -1,8 +1,8 @@
 from random import Random
-import copy
 import geomdl
 from geomdl import BSpline
 import numpy as np
+import shapely
 from scenic.domains.driving.roads import LinearElement, Network
 from scenic.core.regions import PolygonalRegion, PolylineRegion
 from scenic.core.vectors import Vector
@@ -38,8 +38,6 @@ class RandomMutator():
     self.random = Random(randomizer_seed)
     self.mutators = [self.copy_lon,
                      # self.move_lon,
-                    self.add_controlpoint,
-                    self.remove_controlpoint,
                     self.remove_vehicle,
                     self.speedup,
                     self.slowdown,
@@ -57,44 +55,56 @@ class RandomMutator():
       return network
     else:
       return cls._networks_cache[carla_map]
-
   def copy_lon(self, seed):
     """Copy a trajectory and add some longitudinal offset along the route.
     """
     print('Copying a vehicle and adding to the seed...')
-    nonego_idx = self.random.randrange(len(seed.trajectories))
-    
-    route = seed.routes[nonego_idx]
-    traj = seed.trajectories[nonego_idx]
-    length = seed.lengths[nonego_idx]
+    # Choose a random vehicle and a random longitudinal offset
+    nonego_idx = self.random.randrange(len(seed.routes))
+    max_dist = 100
+    offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
 
-    lanes = [RandomMutator.get_network(seed).elements[lane_id]
+  def copy_lon_with_params(self, seed, nonego_idx, offset):
+    """Copy a trajectory and add some longitudinal offset along the route.
+    """
+    # Extend the route if necessary
+    network = RandomMutator.get_network(seed)
+    route = seed.routes[nonego_idx]
+    lanes = [network.elements[lane_id]
              for lane_id in route]
-    min_dist = length
-    max_dist = 20 # TODO change to the distance of the last control point to the end of the route
-    # TODO return if min_dist > max_dist
-    delta = self.random.uniform(min_dist, max_dist)
+    centerline = PolylineRegion.unionAll([l.centerline for l in lanes])
+    p0 = seed.positions[nonego_idx].ctrlpts[0]
+    available = shapely.ops.split(centerline.lineString, centerline.project(p0)).geoms[-1].length
+    if offset >= available - 10: # 10 meters cushion
+      # Extend the route by offset-available+10
+      ext = [self.random.choice(lanes[-1].maneuvers).connectingLane]
+      ext_len = ext[-1].length
+      while ext_len < offset-available+10:
+        ext.append(self.random.choice(ext[-1].maneuvers).connectingLane)
+        ext_len += ext[-1].length
+      lanes += ext
+    
     route_region = LinearElement(
-      id=f'route_{lanes}_{delta}',
+      id=f'route_{lanes}',
       polygon=PolygonalRegion.unionAll(lanes).polygons,
       centerline=PolylineRegion.unionAll([l.centerline for l in lanes]),
       leftEdge=PolylineRegion.unionAll([l.leftEdge for l in lanes]),
       rightEdge=PolylineRegion.unionAll([l.rightEdge for l in lanes])
       )
-    ctrlpts_copy_2d = (route_region.flowFrom(Vector(p[0], p[1]), delta)
-                       for p in traj.ctrlpts)
-    ctrlpts_copy = tuple((pc.x, pc.y, p[2])
-                          for pc, p in zip(ctrlpts_copy_2d, traj.ctrlpts))
+    
+    ctrlpts_moved = tuple(route_region.flowFrom(Vector(p[0], p[1]), offset)
+                          for p in seed.positions[nonego_idx].ctrlpts)
 
-    traj_c = Trajectory(degree=traj.degree,
-                        ctrlpts=ctrlpts_copy,
-                        knotvector=traj.knotvector)
+    position = Spline(degree=seed.positions[nonego_idx].degree,
+                    ctrlpts=tuple((p.x, p.y) for p in ctrlpts_moved),
+                    knotvector=seed.positions[nonego_idx].knotvector)
 
     mutant = Seed(config=seed.config,
-                  routes=seed.routes+(route,),
-                  trajectories=seed.trajectories+(traj_c,),
+                  routes=seed.routes+((l.uid for l in lanes),),
+                  positions=seed.positions+(position,),
+                  timings=seed.timings+(seed.timings[nonego_idx],),
                   signals=seed.signals+(seed.signals[nonego_idx],),
-                  lengths=seed.lengths+(length,),
+                  lengths=seed.lengths+(seed.lengths[nonego_idx],),
                   widths=seed.widths+(seed.widths[nonego_idx],)
                   )
     return mutant

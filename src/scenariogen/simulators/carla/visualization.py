@@ -127,10 +127,16 @@ def draw_point(world, point, height=None, size=0.1,
         """
         if isinstance(point, list) or isinstance(point, tuple):
             x, y = point[0], -point[1]
-            z = height if (not height is None) else point[2]
         else:
             x, y = point.x, -point.y
-            z = height if (not height is None) else point.z
+
+        if not height is None:
+            z = height
+        elif len(point) == 3:
+            z = point[2]
+        else:
+            waypoint = world.get_map().get_waypoint(carla.Location(x, y, 0))
+            z = waypoint.transform.location.z
         loc = carla.Location(x, y, z)
         world.debug.draw_point(loc, size, color, lifetime)
 
@@ -142,12 +148,14 @@ def draw_rect(world, rect, height=0.1):
 def draw_spline(world, position, timing, resolution, umin, umax,
                 size=0.1,
                 color=carla.Color(255, 0, 0),
+                draw_ctrlpts=False,
                 lifetime=-1.0):
     sample_size = int((umax-umin) // resolution)
     ts = np.linspace(umin, umax, num=sample_size)
     sample = sample_spline(position, timing, ts)
     for (x, y, _), t in zip(sample, ts):
-        draw_point(world, (x, y), t,
-                   size,
-                   color,
-                   lifetime)
+        draw_point(world, (x, y), t, size, color, lifetime)
+    if draw_ctrlpts:
+        for x, y in position.ctrlpts:
+            draw_point(world, (x, y), None, 0.2, carla.Color(255, 255, 255), lifetime)
+

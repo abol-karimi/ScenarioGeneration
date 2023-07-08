@@ -28,16 +28,15 @@ position, timing = seed.positions[0], seed.timings[0]
 visualization.draw_spline(world, position, timing, resolution, umin, umax,
                           size=0.1,
                           color=carla.Color(0, 0, 255),
-                          lifetime=120)
+                          lifetime=600)
 
-# Speed up its trajectory over an interval, plot the new trajectory
+# Copy the trajectory with a longitudinal offset, then plot the new trajectory
 mutator = RandomMutator(max_parameters_size=50,
-                              max_mutations_per_iteration=1,
-                              randomizer_seed=0)
-mutant = mutator.slowdown_with_params(seed, 0, (umin, umax/2), .9)
-position, timing = mutant.positions[0], mutant.timings[0]
+                        max_mutations_per_iteration=1,
+                        randomizer_seed=0)
+mutant = mutator.copy_lon_with_params(seed, 0, 100)
+position, timing = mutant.positions[-1], mutant.timings[-1]
 visualization.draw_spline(world, position, timing, resolution, umin, umax,
                           size=0.1,
                           color=carla.Color(255, 0, 0),
-                          draw_ctrlpts=True,
-                          lifetime=120)
+                          lifetime=600)
