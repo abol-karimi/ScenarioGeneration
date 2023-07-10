@@ -459,7 +459,7 @@ def curvilinear_translate(p, polyline, dx, dy):
     return proj + normal*(abs(y)+dy)
 
 def simplify(ps):
-    """Remove self-intersections from a polyline.
+    """Removes overlapping segments of a polyline.
     Assumes that the curve does not bend more than 90 degrees.
 
     ps: list of points

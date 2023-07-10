@@ -23,20 +23,27 @@ with open('experiments/initial_seeds/0.json', 'r') as f:
     assert isinstance(seed, Seed)
 
 resolution = 0.05
-umin, umax = 0, seed.timings[0].ctrlpts[-1][1]
-position, timing = seed.positions[0], seed.timings[0]
+idx = 1
+umin, umax = 0, seed.timings[idx].ctrlpts[-1][1]
+position, timing = seed.positions[idx], seed.timings[idx]
 visualization.draw_spline(world, position, timing, resolution, umin, umax,
                           size=0.1,
                           color=carla.Color(0, 0, 255),
-                          lifetime=600)
+                          lifetime=300)
 
 # Copy the trajectory with a longitudinal offset, then plot the new trajectory
 mutator = RandomMutator(max_parameters_size=50,
                         max_mutations_per_iteration=1,
                         randomizer_seed=0)
-mutant = mutator.copy_forward_with_params(seed, 0, 50)
-position, timing = mutant.positions[-1], mutant.timings[-1]
+network = RandomMutator.get_network(seed)
+offset = 20
+route = seed.routes[idx]
+position, route = mutator._move_traj_backward(seed.config['carla_map'],
+                                              network,
+                                              route,
+                                              position,
+                                              offset)
 visualization.draw_spline(world, position, timing, resolution, umin, umax,
                           size=0.1,
                           color=carla.Color(255, 0, 0),
-                          lifetime=600)
+                          lifetime=300)

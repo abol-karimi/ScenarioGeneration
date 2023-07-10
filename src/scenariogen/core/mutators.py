@@ -39,7 +39,9 @@ class RandomMutator():
 
     self.random = Random(randomizer_seed)
     self.mutators = [self.copy_forward,
-                     # self.move_lon,
+                     self.copy_backward,
+                     # self.move_forward,
+                     # self.move_backward,
                     self.remove_vehicle,
                     self.speedup,
                     self.slowdown,
@@ -66,6 +68,38 @@ class RandomMutator():
       for maneuver in intersection.maneuvers:
         cls._predecessors_cache[carla_map][maneuver.endLane.uid].append(maneuver.connectingLane)
 
+  def move_forward(self, seed):
+    """Adds some longitudinal offset to a trajectory along its route.
+    Extends the route randomly, if necessay.
+    """
+    print('Moving a vehicle foward along its route...')
+    # Choose a random vehicle and a random longitudinal offset
+    nonego_idx = self.random.randrange(len(seed.routes))
+    max_dist = 100
+    offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
+
+    # Move the trajectory, extend the route if necessary
+    network = RandomMutator.get_network(seed)
+    position, route = self._move_traj_forward(network,
+                                       seed.routes[nonego_idx],
+                                       seed.positions[nonego_idx],
+                                       offset)   
+    mutant = Seed(config=seed.config,
+                  routes=
+                    seed.routes[0:nonego_idx] \
+                    + (route,) \
+                    + seed.routes[nonego_idx+1:],
+                  positions=
+                    seed.positions[0:nonego_idx] \
+                    + (position,) \
+                    + seed.positions[nonego_idx+1:],
+                  timings=seed.timings,
+                  signals=seed.signals,
+                  lengths=seed.lengths,
+                  widths=seed.widths
+                  )
+    return mutant
+    
   def copy_forward(self, seed):
     """Copy a trajectory and add some longitudinal offset along the route.
     """
@@ -75,55 +109,55 @@ class RandomMutator():
     max_dist = 100
     offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
 
-    return self.copy_forward_with_params(seed, nonego_idx, offset)
-
-  def copy_forward_with_params(self, seed, nonego_idx, offset):
-    """Copy a trajectory and add some longitudinal offset along the route.
-    """
-    # Extend the route if necessary
-    network = RandomMutator.get_network(seed)
-    route = seed.routes[nonego_idx]
-    lanes = [network.elements[lane_id]
-             for lane_id in route]
-    centerline_coords = [p for l in lanes for p in l.centerline.points]
-    centerline_lineString = shapely.geometry.LineString(simplify(centerline_coords))
-    p_end = seed.positions[nonego_idx].ctrlpts[-1]
-    v_end = Vector(*p_end)
-    proj = shapely.ops.nearest_points(centerline_lineString, shapely.geometry.Point(p_end))[0]
-    p_mirror = v_end + (Vector(proj.x, proj.y) - v_end)*2
-    splitter = shapely.geometry.LineString([p_end, p_mirror.coordinates])
-    available = shapely.ops.split(centerline_lineString, splitter).geoms[1].length
-    if offset >= available - 10: # 10 meters cushion
-      # Extend the route by offset-available+10
-      print('Extending the route forward...')
-      maneuver = self.random.choice(lanes[-1].maneuvers)
-      ext = [maneuver.connectingLane if maneuver.connectingLane else maneuver.endLane]
-      ext_len = ext[-1].centerline.length
-      while ext_len < offset-available+10:
-        maneuver = self.random.choice(ext[-1].maneuvers)
-        ext.append(maneuver.connectingLane if maneuver.connectingLane else maneuver.endLane)
-        ext_len += ext[-1].centerline.length
-      lanes += ext
-      centerline_coords += [p for l in ext for p in l.centerline.points]
-
-    centerline=PolylineRegion(simplify(centerline_coords))
-    ctrlpts_moved = tuple(curvilinear_translate(p, centerline, offset, 0)
-                          for p in seed.positions[nonego_idx].ctrlpts)
-
-    position = Spline(degree=seed.positions[nonego_idx].degree,
-                    ctrlpts=tuple((p.x, p.y) for p in ctrlpts_moved),
-                    knotvector=seed.positions[nonego_idx].knotvector)
+    # Move the trajectory, extend the route if necessary
+    network = RandomMutator.get_network(seed.config['carla_map'])
+    position, route = self._move_traj_forward(network,
+                                       seed.routes[nonego_idx],
+                                       seed.positions[nonego_idx],
+                                       offset)
 
     mutant = Seed(config=seed.config,
-                  routes=seed.routes+((l.uid for l in lanes),),
+                  routes=seed.routes+(route,),
                   positions=seed.positions+(position,),
                   timings=seed.timings+(seed.timings[nonego_idx],),
                   signals=seed.signals+(seed.signals[nonego_idx],),
                   lengths=seed.lengths+(seed.lengths[nonego_idx],),
                   widths=seed.widths+(seed.widths[nonego_idx],)
                   )
+        
     return mutant
   
+  def move_backward(self, seed):
+    """Subtracts some longitudinal offset from a trajectory along its route.
+    Extends the route backwards randomly, if necessay.
+    """
+    print('Moving a vehicle backwards...')
+    # Choose a random vehicle and a random longitudinal offset
+    nonego_idx = self.random.randrange(len(seed.routes))
+    max_dist = 100 # bigger than any vehicle length
+    offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
+
+    position, route = self._move_traj_backward(seed.config['carla_map'],
+                                               RandomMutator.get_network(seed),
+                                               seed.routes[nonego_idx],
+                                               seed.positions[nonego_idx],
+                                               offset)
+    mutant = Seed(config=seed.config,
+                  routes=
+                    seed.routes[0:nonego_idx] \
+                    + (route,) \
+                    + seed.routes[nonego_idx+1:],
+                  positions=
+                    seed.positions[0:nonego_idx] \
+                    + (position,) \
+                    + seed.positions[nonego_idx+1:],
+                  timings=seed.timings,
+                  signals=seed.signals,
+                  lengths=seed.lengths,
+                  widths=seed.widths
+                  )
+    return mutant
+    
   def copy_backward(self, seed):
     """Copy a trajectory and add some longitudinal offset along the route.
     """
@@ -133,55 +167,21 @@ class RandomMutator():
     max_dist = 100 # bigger than any vehicle length
     offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
 
-    return self.copy_forward_with_params(seed, nonego_idx, offset)
-
-  def copy_backward_with_params(self, seed, nonego_idx, offset):
-    """Copy a trajectory and subtract some longitudinal offset along the route.
-    """
-    # Extend the route if necessary
-    network = RandomMutator.get_network(seed)
-    route = seed.routes[nonego_idx]
-    lanes = [network.elements[lane_id]
-             for lane_id in route]
-    centerline_coords = [p for l in lanes for p in l.centerline.points]
-    centerline_lineString = shapely.geometry.LineString(simplify(centerline_coords))
-    p0 = seed.positions[nonego_idx].ctrlpts[0]
-    v0 = Vector(*p0)
-    proj = shapely.ops.nearest_points(centerline_lineString, shapely.geometry.Point(p0))[0]
-    p_mirror = v0 + (Vector(proj.x, proj.y) - v0)*2
-    splitter = shapely.geometry.LineString([p0, p_mirror.coordinates])
-    available = shapely.ops.split(centerline_lineString, splitter).geoms[0].length
-    if offset >= available - 10: # 10 meters cushion
-      # Extend the route by offset-available+10
-      print('Extending the route backward...')
-      ext = [lanes[0]._predecessor if not lanes[0]._predecessor == None \
-             else self.random.choice(self._predecessors_cache[seed.config['carla_map']][lanes[0].uid])
-             ]
-      ext_len = ext[-1].centerline.length
-      while ext_len < offset-available+10:
-        ext.append(ext[-1]._predecessor if ext[-1]._predecessor \
-             else self.random.choice(self._predecessors_cache[seed.config['carla_map']][ext[-1].uid]))
-        ext_len += ext[-1].centerline.length
-      ext.reverse()
-      lanes = ext + lanes
-      centerline_coords = [p for l in ext for p in l.centerline.points] + centerline_coords
-    
-    centerline=PolylineRegion(simplify(centerline_coords))
-    ctrlpts_moved = tuple(curvilinear_translate(p, centerline, -offset, 0)
-                          for p in seed.positions[nonego_idx].ctrlpts)
-
-    position = Spline(degree=seed.positions[nonego_idx].degree,
-                    ctrlpts=tuple((p.x, p.y) for p in ctrlpts_moved),
-                    knotvector=seed.positions[nonego_idx].knotvector)
+    position, route = self._move_traj_backward(seed.config['carla_map'],
+                                               RandomMutator.get_network(seed),
+                                               seed.routes[nonego_idx],
+                                               seed.positions[nonego_idx],
+                                               offset)
 
     mutant = Seed(config=seed.config,
-                  routes=seed.routes+((l.uid for l in lanes),),
+                  routes=seed.routes+(route,),
                   positions=seed.positions+(position,),
                   timings=seed.timings+(seed.timings[nonego_idx],),
                   signals=seed.signals+(seed.signals[nonego_idx],),
                   lengths=seed.lengths+(seed.lengths[nonego_idx],),
                   widths=seed.widths+(seed.widths[nonego_idx],)
                   )
+        
     return mutant
   
   def remove_vehicle(self, seed):
@@ -304,7 +304,7 @@ class RandomMutator():
   def mutate_ego_route(self, seed):
     """Used for closed-loop fuzzing."""
     return seed
-  
+ 
 
   def mutate(self, seed):
     mutant = seed
@@ -317,8 +317,76 @@ class RandomMutator():
         print('Mutation error: ' + err.msg)
     return mutant
     
-    
+  def _move_traj_forward(self, network, route, position, offset):
+    lanes = [network.elements[lane_id]
+             for lane_id in route]
+    centerline_coords = [p for l in lanes for p in l.centerline.points]
+    centerline_lineString = shapely.geometry.LineString(simplify(centerline_coords))
+    p_end = position.ctrlpts[-1]
+    v_end = Vector(*p_end)
+    proj = shapely.ops.nearest_points(centerline_lineString, shapely.geometry.Point(p_end))[0]
+    p_mirror = v_end + (Vector(proj.x, proj.y) - v_end)*2
+    splitter = shapely.geometry.LineString([p_end, p_mirror.coordinates])
+    available = shapely.ops.split(centerline_lineString, splitter).geoms[1].length
+    if offset >= available - 10: # 10 meters cushion
+      # Extend the route by offset-available+10
+      print('Extending the route forward...')
+      maneuver = self.random.choice(lanes[-1].maneuvers)
+      ext = [maneuver.connectingLane if maneuver.connectingLane else maneuver.endLane]
+      ext_len = ext[-1].centerline.length
+      while ext_len < offset-available+10:
+        maneuver = self.random.choice(ext[-1].maneuvers)
+        ext.append(maneuver.connectingLane if maneuver.connectingLane else maneuver.endLane)
+        ext_len += ext[-1].centerline.length
+      lanes += ext
+      centerline_coords += [p for l in ext for p in l.centerline.points]
 
+    centerline=PolylineRegion(simplify(centerline_coords))
+    ctrlpts_moved = tuple(curvilinear_translate(p, centerline, offset, 0)
+                          for p in position.ctrlpts)
+
+    new_position =  Spline(degree=position.degree,
+                           ctrlpts=tuple((p.x, p.y) for p in ctrlpts_moved),
+                           knotvector=position.knotvector)
+    new_route = tuple(l.uid for l in lanes)
+    return new_position, new_route
+  
+  def _move_traj_backward(self, carla_map, network, route, position, offset):
+    lanes = [network.elements[lane_id]
+             for lane_id in route]
+    centerline_coords = [p for l in lanes for p in l.centerline.points]
+    centerline_lineString = shapely.geometry.LineString(simplify(centerline_coords))
+    p0 = position.ctrlpts[0]
+    v0 = Vector(*p0)
+    proj = shapely.ops.nearest_points(centerline_lineString, shapely.geometry.Point(p0))[0]
+    p_mirror = v0 + (Vector(proj.x, proj.y) - v0)*2
+    splitter = shapely.geometry.LineString([p0, p_mirror.coordinates])
+    available = shapely.ops.split(centerline_lineString, splitter).geoms[0].length
+    if offset >= available - 10: # 10 meters cushion
+      # Extend the route by offset-available+10
+      print('Extending the route backward...')
+      ext = [lanes[0]._predecessor if not lanes[0]._predecessor == None \
+             else self.random.choice(self._predecessors_cache[carla_map][lanes[0].uid])
+             ]
+      ext_len = ext[-1].centerline.length
+      while ext_len < offset-available+10:
+        ext.append(ext[-1]._predecessor if ext[-1]._predecessor \
+             else self.random.choice(self._predecessors_cache[carla_map][ext[-1].uid]))
+        ext_len += ext[-1].centerline.length
+      ext.reverse()
+      lanes = ext + lanes
+      centerline_coords = [p for l in ext for p in l.centerline.points] + centerline_coords
+    
+    centerline=PolylineRegion(simplify(centerline_coords))
+    ctrlpts_moved = tuple(curvilinear_translate(p, centerline, -offset, 0)
+                          for p in position.ctrlpts)
+
+    new_position = Spline(degree=position.degree,
+                      ctrlpts=tuple((p.x, p.y) for p in ctrlpts_moved),
+                      knotvector=position.knotvector)
+    new_route = tuple(l.uid for l in lanes)
+    return new_position, new_route
+  
 class MutationError(Exception):
     """Exception raised for errors in mutating a seed.
     Attributes:
