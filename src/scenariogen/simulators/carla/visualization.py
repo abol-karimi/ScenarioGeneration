@@ -39,7 +39,7 @@ def draw_lane(world, lane,
             begin = locations[i]
             end = locations[i+1]
             world.debug.draw_line(
-                begin, end, thickness=0.05, color=centerline_color, life_time=life_time)        
+                begin, end, thickness=0.05, color=centerline_color, life_time=life_time)
     if label:
     # Draw lane label
         ds = list(np.arange(random.uniform(1, 2), lane.centerline.length-random.uniform(1, 2), random.uniform(6, 8)))

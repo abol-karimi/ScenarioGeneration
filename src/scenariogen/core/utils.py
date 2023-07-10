@@ -2,12 +2,16 @@ import geomdl
 from geomdl import operations, BSpline
 import numpy as np
 import scipy
+import shapely
+import math
 
 from scenic.simulators.carla.utils.utils import scenicToCarlaLocation
 from scenic.core.object_types import OrientedPoint
 from scenic.core.vectors import Vector
 from scenic.core.regions import RectangularRegion
 from scenic.core.geometry import headingOfSegment
+from scenic.domains.driving.roads import LinearElement
+from scenic.core.regions import PolygonalRegion, PolylineRegion
 try:
     from PIL import Image, ImageDraw, ImageFont
 except ImportError:
@@ -182,8 +186,6 @@ def spline_to_traj(degree, ctrlpts, knotvector, sample_size, sim_traj):
     return traj
 
 def sample_route(lanes, spline, sample_size):
-    from scenic.domains.driving.roads import LinearElement
-    from scenic.core.regions import PolygonalRegion, PolylineRegion
     d0 = spline.ctrlpts[0][1]
     route = LinearElement(
         id=f'route_{lanes}_{d0}',
@@ -437,4 +439,37 @@ def route_from_turns(network, init_lane, turns):
         current_lane = current_lane.successor
     return route
 
-    
+def curvilinear_translate(p, polyline, dx, dy):
+    """Assumes that both the given point and its translation are on the linear_element"""
+    v = Vector(p[0], p[1])
+    proj = polyline.project(v)
+    p_mirror = v + (Vector(proj.x, proj.y) - v)*2
+    splitter = shapely.geometry.LineString([p, p_mirror.coordinates])
+    poly_parts = shapely.ops.split(polyline.lineString, splitter).geoms
+    poly_forward = PolylineRegion(poly_parts[-1].coords)
+    poly_backward = PolylineRegion(poly_parts[0].coords[::-1])
+    if dx >= 0:
+        proj = poly_forward.pointAlongBy(dx)
+    else:
+        proj = poly_backward.pointAlongBy(-dx)
+    start, end = polyline.nearestSegmentTo(proj)
+    tangent = (end - start).normalized()
+    y = polyline.signedDistanceTo(v)
+    normal = tangent.rotatedBy(math.copysign(math.pi/2, y))
+    return proj + normal*(abs(y)+dy)
+
+def simplify(ps):
+    """Remove self-intersections from a polyline.
+    Assumes that the curve does not bend more than 90 degrees.
+
+    ps: list of points
+    Returns: a sublist of ps
+    """
+    ps_simple = [ps[0], ps[1]]
+    v0 = Vector(*ps_simple[-1]) - Vector(*ps_simple[-2])
+    for i in range(2, len(ps)):
+        v1 = Vector(*ps[i]) - Vector(*ps_simple[-1])
+        if v0.dot(v1) >= 0:
+            ps_simple.append(ps[i])
+            v0 = v1
+    return ps_simple
