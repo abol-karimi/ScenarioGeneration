@@ -1,6 +1,5 @@
 # Scenic parameters
 model scenic.domains.driving.model
-param config = None
 config = globalParameters.config
 intersection = network.elements[config['intersection']]
 
@@ -108,10 +107,27 @@ scenario CheckCollisionsScenario(egos, nonegos):
 scenario ShowIntersection():
   setup:
     import scenariogen.simulators.carla.visualization as visualization
+    from scenic.simulators.carla.simulator import CarlaSimulation
     
     monitor show_intersection:
-      if config['simulator']  == 'carla':
+      if isinstance(simulation(), CarlaSimulation):
         carla_world = simulation().world
         visualization.draw_intersection(carla_world, intersection, draw_lanes=True)
         visualization.set_camera(carla_world, intersection, height=50)
       wait
+
+poses = []
+scenario RecordSeedInfoScenario(cars):
+  setup:
+
+    monitor record_poses:
+      while True:
+        poses.append(tuple((car.position, car.heading) for car in cars))
+        wait
+
+    record final config as config
+    record final poses as poses
+    record final tuple(car.route for car in cars) as routes
+    record final tuple(car.signal for car in cars) as turn_signals
+    record final tuple(car.length for car in cars) as lengths
+    record final tuple(car.width for car in cars) as widths    

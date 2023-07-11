@@ -330,13 +330,11 @@ def geometry_atoms(network, intersection_uid):
     return geometry
 
 def sim_trajectories(sim_result, timestep):
-    cars_num = len(sim_result.trajectory[0])
-    sim_trajs = [[] for i in range(cars_num)]
-    for i, (sim_state, sim_state_headings) in enumerate(zip(sim_result.trajectory, sim_result.records['headings'])):
+    cars_num = len(sim_result.records['poses'][0])
+    sim_trajs = [[] for _ in range(cars_num)]
+    for i, poses in enumerate(sim_result.records['poses']):
         time = i * timestep
-        for j, (car_state, heading) in enumerate(zip(sim_state, sim_state_headings)):
-            x = car_state[0]
-            y = car_state[1]
+        for j, ((x, y), heading) in enumerate(poses):
             sim_trajs[j].append((x, y, heading, time))
     return sim_trajs
 

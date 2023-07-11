@@ -24,6 +24,8 @@ parser.add_argument('scenario_path',
                     help='Path of the Scenic file specifying the scenario')
 parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='newtonian',
                     help='The simulator')
+parser.add_argument('--no_render', action='store_true',
+                    help='disable rendering')
 parser.add_argument('--out_path',
                     help='Path where the generated seed will be stored')
 parser.add_argument('--save_sim_trajectories', action='store_true',
@@ -54,9 +56,11 @@ simulator2model = {'newtonian': 'scenic.simulators.newtonian.driving_model',
                     }
 # Run the scenario
 scenic_scenario = scenic.scenarioFromFile(
-    args.scenario_path,
+    'src/scenariogen/core/create.scenic',
     model=simulator2model[args.simulator],
-    params = {'timestep': args.timestep})
+    params = {'timestep': args.timestep,
+              'render': not args.no_render,
+              'scenario_path': args.scenario_path})
 scene, _ = scenic_scenario.generate(maxIterations=1)
 simulator = scenic_scenario.getSimulator()
 try:
@@ -74,11 +78,6 @@ except GuardViolation:
     exit()
 
 # Convert the result to a seed
-routes = sim_result.records['routes']
-signals = sim_result.records['turn_signals']
-lengths = sim_result.records['lengths']
-widths = sim_result.records['widths']
-config = sim_result.records['config']
 sim_trajs = sim_trajectories(sim_result, args.timestep)
 
 positions = tuple(spline_approximation(traj,
@@ -89,13 +88,13 @@ timing = Spline(degree=args.spline_degree,
                 ctrlpts=tuple((float(t), float(t)) for t in np.linspace(0, seconds, args.parameters_size)),
                 knotvector=tuple(float(t*seconds) for t in knotvector.generate(args.spline_degree, args.parameters_size, clamped=True))
                 )
-seed = Seed(config=config,
-            routes=routes,
+seed = Seed(config=sim_result.records['config'],
+            routes=sim_result.records['routes'],
             positions=positions,
             timings=(timing,)*len(sim_trajs),
-            signals=signals,
-            lengths=lengths,
-            widths=widths)
+            signals=sim_result.records['turn_signals'],
+            lengths=sim_result.records['lengths'],
+            widths=sim_result.records['widths'])
 
 # Store the seed
 if args.out_path:
