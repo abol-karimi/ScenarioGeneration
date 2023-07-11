@@ -3,7 +3,7 @@
 min_perceptible_time = 0.5
 
 import clingo
-from events import term_to_time
+from scenariogen.core.events import term_to_time
 
 def lessThan(S, T):
   lt = min_perceptible_time < term_to_time[T.name] - term_to_time[S.name]

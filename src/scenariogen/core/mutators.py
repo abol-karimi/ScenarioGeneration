@@ -13,7 +13,7 @@ from src.scenariogen.core.signals import SignalType
 from scenariogen.core.seed import Seed, Spline
 from scenariogen.core.utils import curvilinear_translate, simplify
 
-class RandomMutator():
+class StructureAwareMutator():
   """Randomly change the the trajectories using their parameters.
   
   Guarantees:
@@ -40,15 +40,14 @@ class RandomMutator():
     self.random = Random(randomizer_seed)
     self.mutators = [self.copy_forward,
                      self.copy_backward,
-                     # self.move_forward,
-                     # self.move_backward,
-                    self.remove_vehicle,
-                    self.speedup,
-                    self.slowdown,
-                    # self.mutate_ego_route,
-                    # self.move_first_controlpoint_vertically,
-                    # self.move_last_controlpoint_vertically,
-                    # self.move_mid_controlpoint_vertically,                    
+                     self.move_forward,
+                     self.move_backward,
+                    # self.move_to_route,
+                    # self.change_to_route,
+                     self.remove_vehicle,
+                     self.speedup,
+                     self.slowdown,
+                    # self.mutate_ego_route,                 
                     ]
   @classmethod
   def get_network(cls, seed):
@@ -79,7 +78,7 @@ class RandomMutator():
     offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
 
     # Move the trajectory, extend the route if necessary
-    network = RandomMutator.get_network(seed)
+    network = StructureAwareMutator.get_network(seed)
     position, route = self._move_traj_forward(network,
                                        seed.routes[nonego_idx],
                                        seed.positions[nonego_idx],
@@ -110,7 +109,7 @@ class RandomMutator():
     offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
 
     # Move the trajectory, extend the route if necessary
-    network = RandomMutator.get_network(seed.config['carla_map'])
+    network = StructureAwareMutator.get_network(seed)
     position, route = self._move_traj_forward(network,
                                        seed.routes[nonego_idx],
                                        seed.positions[nonego_idx],
@@ -138,7 +137,7 @@ class RandomMutator():
     offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
 
     position, route = self._move_traj_backward(seed.config['carla_map'],
-                                               RandomMutator.get_network(seed),
+                                               StructureAwareMutator.get_network(seed),
                                                seed.routes[nonego_idx],
                                                seed.positions[nonego_idx],
                                                offset)
@@ -168,7 +167,7 @@ class RandomMutator():
     offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
 
     position, route = self._move_traj_backward(seed.config['carla_map'],
-                                               RandomMutator.get_network(seed),
+                                               StructureAwareMutator.get_network(seed),
                                                seed.routes[nonego_idx],
                                                seed.positions[nonego_idx],
                                                offset)
@@ -184,6 +183,21 @@ class RandomMutator():
         
     return mutant
   
+  def move_to_route(self, seed):
+    """Move a trajectory to a different route.
+    The local curvilinear coordinates of the control points are preserved.
+    """
+    print('Moving a trajectory to a different route...')
+    # Choose a random vehicle and a random route
+    nonego_idx = self.random.randrange(len(seed.routes))
+  
+  def copy_to_route(self, seed):
+    """Move a trajectory to a different route.
+    """
+    print('Copying a trajectory to a different route...')
+    # Choose a random vehicle and a random longitudinal offset
+    nonego_idx = self.random.randrange(len(seed.routes))
+
   def remove_vehicle(self, seed):
     """Removes a random non-ego from the scenario.
     """

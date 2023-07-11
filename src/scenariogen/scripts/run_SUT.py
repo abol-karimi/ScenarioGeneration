@@ -1,5 +1,3 @@
-"""Run the SUT by plugging in a seed to a VUT.
-"""
 #!/usr/bin/env python3.8
 import argparse
 import jsonpickle
@@ -34,7 +32,7 @@ with open(args.seed, 'r') as f:
     seed = jsonpickle.decode(f.read())
 
 # Default duration is the whole scenario:
-seconds = seed.trajectories[0].ctrlpts[-1][2]
+seconds = seed.timings[0].ctrlpts[-1][0]
 # Override with custom duration:
 if args.steps:
     seconds = args.steps * args.timestep

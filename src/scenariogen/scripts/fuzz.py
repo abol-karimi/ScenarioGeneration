@@ -67,7 +67,7 @@ config['iterations'] = args.iterations
 config['ego'] = args.ego
 
 # Instantiate a fuzzer
-mutator = mutators.RandomMutator(config)
+mutator = mutators.StructureAwareMutator(config)
 coverage = coverages.PredicateNameCoverage(config=config)
 scheduler = schedulers.PriorityScheduler(config=config)
 fuzzer = fuzzers.ModularFuzzer(corpus=in_corpus,

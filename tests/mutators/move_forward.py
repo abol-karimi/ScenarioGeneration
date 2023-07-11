@@ -5,7 +5,7 @@ import jsonpickle
 import carla
 
 # This project
-from src.scenariogen.core.mutators import RandomMutator
+from src.scenariogen.core.mutators import StructureAwareMutator
 from scenariogen.core.seed import Seed
 import scenariogen.simulators.carla.visualization as visualization
 
@@ -32,10 +32,10 @@ visualization.draw_spline(world, position, timing, resolution, umin, umax,
                           lifetime=300)
 
 # Copy the trajectory with a longitudinal offset, then plot the new trajectory
-mutator = RandomMutator(max_parameters_size=50,
+mutator = StructureAwareMutator(max_parameters_size=50,
                         max_mutations_per_iteration=1,
                         randomizer_seed=0)
-network = RandomMutator.get_network(seed)
+network = StructureAwareMutator.get_network(seed)
 offset = 110
 route = seed.routes[idx]
 position, route = mutator._move_traj_forward(network, route, position, offset)

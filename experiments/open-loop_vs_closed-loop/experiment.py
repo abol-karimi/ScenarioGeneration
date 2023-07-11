@@ -58,7 +58,7 @@ config['iterations'] = 2 # the number of fuzzing iterations
 #--------------------------------
 config['ego'] = False
 
-mutator = mutators.RandomMutator(config)
+mutator = mutators.StructureAwareMutator(config)
 coverage = coverages.PredicateNameCoverage(config=config)
 scheduler = schedulers.PriorityScheduler(config=config)
 fuzzer = fuzzers.ModularFuzzer(corpus=in_corpus,
@@ -74,7 +74,7 @@ fuzzer.save(f'{in_corpus_path}_open.json')
 #----------------------------------
 # config['ego'] = True
 
-# mutator = mutators.RandomMutator(config)
+# mutator = mutators.StructureAwareMutator(config)
 # coverage = coverages.PredicateNameCoverage(config=config)
 # scheduler = schedulers.PriorityScheduler(config=config)
 # fuzzer = fuzzers.ModularFuzzer(corpus=in_corpus,

@@ -104,3 +104,14 @@ scenario CheckCollisionsScenario(egos, nonegos):
           if e.intersects(n):
             raise EgoCollisionError(e, n)
         wait
+
+scenario ShowIntersection():
+  setup:
+    import scenariogen.simulators.carla.visualization as visualization
+    
+    monitor show_intersection:
+      if config['simulator']  == 'carla':
+        carla_world = simulation().world
+        visualization.draw_intersection(carla_world, intersection, draw_lanes=True)
+        visualization.set_camera(carla_world, intersection, height=50)
+      wait

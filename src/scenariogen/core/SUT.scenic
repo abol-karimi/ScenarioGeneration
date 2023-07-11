@@ -12,7 +12,7 @@ intersection = network.elements[config['intersection']]
 import importlib
 from scenariogen.core.signals import SignalType
 from scenic.core.vectors import Vector
-from scenariogen.core.scenarios import NonegosScenario, RecordEventsScenario, CheckCollisionsScenario
+from scenariogen.core.scenarios import NonegosScenario, RecordEventsScenario, CheckCollisionsScenario, ShowIntersection
 
 if config['closedLoop']:
   ego_module = importlib.import_module(config['ego_module'])
@@ -25,15 +25,19 @@ scenario Main():
     p = intersection.polygon.centroid
     ego = Debris at Vector(p.x, p.y)
 
+    record initial config as config
+
   compose:
     if config['closedLoop']:
       do ego_scenario, \
           nonegos_scenario, \
           RecordEventsScenario(ego_scenario.cars), \
           RecordEventsScenario(nonegos_scenario.cars), \
-          CheckCollisionsScenario(ego_scenario.cars, nonegos_scenario.cars)
+          CheckCollisionsScenario(ego_scenario.cars, nonegos_scenario.cars), \
+          ShowIntersection()
     else:
       do nonegos_scenario, \
           RecordEventsScenario(nonegos_scenario.cars), \
-          CheckCollisionsScenario([], nonegos_scenario.cars)
+          CheckCollisionsScenario([], nonegos_scenario.cars), \
+          ShowIntersection()
 
