@@ -11,7 +11,6 @@ from scenic.core.vectors import Vector
 import src.scenariogen.core.utils as utils
 from src.scenariogen.core.signals import SignalType
 from scenariogen.core.seed import Seed, Spline
-from scenariogen.core.utils import curvilinear_translate, simplify
 
 class StructureAwareMutator():
   """Randomly change the the trajectories using their parameters.
@@ -67,16 +66,7 @@ class StructureAwareMutator():
       for maneuver in intersection.maneuvers:
         cls._predecessors_cache[carla_map][maneuver.endLane.uid].append(maneuver.connectingLane)
 
-  def move_forward(self, seed):
-    """Adds some longitudinal offset to a trajectory along its route.
-    Extends the route randomly, if necessay.
-    """
-    print('Moving a vehicle foward along its route...')
-    # Choose a random vehicle and a random longitudinal offset
-    nonego_idx = self.random.randrange(len(seed.routes))
-    max_dist = 100
-    offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
-
+  def move_forward_with_params(self, seed, nonego_idx, offset):
     # Move the trajectory, extend the route if necessary
     network = StructureAwareMutator.get_network(seed)
     position, route = self._move_traj_forward(network,
@@ -98,16 +88,20 @@ class StructureAwareMutator():
                   widths=seed.widths
                   )
     return mutant
-    
-  def copy_forward(self, seed):
-    """Copy a trajectory and add some longitudinal offset along the route.
+  
+  def move_forward(self, seed):
+    """Adds some longitudinal offset to a trajectory along its route.
+    Extends the route randomly, if necessay.
     """
-    print('Copying a vehicle and adding to the seed...')
+    print('Moving a vehicle foward along its route...')
     # Choose a random vehicle and a random longitudinal offset
     nonego_idx = self.random.randrange(len(seed.routes))
     max_dist = 100
     offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
 
+    return self.move_forward_with_params(seed, nonego_idx, offset)
+  
+  def copy_forward_with_params(self, seed, nonego_idx, offset):
     # Move the trajectory, extend the route if necessary
     network = StructureAwareMutator.get_network(seed)
     position, route = self._move_traj_forward(network,
@@ -123,19 +117,20 @@ class StructureAwareMutator():
                   lengths=seed.lengths+(seed.lengths[nonego_idx],),
                   widths=seed.widths+(seed.widths[nonego_idx],)
                   )
-        
     return mutant
-  
-  def move_backward(self, seed):
-    """Subtracts some longitudinal offset from a trajectory along its route.
-    Extends the route backwards randomly, if necessay.
+    
+  def copy_forward(self, seed):
+    """Copy a trajectory and add some longitudinal offset along the route.
     """
-    print('Moving a vehicle backwards...')
+    print('Copying a vehicle and adding to the seed...')
     # Choose a random vehicle and a random longitudinal offset
     nonego_idx = self.random.randrange(len(seed.routes))
-    max_dist = 100 # bigger than any vehicle length
+    max_dist = 100
     offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
 
+    return self.copy_forward_with_params(seed, nonego_idx, offset)
+  
+  def move_backward_with_params(self, seed, nonego_idx, offset):
     position, route = self._move_traj_backward(seed.config['carla_map'],
                                                StructureAwareMutator.get_network(seed),
                                                seed.routes[nonego_idx],
@@ -156,16 +151,20 @@ class StructureAwareMutator():
                   widths=seed.widths
                   )
     return mutant
-    
-  def copy_backward(self, seed):
-    """Copy a trajectory and add some longitudinal offset along the route.
+  
+  def move_backward(self, seed):
+    """Subtracts some longitudinal offset from a trajectory along its route.
+    Extends the route backwards randomly, if necessay.
     """
-    print('Copying a vehicle and adding to the seed...')
+    print('Moving a vehicle backwards...')
     # Choose a random vehicle and a random longitudinal offset
     nonego_idx = self.random.randrange(len(seed.routes))
     max_dist = 100 # bigger than any vehicle length
     offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
 
+    return self.move_backward_with_params(seed, nonego_idx, offset)
+
+  def copy_backward_with_params(self, seed, nonego_idx, offset):
     position, route = self._move_traj_backward(seed.config['carla_map'],
                                                StructureAwareMutator.get_network(seed),
                                                seed.routes[nonego_idx],
@@ -180,8 +179,18 @@ class StructureAwareMutator():
                   lengths=seed.lengths+(seed.lengths[nonego_idx],),
                   widths=seed.widths+(seed.widths[nonego_idx],)
                   )
-        
     return mutant
+  
+  def copy_backward(self, seed):
+    """Copy a trajectory and add some longitudinal offset along the route.
+    """
+    print('Copying a vehicle and adding to the seed...')
+    # Choose a random vehicle and a random longitudinal offset
+    nonego_idx = self.random.randrange(len(seed.routes))
+    max_dist = 100 # bigger than any vehicle length
+    offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
+
+    return self.copy_backward_with_params(seed, nonego_idx, offset)
   
   def move_to_route(self, seed):
     """Move a trajectory to a different route.
@@ -331,17 +340,11 @@ class StructureAwareMutator():
         print('Mutation error: ' + err.msg)
     return mutant
     
-  def _move_traj_forward(self, network, route, position, offset):
+  def _move_traj_forward(self, network, route, position : Spline, offset : float):
     lanes = [network.elements[lane_id]
              for lane_id in route]
-    centerline_coords = [p for l in lanes for p in l.centerline.points]
-    centerline_lineString = shapely.geometry.LineString(simplify(centerline_coords))
-    p_end = position.ctrlpts[-1]
-    v_end = Vector(*p_end)
-    proj = shapely.ops.nearest_points(centerline_lineString, shapely.geometry.Point(p_end))[0]
-    p_mirror = v_end + (Vector(proj.x, proj.y) - v_end)*2
-    splitter = shapely.geometry.LineString([p_end, p_mirror.coordinates])
-    available = shapely.ops.split(centerline_lineString, splitter).geoms[1].length
+    centerline = shapely.geometry.MultiLineString([l.centerline.points for l in lanes])
+    available = centerline.length - position.ctrlpts[-1][0]
     if offset >= available - 10: # 10 meters cushion
       # Extend the route by offset-available+10
       print('Extending the route forward...')
@@ -353,14 +356,9 @@ class StructureAwareMutator():
         ext.append(maneuver.connectingLane if maneuver.connectingLane else maneuver.endLane)
         ext_len += ext[-1].centerline.length
       lanes += ext
-      centerline_coords += [p for l in ext for p in l.centerline.points]
-
-    centerline=PolylineRegion(simplify(centerline_coords))
-    ctrlpts_moved = tuple(curvilinear_translate(p, centerline, offset, 0)
-                          for p in position.ctrlpts)
 
     new_position =  Spline(degree=position.degree,
-                           ctrlpts=tuple((p.x, p.y) for p in ctrlpts_moved),
+                           ctrlpts=tuple((p[0]+offset, p[1]) for p in position.ctrlpts),
                            knotvector=position.knotvector)
     new_route = tuple(l.uid for l in lanes)
     return new_position, new_route
@@ -368,14 +366,8 @@ class StructureAwareMutator():
   def _move_traj_backward(self, carla_map, network, route, position, offset):
     lanes = [network.elements[lane_id]
              for lane_id in route]
-    centerline_coords = [p for l in lanes for p in l.centerline.points]
-    centerline_lineString = shapely.geometry.LineString(simplify(centerline_coords))
-    p0 = position.ctrlpts[0]
-    v0 = Vector(*p0)
-    proj = shapely.ops.nearest_points(centerline_lineString, shapely.geometry.Point(p0))[0]
-    p_mirror = v0 + (Vector(proj.x, proj.y) - v0)*2
-    splitter = shapely.geometry.LineString([p0, p_mirror.coordinates])
-    available = shapely.ops.split(centerline_lineString, splitter).geoms[0].length
+    available = position.ctrlpts[0][0]
+    ext_len = 0
     if offset >= available - 10: # 10 meters cushion
       # Extend the route by offset-available+10
       print('Extending the route backward...')
@@ -389,14 +381,9 @@ class StructureAwareMutator():
         ext_len += ext[-1].centerline.length
       ext.reverse()
       lanes = ext + lanes
-      centerline_coords = [p for l in ext for p in l.centerline.points] + centerline_coords
     
-    centerline=PolylineRegion(simplify(centerline_coords))
-    ctrlpts_moved = tuple(curvilinear_translate(p, centerline, -offset, 0)
-                          for p in position.ctrlpts)
-
     new_position = Spline(degree=position.degree,
-                      ctrlpts=tuple((p.x, p.y) for p in ctrlpts_moved),
+                      ctrlpts=tuple((p[0]+ext_len-offset, p[1]) for p in position.ctrlpts),
                       knotvector=position.knotvector)
     new_route = tuple(l.uid for l in lanes)
     return new_position, new_route

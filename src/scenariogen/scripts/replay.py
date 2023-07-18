@@ -7,6 +7,7 @@ import carla
 import scenic
 from scenic.core.object_types import OrientedPoint
 from scenic.core.vectors import Vector
+from scenic.domains.driving.roads import Network
 
 # This project
 from scenariogen.core.seed import Seed
@@ -52,7 +53,8 @@ if args.sim:
             traj_sample.append(pose)
         traj_samples.append(traj_sample)
 else:
-    traj_samples = sample_trajectories(seed, steps+1, 0, args.timestep*steps)
+    network = Network.fromFile(seed.config['map'])
+    traj_samples = sample_trajectories(network, seed, steps+1)
     
 config = {**seed.config}
 config['steps'] = steps

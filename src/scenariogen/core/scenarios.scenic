@@ -6,6 +6,8 @@ intersection = network.elements[config['intersection']]
 # Python imports
 from shapely.geometry import LineString
 
+from scenic.simulators.carla.simulator import CarlaSimulation
+import scenariogen.simulators.carla.visualization as visualization
 from scenariogen.core.events import *
 from scenariogen.core.utils import sample_trajectories
 from scenariogen.core.signals import SignalType
@@ -27,10 +29,7 @@ scenario NonegosScenario():
   setup:
     cars = []
     seed = config['seed']
-    tjs = sample_trajectories(seed,
-                              int(config['steps'])+1,
-                              0, 
-                              config['timestep']*config['steps'])
+    tjs = sample_trajectories(network, seed, int(config['steps'])+1)
     for i, (route, tj, signal, l, w, bp) in enumerate(zip(seed.routes, tjs, seed.signals, seed.lengths, seed.widths, config['blueprints'])):
       car = Car at tj[0],
         with name f'{route[0]}_{signal.name}_{i}',
@@ -108,12 +107,10 @@ scenario CheckCollisionsScenario(egos, nonegos):
         wait
 
 scenario ShowIntersection():
-  setup:
-    import scenariogen.simulators.carla.visualization as visualization
-    from scenic.simulators.carla.simulator import CarlaSimulation
-    
+  setup:  
     monitor show_intersection:
       if isinstance(simulation(), CarlaSimulation):
+        print('Simulator is Carla!')
         carla_world = simulation().world
         visualization.draw_intersection(carla_world, intersection, draw_lanes=True)
         visualization.set_camera(carla_world, intersection, height=50)

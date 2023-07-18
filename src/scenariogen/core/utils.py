@@ -23,6 +23,7 @@ VID_RANGE = np.linspace(0.0, 1.0, VIRIDIS.shape[0])
 # This project
 from scenariogen.core.seed import Spline
 from scenariogen.core.signals import SignalType
+from scenariogen.core.geometry import CurvilinearTransform
 
 def draw_names(cars, image, camera):
     # Build the K projection matrix:
@@ -211,11 +212,18 @@ def spline_approximation(seed_traj, degree=3, knots_size=20):
     
     return footprint
 
-def sample_trajectories(seed, sample_size, umin, umax):
+def sample_trajectories(network, seed, sample_size, umin=0, umax=None):
+    if umax is None:
+        umax = seed.timings[0].ctrlpts[-1][0]
     trajectories = []
     ts = np.linspace(umin, umax, num=sample_size)
-    for position, timing in zip(seed.positions, seed.timings):
-        sample = sample_spline(position, timing, ts)
+    for route, position, timing in zip(seed.routes, seed.positions, seed.timings):
+        axis_coords = [p for uid in route for p in network.elements[uid].centerline.lineString.coords]
+        transform = CurvilinearTransform(axis_coords)
+        position_rectilinear = Spline(degree=position.degree,
+                                      ctrlpts=tuple(transform.rectilinear(p) for p in position.ctrlpts),
+                                      knotvector=position.knotvector)
+        sample = sample_spline(position_rectilinear, timing, ts)
         traj = [OrientedPoint(position=Vector(x, y), heading=h)
                 for x, y, h in sample]
         trajectories.append(traj)
@@ -236,7 +244,7 @@ def sample_spline(position, timing, ts):
     sample = geomdl.operations.tangent(spline, ts)
     return ((s[0][0], # x
              s[0][1], # y
-             headingOfSegment((0, 0), (s[1][0], s[1][1])) + math.pi/2, # heading
+             headingOfSegment((0, 0), (s[1][0], s[1][1])), # heading
              )
              for s in sample)
 
@@ -291,19 +299,3 @@ def route_from_turns(network, init_lane, turns):
         route.append(current_lane.successor.uid)
         current_lane = current_lane.successor
     return route
-
-def simplify(ps):
-    """Removes overlapping segments of a polyline.
-    Assumes that the curve does not bend more than 90 degrees.
-
-    ps: list of points
-    Returns: a sublist of ps
-    """
-    ps_simple = [ps[0], ps[1]]
-    v0 = Vector(*ps_simple[-1]) - Vector(*ps_simple[-2])
-    for i in range(2, len(ps)):
-        v1 = Vector(*ps[i]) - Vector(*ps_simple[-1])
-        if v0.dot(v1) >= 0:
-            ps_simple.append(ps[i])
-            v0 = v1
-    return ps_simple
