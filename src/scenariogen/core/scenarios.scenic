@@ -4,11 +4,14 @@ config = globalParameters.config
 intersection = network.elements[config['intersection']]
 
 # Python imports
+from shapely.geometry import LineString
+
 from scenariogen.core.events import *
 from scenariogen.core.utils import sample_trajectories
 from scenariogen.core.signals import SignalType
 from scenariogen.core.errors import EgoCollisionError, NonegoNonegoCollisionError
 from scenariogen.core.utils import is_collision_free
+from scenariogen.core.geometry import CurvilinearTransform
 
 behavior AnimateBehavior():
 	for pose in self.traj_sample:
@@ -116,8 +119,24 @@ scenario ShowIntersection():
         visualization.set_camera(carla_world, intersection, height=50)
       wait
 
-poses = []
+positions = []
+transforms = []
 scenario RecordSeedInfoScenario(cars):
+  setup:
+    for car in cars:
+      axis_coords = [p for uid in car.route for p in network.elements[uid].centerline.lineString.coords]
+      transforms.append(CurvilinearTransform(axis_coords))
+
+    record final config as config
+    record tuple(transform.curvilinear(car.position) for car, transform in zip(cars, transforms)) as positions
+    record final tuple(car.route for car in cars) as routes
+    record final tuple(car.signal for car in cars) as turn_signals
+    record final tuple(car.length for car in cars) as lengths
+    record final tuple(car.width for car in cars) as widths
+
+
+poses = []
+scenario RecordSimTrajectories(cars):
   setup:
 
     monitor record_poses:
@@ -125,9 +144,4 @@ scenario RecordSeedInfoScenario(cars):
         poses.append(tuple((car.position, car.heading) for car in cars))
         wait
 
-    record final config as config
     record final poses as poses
-    record final tuple(car.route for car in cars) as routes
-    record final tuple(car.signal for car in cars) as turn_signals
-    record final tuple(car.length for car in cars) as lengths
-    record final tuple(car.width for car in cars) as widths    

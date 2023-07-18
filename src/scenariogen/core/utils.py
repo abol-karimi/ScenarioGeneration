@@ -8,10 +8,8 @@ import math
 from scenic.simulators.carla.utils.utils import scenicToCarlaLocation
 from scenic.core.object_types import OrientedPoint
 from scenic.core.vectors import Vector
-from scenic.core.regions import RectangularRegion
 from scenic.core.geometry import headingOfSegment
-from scenic.domains.driving.roads import LinearElement
-from scenic.core.regions import PolygonalRegion, PolylineRegion
+from scenic.core.regions import PolylineRegion
 try:
     from PIL import Image, ImageDraw, ImageFont
 except ImportError:
@@ -124,157 +122,6 @@ def draw_names(cars, image, camera):
     return out
 
 
-def frame_to_distance(trajectory):
-    frame2distance = [0]*len(trajectory)
-
-    for i in range(len(trajectory)-1):
-        pi = trajectory[i][0]
-        pii = trajectory[i+1][0]
-        frame2distance[i+1] = frame2distance[i] + pi.distanceTo(pii)
-
-    return frame2distance
-
-def car_to_distances(sim_result, init_distances):
-    traj = sim_result.trajectory
-    car2distances = [[d]*len(traj) for d in init_distances]
-    for i in range(len(traj)-1):
-        si = traj[i] # The i-th state of the simulation
-        sii = traj[i+1] # The (i+1)-th state of the simulation
-        for j in range(len(sim_result.objects)):
-            pi, pii = si[j], sii[j]
-            car2distances[j][i+1] = car2distances[j][i] + pi.distanceTo(pii)
-    return car2distances
-
-
-def distance_to_pose(distances, sim_distances, traj):
-    """ For each frame, we are given a distance in 'sim_distances' and a corresponding pose in 'traj'.
-    We return the poses corresponding to 'distances' by linear interpolation of the above (distance, pose) pairs.
-    """
-    ds, xs, ys, hs = [], [], [], []
-    last_dist = -1
-    for d, pose in zip(sim_distances, traj):
-        if last_dist == d:
-            continue
-        last_dist = d
-        # add data points
-        x, y, h = pose[0].x, pose[0].y, pose[1]
-        ds.append(d), xs.append(x), ys.append(y), hs.append(h)
-
-    import numpy as np
-    pi = np.pi
-    xs_i = np.interp(distances, ds, xs)
-    ys_i = np.interp(distances, ds, ys)
-    hs_i = np.interp(distances, ds, np.unwrap(hs))
-    # wrap headings back to (-pi,pi):
-    hs_i = [(h + pi) % (2*pi) - pi for h in hs_i]
-
-    from scenic.core.vectors import Vector
-    poses = [[Vector(x, y), h] for x, y, h in zip(xs_i, ys_i, hs_i)]
-    return poses
-
-
-def spline_to_traj(degree, ctrlpts, knotvector, sample_size, sim_traj):
-    curve = BSpline.Curve()
-    curve.degree = degree
-    curve.ctrlpts = ctrlpts
-    curve.knotvector = knotvector
-    curve.sample_size = sample_size
-    frame2distance = [p[1] for p in curve.evalpts]
-    frame2simDistance = frame_to_distance(sim_traj)
-    traj = distance_to_pose(
-        frame2distance, frame2simDistance, sim_traj)
-    return traj
-
-def sample_route(lanes, spline, sample_size):
-    d0 = spline.ctrlpts[0][1]
-    route = LinearElement(
-        id=f'route_{lanes}_{d0}',
-        polygon=PolygonalRegion.unionAll(lanes).polygons,
-        centerline=PolylineRegion.unionAll([l.centerline for l in lanes]),
-        leftEdge=PolylineRegion.unionAll([l.leftEdge for l in lanes]),
-        rightEdge=PolylineRegion.unionAll([l.rightEdge for l in lanes])
-        )
-    p = route.centerline.pointAlongBy(d0)
-    h = route._defaultHeadingAt(p)
-    route_sample = [OrientedPoint(position=p, heading=h)]
-    spline.sample_size = sample_size
-    distances = [p[1] for p in spline.evalpts]
-    delta_distances = [pii - pi for pi, pii in zip(distances[:-1], distances[1:])]
-    for d in delta_distances:
-        p = route.flowFrom(p, d)
-        h = route._defaultHeadingAt(p)
-        route_sample.append(OrientedPoint(position=p, heading=h))
-    return route_sample
-
-def curves_to_trajectories(curves, sim_trajs, sample_size):
-    new_trajs = {}
-    for car, curve in curves.items():
-        degree = curve['degree']
-        ctrlpts = curve['ctrlpts']
-        knotvector = curve['knotvector']
-        traj = spline_to_traj(degree, ctrlpts, knotvector,
-                              sample_size, sim_trajs[car])
-        new_trajs[car] = traj
-    return new_trajs
-
-
-def collision(traj1, size1, traj2, size2):
-    w1, l1 = size1['width'], size1['length']
-    w2, l2 = size2['width'], size2['length']
-    for i, (pose1, pose2) in enumerate(zip(traj1, traj2)):
-        p1, h1 = pose1[0], pose1[1]
-        p2, h2 = pose2[0], pose2[1]
-        rect1 = RectangularRegion(p1, h1, w1, l1)
-        rect2 = RectangularRegion(p2, h2, w2, l2)
-        bCollision = rect1.intersects(rect2)
-        if bCollision:
-            print('Collision at time step {i}')
-            return True
-    return False
-
-
-def has_collision(scenario, new_poses, new_curves, new_sizes):
-    sizes = dict(scenario.car_sizes, **new_sizes)
-    time_to_dist = dict(scenario.curves, **new_curves)
-    poses = dict(scenario.sim_trajectories, **new_poses)
-    sample_size = int(scenario.maxSteps)+1
-    traj = curves_to_trajectories(time_to_dist, poses, sample_size)
-
-    old_nonegos = [car for car in scenario.events if not car in {
-        'ego', 'illegal'}]
-    new_nonegos = [car for car in new_sizes if not car in {
-        'ego', 'illegal'}]
-    print(old_nonegos)
-    print(new_nonegos)
-    # between new non-egos
-    for i, new1 in enumerate(new_nonegos):
-        for new2 in new_nonegos[i+1:]:
-            if collision(traj[new1], sizes[new1], traj[new2], sizes[new2]):
-                print(f'{new1} collides with {new2}')
-                return True
-
-    # between new and old non-egos
-    for new in new_nonegos:
-        for old in old_nonegos:
-            if collision(traj[new], sizes[new], traj[old], sizes[old]):
-                print(f'{new} collides with {old}')
-                return True
-
-    # between ego and old or new nonegos
-    for nonego in old_nonegos+new_nonegos:
-        if collision(traj['ego'], sizes['ego'], traj[nonego], sizes[nonego]):
-            print(f'ego collides with {nonego}')
-            return True
-
-    # between illegal and old nonegos
-    for old in old_nonegos:
-        if collision(traj['illegal'], sizes['ego'], traj[old], sizes[old]):
-            print(f'illegal collides with {old}')
-            return True
-
-    return False
-
-
 def route_length(route):
   return sum([l.centerline.length for l in route])
 
@@ -338,10 +185,18 @@ def sim_trajectories(sim_result, timestep):
             sim_trajs[j].append((x, y, heading, time))
     return sim_trajs
 
-def spline_approximation(spacetime_traj, degree=3, knots_size=20):
-    x = [p[0] for p in spacetime_traj]
-    y = [p[1] for p in spacetime_traj]
-    u = [p[3] for p in spacetime_traj] # p[2]: heading, p[3]: time
+def seed_trajectories(sim_result, timestep):
+    cars_num = len(sim_result.records['positions'][0][1])
+    seed_trajs = [[] for _ in range(cars_num)]
+    for i, positions in sim_result.records['positions']:
+        for j, (x, y) in enumerate(positions):
+            seed_trajs[j].append((x, y, i*timestep))
+    return seed_trajs
+
+def spline_approximation(seed_traj, degree=3, knots_size=20):
+    x = [p[0] for p in seed_traj]
+    y = [p[1] for p in seed_traj]
+    u = [p[2] for p in seed_traj]
     tck, u = scipy.interpolate.splprep([x, y],
                                        u=u,
                                        k=degree, 
@@ -381,7 +236,7 @@ def sample_spline(position, timing, ts):
     sample = geomdl.operations.tangent(spline, ts)
     return ((s[0][0], # x
              s[0][1], # y
-             headingOfSegment((0, 0), (s[1][0], s[1][1])), # heading
+             headingOfSegment((0, 0), (s[1][0], s[1][1])) + math.pi/2, # heading
              )
              for s in sample)
 
@@ -436,25 +291,6 @@ def route_from_turns(network, init_lane, turns):
         route.append(current_lane.successor.uid)
         current_lane = current_lane.successor
     return route
-
-def curvilinear_translate(p, polyline, dx, dy):
-    """Assumes that both the given point and its translation are on the linear_element"""
-    v = Vector(p[0], p[1])
-    proj = polyline.project(v)
-    p_mirror = v + (Vector(proj.x, proj.y) - v)*2
-    splitter = shapely.geometry.LineString([p, p_mirror.coordinates])
-    poly_parts = shapely.ops.split(polyline.lineString, splitter).geoms
-    poly_forward = PolylineRegion(poly_parts[-1].coords)
-    poly_backward = PolylineRegion(poly_parts[0].coords[::-1])
-    if dx >= 0:
-        proj = poly_forward.pointAlongBy(dx)
-    else:
-        proj = poly_backward.pointAlongBy(-dx)
-    start, end = polyline.nearestSegmentTo(proj)
-    tangent = (end - start).normalized()
-    y = polyline.signedDistanceTo(v)
-    normal = tangent.rotatedBy(math.copysign(math.pi/2, y))
-    return proj + normal*(abs(y)+dy)
 
 def simplify(ps):
     """Removes overlapping segments of a polyline.

@@ -9,14 +9,13 @@ from geomdl import knotvector
 
 # Scenic modules
 import scenic
-from scenic.simulators.newtonian import NewtonianSimulator
 from scenic.core.simulators import SimulationCreationError
 from scenic.core.dynamics import GuardViolation
 
 
 # My modules
 from scenariogen.core.seed import Seed, Spline
-from scenariogen.core.utils import sim_trajectories, spline_approximation
+from scenariogen.core.utils import sim_trajectories, seed_trajectories, spline_approximation
 
 #----------Main Script----------
 parser = argparse.ArgumentParser(description='Make a seed from a scenic scenario.')
@@ -56,11 +55,12 @@ simulator2model = {'newtonian': 'scenic.simulators.newtonian.driving_model',
                     }
 # Run the scenario
 scenic_scenario = scenic.scenarioFromFile(
-    'src/scenariogen/core/create.scenic',
+    'src/scenariogen/scripts/create.scenic',
     model=simulator2model[args.simulator],
     params = {'timestep': args.timestep,
               'render': not args.no_render,
-              'scenario_path': args.scenario_path})
+              'scenario_path': args.scenario_path,
+              'save_sim_trajectories': args.save_sim_trajectories})
 scene, _ = scenic_scenario.generate(maxIterations=1)
 simulator = scenic_scenario.getSimulator()
 try:
@@ -77,13 +77,12 @@ except GuardViolation:
     print('Guard violated in simulation.')
     exit()
 
-# Convert the result to a seed
-sim_trajs = sim_trajectories(sim_result, args.timestep)
-
+# Save the seed
+seed_trajs = seed_trajectories(sim_result, args.timestep)
 positions = tuple(spline_approximation(traj,
                                     degree=args.spline_degree,
                                     knots_size=args.parameters_size)
-                    for traj in sim_trajs)
+                    for traj in seed_trajs)
 timing = Spline(degree=args.spline_degree,
                 ctrlpts=tuple((float(t), float(t)) for t in np.linspace(0, seconds, args.parameters_size)),
                 knotvector=tuple(float(t*seconds) for t in knotvector.generate(args.spline_degree, args.parameters_size, clamped=True))
@@ -91,21 +90,23 @@ timing = Spline(degree=args.spline_degree,
 seed = Seed(config=sim_result.records['config'],
             routes=sim_result.records['routes'],
             positions=positions,
-            timings=(timing,)*len(sim_trajs),
+            timings=(timing,)*len(seed_trajs),
             signals=sim_result.records['turn_signals'],
             lengths=sim_result.records['lengths'],
             widths=sim_result.records['widths'])
+
+scenario_path = Path(args.scenario_path)
 
 # Store the seed
 if args.out_path:
     with open(args.out_path, 'w') as f:
         f.write(jsonpickle.encode(seed, indent=1))    
 else:
-    scenario_path = Path(args.scenario_path)
     with open(scenario_path.parents[1]/'initial_seeds'/f'{scenario_path.stem}.json', 'w') as f:
         f.write(jsonpickle.encode(seed, indent=1))
 
 # Save the simulated trajectories for debugging
 if args.save_sim_trajectories:
+    sim_trajs = sim_trajectories(sim_result, args.timestep)
     with open(scenario_path.with_name(f'{scenario_path.stem}_sim_trajectories.pickle'), 'wb') as f:
         pickle.dump(sim_trajs, f)

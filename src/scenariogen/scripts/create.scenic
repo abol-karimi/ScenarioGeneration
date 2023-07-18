@@ -17,7 +17,7 @@ config = globalParameters.config # initialized by initialSeed_scenario
 model globalParameters.model # initialized by initialSeed_scenario
 
 # Import auxiliary scenarios
-from scenariogen.core.scenarios import CheckCollisionsScenario, RecordSeedInfoScenario, ShowIntersection
+from scenariogen.core.scenarios import CheckCollisionsScenario, RecordSeedInfoScenario, RecordSimTrajectories, ShowIntersection
 
 
 scenario Main():
@@ -26,8 +26,14 @@ scenario Main():
     ego = Debris at Vector(p.x, p.y)
 
   compose:
-    do initialSeed_scenario, \
-        CheckCollisionsScenario([], simulation().agents), \
-        RecordSeedInfoScenario(simulation().agents), \
-        ShowIntersection()
+    if globalParameters.save_sim_trajectories:
+      do initialSeed_scenario, \
+          CheckCollisionsScenario([], simulation().agents), \
+          RecordSimTrajectories(simulation().agents), \
+          ShowIntersection()
+    else:      
+      do initialSeed_scenario, \
+          CheckCollisionsScenario([], simulation().agents), \
+          RecordSeedInfoScenario(simulation().agents), \
+          ShowIntersection()
 
