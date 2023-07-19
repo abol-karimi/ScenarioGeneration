@@ -48,7 +48,6 @@ class Scenario:
                         'src/scenariogen/core/SUT.scenic',
                         model=simulator2model[config['simulator']],
                         params=params)
-    print(f'Initializing the scenario...')
     scene, _ = scenic_scenario.generate(maxIterations=1)
     simulator = scenic_scenario.getSimulator()
 

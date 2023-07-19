@@ -30,15 +30,14 @@ def custom_mutator_wrapper(data, max_size, seed):
   try:
     decoded = jsonpickle.decode(input_str)
   except Exception as e:
-    print(f'Iteration {iteration}: {e}')
-    print(f'...in decoding the seed: ')
+    print(f'{e} ...in decoding the seed:')
     print(input_str)
     return
 
   try:
     validate_seed(decoded)
   except InvalidSeedError as err:
-    print(f'Iteration {iteration}, invalid input to mutator: {err}')
+    print(f'Invalid input to mutator: {err}')
     raise err
 
   mutant = mutator.mutate(decoded) # valid in, valid out
@@ -46,7 +45,7 @@ def custom_mutator_wrapper(data, max_size, seed):
   try:
     validate_seed(mutant)
   except InvalidSeedError as err:
-    print(f'Iteration {iteration}, invalid mutant: {err}')
+    print(f'Invalid mutant: {err}')
     raise err
 
   return bytes(jsonpickle.encode(mutant), encoding='utf-8')
@@ -63,6 +62,8 @@ def SUT_target_wrapper(input_bytes):
   global iteration
   iteration += 1
 
+  print(f'--------------Iteration: {iteration}--------------')
+
   if len(input_bytes) == 0:
     print('input_bytes is empty!')
     return
@@ -75,8 +76,7 @@ def SUT_target_wrapper(input_bytes):
   try:
     seed = jsonpickle.decode(input_str)
   except Exception as e:
-    print(f'Iteration {iteration}: {e}')
-    print(f'...in decoding the seed: ')
+    print(f'{e} ...in decoding the seed: ')
     print(input_str)
     return
 
@@ -94,9 +94,9 @@ def SUT_target_wrapper(input_bytes):
   try:
     sim_result = Scenario(seed).run(scenario_config)
   except NonegoNonegoCollisionError as err:
-      print(f'Iteration {iteration}: Collision between nonegos {err.nonego} and {err.other}, discarding the seed.')
+      print(f'Collision between nonegos {err.nonego} and {err.other}, discarding the seed.')
   except EgoCollisionError as err:
-      print(f'Iteration {iteration}: Ego collided with {err.other.name}. Saving the seed to corpus...')
+      print(f'Ego collided with {err.other.name}. Saving the seed to corpus...')
       with open(f'experiments/predicate-coverage/{experiment_name}_ego-collisions/{iteration}.json', 'w') as f:
         f.write(jsonpickle.encode(seed, indent=1))
   else: 

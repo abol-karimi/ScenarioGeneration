@@ -31,8 +31,9 @@ scenario NonegosScenario():
     seed = config['seed']
     tjs = sample_trajectories(network, seed, int(config['steps'])+1)
     for i, (route, tj, signal, l, w, bp) in enumerate(zip(seed.routes, tjs, seed.signals, seed.lengths, seed.widths, config['blueprints'])):
+      route_list = list(route)
       car = Car at tj[0],
-        with name f'{route[0]}_{signal.name}_{i}',
+        with name f'{route_list[0]}_{signal.name}_{i}',
         with behavior AnimateBehavior(),
         with physics False,
         with allowCollisions False,
@@ -110,7 +111,6 @@ scenario ShowIntersection():
   setup:  
     monitor show_intersection:
       if isinstance(simulation(), CarlaSimulation):
-        print('Simulator is Carla!')
         carla_world = simulation().world
         visualization.draw_intersection(carla_world, intersection, draw_lanes=True)
         visualization.set_camera(carla_world, intersection, height=50)

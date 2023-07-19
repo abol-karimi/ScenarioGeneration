@@ -41,12 +41,12 @@ class StructureAwareMutator():
                      self.copy_backward,
                      self.move_forward,
                      self.move_backward,
-                    # self.move_to_route,
-                    # self.change_to_route,
+                     self.change_route,
+                     self.copy_to_route,
                      self.remove_vehicle,
                      self.speedup,
                      self.slowdown,
-                    # self.mutate_ego_route,                 
+                    # self.change_ego_route,                 
                     ]
   @classmethod
   def get_network(cls, seed):
@@ -66,52 +66,45 @@ class StructureAwareMutator():
       for maneuver in intersection.maneuvers:
         cls._predecessors_cache[carla_map][maneuver.endLane.uid].append(maneuver.connectingLane)
 
-  def move_forward_with_params(self, seed, nonego_idx, offset):
-    # Move the trajectory, extend the route if necessary
-    network = StructureAwareMutator.get_network(seed)
-    position, route = self._move_traj_forward(network,
-                                       seed.routes[nonego_idx],
-                                       seed.positions[nonego_idx],
-                                       offset)   
-    mutant = Seed(config=seed.config,
-                  routes=
-                    seed.routes[0:nonego_idx] \
-                    + (route,) \
-                    + seed.routes[nonego_idx+1:],
-                  positions=
-                    seed.positions[0:nonego_idx] \
-                    + (position,) \
-                    + seed.positions[nonego_idx+1:],
-                  timings=seed.timings,
-                  signals=seed.signals,
-                  lengths=seed.lengths,
-                  widths=seed.widths
-                  )
-    return mutant
-  
+ 
   def move_forward(self, seed):
     """Adds some longitudinal offset to a trajectory along its route.
     Extends the route randomly, if necessay.
     """
-    print('Moving a vehicle foward along its route...')
-    # Choose a random vehicle and a random longitudinal offset
+    # Choose random parameters
     nonego_idx = self.random.randrange(len(seed.routes))
     max_dist = 100
     offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
 
-    return self.move_forward_with_params(seed, nonego_idx, offset)
+    # Mutate
+    mutant = self.copy_forward_with_params(seed, nonego_idx, offset)
+    mutant = self.remove_vehicle(mutant)
+
+    print(f'Mutation: Moved nonego {nonego_idx} forward along its route by {offset} meters.')
+
+    return mutant
   
   def copy_forward_with_params(self, seed, nonego_idx, offset):
     # Move the trajectory, extend the route if necessary
     network = StructureAwareMutator.get_network(seed)
-    position, route = self._move_traj_forward(network,
-                                       seed.routes[nonego_idx],
-                                       seed.positions[nonego_idx],
-                                       offset)
+    lanes = [network.elements[lane_id]
+             for lane_id in seed.routes[nonego_idx]]
+    centerline = shapely.geometry.MultiLineString([l.centerline.points for l in lanes])
+    position = seed.positions[nonego_idx]
+    available = centerline.length - position.ctrlpts[-1][0]
+    if offset > available - 10: # 10 meters cushion
+      # Extend the route by offset-available+10
+      lanes += self._extend_lanes_forward(lanes, offset-available+10)
+      print(f'Extended the route forward by {offset-available+10} meters.')
+
+    new_position =  Spline(degree=position.degree,
+                           ctrlpts=tuple((p[0]+offset, p[1]) for p in position.ctrlpts),
+                           knotvector=position.knotvector)
+    new_route = tuple(l.uid for l in lanes)
 
     mutant = Seed(config=seed.config,
-                  routes=seed.routes+(route,),
-                  positions=seed.positions+(position,),
+                  routes=seed.routes+(new_route,),
+                  positions=seed.positions+(new_position,),
                   timings=seed.timings+(seed.timings[nonego_idx],),
                   signals=seed.signals+(seed.signals[nonego_idx],),
                   lengths=seed.lengths+(seed.lengths[nonego_idx],),
@@ -122,58 +115,54 @@ class StructureAwareMutator():
   def copy_forward(self, seed):
     """Copy a trajectory and add some longitudinal offset along the route.
     """
-    print('Copying a vehicle and adding to the seed...')
-    # Choose a random vehicle and a random longitudinal offset
+    # Choose random parameters
     nonego_idx = self.random.randrange(len(seed.routes))
     max_dist = 100
     offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
 
-    return self.copy_forward_with_params(seed, nonego_idx, offset)
-  
-  def move_backward_with_params(self, seed, nonego_idx, offset):
-    position, route = self._move_traj_backward(seed.config['carla_map'],
-                                               StructureAwareMutator.get_network(seed),
-                                               seed.routes[nonego_idx],
-                                               seed.positions[nonego_idx],
-                                               offset)
-    mutant = Seed(config=seed.config,
-                  routes=
-                    seed.routes[0:nonego_idx] \
-                    + (route,) \
-                    + seed.routes[nonego_idx+1:],
-                  positions=
-                    seed.positions[0:nonego_idx] \
-                    + (position,) \
-                    + seed.positions[nonego_idx+1:],
-                  timings=seed.timings,
-                  signals=seed.signals,
-                  lengths=seed.lengths,
-                  widths=seed.widths
-                  )
+    # Mutate
+    mutant = self.copy_forward_with_params(seed, nonego_idx, offset)
+
+    print(f'Mutation: Copied nonego {nonego_idx} forward by {offset} meters.')
+
     return mutant
   
   def move_backward(self, seed):
     """Subtracts some longitudinal offset from a trajectory along its route.
     Extends the route backwards randomly, if necessay.
     """
-    print('Moving a vehicle backwards...')
-    # Choose a random vehicle and a random longitudinal offset
+    # Choose random parameters
     nonego_idx = self.random.randrange(len(seed.routes))
     max_dist = 100 # bigger than any vehicle length
     offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
 
-    return self.move_backward_with_params(seed, nonego_idx, offset)
+    # Mutate
+    mutant = self.copy_backward_with_params(seed, nonego_idx, offset)
+    mutant = self.remove_vehicle_with_params(mutant, nonego_idx)
+
+    print(f'Mutation: Moved nonego {nonego_idx} backwards by {offset} meters.')
+
+    return mutant
 
   def copy_backward_with_params(self, seed, nonego_idx, offset):
-    position, route = self._move_traj_backward(seed.config['carla_map'],
-                                               StructureAwareMutator.get_network(seed),
-                                               seed.routes[nonego_idx],
-                                               seed.positions[nonego_idx],
-                                               offset)
+    lanes = [self.get_network(seed).elements[lane_id]
+             for lane_id in seed.routes[nonego_idx]]
+    position = seed.positions[nonego_idx]
+    available = position.ctrlpts[0][0]
+    ext_len = 0
+    if offset > available - 10: # 10 meters cushion
+      # Extend the route by offset-available+10
+      lanes = self._extend_lanes_backward(seed.config['carla_map'], lanes, offset-available+10) + lanes
+      print(f'Extended the route backwards by {offset-available+10} meters.')
+    
+    new_position = Spline(degree=position.degree,
+                      ctrlpts=tuple((p[0]+ext_len-offset, p[1]) for p in position.ctrlpts),
+                      knotvector=position.knotvector)
+    new_route = tuple(l.uid for l in lanes)
 
     mutant = Seed(config=seed.config,
-                  routes=seed.routes+(route,),
-                  positions=seed.positions+(position,),
+                  routes=seed.routes+(new_route,),
+                  positions=seed.positions+(new_position,),
                   timings=seed.timings+(seed.timings[nonego_idx],),
                   signals=seed.signals+(seed.signals[nonego_idx],),
                   lengths=seed.lengths+(seed.lengths[nonego_idx],),
@@ -184,36 +173,78 @@ class StructureAwareMutator():
   def copy_backward(self, seed):
     """Copy a trajectory and add some longitudinal offset along the route.
     """
-    print('Copying a vehicle and adding to the seed...')
-    # Choose a random vehicle and a random longitudinal offset
+    # Choose random parameters
     nonego_idx = self.random.randrange(len(seed.routes))
     max_dist = 100 # bigger than any vehicle length
     offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
 
-    return self.copy_backward_with_params(seed, nonego_idx, offset)
+    # Mutate
+    mutant = self.copy_backward_with_params(seed, nonego_idx, offset)
+
+    print(f'Mutation: Copied nonego {nonego_idx} backwards by {offset} meters.')
+
+    return mutant
   
-  def move_to_route(self, seed):
+  def change_route(self, seed):
     """Move a trajectory to a different route.
     The local curvilinear coordinates of the control points are preserved.
     """
-    print('Moving a trajectory to a different route...')
-    # Choose a random vehicle and a random route
-    nonego_idx = self.random.randrange(len(seed.routes))
-  
-  def copy_to_route(self, seed):
-    """Move a trajectory to a different route.
-    """
-    print('Copying a trajectory to a different route...')
-    # Choose a random vehicle and a random longitudinal offset
+    # Choose a random vehicle and calculate its trajectory length
     nonego_idx = self.random.randrange(len(seed.routes))
 
-  def remove_vehicle(self, seed):
-    """Removes a random non-ego from the scenario.
+    # Choose a random maneuver through the intersection
+    network = self.get_network(seed)
+    intersection = network.elements[seed.config['intersection']]
+    maneuver = self.random.choice(intersection.maneuvers)
+    
+    mutant = self.copy_to_route_with_params(seed, nonego_idx, maneuver)
+    mutant = self.remove_vehicle_with_params(mutant, nonego_idx)
+
+    print(f'Mutation: Moved nonego {nonego_idx} to route {maneuver.startLane, maneuver.connectingLane, maneuver.endLane}.')
+
+    return mutant
+  
+  def copy_to_route_with_params(self, seed, nonego_idx, maneuver):
+    network = self.get_network(seed)
+    old_route = seed.routes[nonego_idx]
+    old_lanes = [network.elements[uid] for uid in old_route]
+    old_route_len = sum((l.centerline.length for l in old_lanes))
+    
+    lanes = [maneuver.startLane, maneuver.connectingLane, maneuver.endLane]
+    route_len = sum((l.centerline.length for l in lanes))
+    if old_route_len > route_len:
+      lanes += self._extend_lanes_forward(lanes, old_route_len - route_len)
+
+    route = tuple(l.uid for l in lanes)
+
+    mutant = Seed(config=seed.config,
+                  routes=seed.routes+(route,),
+                  positions=seed.positions+(seed.positions[nonego_idx],),
+                  timings=seed.timings+(seed.timings[nonego_idx],),
+                  signals=seed.signals+(seed.signals[nonego_idx],),
+                  lengths=seed.lengths+(seed.lengths[nonego_idx],),
+                  widths=seed.widths+(seed.widths[nonego_idx],)
+                  )
+    
+    return mutant
+
+  def copy_to_route(self, seed):
+    """Copy a trajectory to a different route.
     """
-    print('removing vehicle from the seed...')
-    if len(seed.routes) == 1:
-      raise MutationError('Cannot remove the singleton nonego, empty scenarios are not allowed!')
-    nonego_idx = self.random.randrange(len(seed.routes))
+    # Choose random parameters
+    nonego_idx = self.random.randrange(len(seed.routes))  
+    network = self.get_network(seed)
+    intersection = network.elements[seed.config['intersection']]
+    maneuver = self.random.choice(intersection.maneuvers)
+
+    # Mutate
+    mutant = self.copy_to_route_with_params(seed, nonego_idx, maneuver)
+    
+    print(f'Mutation: Copied nonego {nonego_idx} to route {maneuver.startLane.uid, maneuver.connectingLane, maneuver.endLane}')
+
+    return mutant
+
+  def remove_vehicle_with_params(self, seed, nonego_idx):
     mutant = Seed(config=seed.config,
                   routes=seed.routes[0:nonego_idx]+seed.routes[nonego_idx+1:],
                   positions=seed.positions[0:nonego_idx]+seed.positions[nonego_idx+1:],
@@ -223,6 +254,23 @@ class StructureAwareMutator():
                   widths=seed.widths[0:nonego_idx]+seed.widths[nonego_idx+1:]
                   )
     return mutant
+  
+  def remove_vehicle(self, seed):
+    """Removes a random non-ego from the scenario.
+    """
+    if len(seed.routes) == 1:
+      raise MutationError('Cannot remove the singleton nonego, empty scenarios are not allowed!')
+    
+    # Choose random parameters
+    nonego_idx = self.random.randrange(len(seed.routes))
+
+    # Mutate
+    mutant = self.remove_vehicle_with_params(seed, nonego_idx)
+    
+    print(f'Mutation: Removed nonego {nonego_idx} from the seed.')
+
+    return mutant
+
 
   def speedup_with_params(self, seed, nonego_idx, interval, factor):
     timing = seed.timings[nonego_idx]
@@ -262,18 +310,19 @@ class StructureAwareMutator():
   def speedup(self, seed):
     """Speeds up a random nonego over a random time interval [a, b].
     """
-    print('Speeding up a nonego over an interval...')
+    # Choose random paramters
     nonego_idx = self.random.randrange(len(seed.routes))
-
-    # Choose a random interval
     timing = seed.timings[nonego_idx]
     a = self.random.uniform(0, timing.ctrlpts[-1][1])
     b = self.random.uniform(a, timing.ctrlpts[-1][1])
-
-    # Speed up factor
     factor = self.random.uniform(.1, .9)
+    
+    # Mutate
+    mutant = self.speedup_with_params(seed, nonego_idx, (a, b), factor)
 
-    return self.speedup_with_params(seed, nonego_idx, (a, b), factor)
+    print(f'Speed up nonego {nonego_idx} over interval {(a, b)} by a factor of {factor}.')
+
+    return mutant
 
   def slowdown_with_params(self, seed, nonego_idx, interval, factor):
     timing = seed.timings[nonego_idx]
@@ -311,18 +360,19 @@ class StructureAwareMutator():
     return mutant
   
   def slowdown(self, seed):
-    print('Slowing down a nonego over an interval...')
+    # Choose random parameters
     nonego_idx = self.random.randrange(len(seed.routes))
-
-    # Choose a random interval
     timing = seed.timings[nonego_idx]
     a = self.random.uniform(0, timing.ctrlpts[-1][1])
     b = self.random.uniform(a, timing.ctrlpts[-1][1])
-
-    # Speed up factor
     factor = self.random.uniform(.1, .9)
 
-    return self.slowdown_with_params(seed, nonego_idx, (a, b), factor)
+    # Mutate
+    mutant = self.slowdown_with_params(seed, nonego_idx, (a, b), factor)
+
+    print(f'Slowed down nonego {nonego_idx} over interval {(a, b)} by a factor of {factor}.')
+
+    return mutant
   
   def mutate_ego_route(self, seed):
     """Used for closed-loop fuzzing."""
@@ -339,54 +389,29 @@ class StructureAwareMutator():
       except MutationError as err:
         print('Mutation error: ' + err.msg)
     return mutant
-    
-  def _move_traj_forward(self, network, route, position : Spline, offset : float):
-    lanes = [network.elements[lane_id]
-             for lane_id in route]
-    centerline = shapely.geometry.MultiLineString([l.centerline.points for l in lanes])
-    available = centerline.length - position.ctrlpts[-1][0]
-    if offset >= available - 10: # 10 meters cushion
-      # Extend the route by offset-available+10
-      print('Extending the route forward...')
-      maneuver = self.random.choice(lanes[-1].maneuvers)
-      ext = [maneuver.connectingLane if maneuver.connectingLane else maneuver.endLane]
-      ext_len = ext[-1].centerline.length
-      while ext_len < offset-available+10:
-        maneuver = self.random.choice(ext[-1].maneuvers)
-        ext.append(maneuver.connectingLane if maneuver.connectingLane else maneuver.endLane)
-        ext_len += ext[-1].centerline.length
-      lanes += ext
-
-    new_position =  Spline(degree=position.degree,
-                           ctrlpts=tuple((p[0]+offset, p[1]) for p in position.ctrlpts),
-                           knotvector=position.knotvector)
-    new_route = tuple(l.uid for l in lanes)
-    return new_position, new_route
   
-  def _move_traj_backward(self, carla_map, network, route, position, offset):
-    lanes = [network.elements[lane_id]
-             for lane_id in route]
-    available = position.ctrlpts[0][0]
-    ext_len = 0
-    if offset >= available - 10: # 10 meters cushion
-      # Extend the route by offset-available+10
-      print('Extending the route backward...')
-      ext = [lanes[0]._predecessor if not lanes[0]._predecessor == None \
-             else self.random.choice(self._predecessors_cache[carla_map][lanes[0].uid])
-             ]
-      ext_len = ext[-1].centerline.length
-      while ext_len < offset-available+10:
-        ext.append(ext[-1]._predecessor if ext[-1]._predecessor \
-             else self.random.choice(self._predecessors_cache[carla_map][ext[-1].uid]))
-        ext_len += ext[-1].centerline.length
-      ext.reverse()
-      lanes = ext + lanes
+  def _extend_lanes_forward(self, lanes, length):
+    maneuver = self.random.choice(lanes[-1].maneuvers)
+    ext = [maneuver.connectingLane if maneuver.connectingLane else maneuver.endLane]
+    ext_len = ext[-1].centerline.length
+    while ext_len < length:
+      maneuver = self.random.choice(ext[-1].maneuvers)
+      ext.append(maneuver.connectingLane if maneuver.connectingLane else maneuver.endLane)
+      ext_len += ext[-1].centerline.length
+    return ext
     
-    new_position = Spline(degree=position.degree,
-                      ctrlpts=tuple((p[0]+ext_len-offset, p[1]) for p in position.ctrlpts),
-                      knotvector=position.knotvector)
-    new_route = tuple(l.uid for l in lanes)
-    return new_position, new_route
+  def _extend_lanes_backward(self, carla_map, lanes, length):
+    ext = [lanes[0]._predecessor if not lanes[0]._predecessor == None \
+            else self.random.choice(self._predecessors_cache[carla_map][lanes[0].uid])
+            ]
+    ext_len = ext[-1].centerline.length
+    while ext_len < length:
+      ext.append(ext[-1]._predecessor if ext[-1]._predecessor \
+            else self.random.choice(self._predecessors_cache[carla_map][ext[-1].uid]))
+      ext_len += ext[-1].centerline.length
+    ext.reverse()
+    return ext
+    
   
 class MutationError(Exception):
     """Exception raised for errors in mutating a seed.
