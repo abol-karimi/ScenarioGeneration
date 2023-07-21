@@ -240,7 +240,7 @@ class StructureAwareMutator():
     # Mutate
     mutant = self.copy_to_route_with_params(seed, nonego_idx, maneuver)
     
-    print(f'Mutation: Copied nonego {nonego_idx} to route {maneuver.startLane.uid, maneuver.connectingLane, maneuver.endLane}')
+    print(f'Mutation: Copied nonego {nonego_idx} to route {maneuver.startLane.uid, maneuver.connectingLane.uid, maneuver.endLane.uid}')
 
     return mutant
 

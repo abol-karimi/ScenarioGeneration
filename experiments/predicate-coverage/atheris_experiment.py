@@ -4,19 +4,17 @@ import sys
 import jsonpickle
 from pathlib import Path
 import atheris
-# with atheris.instrument_imports():
-#   from scenariogen.core.scenario import Scenario
-#   import scenariogen.core.seed
 
 # This project
 from scenariogen.core.errors import EgoCollisionError, NonegoNonegoCollisionError, InvalidSeedError
 from scenariogen.core.scenario import Scenario
 from scenariogen.core.seed import validate_seed
 from scenariogen.core.mutators import StructureAwareMutator
+from scenariogen.core.crossovers import StructureAwareCrossOver
 from scenariogen.core.coverages import PredicateNameCoverage
 
 #----------------------------------------------
-#---------- custom mutators' wrapper ----------
+#---------- custom mutator's wrapper ----------
 #----------------------------------------------
 # Custom mutators can be plugged in via the global variable mutator
 def custom_mutator_wrapper(data, max_size, seed):
@@ -49,6 +47,52 @@ def custom_mutator_wrapper(data, max_size, seed):
     raise err
 
   return bytes(jsonpickle.encode(mutant), encoding='utf-8')
+
+#-------------------------------------------------
+#---------- custom cross-over's wrapper ----------
+#-------------------------------------------------
+def custom_crossover_wrapper(data1, data2, max_size, seed):
+  global crossOver
+
+  fdp1 = atheris.FuzzedDataProvider(data1)
+  input_str1 = fdp1.ConsumeUnicode(sys.maxsize)
+  input_str1 = '{' + input_str1
+
+  # Skip seed if structurally invalid.
+  try:
+    decoded1 = jsonpickle.decode(input_str1)
+    validate_seed(decoded1)
+  except InvalidSeedError as err:
+    print(f'Invalid input to crossover: {err}')
+    raise err
+  except Exception as e:
+    print(f'{e} ...in decoding the seed:')
+    print(input_str1)
+    return
+
+  fdp2 = atheris.FuzzedDataProvider(data2)
+  input_str2 = fdp2.ConsumeUnicode(sys.maxsize)
+  input_str2 = '{' + input_str2
+  try:
+    decoded2 = jsonpickle.decode(input_str2)
+    validate_seed(decoded2)
+  except InvalidSeedError as err:
+    print(f'Invalid input to crossover: {err}')
+    raise err
+  except Exception as e:
+    print(f'{e} ...in decoding the seed:')
+    print(input_str2)
+    return
+
+  crossover = crossOver.cross_over(decoded1, decoded2) # valid in, valid out
+
+  try:
+    validate_seed(crossover)
+  except InvalidSeedError as err:
+    print(f'Invalid crossover: {err}')
+    raise err
+
+  return bytes(jsonpickle.encode(crossover), encoding='utf-8')
 
 #-----------------------------------------------------------
 #---------- SUT wrapper to make an Atheris target ----------
@@ -123,11 +167,15 @@ scenario_config = {
 }
 atheris_config = {
   'custom_mutator': custom_mutator_wrapper,
+  'custom_crossover': custom_crossover_wrapper
 }
 # My structure-aware mutator
 mutator = StructureAwareMutator(max_parameters_size=50,
                                 max_mutations_per_iteration=1,
                                 randomizer_seed=0)
+crossOver = StructureAwareCrossOver(max_parameters_size=50,
+                                    max_attempts=1,
+                                    randomizer_seed=0)
 corpus = {}
 target=SUT_target_wrapper
 iterations = 20
