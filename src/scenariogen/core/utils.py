@@ -1,15 +1,13 @@
 import geomdl
-from geomdl import operations, BSpline
+from geomdl import BSpline
 import numpy as np
 import scipy
-import shapely
-import math
 
 from scenic.simulators.carla.utils.utils import scenicToCarlaLocation
 from scenic.core.object_types import OrientedPoint
 from scenic.core.vectors import Vector
 from scenic.core.geometry import headingOfSegment
-from scenic.core.regions import PolylineRegion
+from scenic.domains.driving.roads import Network
 try:
     from PIL import Image, ImageDraw, ImageFont
 except ImportError:
@@ -179,38 +177,70 @@ def geometry_atoms(network, intersection_uid):
 
 def sim_trajectories(sim_result, timestep):
     cars_num = len(sim_result.records['poses'][0])
-    sim_trajs = [[] for _ in range(cars_num)]
+    sim_trajs = [[] for k in range(cars_num)]
     for i, poses in enumerate(sim_result.records['poses']):
         time = i * timestep
         for j, ((x, y), heading) in enumerate(poses):
             sim_trajs[j].append((x, y, heading, time))
     return sim_trajs
 
-def seed_trajectories(sim_result, timestep):
-    cars_num = len(sim_result.records['positions'][0][1])
-    seed_trajs = [[] for _ in range(cars_num)]
-    for i, positions in sim_result.records['positions']:
-        for j, (x, y) in enumerate(positions):
-            seed_trajs[j].append((x, y, i*timestep))
-    return seed_trajs
-
-def spline_approximation(seed_traj, degree=3, knots_size=20):
-    x = [p[0] for p in seed_traj]
-    y = [p[1] for p in seed_traj]
-    u = [p[2] for p in seed_traj]
-    tck, u = scipy.interpolate.splprep([x, y],
-                                       u=u,
-                                       k=degree, 
-                                       task=-1, 
-                                       t=np.linspace(u[0], u[-1], knots_size))
-
-    footprint = Spline(degree=degree,
-                  ctrlpts=tuple((float(x),float(y))
-                                for x,y in zip(tck[1][0], tck[1][1])),
-                  knotvector=tuple(float(knot) for knot in tck[0])
-                )
+def seed_trajectories(sim_result, timestep, degree=3, knots_size=20):
+    cars_num = len(sim_result.records['routes'])
+    sim_trajs = [[] for k in range(cars_num)]
+    for i, footprints in sim_result.records['footprints']:
+        for j, p in enumerate(footprints):
+            sim_trajs[j].append((p[0], p[1], i*timestep))
     
-    return footprint
+    footprints = []
+    timings = []
+    for sim_traj, transform in zip(sim_trajs, sim_result.records['transforms']):
+        xs = [sim_traj[0][0]]
+        ys = [sim_traj[0][1]]
+        ts = [sim_traj[0][2]]
+        ds = [0]
+        for i in range(1, len(sim_traj)):
+            v1 = Vector(xs[-1], ys[-1])
+            v2 = Vector(sim_traj[i][0], sim_traj[i][1])
+            if (v2-v1).norm() != 0:
+                xs.append(sim_traj[i][0])
+                ys.append(sim_traj[i][1])
+                ts.append(sim_traj[i][2])
+                ds.append(ds[-1] + (v2-v1).norm())
+        
+        knotvector = [ds[0]]*degree \
+                    + list(np.linspace(ds[0], ds[-1], knots_size)) \
+                    + [ds[-1]]*degree 
+        tck, _ = scipy.interpolate.splprep([xs, ys], # curve samples
+                                        u=ds, # parameterize by travelled distance
+                                        k=degree,
+                                        task=-1, # spline approximation
+                                        t=knotvector
+                                        )
+        # Transform control points to curvilinear coordinates
+        footprint = Spline(degree=degree,
+                        ctrlpts=tuple(transform.curvilinear((x, y))
+                                        for x,y in zip(tck[1][0], tck[1][1])),
+                        knotvector=tuple(float(knot) for knot in tck[0])
+                        )
+        
+        knotvector = [ts[0]]*degree \
+                    + list(np.linspace(ts[0], ts[-1], knots_size)) \
+                    + [ts[-1]]*degree # knotvector
+        tck, _ = scipy.interpolate.splprep([ts, ds], # curve samples
+                                        u=ts, # curve parameters corresponding to the samples
+                                        k=degree, 
+                                        task=-1, # spline approximation
+                                        t=knotvector
+                                        )
+        timing = Spline(degree=degree,
+                    ctrlpts=tuple((float(x),float(y))
+                                    for x,y in zip(tck[1][0], tck[1][1])),
+                    knotvector=tuple(float(knot) for knot in tck[0])
+                    )
+        footprints.append(footprint)
+        timings.append(timing)
+    
+    return tuple(footprints), tuple(timings)
 
 def sample_trajectories(network, seed, sample_size, umin=0, umax=None):
     if umax is None:
@@ -223,25 +253,25 @@ def sample_trajectories(network, seed, sample_size, umin=0, umax=None):
         position_rectilinear = Spline(degree=position.degree,
                                       ctrlpts=tuple(transform.rectilinear(p) for p in position.ctrlpts),
                                       knotvector=position.knotvector)
-        sample = sample_spline(position_rectilinear, timing, ts)
+        sample = sample_trajectory(position_rectilinear, timing, ts)
         traj = [OrientedPoint(position=Vector(x, y), heading=h)
                 for x, y, h in sample]
         trajectories.append(traj)
 
     return trajectories
 
-def sample_spline(position, timing, ts):
+def sample_trajectory(footprint, timing, ts):
     spline = BSpline.Curve(normalize_kv = False)
     spline.degree = timing.degree
     spline.ctrlpts = timing.ctrlpts
     spline.knotvector = timing.knotvector
-    ts = tuple(t[1] for t in spline.evaluate_list(ts))
+    ds = tuple(t_d[1] for t_d in spline.evaluate_list(ts))
 
-    # Plug the timing output into the position input
-    spline.degree = position.degree
-    spline.ctrlpts = position.ctrlpts
-    spline.knotvector = position.knotvector
-    sample = geomdl.operations.tangent(spline, ts)
+    # Plug the timing output into the footprint input
+    spline.degree = footprint.degree
+    spline.ctrlpts = footprint.ctrlpts
+    spline.knotvector = footprint.knotvector
+    sample = geomdl.operations.tangent(spline, ds)
     return ((s[0][0], # x
              s[0][1], # y
              headingOfSegment((0, 0), (s[1][0], s[1][1])), # heading

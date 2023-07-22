@@ -4,7 +4,7 @@ import random
 import carla
 
 # This project
-from scenariogen.core.utils import sample_spline
+from scenariogen.core.utils import sample_trajectory
 
 
 def draw_lane(world, lane,
@@ -152,7 +152,7 @@ def draw_spline(world, position, timing, resolution, umin, umax,
                 lifetime=-1.0):
     sample_size = int((umax-umin) // resolution)
     ts = np.linspace(umin, umax, num=sample_size)
-    sample = sample_spline(position, timing, ts)
+    sample = sample_trajectory(position, timing, ts)
     for (x, y, _), t in zip(sample, ts):
         draw_point(world, (x, y), t, size, color, lifetime)
     if draw_ctrlpts:

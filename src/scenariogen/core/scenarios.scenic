@@ -125,7 +125,8 @@ scenario RecordSeedInfoScenario(cars):
       transforms.append(CurvilinearTransform(axis_coords))
 
     record final config as config
-    record tuple(transform.curvilinear(car.position) for car, transform in zip(cars, transforms)) as positions
+    record final transforms as transforms
+    record tuple(car.position for car in cars) as footprints
     record final tuple(car.route for car in cars) as routes
     record final tuple(car.signal for car in cars) as turn_signals
     record final tuple(car.length for car in cars) as lengths

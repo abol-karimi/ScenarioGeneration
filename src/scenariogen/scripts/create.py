@@ -15,7 +15,7 @@ from scenic.core.dynamics import GuardViolation
 
 # My modules
 from scenariogen.core.seed import Seed, Spline
-from scenariogen.core.utils import sim_trajectories, seed_trajectories, spline_approximation
+from scenariogen.core.utils import sim_trajectories, seed_trajectories
 
 #----------Main Script----------
 parser = argparse.ArgumentParser(description='Make a seed from a scenic scenario.')
@@ -78,19 +78,15 @@ except GuardViolation:
     exit()
 
 # Save the seed
-seed_trajs = seed_trajectories(sim_result, args.timestep)
-positions = tuple(spline_approximation(traj,
-                                    degree=args.spline_degree,
-                                    knots_size=args.parameters_size)
-                    for traj in seed_trajs)
-timing = Spline(degree=args.spline_degree,
-                ctrlpts=tuple((float(t), float(t)) for t in np.linspace(0, seconds, args.parameters_size)),
-                knotvector=tuple(float(t*seconds) for t in knotvector.generate(args.spline_degree, args.parameters_size, clamped=True))
-                )
+footprints, timings = seed_trajectories(sim_result,
+                                        args.timestep,
+                                        degree=args.spline_degree,
+                                        knots_size=args.parameters_size
+                                        )
 seed = Seed(config=sim_result.records['config'],
             routes=sim_result.records['routes'],
-            positions=positions,
-            timings=(timing,)*len(seed_trajs),
+            positions=footprints,
+            timings=timings,
             signals=sim_result.records['turn_signals'],
             lengths=sim_result.records['lengths'],
             widths=sim_result.records['widths'])
