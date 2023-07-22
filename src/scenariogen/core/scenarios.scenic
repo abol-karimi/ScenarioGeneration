@@ -4,6 +4,8 @@ config = globalParameters.config
 intersection = network.elements[config['intersection']]
 
 # Python imports
+from pathlib import Path
+import pickle
 from shapely.geometry import LineString
 
 from scenic.simulators.carla.simulator import CarlaSimulation
@@ -29,7 +31,13 @@ scenario NonegosScenario():
   setup:
     cars = []
     seed = config['seed']
-    tjs = sample_trajectories(network, seed, int(config['steps'])+1)
+    if config['raw']:
+      seed_path = Path(config['seed_path'])
+      with open(seed_path.parents[1]/'initial_seeds_definitions'/f'{seed_path.stem}_sim_trajectories.pickle', 'rb') as f:
+          sim_tjs = pickle.load(f)
+      tjs = [[pose for pose, time in tj] for tj in sim_tjs]
+    else:
+      tjs = sample_trajectories(network, seed, int(config['steps'])+1, umax=config['steps']*config['timestep'])
     for i, (route, tj, signal, l, w, bp) in enumerate(zip(seed.routes, tjs, seed.signals, seed.lengths, seed.widths, config['blueprints'])):
       route_list = list(route)
       car = Car at tj[0],

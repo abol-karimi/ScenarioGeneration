@@ -9,8 +9,8 @@ from scenariogen.core.errors import EgoCollisionError, NonegoNonegoCollisionErro
 
 parser = argparse.ArgumentParser(
     description='play the given scenario with a Carla autopilot driving the ego.')
-parser.add_argument('seed', 
-                    help='relative path of seed')
+parser.add_argument('seed_path', 
+                    help='relative path of the seed')
 parser.add_argument('--timestep', type=float, default=0.05,
                     help='length of each simulation step')
 parser.add_argument('--no_render', action='store_true',
@@ -21,14 +21,16 @@ parser.add_argument('--ego_module', default='experiments.agents.followLane',
                     help='the scenic file containing the ego scenario')
 parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='newtonian',
                     help='The simulator')
+parser.add_argument('--raw', action='store_true',
+                    help='Replay the original simulation if available, instead of the spline approximation')
 duration = parser.add_mutually_exclusive_group()
 duration.add_argument('--steps', type=int, 
                       help='max number of simulation steps')
 duration.add_argument('--seconds', type=float, 
-                      help='max seconds to replay')
+                      help='number of seconds to run the scenario')
 args = parser.parse_args()
 
-with open(args.seed, 'r') as f:
+with open(args.seed_path, 'r') as f:
     seed = jsonpickle.decode(f.read())
 
 # Default duration is the whole scenario:
@@ -52,6 +54,8 @@ config['closedLoop'] = args.closedLoop
 config['ego_module'] = args.ego_module
 config['simulator'] = args.simulator
 config['render'] = not args.no_render
+config['raw'] = args.raw
+config['seed_path'] = args.seed_path
 
 try:
     sim_result = Scenario(seed).run(config)

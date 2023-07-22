@@ -181,7 +181,9 @@ def sim_trajectories(sim_result, timestep):
     for i, poses in enumerate(sim_result.records['poses']):
         time = i * timestep
         for j, ((x, y), heading) in enumerate(poses):
-            sim_trajs[j].append((x, y, heading, time))
+            p = Vector(x, y)
+            pose = OrientedPoint(position=p, heading=heading)
+            sim_trajs[j].append((pose, time))
     return sim_trajs
 
 def seed_trajectories(sim_result, timestep, degree=3, knots_size=20):
