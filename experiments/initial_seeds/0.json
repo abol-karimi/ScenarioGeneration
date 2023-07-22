@@ -31,7 +31,7 @@
    ]
   ]
  },
- "positions": {
+ "footprints": {
   "py/tuple": [
    {
     "py/object": "scenariogen.core.seed.Spline",

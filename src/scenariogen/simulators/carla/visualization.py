@@ -145,17 +145,17 @@ def draw_rect(world, rect, height=0.1):
     for i in range(-1, len(corners)-1):
         world.debug.draw_line(corners[i], corners[i+1])
 
-def draw_spline(world, position, timing, resolution, umin, umax,
+def draw_spline(world, footprint, timing, resolution, umin, umax,
                 size=0.1,
                 color=carla.Color(255, 0, 0),
                 draw_ctrlpts=False,
                 lifetime=-1.0):
     sample_size = int((umax-umin) // resolution)
     ts = np.linspace(umin, umax, num=sample_size)
-    sample = sample_trajectory(position, timing, ts)
+    sample = sample_trajectory(footprint, timing, ts)
     for (x, y, _), t in zip(sample, ts):
         draw_point(world, (x, y), t, size, color, lifetime)
     if draw_ctrlpts:
-        for x, y in position.ctrlpts:
+        for x, y in footprint.ctrlpts:
             draw_point(world, (x, y), None, 0.2, carla.Color(255, 255, 255), lifetime)
 

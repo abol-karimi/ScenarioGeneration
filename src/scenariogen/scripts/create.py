@@ -85,7 +85,7 @@ footprints, timings = seed_trajectories(sim_result,
                                         )
 seed = Seed(config=sim_result.records['config'],
             routes=sim_result.records['routes'],
-            positions=footprints,
+            footprints=footprints,
             timings=timings,
             signals=sim_result.records['turn_signals'],
             lengths=sim_result.records['lengths'],

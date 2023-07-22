@@ -16,8 +16,8 @@ class Spline:
 class Seed:
   config: Dict = None
   routes: Tuple[str] = None
-  positions: Tuple[Spline] = None # maps the timing output (below) to the location of the car
-  timings: Tuple[Spline] = None # maps time to the parameter value of the position spline
+  footprints: Tuple[Spline] = None # maps the timing output (below) to the location of the car
+  timings: Tuple[Spline] = None # maps time to the parameter value of the footprint spline
   signals: Tuple[SignalType] = None
   lengths: Tuple[float] = None
   widths: Tuple[float] = None
@@ -61,8 +61,8 @@ def validate_seed(seed):
   if not isinstance(seed.routes, tuple):
     raise InvalidSeedError('Invalid seed: seed.routes not an instance of tuple')
 
-  if not isinstance(seed.positions, tuple):
-    raise InvalidSeedError('Invalid seed: seed.positions not an instance of tuple')
+  if not isinstance(seed.footprints, tuple):
+    raise InvalidSeedError('Invalid seed: seed.footprints not an instance of tuple')
 
   if not isinstance(seed.timings, tuple):
     raise InvalidSeedError('Invalid seed: seed.timings not an instance of tuple')
@@ -80,8 +80,8 @@ def validate_seed(seed):
   if n == 0:
     raise InvalidSeedError('Invalid seed: len(seed.routes) = 0')
 
-  if n != len(seed.positions):
-    raise InvalidSeedError('Invalid seed: len(positions) != len(routes)')
+  if n != len(seed.footprints):
+    raise InvalidSeedError('Invalid seed: len(footprints) != len(routes)')
 
   if n != len(seed.timings):
     raise InvalidSeedError('Invalid seed: len(timings) != len(routes)')
@@ -95,6 +95,6 @@ def validate_seed(seed):
   if n != len(seed.widths):
     raise InvalidSeedError('Invalid seed: len(widths) != len(routes)')
 
-  for spline in seed.positions + seed.timings:
+  for spline in seed.footprints + seed.timings:
     validate_spline(spline)
 

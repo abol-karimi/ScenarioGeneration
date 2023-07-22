@@ -90,21 +90,21 @@ class StructureAwareMutator():
     lanes = [network.elements[lane_id]
              for lane_id in seed.routes[nonego_idx]]
     centerline = shapely.geometry.MultiLineString([l.centerline.points for l in lanes])
-    position = seed.positions[nonego_idx]
-    available = centerline.length - position.ctrlpts[-1][0]
+    footprint = seed.footprints[nonego_idx]
+    available = centerline.length - footprint.ctrlpts[-1][0]
     if offset > available - 10: # 10 meters cushion
       # Extend the route by offset-available+10
       lanes += self._extend_lanes_forward(lanes, offset-available+10)
       print(f'Extended the route forward by {offset-available+10} meters.')
 
-    new_position =  Spline(degree=position.degree,
-                           ctrlpts=tuple((p[0]+offset, p[1]) for p in position.ctrlpts),
-                           knotvector=position.knotvector)
+    new_footprint =  Spline(degree=footprint.degree,
+                           ctrlpts=tuple((p[0]+offset, p[1]) for p in footprint.ctrlpts),
+                           knotvector=footprint.knotvector)
     new_route = tuple(l.uid for l in lanes)
 
     mutant = Seed(config=seed.config,
                   routes=seed.routes+(new_route,),
-                  positions=seed.positions+(new_position,),
+                  footprints=seed.footprints+(new_footprint,),
                   timings=seed.timings+(seed.timings[nonego_idx],),
                   signals=seed.signals+(seed.signals[nonego_idx],),
                   lengths=seed.lengths+(seed.lengths[nonego_idx],),
@@ -147,22 +147,22 @@ class StructureAwareMutator():
   def copy_backward_with_params(self, seed, nonego_idx, offset):
     lanes = [self.get_network(seed).elements[lane_id]
              for lane_id in seed.routes[nonego_idx]]
-    position = seed.positions[nonego_idx]
-    available = position.ctrlpts[0][0]
+    footprint = seed.footprints[nonego_idx]
+    available = footprint.ctrlpts[0][0]
     ext_len = 0
     if offset > available - 10: # 10 meters cushion
       # Extend the route by offset-available+10
       lanes = self._extend_lanes_backward(seed.config['carla_map'], lanes, offset-available+10) + lanes
       print(f'Extended the route backwards by {offset-available+10} meters.')
     
-    new_position = Spline(degree=position.degree,
-                      ctrlpts=tuple((p[0]+ext_len-offset, p[1]) for p in position.ctrlpts),
-                      knotvector=position.knotvector)
+    new_footprint = Spline(degree=footprint.degree,
+                      ctrlpts=tuple((p[0]+ext_len-offset, p[1]) for p in footprint.ctrlpts),
+                      knotvector=footprint.knotvector)
     new_route = tuple(l.uid for l in lanes)
 
     mutant = Seed(config=seed.config,
                   routes=seed.routes+(new_route,),
-                  positions=seed.positions+(new_position,),
+                  footprints=seed.footprints+(new_footprint,),
                   timings=seed.timings+(seed.timings[nonego_idx],),
                   signals=seed.signals+(seed.signals[nonego_idx],),
                   lengths=seed.lengths+(seed.lengths[nonego_idx],),
@@ -219,7 +219,7 @@ class StructureAwareMutator():
 
     mutant = Seed(config=seed.config,
                   routes=seed.routes+(route,),
-                  positions=seed.positions+(seed.positions[nonego_idx],),
+                  footprints=seed.footprints+(seed.footprints[nonego_idx],),
                   timings=seed.timings+(seed.timings[nonego_idx],),
                   signals=seed.signals+(seed.signals[nonego_idx],),
                   lengths=seed.lengths+(seed.lengths[nonego_idx],),
@@ -247,7 +247,7 @@ class StructureAwareMutator():
   def remove_vehicle_with_params(self, seed, nonego_idx):
     mutant = Seed(config=seed.config,
                   routes=seed.routes[0:nonego_idx]+seed.routes[nonego_idx+1:],
-                  positions=seed.positions[0:nonego_idx]+seed.positions[nonego_idx+1:],
+                  footprints=seed.footprints[0:nonego_idx]+seed.footprints[nonego_idx+1:],
                   timings=seed.timings[0:nonego_idx]+seed.timings[nonego_idx+1:],                  
                   signals=seed.signals[0:nonego_idx]+seed.signals[nonego_idx+1:],
                   lengths=seed.lengths[0:nonego_idx]+seed.lengths[nonego_idx+1:],
@@ -295,7 +295,7 @@ class StructureAwareMutator():
     
     mutant = Seed(config=seed.config,
                   routes=seed.routes,
-                  positions=seed.positions,
+                  footprints=seed.footprints,
                   timings=
                     seed.timings[0:nonego_idx] \
                     + (timing_mutated,) \
@@ -347,7 +347,7 @@ class StructureAwareMutator():
 
     mutant = Seed(config=seed.config,
                   routes=seed.routes,
-                  positions=seed.positions,
+                  footprints=seed.footprints,
                   timings=
                     seed.timings[0:nonego_idx] \
                     + (timing_mutated,) \

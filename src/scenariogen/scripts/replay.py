@@ -32,7 +32,7 @@ with open(args.seed_path, 'r') as f:
     assert isinstance(seed, Seed)
 
 # Default duration is the whole scenario:
-seconds = seed.timings[0].ctrlpts[-1][1]
+seconds = seed.timings[0].ctrlpts[-1][0]
 # Override with custom duration:
 if args.steps:
     seconds = args.steps * args.timestep

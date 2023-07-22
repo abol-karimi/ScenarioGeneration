@@ -31,13 +31,13 @@ with open('experiments/initial_seeds/0.json', 'r') as f:
 
 resolution = 0.05
 umin, umax = 0, seed.timings[0].ctrlpts[-1][1]
-position, timing, route = seed.positions[0], seed.timings[0], seed.routes[0]
+footprint, timing, route = seed.footprints[0], seed.timings[0], seed.routes[0]
 axis = LineString((p for uid in route for p in network.elements[uid].centerline.lineString.coords))
 transform = CurvilinearTransform(axis)
-position_rectilinear = Spline(degree=position.degree,
-                              ctrlpts=(transform.rectilinear(p) for p in position.ctrlpts),
-                              knotvector=position.knotvector)
-visualization.draw_spline(world, position, timing, resolution, umin, umax,
+footprint_rectilinear = Spline(degree=footprint.degree,
+                              ctrlpts=(transform.rectilinear(p) for p in footprint.ctrlpts),
+                              knotvector=footprint.knotvector)
+visualization.draw_spline(world, footprint, timing, resolution, umin, umax,
                           size=0.1,
                           color=carla.Color(0, 0, 255),
                           draw_ctrlpts=True,
@@ -57,7 +57,7 @@ for i in range(2, len(ps)):
         v0 = v1
 
 polyline=PolylineRegion(ps_simple)
-p = position.ctrlpts[5]
+p = footprint.ctrlpts[5]
 # Curvilinear calculations
 v = Vector(p[0], p[1])
 y = polyline.signedDistanceTo(v)

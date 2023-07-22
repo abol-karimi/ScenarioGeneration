@@ -31,8 +31,8 @@ with open('experiments/initial_seeds/0.json', 'r') as f:
 
 resolution = 0.05
 umin, umax = 0, seed.timings[0].ctrlpts[-1][1]
-position, timing = seed.positions[0], seed.timings[0]
-visualization.draw_spline(world, position, timing, resolution, umin, umax,
+footprint, timing = seed.footprints[0], seed.timings[0]
+visualization.draw_spline(world, footprint, timing, resolution, umin, umax,
                           size=0.1,
                           color=carla.Color(0, 0, 255),
                           draw_ctrlpts=True,
@@ -52,7 +52,7 @@ for i in range(2, len(ps)):
         v0 = v1
 
 polyline=PolylineRegion(ps_simple)
-p = position.ctrlpts[5]
+p = footprint.ctrlpts[5]
 # Curvilinear calculations
 v = Vector(p[0], p[1])
 y = polyline.signedDistanceTo(v)

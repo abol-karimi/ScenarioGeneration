@@ -247,13 +247,13 @@ def sample_trajectories(network, seed, sample_size, umin=0, umax=None):
         umax = seed.timings[0].ctrlpts[-1][0]
     trajectories = []
     ts = np.linspace(umin, umax, num=sample_size)
-    for route, position, timing in zip(seed.routes, seed.positions, seed.timings):
+    for route, footprint, timing in zip(seed.routes, seed.footprints, seed.timings):
         axis_coords = [p for uid in route for p in network.elements[uid].centerline.lineString.coords]
         transform = CurvilinearTransform(axis_coords)
-        position_rectilinear = Spline(degree=position.degree,
-                                      ctrlpts=tuple(transform.rectilinear(p) for p in position.ctrlpts),
-                                      knotvector=position.knotvector)
-        sample = sample_trajectory(position_rectilinear, timing, ts)
+        footprint_rectilinear = Spline(degree=footprint.degree,
+                                      ctrlpts=tuple(transform.rectilinear(p) for p in footprint.ctrlpts),
+                                      knotvector=footprint.knotvector)
+        sample = sample_trajectory(footprint_rectilinear, timing, ts)
         traj = [OrientedPoint(position=Vector(x, y), heading=h)
                 for x, y, h in sample]
         trajectories.append(traj)

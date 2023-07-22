@@ -116,7 +116,7 @@ scenario ShowIntersection():
         visualization.set_camera(carla_world, intersection, height=50)
       wait
 
-positions = []
+footprints = []
 transforms = []
 scenario RecordSeedInfoScenario(cars):
   setup:

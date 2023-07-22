@@ -58,7 +58,7 @@ class StructureAwareCrossOver():
 
     crossover = Seed(config=seed1.config,
                   routes=tuple(itertools.chain((seed1.routes[i] for i in idx1),(seed2.routes[i] for i in idx2))),
-                  positions=tuple(itertools.chain((seed1.positions[i] for i in idx1),(seed2.positions[i] for i in idx2))),
+                  footprints=tuple(itertools.chain((seed1.footprints[i] for i in idx1),(seed2.footprints[i] for i in idx2))),
                   timings=tuple(itertools.chain((seed1.timings[i] for i in idx1),(seed2.timings[i] for i in idx2))),
                   signals=tuple(itertools.chain((seed1.signals[i] for i in idx1),(seed2.signals[i] for i in idx2))),
                   lengths=tuple(itertools.chain((seed1.lengths[i] for i in idx1),(seed2.lengths[i] for i in idx2))),
