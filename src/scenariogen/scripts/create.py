@@ -16,6 +16,7 @@ from scenic.core.dynamics import GuardViolation
 # My modules
 from scenariogen.core.seed import Seed, Spline
 from scenariogen.core.utils import sim_trajectories, seed_trajectories
+from scenariogen.core.errors import NonegoNonegoCollisionError
 
 #----------Main Script----------
 parser = argparse.ArgumentParser(description='Make a seed from a scenic scenario.')
@@ -70,6 +71,9 @@ try:
                     maxIterations=1,
                     raiseGuardViolations=True
                     )
+except NonegoNonegoCollisionError as err:
+    print(f'Collision between nonegos {err.nonego} and {err.other}, discarding the simulation.')
+    exit()
 except SimulationCreationError:
     print('Failed to create scenario.')
     exit()

@@ -200,14 +200,16 @@ def seed_trajectories(sim_result, timestep, degree=3, knots_size=20):
         ys = [sim_traj[0][1]]
         ts = [sim_traj[0][2]]
         ds = [0]
+        v1 = Vector(xs[-1], ys[-1])
         for i in range(1, len(sim_traj)):
-            v1 = Vector(xs[-1], ys[-1])
             v2 = Vector(sim_traj[i][0], sim_traj[i][1])
-            if (v2-v1).norm() != 0:
+            dv = v2 - v1
+            if dv[0] != 0 and dv[1] != 0:
                 xs.append(sim_traj[i][0])
                 ys.append(sim_traj[i][1])
                 ts.append(sim_traj[i][2])
-                ds.append(ds[-1] + (v2-v1).norm())
+                ds.append(ds[-1] + dv.norm())
+                v1 = Vector(xs[-1], ys[-1])
         
         knotvector = [ds[0]]*degree \
                     + list(np.linspace(ds[0], ds[-1], knots_size)) \

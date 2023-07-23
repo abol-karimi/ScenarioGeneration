@@ -33,7 +33,7 @@ scenario Main():
           ShowIntersection()
     else:      
       do initialSeed_scenario, \
-          CheckCollisionsScenario([], simulation().agents), \
           RecordSeedInfoScenario(simulation().agents), \
-          ShowIntersection()
+          ShowIntersection(), \
+          CheckCollisionsScenario([], simulation().agents)
 

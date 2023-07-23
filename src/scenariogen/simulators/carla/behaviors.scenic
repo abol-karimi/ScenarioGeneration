@@ -16,7 +16,7 @@ behavior AutopilotFollowRoute(route, aggressiveness, rss_enabled):
 	dest = scenicToCarlaLocation(route_lanes[-1].centerline[-1], world=carla_world)
 	agent.set_destination(dest)
 	if rss_enabled:
-		transforms = [pair[0].transform for pair in plan]
+		transforms = [pair[0].transform for pair in agent._local_planner._waypoints_queue]
 		rss_sensor = RssSensor(self.carlaActor, carla_world, 
 														None, None, None,
 														routing_targets=transforms)

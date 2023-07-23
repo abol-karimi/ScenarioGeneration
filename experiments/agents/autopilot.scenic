@@ -7,7 +7,7 @@ config = globalParameters.config
 from scenariogen.core.signals import SignalType
 from scenariogen.simulators.carla.behaviors import AutopilotFollowRoute
 
-scenario EgoScenario():
+scenario EgoScenario(aggressiveness='normal', rss_enabled=False):
   setup:
     ego_lanes = [network.elements[l] for l in config['ego_route']]
     ego_centerline = PolylineRegion.unionAll([l.centerline for l in ego_lanes])
@@ -20,8 +20,8 @@ scenario EgoScenario():
       with blueprint 'vehicle.tesla.model3',
       with signal SignalType.OFF,
       with behavior AutopilotFollowRoute(route=config['ego_route'],
-                                        aggressiveness='normal',
-                                        rss_enabled=False),
+                                        aggressiveness=aggressiveness,
+                                        rss_enabled=rss_enabled),
       with physics True,
       with allowCollisions True
     cars = [ego]
