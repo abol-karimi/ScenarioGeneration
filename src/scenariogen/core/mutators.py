@@ -49,10 +49,10 @@ class StructureAwareMutator():
                     # self.change_ego_route,                 
                     ]
   @classmethod
-  def get_network(cls, seed):
-    carla_map = seed.config['carla_map']
+  def get_network(cls, fuzz_input):
+    carla_map = fuzz_input.config['carla_map']
     if not carla_map in cls._networks_cache:
-      network = Network.fromFile(seed.config['map'])
+      network = Network.fromFile(fuzz_input.config['map'])
       cls._networks_cache[carla_map] = network
       cls._cache_predessors(carla_map, network)
       return network
@@ -67,30 +67,30 @@ class StructureAwareMutator():
         cls._predecessors_cache[carla_map][maneuver.endLane.uid].append(maneuver.connectingLane)
 
  
-  def move_forward(self, seed):
+  def move_forward(self, fuzz_input):
     """Adds some longitudinal offset to a trajectory along its route.
     Extends the route randomly, if necessay.
     """
     # Choose random parameters
-    nonego_idx = self.random.randrange(len(seed.routes))
+    nonego_idx = self.random.randrange(len(fuzz_input.routes))
     max_dist = 100
-    offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
+    offset = self.random.uniform(fuzz_input.lengths[nonego_idx], max_dist)
 
     # Mutate
-    mutant = self.copy_forward_with_params(seed, nonego_idx, offset)
+    mutant = self.copy_forward_with_params(fuzz_input, nonego_idx, offset)
     mutant = self.remove_vehicle(mutant)
 
     print(f'Mutation: Moved nonego {nonego_idx} forward along its route by {offset} meters.')
 
     return mutant
   
-  def copy_forward_with_params(self, seed, nonego_idx, offset):
+  def copy_forward_with_params(self, fuzz_input, nonego_idx, offset):
     # Move the trajectory, extend the route if necessary
-    network = StructureAwareMutator.get_network(seed)
+    network = StructureAwareMutator.get_network(fuzz_input)
     lanes = [network.elements[lane_id]
-             for lane_id in seed.routes[nonego_idx]]
+             for lane_id in fuzz_input.routes[nonego_idx]]
     centerline = shapely.geometry.MultiLineString([l.centerline.points for l in lanes])
-    footprint = seed.footprints[nonego_idx]
+    footprint = fuzz_input.footprints[nonego_idx]
     available = centerline.length - footprint.ctrlpts[-1][0]
     if offset > available - 10: # 10 meters cushion
       # Extend the route by offset-available+10
@@ -102,57 +102,57 @@ class StructureAwareMutator():
                            knotvector=footprint.knotvector)
     new_route = tuple(l.uid for l in lanes)
 
-    mutant = FuzzInput(config=seed.config,
-                  routes=seed.routes+(new_route,),
-                  footprints=seed.footprints+(new_footprint,),
-                  timings=seed.timings+(seed.timings[nonego_idx],),
-                  signals=seed.signals+(seed.signals[nonego_idx],),
-                  lengths=seed.lengths+(seed.lengths[nonego_idx],),
-                  widths=seed.widths+(seed.widths[nonego_idx],)
+    mutant = FuzzInput(config=fuzz_input.config,
+                  routes=fuzz_input.routes+(new_route,),
+                  footprints=fuzz_input.footprints+(new_footprint,),
+                  timings=fuzz_input.timings+(fuzz_input.timings[nonego_idx],),
+                  signals=fuzz_input.signals+(fuzz_input.signals[nonego_idx],),
+                  lengths=fuzz_input.lengths+(fuzz_input.lengths[nonego_idx],),
+                  widths=fuzz_input.widths+(fuzz_input.widths[nonego_idx],)
                   )
     return mutant
     
-  def copy_forward(self, seed):
+  def copy_forward(self, fuzz_input):
     """Copy a trajectory and add some longitudinal offset along the route.
     """
     # Choose random parameters
-    nonego_idx = self.random.randrange(len(seed.routes))
+    nonego_idx = self.random.randrange(len(fuzz_input.routes))
     max_dist = 100
-    offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
+    offset = self.random.uniform(fuzz_input.lengths[nonego_idx], max_dist)
 
     # Mutate
-    mutant = self.copy_forward_with_params(seed, nonego_idx, offset)
+    mutant = self.copy_forward_with_params(fuzz_input, nonego_idx, offset)
 
     print(f'Mutation: Copied nonego {nonego_idx} forward by {offset} meters.')
 
     return mutant
   
-  def move_backward(self, seed):
+  def move_backward(self, fuzz_input):
     """Subtracts some longitudinal offset from a trajectory along its route.
     Extends the route backwards randomly, if necessay.
     """
     # Choose random parameters
-    nonego_idx = self.random.randrange(len(seed.routes))
+    nonego_idx = self.random.randrange(len(fuzz_input.routes))
     max_dist = 100 # bigger than any vehicle length
-    offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
+    offset = self.random.uniform(fuzz_input.lengths[nonego_idx], max_dist)
 
     # Mutate
-    mutant = self.copy_backward_with_params(seed, nonego_idx, offset)
+    mutant = self.copy_backward_with_params(fuzz_input, nonego_idx, offset)
     mutant = self.remove_vehicle_with_params(mutant, nonego_idx)
 
     print(f'Mutation: Moved nonego {nonego_idx} backwards by {offset} meters.')
 
     return mutant
 
-  def copy_backward_with_params(self, seed, nonego_idx, offset):
-    lanes = [self.get_network(seed).elements[lane_id]
-             for lane_id in seed.routes[nonego_idx]]
-    footprint = seed.footprints[nonego_idx]
+  def copy_backward_with_params(self, fuzz_input, nonego_idx, offset):
+    lanes = [self.get_network(fuzz_input).elements[lane_id]
+             for lane_id in fuzz_input.routes[nonego_idx]]
+    footprint = fuzz_input.footprints[nonego_idx]
     available = footprint.ctrlpts[0][0]
     ext_len = 0
     if offset > available - 10: # 10 meters cushion
       # Extend the route by offset-available+10
-      lanes = self._extend_lanes_backward(seed.config['carla_map'], lanes, offset-available+10) + lanes
+      lanes = self._extend_lanes_backward(fuzz_input.config['carla_map'], lanes, offset-available+10) + lanes
       print(f'Extended the route backwards by {offset-available+10} meters.')
     
     new_footprint = Spline(degree=footprint.degree,
@@ -160,53 +160,53 @@ class StructureAwareMutator():
                       knotvector=footprint.knotvector)
     new_route = tuple(l.uid for l in lanes)
 
-    mutant = FuzzInput(config=seed.config,
-                  routes=seed.routes+(new_route,),
-                  footprints=seed.footprints+(new_footprint,),
-                  timings=seed.timings+(seed.timings[nonego_idx],),
-                  signals=seed.signals+(seed.signals[nonego_idx],),
-                  lengths=seed.lengths+(seed.lengths[nonego_idx],),
-                  widths=seed.widths+(seed.widths[nonego_idx],)
+    mutant = FuzzInput(config=fuzz_input.config,
+                  routes=fuzz_input.routes+(new_route,),
+                  footprints=fuzz_input.footprints+(new_footprint,),
+                  timings=fuzz_input.timings+(fuzz_input.timings[nonego_idx],),
+                  signals=fuzz_input.signals+(fuzz_input.signals[nonego_idx],),
+                  lengths=fuzz_input.lengths+(fuzz_input.lengths[nonego_idx],),
+                  widths=fuzz_input.widths+(fuzz_input.widths[nonego_idx],)
                   )
     return mutant
   
-  def copy_backward(self, seed):
+  def copy_backward(self, fuzz_input):
     """Copy a trajectory and add some longitudinal offset along the route.
     """
     # Choose random parameters
-    nonego_idx = self.random.randrange(len(seed.routes))
+    nonego_idx = self.random.randrange(len(fuzz_input.routes))
     max_dist = 100 # bigger than any vehicle length
-    offset = self.random.uniform(seed.lengths[nonego_idx], max_dist)
+    offset = self.random.uniform(fuzz_input.lengths[nonego_idx], max_dist)
 
     # Mutate
-    mutant = self.copy_backward_with_params(seed, nonego_idx, offset)
+    mutant = self.copy_backward_with_params(fuzz_input, nonego_idx, offset)
 
     print(f'Mutation: Copied nonego {nonego_idx} backwards by {offset} meters.')
 
     return mutant
   
-  def change_route(self, seed):
+  def change_route(self, fuzz_input):
     """Move a trajectory to a different route.
     The local curvilinear coordinates of the control points are preserved.
     """
     # Choose a random vehicle and calculate its trajectory length
-    nonego_idx = self.random.randrange(len(seed.routes))
+    nonego_idx = self.random.randrange(len(fuzz_input.routes))
 
     # Choose a random maneuver through the intersection
-    network = self.get_network(seed)
-    intersection = network.elements[seed.config['intersection']]
+    network = self.get_network(fuzz_input)
+    intersection = network.elements[fuzz_input.config['intersection']]
     maneuver = self.random.choice(intersection.maneuvers)
     
-    mutant = self.copy_to_route_with_params(seed, nonego_idx, maneuver)
+    mutant = self.copy_to_route_with_params(fuzz_input, nonego_idx, maneuver)
     mutant = self.remove_vehicle_with_params(mutant, nonego_idx)
 
     print(f'Mutation: Moved nonego {nonego_idx} to route {maneuver.startLane, maneuver.connectingLane, maneuver.endLane}.')
 
     return mutant
   
-  def copy_to_route_with_params(self, seed, nonego_idx, maneuver):
-    network = self.get_network(seed)
-    old_route = seed.routes[nonego_idx]
+  def copy_to_route_with_params(self, fuzz_input, nonego_idx, maneuver):
+    network = self.get_network(fuzz_input)
+    old_route = fuzz_input.routes[nonego_idx]
     old_lanes = [network.elements[uid] for uid in old_route]
     old_route_len = sum((l.centerline.length for l in old_lanes))
     
@@ -217,63 +217,63 @@ class StructureAwareMutator():
 
     route = tuple(l.uid for l in lanes)
 
-    mutant = FuzzInput(config=seed.config,
-                  routes=seed.routes+(route,),
-                  footprints=seed.footprints+(seed.footprints[nonego_idx],),
-                  timings=seed.timings+(seed.timings[nonego_idx],),
-                  signals=seed.signals+(seed.signals[nonego_idx],),
-                  lengths=seed.lengths+(seed.lengths[nonego_idx],),
-                  widths=seed.widths+(seed.widths[nonego_idx],)
+    mutant = FuzzInput(config=fuzz_input.config,
+                  routes=fuzz_input.routes+(route,),
+                  footprints=fuzz_input.footprints+(fuzz_input.footprints[nonego_idx],),
+                  timings=fuzz_input.timings+(fuzz_input.timings[nonego_idx],),
+                  signals=fuzz_input.signals+(fuzz_input.signals[nonego_idx],),
+                  lengths=fuzz_input.lengths+(fuzz_input.lengths[nonego_idx],),
+                  widths=fuzz_input.widths+(fuzz_input.widths[nonego_idx],)
                   )
     
     return mutant
 
-  def copy_to_route(self, seed):
+  def copy_to_route(self, fuzz_input):
     """Copy a trajectory to a different route.
     """
     # Choose random parameters
-    nonego_idx = self.random.randrange(len(seed.routes))  
-    network = self.get_network(seed)
-    intersection = network.elements[seed.config['intersection']]
+    nonego_idx = self.random.randrange(len(fuzz_input.routes))  
+    network = self.get_network(fuzz_input)
+    intersection = network.elements[fuzz_input.config['intersection']]
     maneuver = self.random.choice(intersection.maneuvers)
 
     # Mutate
-    mutant = self.copy_to_route_with_params(seed, nonego_idx, maneuver)
+    mutant = self.copy_to_route_with_params(fuzz_input, nonego_idx, maneuver)
     
     print(f'Mutation: Copied nonego {nonego_idx} to route {maneuver.startLane.uid, maneuver.connectingLane.uid, maneuver.endLane.uid}')
 
     return mutant
 
-  def remove_vehicle_with_params(self, seed, nonego_idx):
-    mutant = FuzzInput(config=seed.config,
-                  routes=seed.routes[0:nonego_idx]+seed.routes[nonego_idx+1:],
-                  footprints=seed.footprints[0:nonego_idx]+seed.footprints[nonego_idx+1:],
-                  timings=seed.timings[0:nonego_idx]+seed.timings[nonego_idx+1:],                  
-                  signals=seed.signals[0:nonego_idx]+seed.signals[nonego_idx+1:],
-                  lengths=seed.lengths[0:nonego_idx]+seed.lengths[nonego_idx+1:],
-                  widths=seed.widths[0:nonego_idx]+seed.widths[nonego_idx+1:]
+  def remove_vehicle_with_params(self, fuzz_input, nonego_idx):
+    mutant = FuzzInput(config=fuzz_input.config,
+                  routes=fuzz_input.routes[0:nonego_idx]+fuzz_input.routes[nonego_idx+1:],
+                  footprints=fuzz_input.footprints[0:nonego_idx]+fuzz_input.footprints[nonego_idx+1:],
+                  timings=fuzz_input.timings[0:nonego_idx]+fuzz_input.timings[nonego_idx+1:],                  
+                  signals=fuzz_input.signals[0:nonego_idx]+fuzz_input.signals[nonego_idx+1:],
+                  lengths=fuzz_input.lengths[0:nonego_idx]+fuzz_input.lengths[nonego_idx+1:],
+                  widths=fuzz_input.widths[0:nonego_idx]+fuzz_input.widths[nonego_idx+1:]
                   )
     return mutant
   
-  def remove_vehicle(self, seed):
+  def remove_vehicle(self, fuzz_input):
     """Removes a random non-ego from the scenario.
     """
-    if len(seed.routes) == 1:
+    if len(fuzz_input.routes) == 1:
       raise MutationError('Cannot remove the singleton nonego, empty scenarios are not allowed!')
     
     # Choose random parameters
-    nonego_idx = self.random.randrange(len(seed.routes))
+    nonego_idx = self.random.randrange(len(fuzz_input.routes))
 
     # Mutate
-    mutant = self.remove_vehicle_with_params(seed, nonego_idx)
+    mutant = self.remove_vehicle_with_params(fuzz_input, nonego_idx)
     
-    print(f'Mutation: Removed nonego {nonego_idx} from the seed.')
+    print(f'Mutation: Removed nonego {nonego_idx} from the fuzz_input.')
 
     return mutant
 
 
-  def speedup_with_params(self, seed, nonego_idx, interval, factor):
-    timing = seed.timings[nonego_idx]
+  def speedup_with_params(self, fuzz_input, nonego_idx, interval, factor):
+    timing = fuzz_input.timings[nonego_idx]
 
     spline = BSpline.Curve(normalize_kv = False)
     spline.degree = timing.degree
@@ -287,45 +287,45 @@ class StructureAwareMutator():
     for pi, pii in zip(reversed(interval_ctrlpts[:-1]), reversed(interval_ctrlpts[1:])):
       pi[1] = (1-factor)*pi[1] + factor*pii[1]
 
-    # Construct the new seed
+    # Construct the new fuzz_input
     timing_mutated = Spline(degree=timing.degree,
                               ctrlpts=tuple(tuple(ctrlpt) for ctrlpt in spline.ctrlpts),
                               knotvector=tuple(spline.knotvector)
                               )
     
-    mutant = FuzzInput(config=seed.config,
-                  routes=seed.routes,
-                  footprints=seed.footprints,
+    mutant = FuzzInput(config=fuzz_input.config,
+                  routes=fuzz_input.routes,
+                  footprints=fuzz_input.footprints,
                   timings=
-                    seed.timings[0:nonego_idx] \
+                    fuzz_input.timings[0:nonego_idx] \
                     + (timing_mutated,) \
-                    + seed.timings[nonego_idx+1:],
-                  signals=seed.signals,
-                  lengths=seed.lengths,
-                  widths=seed.widths
+                    + fuzz_input.timings[nonego_idx+1:],
+                  signals=fuzz_input.signals,
+                  lengths=fuzz_input.lengths,
+                  widths=fuzz_input.widths
                   )
   
     return mutant
 
-  def speedup(self, seed):
+  def speedup(self, fuzz_input):
     """Speeds up a random nonego over a random time interval [a, b].
     """
     # Choose random paramters
-    nonego_idx = self.random.randrange(len(seed.routes))
-    timing = seed.timings[nonego_idx]
+    nonego_idx = self.random.randrange(len(fuzz_input.routes))
+    timing = fuzz_input.timings[nonego_idx]
     a = self.random.uniform(0, timing.ctrlpts[-1][1])
     b = self.random.uniform(a, timing.ctrlpts[-1][1])
     factor = self.random.uniform(.1, .9)
     
     # Mutate
-    mutant = self.speedup_with_params(seed, nonego_idx, (a, b), factor)
+    mutant = self.speedup_with_params(fuzz_input, nonego_idx, (a, b), factor)
 
     print(f'Speed up nonego {nonego_idx} over interval {(a, b)} by a factor of {factor}.')
 
     return mutant
 
-  def slowdown_with_params(self, seed, nonego_idx, interval, factor):
-    timing = seed.timings[nonego_idx]
+  def slowdown_with_params(self, fuzz_input, nonego_idx, interval, factor):
+    timing = fuzz_input.timings[nonego_idx]
 
     spline = BSpline.Curve(normalize_kv = False)
     spline.degree = timing.degree
@@ -339,48 +339,48 @@ class StructureAwareMutator():
     for pi, pii in zip(interval_ctrlpts[:-1], interval_ctrlpts[1:]):
       pii[1] = factor*pi[1] + (1-factor)*pii[1]
 
-    # Construct the new seed
+    # Construct the new fuzz_input
     timing_mutated = Spline(degree=timing.degree,
                             ctrlpts=tuple(tuple(ctrlpt) for ctrlpt in spline.ctrlpts),
                             knotvector=tuple(spline.knotvector)
                             )
 
-    mutant = FuzzInput(config=seed.config,
-                  routes=seed.routes,
-                  footprints=seed.footprints,
+    mutant = FuzzInput(config=fuzz_input.config,
+                  routes=fuzz_input.routes,
+                  footprints=fuzz_input.footprints,
                   timings=
-                    seed.timings[0:nonego_idx] \
+                    fuzz_input.timings[0:nonego_idx] \
                     + (timing_mutated,) \
-                    + seed.timings[nonego_idx+1:],
-                  signals=seed.signals,
-                  lengths=seed.lengths,
-                  widths=seed.widths
+                    + fuzz_input.timings[nonego_idx+1:],
+                  signals=fuzz_input.signals,
+                  lengths=fuzz_input.lengths,
+                  widths=fuzz_input.widths
                   )
   
     return mutant
   
-  def slowdown(self, seed):
+  def slowdown(self, fuzz_input):
     # Choose random parameters
-    nonego_idx = self.random.randrange(len(seed.routes))
-    timing = seed.timings[nonego_idx]
+    nonego_idx = self.random.randrange(len(fuzz_input.routes))
+    timing = fuzz_input.timings[nonego_idx]
     a = self.random.uniform(0, timing.ctrlpts[-1][1])
     b = self.random.uniform(a, timing.ctrlpts[-1][1])
     factor = self.random.uniform(.1, .9)
 
     # Mutate
-    mutant = self.slowdown_with_params(seed, nonego_idx, (a, b), factor)
+    mutant = self.slowdown_with_params(fuzz_input, nonego_idx, (a, b), factor)
 
     print(f'Slowed down nonego {nonego_idx} over interval {(a, b)} by a factor of {factor}.')
 
     return mutant
   
-  def mutate_ego_route(self, seed):
+  def mutate_ego_route(self, fuzz_input):
     """Used for closed-loop fuzzing."""
-    return seed
+    return fuzz_input
  
 
-  def mutate(self, seed):
-    mutant = seed
+  def mutate(self, fuzz_input):
+    mutant = fuzz_input
     mutations = self.random.randint(1, self.max_mutations_per_iteration)
     for i in range(mutations):
       mutator = self.random.choice(self.mutators)
@@ -414,7 +414,7 @@ class StructureAwareMutator():
     
   
 class MutationError(Exception):
-    """Exception raised for errors in mutating a seed.
+    """Exception raised for errors in mutating a fuzz_input.
     Attributes:
         message -- explanation of the error
     """
