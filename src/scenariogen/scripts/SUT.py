@@ -21,7 +21,7 @@ parser.add_argument('--ego_module', default='experiments.agents.followLane',
                     help='the scenic file containing the ego scenario')
 parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='newtonian',
                     help='The simulator')
-parser.add_argument('--raw', action='store_true',
+parser.add_argument('--replay_raw', action='store_true',
                     help='Replay the original simulation if available, instead of the spline approximation')
 duration = parser.add_mutually_exclusive_group()
 duration.add_argument('--steps', type=int, 
@@ -54,7 +54,7 @@ config['closedLoop'] = args.closedLoop
 config['ego_module'] = args.ego_module
 config['simulator'] = args.simulator
 config['render'] = not args.no_render
-config['raw'] = args.raw
+config['replay_raw'] = args.replay_raw
 config['seed_path'] = args.seed_path
 
 try:

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3.8
 
 import sys
+import importlib
 import jsonpickle
 from pathlib import Path
 import atheris
@@ -11,7 +12,6 @@ from scenariogen.core.scenario import Scenario
 from scenariogen.core.fuzz_input import validate_input
 from scenariogen.core.mutators import StructureAwareMutator
 from scenariogen.core.crossovers import StructureAwareCrossOver
-from scenariogen.core.coverages import PredicateNameCoverage
 
 #----------------------------------------------
 #---------- custom mutator's wrapper ----------
@@ -138,32 +138,35 @@ def SUT_target_wrapper(input_bytes):
   try:
     sim_result = Scenario(seed).run(scenario_config)
   except NonegoNonegoCollisionError as err:
-      print(f'Collision between nonegos {err.nonego} and {err.other}, discarding the seed.')
+      print(f'Collision between nonegos {err.nonego} and {err.other}, discarding the fuzz-input.')
   except EgoCollisionError as err:
       print(f'Ego collided with {err.other.name}. Saving the seed to corpus...')
       with open(f'experiments/predicate-coverage/{experiment_name}_ego-collisions/{iteration}.json', 'w') as f:
         f.write(jsonpickle.encode(seed, indent=1))
   else: 
-    coverage = PredicateNameCoverage.from_sim(sim_result)
-    if coverage.is_novel_to(coverage_sum):
-      print('Found a seed increading predicate-coverage! Adding it to corpus...')
-      with open(f'experiments/predicate-coverage/{experiment_name}_{coverage_sum.__class__.__name__}/{iteration}.json', 'w') as f:
+    coverage = sim_result.records['coverage']
+    if coverage_sum is None:
+      coverage_sum = coverage
+    elif coverage.is_novel_to(coverage_sum):
+      print('Found a seed increasing predicate-coverage! Adding it to corpus...')
+      with open(f'experiments/predicate-coverage/{experiment_name}_coverage/{iteration}.json', 'w') as f:
         f.write(jsonpickle.encode(seed))
       coverage_sum += coverage
 
 #-----------------------------------------------------
 #----------------- Experiment config -----------------
 #-----------------------------------------------------
-experiment_name = 'AtherisWithStructureAwareMutator'
+experiment_name = 'TrafficRulesPredicateName'
 scenario_config = {
   'timestep': 0.05,
   'render': False,
   'weather': 'CloudySunset',
   'arrival_distance': 4,
   'stop_speed_threshold': 0.5,
-  'closedLoop': True,
-  'ego_module': 'experiments.agents.followLane',
+  'closedLoop': False,
+  'replay_raw': False,
   'simulator': 'newtonian',
+  'coverage_module': 'scenariogen.core.coverages.traffic_rules_predicate_name',
 }
 atheris_config = {
   'custom_mutator': custom_mutator_wrapper,
@@ -180,7 +183,7 @@ corpus = {}
 target=SUT_target_wrapper
 iterations = 20
 iteration = 0
-coverage_sum = PredicateNameCoverage()
+coverage_sum = None
 max_seed_length = 1e+6 # 1 MB
 libfuzzer_config = [f'-atheris_runs={iterations}',
                     f'-max_len={max_seed_length}',
@@ -189,6 +192,6 @@ libfuzzer_config = [f'-atheris_runs={iterations}',
                   ]
 Path(f'experiments/predicate-coverage/{experiment_name}_ego-collisions').mkdir(parents=True, exist_ok=True)
 Path(f'experiments/predicate-coverage/{experiment_name}_Atheris').mkdir(parents=True, exist_ok=True)
-Path(f'experiments/predicate-coverage/{experiment_name}_{coverage_sum.__class__.__name__}').mkdir(parents=True, exist_ok=True)
+Path(f'experiments/predicate-coverage/{experiment_name}_coverage').mkdir(parents=True, exist_ok=True)
 atheris.Setup(sys.argv + libfuzzer_config, target, **atheris_config)
 atheris.Fuzz()

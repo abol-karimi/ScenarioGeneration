@@ -10,7 +10,6 @@ from shapely.geometry import LineString
 
 from scenic.simulators.carla.simulator import CarlaSimulation
 import scenariogen.simulators.carla.visualization as visualization
-from scenariogen.core.events import *
 from scenariogen.core.utils import sample_trajectories
 from scenariogen.core.signals import SignalType
 from scenariogen.core.errors import EgoCollisionError, NonegoNonegoCollisionError
@@ -31,7 +30,7 @@ scenario NonegosScenario():
   setup:
     cars = []
     fuzz_input = config['fuzz_input']
-    if config['raw']:
+    if config['replay_raw']:
       fuzz_input_path = Path(config['fuzz_input_path'])
       with open(fuzz_input_path.parents[1]/'seeds_definitions'/f'{fuzz_input_path.stem}_sim_trajectories.pickle', 'rb') as f:
           sim_tjs = pickle.load(f)
@@ -51,49 +50,6 @@ scenario NonegosScenario():
         with width w,
         with blueprint bp
       cars.append(car)
-    ego = cars[0]
-
-
-events = []
-scenario RecordEventsScenario(cars):
-  setup:
-    ego = cars[0]
-    record final events as events
-
-    monitor record_events:
-      maneuvers = intersection.maneuvers
-      arrived = {car: False for car in cars}
-      entered = {car: False for car in cars}
-      exited = {car: False for car in cars}
-      lanes = {car: set() for car in cars}
-      inIntersection = {car: False for car in cars}
-      while True:
-        currentTime = simulation().currentTime * config['timestep']
-        for car in cars:
-          inIntersection[car] = car.intersects(intersection)
-          
-          if (not arrived[car]) and (distance from (front of car) to intersection) < config['arrival_distance']:
-            arrived[car] = True
-            events.append(ArrivedAtIntersectionEvent(car.name, car.lane.uid, currentTime))
-            events.append(SignaledAtForkEvent(car.name, car.lane.uid, car.signal.name.lower(), currentTime))
-          if inIntersection[car] and not entered[car]:
-            entered[car] = True
-            events.append(EnteredIntersectionEvent(car.name, car.lane.uid, currentTime))
-          if entered[car] and (not exited[car]) and not inIntersection[car]:
-            exited[car] = True
-            events.append(ExitedIntersectionEvent(car.name, car.lane.uid, currentTime))
-
-          for maneuver in maneuvers:
-            lane = maneuver.connectingLane
-            wasOnLane = lane.uid in lanes[car]
-            isOnLane = car.intersects(lane)
-            if isOnLane and not wasOnLane:
-              lanes[car].add(lane.uid)
-              events.append(EnteredLaneEvent(car.name, lane.uid, currentTime))
-            elif wasOnLane and not isOnLane:
-              lanes[car].remove(lane.uid)
-              events.append(ExitedLaneEvent(car.name, lane.uid, currentTime))
-        wait
 
 scenario CheckCollisionsScenario(egos, nonegos):
   setup:
@@ -126,7 +82,7 @@ scenario ShowIntersection():
 
 footprints = []
 transforms = []
-scenario Recordfuzz_inputInfoScenario(cars):
+scenario RecordSeedInfoScenario(cars):
   setup:
     for car in cars:
       axis_coords = [p for uid in car.route for p in network.elements[uid].centerline.lineString.coords]
