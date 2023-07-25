@@ -10,7 +10,7 @@ from scenic.core.vectors import Vector
 # This project
 import src.scenariogen.core.utils as utils
 from src.scenariogen.core.signals import SignalType
-from scenariogen.core.seed import Seed, Spline
+from scenariogen.core.fuzz_input import FuzzInput, Spline
 
 class StructureAwareMutator():
   """Randomly change the the trajectories using their parameters.
@@ -102,7 +102,7 @@ class StructureAwareMutator():
                            knotvector=footprint.knotvector)
     new_route = tuple(l.uid for l in lanes)
 
-    mutant = Seed(config=seed.config,
+    mutant = FuzzInput(config=seed.config,
                   routes=seed.routes+(new_route,),
                   footprints=seed.footprints+(new_footprint,),
                   timings=seed.timings+(seed.timings[nonego_idx],),
@@ -160,7 +160,7 @@ class StructureAwareMutator():
                       knotvector=footprint.knotvector)
     new_route = tuple(l.uid for l in lanes)
 
-    mutant = Seed(config=seed.config,
+    mutant = FuzzInput(config=seed.config,
                   routes=seed.routes+(new_route,),
                   footprints=seed.footprints+(new_footprint,),
                   timings=seed.timings+(seed.timings[nonego_idx],),
@@ -217,7 +217,7 @@ class StructureAwareMutator():
 
     route = tuple(l.uid for l in lanes)
 
-    mutant = Seed(config=seed.config,
+    mutant = FuzzInput(config=seed.config,
                   routes=seed.routes+(route,),
                   footprints=seed.footprints+(seed.footprints[nonego_idx],),
                   timings=seed.timings+(seed.timings[nonego_idx],),
@@ -245,7 +245,7 @@ class StructureAwareMutator():
     return mutant
 
   def remove_vehicle_with_params(self, seed, nonego_idx):
-    mutant = Seed(config=seed.config,
+    mutant = FuzzInput(config=seed.config,
                   routes=seed.routes[0:nonego_idx]+seed.routes[nonego_idx+1:],
                   footprints=seed.footprints[0:nonego_idx]+seed.footprints[nonego_idx+1:],
                   timings=seed.timings[0:nonego_idx]+seed.timings[nonego_idx+1:],                  
@@ -293,7 +293,7 @@ class StructureAwareMutator():
                               knotvector=tuple(spline.knotvector)
                               )
     
-    mutant = Seed(config=seed.config,
+    mutant = FuzzInput(config=seed.config,
                   routes=seed.routes,
                   footprints=seed.footprints,
                   timings=
@@ -345,7 +345,7 @@ class StructureAwareMutator():
                             knotvector=tuple(spline.knotvector)
                             )
 
-    mutant = Seed(config=seed.config,
+    mutant = FuzzInput(config=seed.config,
                   routes=seed.routes,
                   footprints=seed.footprints,
                   timings=

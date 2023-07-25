@@ -11,7 +11,7 @@ from scenic.core.vectors import Vector
 # This project
 import src.scenariogen.core.utils as utils
 from src.scenariogen.core.signals import SignalType
-from scenariogen.core.seed import Seed, Spline
+from scenariogen.core.fuzz_input import FuzzInput, Spline
 
 class StructureAwareCrossOver():
   """Randomly combine trajectories from two different seeds.
@@ -42,32 +42,32 @@ class StructureAwareCrossOver():
                       #  self.trajectory_splice
                     ]
 
-  def cross_over(self, seed1, seed2):
+  def cross_over(self, input1, input2):
     for i in range(self.max_attempts):
       try:
-        return self.random.choice(self.crossOvers)(seed1, seed2)
+        return self.random.choice(self.crossOvers)(input1, input2)
       except CrossOverError as err:
         print('CrossOver error: ' + err.msg)
-    return self.random.choice((seed1, seed2))
+    return self.random.choice((input1, input2))
   
-  def population_splice(self, seed1, seed2):
-    n1 = self.random.randint(1, len(seed1.routes))
-    n2 = self.random.randint(1, len(seed2.routes))
+  def population_splice(self, input1, input2):
+    n1 = self.random.randint(1, len(input1.routes))
+    n2 = self.random.randint(1, len(input2.routes))
     idx1 = self.random.sample(range(n1), n1)
     idx2 = self.random.sample(range(n2), n2)
 
-    crossover = Seed(config=seed1.config,
-                  routes=tuple(itertools.chain((seed1.routes[i] for i in idx1),(seed2.routes[i] for i in idx2))),
-                  footprints=tuple(itertools.chain((seed1.footprints[i] for i in idx1),(seed2.footprints[i] for i in idx2))),
-                  timings=tuple(itertools.chain((seed1.timings[i] for i in idx1),(seed2.timings[i] for i in idx2))),
-                  signals=tuple(itertools.chain((seed1.signals[i] for i in idx1),(seed2.signals[i] for i in idx2))),
-                  lengths=tuple(itertools.chain((seed1.lengths[i] for i in idx1),(seed2.lengths[i] for i in idx2))),
-                  widths=tuple(itertools.chain((seed1.widths[i] for i in idx1),(seed2.widths[i] for i in idx2))),
+    crossover = FuzzInput(config=input1.config,
+                  routes=tuple(itertools.chain((input1.routes[i] for i in idx1),(input2.routes[i] for i in idx2))),
+                  footprints=tuple(itertools.chain((input1.footprints[i] for i in idx1),(input2.footprints[i] for i in idx2))),
+                  timings=tuple(itertools.chain((input1.timings[i] for i in idx1),(input2.timings[i] for i in idx2))),
+                  signals=tuple(itertools.chain((input1.signals[i] for i in idx1),(input2.signals[i] for i in idx2))),
+                  lengths=tuple(itertools.chain((input1.lengths[i] for i in idx1),(input2.lengths[i] for i in idx2))),
+                  widths=tuple(itertools.chain((input1.widths[i] for i in idx1),(input2.widths[i] for i in idx2))),
                   )
-    print(f'Population-splice crossover: {n1} cars from seed1 and {n2} cars from seed2.')
+    print(f'Population-splice crossover: {n1} cars from input1 and {n2} cars from input2.')
     return crossover
   
-  def trajectory_splice(self, seed1, seed2):
+  def trajectory_splice(self, input1, input2):
     # TODO
     return
   

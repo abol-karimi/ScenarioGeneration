@@ -6,11 +6,11 @@ import random
 import scenic
 
 # This project
-from scenariogen.core.seed import Seed
+from scenariogen.core.fuzz_input import FuzzInput
 
 parser = argparse.ArgumentParser(
     description='play the given scenario with a Carla autopilot driving the ego.')
-parser.add_argument('seed', 
+parser.add_argument('fuzz_input', 
                     help='relative path of seed')
 parser.add_argument('--timestep', type=float, default=0.05,
                     help='length of each simulation step')
@@ -32,7 +32,7 @@ args = parser.parse_args()
 
 with open(args.seed, 'r') as f:
     seed = jsonpickle.decode(f.read())
-    assert isinstance(seed, Seed)
+    assert isinstance(seed, FuzzInput)
 
 # Default duration is the whole scenario:
 seconds = seed.trajectories[0].ctrlpts[-1][2]
@@ -62,7 +62,7 @@ config = {**seed.config}
 config['steps'] = steps
 config['timestep'] = args.timestep
 config['weather'] = 'CloudySunset'
-config['seed'] = seed
+config['fuzz_input'] = seed
 config['arrival_distance'] = 4
 config['stop_speed_threshold'] = 0.5  # meters/seconds
 config['aggressiveness'] =  args.aggressiveness

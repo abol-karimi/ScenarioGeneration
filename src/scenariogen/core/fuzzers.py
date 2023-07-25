@@ -3,7 +3,7 @@ from typing import Dict, Any, Set
 import time
 
 # This project
-import scenariogen.core.seed as seed
+import scenariogen.core.fuzz_input as seed
 from src.scenariogen.core.scenario import Scenario
 
 @dataclass
@@ -20,7 +20,7 @@ class ModularFuzzer:
     # Add the initial seeds
     for seed in self.corpus.seeds:
       try:
-        sim_result = Scenario({'seed': seed, **self.config}).run()
+        sim_result = Scenario({'fuzz_input': seed, **self.config}).run()
       except Exception as err: # TODO specify the exception (collision between the ego and a nonego)
         # assumes that the initial seeds are valid
         pass

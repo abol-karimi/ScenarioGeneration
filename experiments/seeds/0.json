@@ -1,5 +1,5 @@
 {
- "py/object": "scenariogen.core.seed.Seed",
+ "py/object": "scenariogen.core.fuzz_input.FuzzInput",
  "config": {
   "description": "\n  Two cars arrive at a 3way-stop T-intersection about the same time.\n  One car arrives from the minor road and turns left.\n  The other car arrives from the major road on the left side of the first car, and drives straight throught the intersection.\n  VUT is intended to start on the major road, on the right side of the first car, and to make a left turn to the minor road.\n  ",
   "carla_map": "Town05",
@@ -34,7 +34,7 @@
  "footprints": {
   "py/tuple": [
    {
-    "py/object": "scenariogen.core.seed.Spline",
+    "py/object": "scenariogen.core.fuzz_input.Spline",
     "degree": 3,
     "ctrlpts": {
      "py/tuple": [
@@ -414,7 +414,7 @@
     }
    },
    {
-    "py/object": "scenariogen.core.seed.Spline",
+    "py/object": "scenariogen.core.fuzz_input.Spline",
     "degree": 3,
     "ctrlpts": {
      "py/tuple": [
@@ -798,7 +798,7 @@
  "timings": {
   "py/tuple": [
    {
-    "py/object": "scenariogen.core.seed.Spline",
+    "py/object": "scenariogen.core.fuzz_input.Spline",
     "degree": 3,
     "ctrlpts": {
      "py/tuple": [
@@ -1178,7 +1178,7 @@
     }
    },
    {
-    "py/object": "scenariogen.core.seed.Spline",
+    "py/object": "scenariogen.core.fuzz_input.Spline",
     "degree": 3,
     "ctrlpts": {
      "py/tuple": [

@@ -34,7 +34,7 @@ param config = {'carla_map': carla_map,
                 'ego_init_progress': ego_init_progress
                 }
 
-scenario InitialSeedScenario():
+scenario SeedScenario():
   setup:
     with open('src/scenariogen/simulators/carla/blueprint_library.json', 'r') as f:
       car_blueprints = jsonpickle.decode(f.read())

@@ -14,24 +14,24 @@ class Scenario:
       else:
           dim2bp[(length, width)].append(b)
 
-  def __init__(self, seed):
-    self.seed = seed
+  def __init__(self, fuzz_input):
+    self.fuzz_input = fuzz_input
   
   def run(self, config={}):
     """ Runs the scenario.
     Returns the discrete-time trajectories.
     """
     bps = [self.dim2bp[(int(l*100), int(w*100))][0]
-       for l, w in zip(self.seed.lengths, self.seed.widths)]
+       for l, w in zip(self.fuzz_input.lengths, self.fuzz_input.widths)]
     
-    config = {**self.seed.config,
+    config = {**self.fuzz_input.config,
               **config,
               'blueprints': bps,
-              'seed': self.seed,
+              'fuzz_input': self.fuzz_input,
               }
 
     # Sample the nonego splines.
-    seconds = self.seed.timings[0].ctrlpts[-1][1]
+    seconds = self.fuzz_input.timings[0].ctrlpts[-1][1]
     
     # For closed-loop fuzzing, simulate the ego too.
     params = {'carla_map': config['carla_map'],

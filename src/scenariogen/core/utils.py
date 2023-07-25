@@ -19,7 +19,7 @@ VIRIDIS = np.array(cm.get_cmap('viridis').colors)
 VID_RANGE = np.linspace(0.0, 1.0, VIRIDIS.shape[0])
 
 # This project
-from scenariogen.core.seed import Spline
+from scenariogen.core.fuzz_input import Spline
 from scenariogen.core.signals import SignalType
 from scenariogen.core.geometry import CurvilinearTransform
 

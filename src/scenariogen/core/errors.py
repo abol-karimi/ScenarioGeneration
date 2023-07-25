@@ -14,7 +14,7 @@ class NonegoNonegoCollisionError(SUTError):
         self.nonego = nonego
         self.other = other
 
-class InvalidSeedError(SUTError):
-    """Seed validation faild."""
+class InvalidFuzzInputError(SUTError):
+    """FuzzInput validation faild."""
     def __init__(self, message):
         self.msg = message

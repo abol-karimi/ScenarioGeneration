@@ -6,9 +6,9 @@ from pathlib import Path
 import atheris
 
 # This project
-from scenariogen.core.errors import EgoCollisionError, NonegoNonegoCollisionError, InvalidSeedError
+from scenariogen.core.errors import EgoCollisionError, NonegoNonegoCollisionError, InvalidFuzzInputError
 from scenariogen.core.scenario import Scenario
-from scenariogen.core.seed import validate_seed
+from scenariogen.core.fuzz_input import validate_input
 from scenariogen.core.mutators import StructureAwareMutator
 from scenariogen.core.crossovers import StructureAwareCrossOver
 from scenariogen.core.coverages import PredicateNameCoverage
@@ -33,16 +33,16 @@ def custom_mutator_wrapper(data, max_size, seed):
     return
 
   try:
-    validate_seed(decoded)
-  except InvalidSeedError as err:
+    validate_input(decoded)
+  except InvalidFuzzInputError as err:
     print(f'Invalid input to mutator: {err}')
     raise err
 
   mutant = mutator.mutate(decoded) # valid in, valid out
 
   try:
-    validate_seed(mutant)
-  except InvalidSeedError as err:
+    validate_input(mutant)
+  except InvalidFuzzInputError as err:
     print(f'Invalid mutant: {err}')
     raise err
 
@@ -61,8 +61,8 @@ def custom_crossover_wrapper(data1, data2, max_size, seed):
   # Skip seed if structurally invalid.
   try:
     decoded1 = jsonpickle.decode(input_str1)
-    validate_seed(decoded1)
-  except InvalidSeedError as err:
+    validate_input(decoded1)
+  except InvalidFuzzInputError as err:
     print(f'Invalid input to crossover: {err}')
     raise err
   except Exception as e:
@@ -75,8 +75,8 @@ def custom_crossover_wrapper(data1, data2, max_size, seed):
   input_str2 = '{' + input_str2
   try:
     decoded2 = jsonpickle.decode(input_str2)
-    validate_seed(decoded2)
-  except InvalidSeedError as err:
+    validate_input(decoded2)
+  except InvalidFuzzInputError as err:
     print(f'Invalid input to crossover: {err}')
     raise err
   except Exception as e:
@@ -87,8 +87,8 @@ def custom_crossover_wrapper(data1, data2, max_size, seed):
   crossover = crossOver.cross_over(decoded1, decoded2) # valid in, valid out
 
   try:
-    validate_seed(crossover)
-  except InvalidSeedError as err:
+    validate_input(crossover)
+  except InvalidFuzzInputError as err:
     print(f'Invalid crossover: {err}')
     raise err
 
@@ -125,8 +125,8 @@ def SUT_target_wrapper(input_bytes):
     return
 
   try:
-    validate_seed(seed)
-  except InvalidSeedError as err:
+    validate_input(seed)
+  except InvalidFuzzInputError as err:
     print(err.msg)
     return
   
@@ -185,7 +185,7 @@ max_seed_length = 1e+6 # 1 MB
 libfuzzer_config = [f'-atheris_runs={iterations}',
                     f'-max_len={max_seed_length}',
                     f'experiments/predicate-coverage/{experiment_name}_Atheris',
-                    f'experiments/initial_seeds',
+                    f'experiments/seeds',
                   ]
 Path(f'experiments/predicate-coverage/{experiment_name}_ego-collisions').mkdir(parents=True, exist_ok=True)
 Path(f'experiments/predicate-coverage/{experiment_name}_Atheris').mkdir(parents=True, exist_ok=True)

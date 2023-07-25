@@ -14,7 +14,7 @@ from scenic.core.dynamics import GuardViolation
 
 
 # My modules
-from scenariogen.core.seed import Seed, Spline
+from scenariogen.core.fuzz_input import FuzzInput, Spline
 from scenariogen.core.utils import sim_trajectories, seed_trajectories
 from scenariogen.core.errors import NonegoNonegoCollisionError
 
@@ -87,7 +87,7 @@ footprints, timings = seed_trajectories(sim_result,
                                         degree=args.spline_degree,
                                         knots_size=args.parameters_size
                                         )
-seed = Seed(config=sim_result.records['config'],
+seed = FuzzInput(config=sim_result.records['config'],
             routes=sim_result.records['routes'],
             footprints=footprints,
             timings=timings,
@@ -102,7 +102,7 @@ if args.out_path:
     with open(args.out_path, 'w') as f:
         f.write(jsonpickle.encode(seed, indent=1))    
 else:
-    with open(scenario_path.parents[1]/'initial_seeds'/f'{scenario_path.stem}.json', 'w') as f:
+    with open(scenario_path.parents[1]/'seeds'/f'{scenario_path.stem}.json', 'w') as f:
         f.write(jsonpickle.encode(seed, indent=1))
 
 # Save the simulated trajectories for debugging

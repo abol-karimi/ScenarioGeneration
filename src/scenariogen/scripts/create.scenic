@@ -11,10 +11,10 @@ from scenic.core.vectors import Vector
 # Load the given scenario
 param scenario_path = None
 scenario_path = globalParameters.scenario_path
-initialSeed_module = importlib.import_module(scenario_path.replace('/', '.').replace('.scenic', ''))
-initialSeed_scenario = initialSeed_module.InitialSeedScenario()
-config = globalParameters.config # initialized by initialSeed_scenario
-model globalParameters.model # initialized by initialSeed_scenario
+seed_module = importlib.import_module(scenario_path.replace('/', '.').replace('.scenic', ''))
+seed_scenario = seed_module.SeedScenario()
+config = globalParameters.config # initialized by seed_scenario
+model globalParameters.model # initialized by seed_scenario
 
 # Import auxiliary scenarios
 from scenariogen.core.scenarios import CheckCollisionsScenario, RecordSeedInfoScenario, RecordSimTrajectories, ShowIntersection
@@ -27,12 +27,12 @@ scenario Main():
 
   compose:
     if globalParameters.save_sim_trajectories:
-      do initialSeed_scenario, \
+      do seed_scenario, \
           CheckCollisionsScenario([], simulation().agents), \
           RecordSimTrajectories(simulation().agents), \
           ShowIntersection()
     else:      
-      do initialSeed_scenario, \
+      do seed_scenario, \
           RecordSeedInfoScenario(simulation().agents), \
           ShowIntersection(), \
           CheckCollisionsScenario([], simulation().agents)

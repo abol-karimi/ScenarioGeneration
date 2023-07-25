@@ -5,7 +5,7 @@ from queue import Queue, PriorityQueue
 import random
 
 # This project
-from scenariogen.core.seed import Seed
+from scenariogen.core.fuzz_input import FuzzInput
 
 class FIFOScheduler:
   seeds = Queue() # Queue
@@ -18,7 +18,7 @@ class FIFOScheduler:
 
 
 class RandomScheduler:
-  seeds : List[Seed] = []
+  seeds : List[FuzzInput] = []
 
   def choose(self):
     return random.choice(self.seeds)

@@ -7,7 +7,7 @@ import carla
 
 # This project
 from scenariogen.core.mutators import StructureAwareMutator
-from scenariogen.core.seed import Seed, Spline
+from scenariogen.core.fuzz_input import FuzzInput, Spline
 import scenariogen.simulators.carla.visualization as visualization
 from scenariogen.core.utils import sample_trajectories
 
@@ -20,9 +20,9 @@ settings.synchronous_mode = False
 world.apply_settings(settings)
 
 # Load a seed, plot its trajectory
-with open('experiments/initial_seeds/0.json', 'r') as f:
+with open('experiments/seeds/0.json', 'r') as f:
     seed = jsonpickle.decode(f.read())
-    assert isinstance(seed, Seed)
+    assert isinstance(seed, FuzzInput)
 
 mutator = StructureAwareMutator(max_parameters_size=50,
                         max_mutations_per_iteration=1,

@@ -11,7 +11,7 @@ a scoring function on the space of inputs (to the SUT).
 Closed-loop fuzzing:
 The SUT is simulated on each generated seed before being selected.
 New seeds are generated using mutation.
-Seed selection is guided by a scoring function defined on the space of outputs (of the SUT)
+FuzzInput selection is guided by a scoring function defined on the space of outputs (of the SUT)
 which may subsume the space of inputs.
 """
 
@@ -25,7 +25,7 @@ import copy
 from scenic.domains.driving.roads import Network
 
 # My modules
-import scenariogen.core.seed as seed
+import scenariogen.core.fuzz_input as seed
 import src.scenariogen.core.mutators as mutators
 import src.scenariogen.core.fuzzers as fuzzers
 import src.scenariogen.core.schedulers as schedulers
@@ -33,7 +33,7 @@ import scenariogen.core.coverages as coverages
 from src.scenariogen.core.signals import SignalType
 from src.scenariogen.core.utils import route_length
 
-in_corpus_path = '../initial_seeds/3way-stop.json'
+in_corpus_path = '../seeds/3way-stop.json'
 in_corpus = seed.SeedCorpus([])
 in_corpus.load(in_corpus_path)
 

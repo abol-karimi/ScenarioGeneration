@@ -4,7 +4,7 @@
 import argparse
 
 # My modules
-import scenariogen.core.seed as seed
+import scenariogen.core.fuzz_input as seed
 
 parser = argparse.ArgumentParser(description='Copy a subset of seeds from one corpus to another.')
 parser.add_argument('in_corpus', 

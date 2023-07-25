@@ -6,7 +6,7 @@ model scenic.simulators.carla.model
 
 param config = None
 config = globalParameters.config
-seed = config['seed']
+seed = config['fuzz_input']
 intersection = network.elements[config['intersection']]
 
 # Python imports

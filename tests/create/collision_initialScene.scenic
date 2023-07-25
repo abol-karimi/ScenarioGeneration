@@ -5,7 +5,7 @@ Two platoons of vehicles cross each other and collide at the intersection.
 #--- Python imports
 import jsonpickle
 from scenariogen.core.signals import SignalType
-from scenariogen.core.seed import Route
+from scenariogen.core.fuzz_input import Route
 
 #--- Defined constants
 carla_map = 'Town05'

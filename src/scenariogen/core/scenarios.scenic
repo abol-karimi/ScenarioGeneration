@@ -30,15 +30,15 @@ behavior StopAndPassIntersectionBehavior(speed, trajectory, intersection, arriva
 scenario NonegosScenario():
   setup:
     cars = []
-    seed = config['seed']
+    fuzz_input = config['fuzz_input']
     if config['raw']:
-      seed_path = Path(config['seed_path'])
-      with open(seed_path.parents[1]/'initial_seeds_definitions'/f'{seed_path.stem}_sim_trajectories.pickle', 'rb') as f:
+      fuzz_input_path = Path(config['fuzz_input_path'])
+      with open(fuzz_input_path.parents[1]/'seeds_definitions'/f'{fuzz_input_path.stem}_sim_trajectories.pickle', 'rb') as f:
           sim_tjs = pickle.load(f)
       tjs = [[pose for pose, time in tj] for tj in sim_tjs]
     else:
-      tjs = sample_trajectories(network, seed, int(config['steps'])+1, umax=config['steps']*config['timestep'])
-    for i, (route, tj, signal, l, w, bp) in enumerate(zip(seed.routes, tjs, seed.signals, seed.lengths, seed.widths, config['blueprints'])):
+      tjs = sample_trajectories(network, fuzz_input, int(config['steps'])+1, umax=config['steps']*config['timestep'])
+    for i, (route, tj, signal, l, w, bp) in enumerate(zip(fuzz_input.routes, tjs, fuzz_input.signals, fuzz_input.lengths, fuzz_input.widths, config['blueprints'])):
       route_list = list(route)
       car = Car at tj[0],
         with name f'{route_list[0]}_{signal.name}_{i}',
@@ -126,7 +126,7 @@ scenario ShowIntersection():
 
 footprints = []
 transforms = []
-scenario RecordSeedInfoScenario(cars):
+scenario Recordfuzz_inputInfoScenario(cars):
   setup:
     for car in cars:
       axis_coords = [p for uid in car.route for p in network.elements[uid].centerline.lineString.coords]

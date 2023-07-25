@@ -6,7 +6,7 @@ import carla
 import pickle
 
 # This project
-from scenariogen.core.seed import Seed
+from scenariogen.core.fuzz_input import FuzzInput
 import scenariogen.simulators.carla.visualization as visualization
 
 parser = argparse.ArgumentParser(description='play the given scenario.')
@@ -17,7 +17,7 @@ args = parser.parse_args()
 
 with open(args.seed_path, 'r') as f:
     seed = jsonpickle.decode(f.read())
-    assert isinstance(seed, Seed)
+    assert isinstance(seed, FuzzInput)
 
 client = carla.Client('127.0.0.1', 2000)
 world = client.get_world()
@@ -27,7 +27,7 @@ settings.synchronous_mode = False
 world.apply_settings(settings)
 
 seed_path = Path(args.seed_path)
-with open(seed_path.parents[1]/'initial_seeds_definitions'/f'{seed_path.stem}_sim_trajectories.pickle', 'rb') as f:
+with open(seed_path.parents[1]/'seeds_definitions'/f'{seed_path.stem}_sim_trajectories.pickle', 'rb') as f:
     sim_trajectories = pickle.load(f)
 
 #--- Draw the simulated trajectories, in green

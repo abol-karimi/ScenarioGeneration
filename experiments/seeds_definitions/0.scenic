@@ -52,7 +52,7 @@ param config = {'description': description,
                 'ego_init_progress': ego_init_progress
                 }
 
-scenario InitialSeedScenario():
+scenario SeedScenario():
   setup:
     with open('src/scenariogen/simulators/carla/blueprint_library.json', 'r') as f:
       blueprints = jsonpickle.decode(f.read())

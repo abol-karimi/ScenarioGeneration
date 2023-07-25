@@ -6,11 +6,11 @@ from geomdl import operations
 from src.scenariogen.core.utils import sample_trajectory
 
 # This project
-import scenariogen.core.seed as seed
+import scenariogen.core.fuzz_input as seed
 
 parser = argparse.ArgumentParser(description='Plot frame-distance curve of a car.')
 parser.add_argument('corpus', help='filename of the corpus of seeds')
-parser.add_argument('seed', type=int, help='seed number to replay')
+parser.add_argument('fuzz_input', type=int, help='seed number to replay')
 parser.add_argument('--resolution', type=int, default=701, help='Discretization resolution')
 args = parser.parse_args()
 
