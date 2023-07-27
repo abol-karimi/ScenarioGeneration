@@ -1,9 +1,3 @@
-#--- Python imports
-import jsonpickle
-from scenic.domains.driving.roads import ManeuverType
-from scenariogen.core.signals import SignalType
-from scenariogen.core.utils import route_from_turns
-
 #--- Scenario parameters
 description = """
   Two cars arrive at a 3way-stop T-intersection about the same time.
@@ -15,7 +9,13 @@ description = """
 param carla_map = 'Town05'
 carla_map = globalParameters.carla_map
 param map = f'/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/{carla_map}.xodr'
-model scenic.simulators.newtonian.driving_model
+model scenic.simulators.carla.model
+
+#--- Python imports
+import jsonpickle
+from scenic.domains.driving.roads import ManeuverType
+from scenariogen.core.signals import SignalType
+from scenariogen.core.utils import route_from_turns
 
 intersection_uid = 'intersection1930'
 traffic_rules = '3way-T_stopOnAll.lp'
@@ -36,13 +36,19 @@ minor_signal = SignalType.LEFT
 
 # Derived constants
 ego_route = route_from_turns(network, ego_init_lane, ego_turns)
+
 route_major = route_from_turns(network, major_init_lane, major_turns)
-route_minor = route_from_turns(network, minor_init_lane, minor_turns)
 route_major_lanes = [network.elements[l] for l in route_major]
-route_major_centerline = PolylineRegion.unionAll([l.centerline for l in route_major_lanes])
+route_major_polyline = PolylineRegion.unionAll([l.centerline for l in route_major_lanes])
+p_major = route_major_polyline.pointAlongBy(major_init_progress)
+
+route_minor = route_from_turns(network, minor_init_lane, minor_turns)
 route_minor_lanes = [network.elements[l] for l in route_minor]
-route_minor_centerline = PolylineRegion.unionAll([l.centerline for l in route_minor_lanes])
+route_minor_polyline = PolylineRegion.unionAll([l.centerline for l in route_minor_lanes])
+p_minor = route_minor_polyline.pointAlongBy(minor_init_progress)
+
 intersection = network.elements[intersection_uid]
+
 param config = {'description': description,
                 'carla_map': globalParameters.carla_map,
                 'map': globalParameters.map,
@@ -69,8 +75,7 @@ scenario SeedScenario():
       do FollowTrajectoryBehavior(speed, trajectory)
       do FollowLaneBehavior(speed)
 
-    p0 = route_major_centerline.pointAlongBy(major_init_progress)
-    car_major = Car at p0, facing roadDirection,
+    car_major = new Car at p_major, facing roadDirection,
       with name 'nonego_major',
       with route route_major,
       with physics True,
@@ -80,8 +85,7 @@ scenario SeedScenario():
       with length blueprints['vehicle.tesla.model3']['length'],
       with width blueprints['vehicle.tesla.model3']['width']
 
-    p0 = route_minor_centerline.pointAlongBy(minor_init_progress)
-    car_minor = Car at p0, facing roadDirection,
+    car_minor = new Car at p_minor, facing roadDirection,
       with name 'nonego_minor',
       with route route_minor,
       with physics True,
@@ -90,4 +94,5 @@ scenario SeedScenario():
       with behavior PassBehavior(4, route_minor_lanes),
       with length blueprints['vehicle.ford.crown']['length'],
       with width blueprints['vehicle.ford.crown']['width']
-    ego = car_major
+
+    cars = [car_major, car_minor]

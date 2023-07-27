@@ -77,7 +77,7 @@ ego = cars[0]
 
 #--- Output parameters
 record initial (car.route for car in cars) as routes
-record initial (car.signal for car in cars) as turn_signals
+record initial (car.signal for car in cars) as signals
 record initial (car.length for car in cars) as lengths
 record initial (car.width for car in cars) as widths
 record initial config as config

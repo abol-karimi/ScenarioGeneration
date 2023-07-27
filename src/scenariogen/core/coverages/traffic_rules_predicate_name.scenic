@@ -10,7 +10,7 @@ from scenic.domains.driving.roads import Network
 from scenariogen.core.utils import geometry_atoms
 from scenariogen.core.events import *
 
-class TrafficRulesPredicateNameCoverage:
+class Coverage:
  
   def __init__(self, predicates=set()):
     self.coverage = Counter(predicates)
@@ -45,7 +45,7 @@ def to_coverage(events):
       for model in handle:
           for atom in model.symbols(atoms=True):
               predicates.add(str(atom.name))
-  return TrafficRulesPredicateNameCoverage(predicates)
+  return Coverage(predicates)
   
 
 events = []

@@ -46,6 +46,7 @@ class Scenario:
                       }
     scenic_scenario = scenic.scenarioFromFile(
                         'src/scenariogen/core/SUT.scenic',
+                        mode2D=True,
                         model=simulator2model[config['simulator']],
                         params=params)
     scene, _ = scenic_scenario.generate(maxIterations=1)

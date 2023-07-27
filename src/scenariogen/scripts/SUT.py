@@ -19,6 +19,8 @@ parser.add_argument('--closedLoop', action='store_true',
                     help='simulate a VUT')
 parser.add_argument('--ego_module', default='experiments.agents.followLane',
                     help='the scenic file containing the ego scenario')
+parser.add_argument('--coverage_module', default='scenariogen.core.coverages.trivial',
+                    help='the scenic file containing ')
 parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='newtonian',
                     help='The simulator')
 parser.add_argument('--replay_raw', action='store_true',
@@ -52,6 +54,7 @@ config['arrival_distance'] = 4
 config['stop_speed_threshold'] = 0.5  # meters/seconds
 config['closedLoop'] = args.closedLoop
 config['ego_module'] = args.ego_module
+config['coverage_module'] = args.coverage_module
 config['simulator'] = args.simulator
 config['render'] = not args.no_render
 config['replay_raw'] = args.replay_raw

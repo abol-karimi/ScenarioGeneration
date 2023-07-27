@@ -4,8 +4,6 @@
 import argparse
 import jsonpickle, pickle
 from pathlib import Path
-import numpy as np
-from geomdl import knotvector
 
 # Scenic modules
 import scenic
@@ -14,8 +12,7 @@ from scenic.core.dynamics import GuardViolation
 
 
 # My modules
-from scenariogen.core.fuzz_input import FuzzInput, Spline
-from scenariogen.core.utils import sim_trajectories, seed_trajectories
+from scenariogen.core.utils import sim_trajectories, seed_from_sim
 from scenariogen.core.errors import NonegoNonegoCollisionError
 
 #----------Main Script----------
@@ -56,12 +53,13 @@ simulator2model = {'newtonian': 'scenic.simulators.newtonian.driving_model',
                     }
 # Run the scenario
 scenic_scenario = scenic.scenarioFromFile(
-    'src/scenariogen/scripts/create.scenic',
-    model=simulator2model[args.simulator],
-    params = {'timestep': args.timestep,
-              'render': not args.no_render,
-              'scenario_path': args.scenario_path,
-              'save_sim_trajectories': args.save_sim_trajectories})
+                    'src/scenariogen/scripts/create.scenic',
+                    mode2D=True,
+                    model=simulator2model[args.simulator],
+                    params = {'timestep': args.timestep,
+                            'render': not args.no_render,
+                            'scenario_path': args.scenario_path,
+                            'save_sim_trajectories': args.save_sim_trajectories})
 scene, _ = scenic_scenario.generate(maxIterations=1)
 simulator = scenic_scenario.getSimulator()
 try:
@@ -82,22 +80,11 @@ except GuardViolation:
     exit()
 
 # Save the seed
-footprints, timings = seed_trajectories(sim_result,
-                                        args.timestep,
-                                        degree=args.spline_degree,
-                                        knots_size=args.parameters_size
-                                        )
-seed = FuzzInput(config=sim_result.records['config'],
-            routes=sim_result.records['routes'],
-            footprints=footprints,
-            timings=timings,
-            signals=sim_result.records['turn_signals'],
-            lengths=sim_result.records['lengths'],
-            widths=sim_result.records['widths'])
-
 scenario_path = Path(args.scenario_path)
-
-# Store the seed
+seed = seed_from_sim(sim_result,
+                     args.timestep,
+                     degree=args.spline_degree,
+                     knots_size=args.parameters_size)
 if args.out_path:
     with open(args.out_path, 'w') as f:
         f.write(jsonpickle.encode(seed, indent=1))    

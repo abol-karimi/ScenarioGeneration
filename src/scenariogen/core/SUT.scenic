@@ -26,7 +26,7 @@ nonegos_scenario = NonegosScenario()
 scenario Main():
   setup:
     p = intersection.polygon.centroid
-    ego = Debris at Vector(p.x, p.y)
+    ego = new Debris at p.x@p.y
 
     record initial config as config
 

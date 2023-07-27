@@ -9,6 +9,7 @@ import pickle
 from shapely.geometry import LineString
 
 from scenic.simulators.carla.simulator import CarlaSimulation
+from scenic.core.vectors import Orientation
 import scenariogen.simulators.carla.visualization as visualization
 from scenariogen.core.utils import sample_trajectories
 from scenariogen.core.signals import SignalType
@@ -18,7 +19,7 @@ from scenariogen.core.geometry import CurvilinearTransform
 
 behavior AnimateBehavior():
 	for pose in self.traj_sample:
-		take SetTransformAction(pose.position, pose.heading)
+		take SetTransformAction(pose[0]@pose[1], Orientation._fromHeading(pose[2]))
 
 behavior StopAndPassIntersectionBehavior(speed, trajectory, intersection, arrival_distance=4):
   do FollowTrajectoryBehavior(speed, trajectory) until (distance from (front of self) to intersection) <= arrival_distance
@@ -39,7 +40,7 @@ scenario NonegosScenario():
       tjs = sample_trajectories(network, fuzz_input, int(config['steps'])+1, umax=config['steps']*config['timestep'])
     for i, (route, tj, signal, l, w, bp) in enumerate(zip(fuzz_input.routes, tjs, fuzz_input.signals, fuzz_input.lengths, fuzz_input.widths, config['blueprints'])):
       route_list = list(route)
-      car = Car at tj[0],
+      car = new Car at tj[0][0]@tj[0][1],
         with name f'{route_list[0]}_{signal.name}_{i}',
         with behavior AnimateBehavior(),
         with physics False,
@@ -53,9 +54,7 @@ scenario NonegosScenario():
 
 scenario CheckCollisionsScenario(egos, nonegos):
   setup:
-    ego = (egos+nonegos)[0]
-
-    monitor collisions:
+    monitor collisions():
       nonego_pairs = [(nonegos[i], nonegos[j]) 
               for i in range(len(nonegos)) 
               for j in range(i+1, len(nonegos))]
@@ -73,35 +72,19 @@ scenario CheckCollisionsScenario(egos, nonegos):
 
 scenario ShowIntersection():
   setup:  
-    monitor show_intersection:
+    monitor show_intersection():
       if isinstance(simulation(), CarlaSimulation):
         carla_world = simulation().world
         visualization.draw_intersection(carla_world, intersection, draw_lanes=True)
         visualization.set_camera(carla_world, intersection, height=50)
       wait
 
-footprints = []
-transforms = []
-scenario RecordSeedInfoScenario(cars):
-  setup:
-    for car in cars:
-      axis_coords = [p for uid in car.route for p in network.elements[uid].centerline.lineString.coords]
-      transforms.append(CurvilinearTransform(axis_coords))
-
-    record final config as config
-    record final transforms as transforms
-    record tuple(car.position for car in cars) as footprints
-    record final tuple(car.route for car in cars) as routes
-    record final tuple(car.signal for car in cars) as turn_signals
-    record final tuple(car.length for car in cars) as lengths
-    record final tuple(car.width for car in cars) as widths
-
 
 poses = []
 scenario RecordSimTrajectories(cars):
   setup:
 
-    monitor record_poses:
+    monitor record_poses():
       while True:
         poses.append(tuple((car.position, car.heading) for car in cars))
         wait

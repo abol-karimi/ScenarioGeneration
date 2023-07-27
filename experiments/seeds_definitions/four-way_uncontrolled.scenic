@@ -16,7 +16,7 @@ traffic_rules = '4way-uncontrolled.lp'
 arrival_distance = 4
 route_left = seed_corpus.Route(lanes=['road44_lane1', 'road552_lane1', 'road45_lane1'])
 route_right = seed_corpus.Route(lanes=['road8_lane1', 'road415_lane1', 'road9_lane1'])
-turn_signals = [SignalType.OFF, SignalType.OFF]
+signals = [SignalType.OFF, SignalType.OFF]
 ego_route = seed_corpus.Route(lanes=['road9_lane2', 'road455_lane0', 'road45_lane1'])
 ego_init_progress = 90
 
@@ -55,7 +55,7 @@ car_left = Car at p0, facing roadDirection,
   with name 'nonego_left',
   with physics True,
   with allowCollisions False,
-  with signal turn_signals[0],
+  with signal signals[0],
   with behavior PassBehavior(4, trajectory),
   with length blueprints['vehicle.tesla.model3']['length'],
   with width blueprints['vehicle.tesla.model3']['width']
@@ -67,7 +67,7 @@ car_right = Car at p1, facing roadDirection,
   with name 'nonego_right',
   with physics True,
   with allowCollisions False,
-  with signal turn_signals[1],
+  with signal signals[1],
   with behavior PassBehavior(4, trajectory),
   with length blueprints['vehicle.ford.crown']['length'],
   with width blueprints['vehicle.ford.crown']['width']
@@ -76,7 +76,7 @@ ego = car_left
 
 #--- Output parameters
 record initial [route_left, route_right] as routes
-record initial turn_signals as turn_signals
+record initial signals as signals
 record initial [car_left.length, car_right.length] as lengths
 record initial [car_left.width, car_right.width] as widths
 record initial config as config

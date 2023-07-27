@@ -19,7 +19,7 @@ VIRIDIS = np.array(cm.get_cmap('viridis').colors)
 VID_RANGE = np.linspace(0.0, 1.0, VIRIDIS.shape[0])
 
 # This project
-from scenariogen.core.fuzz_input import Spline
+from scenariogen.core.fuzz_input import FuzzInput, Spline
 from scenariogen.core.signals import SignalType
 from scenariogen.core.geometry import CurvilinearTransform
 
@@ -186,7 +186,7 @@ def sim_trajectories(sim_result, timestep):
             sim_trajs[j].append((pose, time))
     return sim_trajs
 
-def seed_trajectories(sim_result, timestep, degree=3, knots_size=20):
+def seed_from_sim(sim_result, timestep, degree=3, knots_size=20):
     cars_num = len(sim_result.records['routes'])
     sim_trajs = [[] for k in range(cars_num)]
     for i, footprints in sim_result.records['footprints']:
@@ -243,8 +243,14 @@ def seed_trajectories(sim_result, timestep, degree=3, knots_size=20):
                     )
         footprints.append(footprint)
         timings.append(timing)
-    
-    return tuple(footprints), tuple(timings)
+      
+    return FuzzInput(config=sim_result.records['config'],
+                     routes=sim_result.records['routes'],
+                     footprints=tuple(footprints),
+                     timings=tuple(timings),
+                     signals=sim_result.records['signals'],
+                     lengths=sim_result.records['lengths'],
+                     widths=sim_result.records['widths'])
 
 def sample_trajectories(network, seed, sample_size, umin=0, umax=None):
     if umax is None:
@@ -257,10 +263,7 @@ def sample_trajectories(network, seed, sample_size, umin=0, umax=None):
         footprint_rectilinear = Spline(degree=footprint.degree,
                                       ctrlpts=tuple(transform.rectilinear(p) for p in footprint.ctrlpts),
                                       knotvector=footprint.knotvector)
-        sample = sample_trajectory(footprint_rectilinear, timing, ts)
-        traj = [OrientedPoint(position=Vector(x, y), heading=h)
-                for x, y, h in sample]
-        trajectories.append(traj)
+        trajectories.append(sample_trajectory(footprint_rectilinear, timing, ts))
 
     return trajectories
 
@@ -276,11 +279,11 @@ def sample_trajectory(footprint, timing, ts):
     spline.ctrlpts = footprint.ctrlpts
     spline.knotvector = footprint.knotvector
     sample = geomdl.operations.tangent(spline, ds)
-    return ((s[0][0], # x
-             s[0][1], # y
-             headingOfSegment((0, 0), (s[1][0], s[1][1])), # heading
-             )
-             for s in sample)
+    return tuple((s[0][0], # x
+                  s[0][1], # y
+                  headingOfSegment((0, 0), (s[1][0], s[1][1])), # heading
+                  )
+                  for s in sample)
 
 def get_trace(world, planner, route):
     """"Get a list of waypoints along a route (a list of lanes)"""
