@@ -62,6 +62,11 @@ RUN . .venv/bin/activate ; \
 # Carla RSS python module
 COPY --chown=carla:carla PythonAPI /home/carla/PythonAPI
 
+# Python modules needed for installing Scenic
+RUN . .venv/bin/activate ; \
+  pip install cpython ; \
+  pip install numpy scipy pybind11 wheel
+
 # Entrypoint script
 COPY --chown=carla:carla entrypoint.sh /home/carla/entrypoint.sh
 ENTRYPOINT [ "/bin/bash", "-c", "/home/carla/entrypoint.sh" ]

@@ -1,6 +1,4 @@
 . ~/.venv/bin/activate
-pip install cython
-pip install numpy scipy pybind11 wheel
 
 # Set up Carla python module
 CARLA_ROOT='/home/carla'
