@@ -9,12 +9,11 @@ import clingo
 from scenic.domains.driving.roads import Network
 from scenariogen.core.utils import geometry_atoms
 from scenariogen.core.events import *
+from scenariogen.predicates.predicates import TemporalOrder
 
 class Coverage:
+  coverage: None
  
-  def __init__(self, predicates=set()):
-    self.coverage = Counter(predicates)
-  
   def __sub__(self, other):
      return self.coverage - other.coverage
   
@@ -38,14 +37,16 @@ def to_coverage(events):
   ctl = clingo.Control()
   ctl.load(f"src/scenariogen/predicates/{config['traffic_rules']}")
   ctl.add("base", [], program)
-  ctl.ground([("base", [])])
+  ctl.ground([("base", [])], context=TemporalOrder())
   ctl.configuration.solve.models = "1"
   predicates = set()
   with ctl.solve(yield_=True) as handle:
       for model in handle:
           for atom in model.symbols(atoms=True):
               predicates.add(str(atom.name))
-  return Coverage(predicates)
+  cov = new Coverage,
+    with coverage Counter(predicates)
+  return cov
   
 
 events = []
@@ -53,7 +54,7 @@ scenario EvaluateCoverageScenario():
   setup:
     record final to_coverage(events) as coverage
 
-    monitor record_events:
+    monitor record_events():
       cars = simulation().agents
       maneuvers = intersection.maneuvers
       arrived = {car: False for car in cars}

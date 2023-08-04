@@ -44,6 +44,8 @@ RUN python3.8 -m venv .venv
 # Build Clingo with Python support
 RUN . .venv/bin/activate ; \
   pip install --upgrade cmake ; \
+  # cffi needed for python support
+  pip install cffi ; \ 
   git clone --depth 1 --branch v5.6.2 https://github.com/potassco/clingo.git ; \
   git -C /home/carla/clingo submodule update --init --recursive ; \
   . /home/carla/.venv/bin/activate ; \
