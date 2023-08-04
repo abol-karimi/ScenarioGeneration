@@ -1,6 +1,5 @@
 import math
 import shapely
-from shapely.geometry import LineString
 from scenic.core.vectors import Vector
 from scenic.core.regions import PolylineRegion
 

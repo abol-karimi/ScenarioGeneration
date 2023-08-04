@@ -12,7 +12,7 @@ intersection = network.elements[config['intersection']]
 import importlib
 from scenariogen.core.signals import SignalType
 from scenic.core.vectors import Vector
-from scenariogen.core.scenarios import NonegosScenario, CheckCollisionsScenario, ShowIntersection
+from scenariogen.core.scenarios import NonegosScenario, CheckCollisionsScenario
 
 if config['closedLoop']:
   ego_module = importlib.import_module(config['ego_module'])
@@ -30,16 +30,18 @@ scenario Main():
 
     record initial config as config
 
+    if config['simulator'] == 'carla':
+      from scenariogen.simulators.carla.monitors import ShowIntersectionMonitor
+      require monitor ShowIntersectionMonitor()
+
   compose:
     if config['closedLoop']:
       do ego_scenario, \
           nonegos_scenario, \
           evaluate_coverage_scenario, \
-          CheckCollisionsScenario(ego_scenario.cars, nonegos_scenario.cars), \
-          ShowIntersection()
+          CheckCollisionsScenario(ego_scenario.cars, nonegos_scenario.cars)
     else:
       do nonegos_scenario, \
           evaluate_coverage_scenario, \
-          CheckCollisionsScenario([], nonegos_scenario.cars), \
-          ShowIntersection()
+          CheckCollisionsScenario([], nonegos_scenario.cars)
 

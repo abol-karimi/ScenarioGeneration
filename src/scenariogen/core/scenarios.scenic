@@ -8,9 +8,7 @@ from pathlib import Path
 import pickle
 from shapely.geometry import LineString
 
-from scenic.simulators.carla.simulator import CarlaSimulation
 from scenic.core.vectors import Orientation
-import scenariogen.simulators.carla.visualization as visualization
 from scenariogen.core.utils import sample_trajectories
 from scenariogen.core.signals import SignalType
 from scenariogen.core.errors import EgoCollisionError, NonegoNonegoCollisionError
@@ -19,7 +17,7 @@ from scenariogen.core.geometry import CurvilinearTransform
 
 behavior AnimateBehavior():
 	for pose in self.traj_sample:
-		take SetTransformAction(pose[0]@pose[1], Orientation._fromHeading(pose[2]))
+		take SetPositionAction(pose[0]@pose[1]), SetHeadingAction(pose[2])
 
 behavior StopAndPassIntersectionBehavior(speed, trajectory, intersection, arrival_distance=4):
   do FollowTrajectoryBehavior(speed, trajectory) until (distance from (front of self) to intersection) <= arrival_distance
@@ -69,16 +67,6 @@ scenario CheckCollisionsScenario(egos, nonegos):
           if e.intersects(n):
             raise EgoCollisionError(e, n)
         wait
-
-scenario ShowIntersection():
-  setup:  
-    monitor show_intersection():
-      if isinstance(simulation(), CarlaSimulation):
-        carla_world = simulation().world
-        visualization.draw_intersection(carla_world, intersection, draw_lanes=True)
-        visualization.set_camera(carla_world, intersection, height=50)
-      wait
-
 
 poses = []
 scenario RecordSimTrajectories(cars):

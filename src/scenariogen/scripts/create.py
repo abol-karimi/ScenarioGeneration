@@ -57,9 +57,10 @@ scenic_scenario = scenic.scenarioFromFile(
                     mode2D=True,
                     model=simulator2model[args.simulator],
                     params = {'timestep': args.timestep,
-                            'render': not args.no_render,
-                            'scenario_path': args.scenario_path,
-                            'save_sim_trajectories': args.save_sim_trajectories})
+                              'simulator': args.simulator,
+                              'render': not args.no_render,
+                              'scenario_path': args.scenario_path,
+                              'save_sim_trajectories': args.save_sim_trajectories})
 scene, _ = scenic_scenario.generate(maxIterations=1)
 simulator = scenic_scenario.getSimulator()
 try:

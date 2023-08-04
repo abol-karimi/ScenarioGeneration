@@ -19,8 +19,11 @@ model globalParameters.model # initialized by seed_scenario
 param save_sim_trajectories = None
 save_sim_trajectories = globalParameters.save_sim_trajectories
 
+param simulator_name = None
+simulator_name = globalParameters.simulator_name
+
 # Import auxiliary scenarios
-from scenariogen.core.scenarios import CheckCollisionsScenario, RecordSimTrajectories, ShowIntersection
+from scenariogen.core.scenarios import CheckCollisionsScenario, RecordSimTrajectories
 
 transforms = []
 footprints = []
@@ -59,15 +62,17 @@ scenario Main():
     record final lengths as lengths
     record final widths as widths
 
+    if simulator_name == 'carla':
+      from scenariogen.simulators.carla.monitors import ShowIntersectionMonitor
+      require monitor ShowIntersectionMonitor()
+
   compose:
     if save_sim_trajectories:
       do seed_scenario, \
           CheckCollisionsScenario([], simulation().agents), \
-          RecordSimTrajectories(simulation().agents), \
-          ShowIntersection()
+          RecordSimTrajectories(simulation().agents)
     else:      
       do seed_scenario, \
-          ShowIntersection(), \
           CheckCollisionsScenario([], simulation().agents)
 
 
