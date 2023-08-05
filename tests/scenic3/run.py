@@ -13,5 +13,3 @@ sim_result = simulator.simulate(
                 maxSteps=100
                 )
 print(sim_result.records)
-# for item, value in sim_result.records.items():
-#   print(item, value)

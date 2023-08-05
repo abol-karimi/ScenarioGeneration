@@ -11,20 +11,7 @@ from scenariogen.core.utils import geometry_atoms
 from scenariogen.core.events import *
 from scenariogen.predicates.predicates import TemporalOrder
 
-class Coverage:
-  coverage: None
- 
-  def __sub__(self, other):
-     return self.coverage - other.coverage
-  
-  def __iadd__(self, other):
-     self.coverage += other.coverage 
-
-  def __len__(self):
-    return len(self.coverage)
-  
-  def is_novel_to(self, other):
-     return len(self.coverage.keys() - other.coverage.keys()) == 0
+from scenariogen.core.coverages.traffic_rules_predicate_name_coverage import Coverage
 
 def to_coverage(events):
   print('Computing predicate-name coverage...')
@@ -44,48 +31,47 @@ def to_coverage(events):
       for model in handle:
           for atom in model.symbols(atoms=True):
               predicates.add(str(atom.name))
-  cov = new Coverage,
-    with coverage Counter(predicates)
-  return cov
+  return Coverage(predicates)
   
 
-events = []
-scenario EvaluateCoverageScenario():
-  setup:
-    record final to_coverage(events) as coverage
+monitor CoverageMonitor(maxSteps):
+  coverage = None
+  events = []
+  cars = simulation().agents
+  maneuvers = intersection.maneuvers
+  arrived = {car: False for car in cars}
+  entered = {car: False for car in cars}
+  exited = {car: False for car in cars}
+  lanes = {car: set() for car in cars}
+  inIntersection = {car: False for car in cars}
+  for step in range(maxSteps):
+    time_seconds = step * config['timestep']
+    for car in cars:
+      inIntersection[car] = car.occupiedSpace.intersects(intersection.footprint)
+      
+      if (not arrived[car]) and (distance from (front of car) to intersection) < config['arrival_distance']:
+        arrived[car] = True
+        events.append(ArrivedAtIntersectionEvent(car.name, car.lane.uid, time_seconds))
+        events.append(SignaledAtForkEvent(car.name, car.lane.uid, car.signal.name.lower(), time_seconds))
+      if inIntersection[car] and not entered[car]:
+        entered[car] = True
+        events.append(EnteredIntersectionEvent(car.name, car.lane.uid, time_seconds))
+      if entered[car] and (not exited[car]) and not inIntersection[car]:
+        exited[car] = True
+        events.append(ExitedIntersectionEvent(car.name, car.lane.uid, time_seconds))
 
-    monitor record_events():
-      cars = simulation().agents
-      maneuvers = intersection.maneuvers
-      arrived = {car: False for car in cars}
-      entered = {car: False for car in cars}
-      exited = {car: False for car in cars}
-      lanes = {car: set() for car in cars}
-      inIntersection = {car: False for car in cars}
-      while True:
-        currentTime = simulation().currentTime * config['timestep']
-        for car in cars:
-          inIntersection[car] = car.intersects(intersection)
-          
-          if (not arrived[car]) and (distance from (front of car) to intersection) < config['arrival_distance']:
-            arrived[car] = True
-            events.append(ArrivedAtIntersectionEvent(car.name, car.lane.uid, currentTime))
-            events.append(SignaledAtForkEvent(car.name, car.lane.uid, car.signal.name.lower(), currentTime))
-          if inIntersection[car] and not entered[car]:
-            entered[car] = True
-            events.append(EnteredIntersectionEvent(car.name, car.lane.uid, currentTime))
-          if entered[car] and (not exited[car]) and not inIntersection[car]:
-            exited[car] = True
-            events.append(ExitedIntersectionEvent(car.name, car.lane.uid, currentTime))
-
-          for maneuver in maneuvers:
-            lane = maneuver.connectingLane
-            wasOnLane = lane.uid in lanes[car]
-            isOnLane = car.intersects(lane)
-            if isOnLane and not wasOnLane:
-              lanes[car].add(lane.uid)
-              events.append(EnteredLaneEvent(car.name, lane.uid, currentTime))
-            elif wasOnLane and not isOnLane:
-              lanes[car].remove(lane.uid)
-              events.append(ExitedLaneEvent(car.name, lane.uid, currentTime))
-        wait
+      for maneuver in maneuvers:
+        lane = maneuver.connectingLane
+        wasOnLane = lane.uid in lanes[car]
+        isOnLane = car.occupiedSpace.intersects(lane.footprint)
+        if isOnLane and not wasOnLane:
+          lanes[car].add(lane.uid)
+          events.append(EnteredLaneEvent(car.name, lane.uid, time_seconds))
+        elif wasOnLane and not isOnLane:
+          lanes[car].remove(lane.uid)
+          events.append(ExitedLaneEvent(car.name, lane.uid, time_seconds))
+    print(simulation().currentTime, len(events))
+    wait
+  coverage = to_coverage(events)
+  print('Monitor last statement!')
+  wait

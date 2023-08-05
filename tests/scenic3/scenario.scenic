@@ -24,6 +24,7 @@ monitor RecordEventsMonitor(events, cars):
   wait
 
 monitor Dummy():
+  local_var = 5
   print(f'Dummy time: {simulation().currentTime}')
   wait
 
@@ -34,12 +35,14 @@ scenario RecordEventsScenario(cars):
 
 a = A()
 b = RecordEventsScenario(a.cars)
+dummy = Dummy()
 scenario Main():
   setup:
     car4 = new Car,
       with name 'car4',
       with behavior FollowLaneBehavior()
-    require monitor Dummy()
+    require monitor dummy
     record final tuple(b.events) as events
+    record final dummy.local_var as monitor_var
   compose:
     do a, b
