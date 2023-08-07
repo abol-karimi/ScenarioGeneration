@@ -75,7 +75,7 @@ scenario SeedScenario():
       do FollowTrajectoryBehavior(speed, trajectory)
       do FollowLaneBehavior(speed)
 
-    car_major = new Car at p_major, facing roadDirection,
+    car_major = Car at p_major, facing roadDirection,
       with name 'nonego_major',
       with route route_major,
       with physics True,
@@ -85,7 +85,7 @@ scenario SeedScenario():
       with length blueprints['vehicle.tesla.model3']['length'],
       with width blueprints['vehicle.tesla.model3']['width']
 
-    car_minor = new Car at p_minor, facing roadDirection,
+    car_minor = Car at p_minor, facing roadDirection,
       with name 'nonego_minor',
       with route route_minor,
       with physics True,

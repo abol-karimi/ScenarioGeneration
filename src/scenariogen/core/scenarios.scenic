@@ -8,7 +8,6 @@ from pathlib import Path
 import pickle
 from shapely.geometry import LineString
 
-from scenic.core.vectors import Orientation
 from scenariogen.core.utils import sample_trajectories
 from scenariogen.core.signals import SignalType
 from scenariogen.core.errors import EgoCollisionError, NonegoNonegoCollisionError
@@ -38,7 +37,7 @@ scenario NonegosScenario():
       tjs = sample_trajectories(network, fuzz_input, int(config['steps'])+1, umax=config['steps']*config['timestep'])
     for i, (route, tj, signal, l, w, bp) in enumerate(zip(fuzz_input.routes, tjs, fuzz_input.signals, fuzz_input.lengths, fuzz_input.widths, config['blueprints'])):
       route_list = list(route)
-      car = new Car at tj[0][0]@tj[0][1],
+      car = Car at tj[0][0]@tj[0][1],
         with name f'{route_list[0]}_{signal.name}_{i}',
         with behavior AnimateBehavior(),
         with physics False,
@@ -52,7 +51,7 @@ scenario NonegosScenario():
 
 scenario CheckCollisionsScenario(egos, nonegos):
   setup:
-    monitor collisions():
+    monitor collisions:
       nonego_pairs = [(nonegos[i], nonegos[j]) 
               for i in range(len(nonegos)) 
               for j in range(i+1, len(nonegos))]
@@ -72,7 +71,7 @@ poses = []
 scenario RecordSimTrajectories(cars):
   setup:
 
-    monitor record_poses():
+    monitor record_poses:
       while True:
         poses.append(tuple((car.position, car.heading) for car in cars))
         wait

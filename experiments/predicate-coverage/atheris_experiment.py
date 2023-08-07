@@ -1,7 +1,6 @@
 #!/usr/bin/env python3.8
 
 import sys
-import importlib
 import jsonpickle
 from pathlib import Path
 import atheris
@@ -132,7 +131,7 @@ def SUT_target_wrapper(input_bytes):
   
   seconds = seed.timings[0].ctrlpts[-1][1]
   scenario_config.update({
-            'steps': seconds // scenario_config['timestep'],
+            'steps': int(seconds // scenario_config['timestep']),
             })
 
   try:

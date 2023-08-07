@@ -42,7 +42,7 @@ if args.steps:
     seconds = args.steps * args.timestep
 elif args.seconds:
     seconds = args.seconds
-steps = seconds // args.timestep
+steps = int(seconds // args.timestep)
 
 # Scenario config
 config = {**seed.config}

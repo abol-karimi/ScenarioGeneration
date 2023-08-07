@@ -20,7 +20,7 @@ param save_sim_trajectories = None
 save_sim_trajectories = globalParameters.save_sim_trajectories
 
 param simulator_name = None
-simulator_name = globalParameters.simulator_name
+simulator_name = globalParameters.simulator
 
 # Import auxiliary scenarios
 from scenariogen.core.scenarios import CheckCollisionsScenario, RecordSimTrajectories
@@ -32,41 +32,40 @@ signals = []
 lengths = []
 widths = []
 
-monitor RecordSeedInfoMonitor():
-  cars = simulation().agents
-  routes.extend(car.route for car in cars)
-  transforms.extend(CurvilinearTransform([p for uid in route
-                                            for p in network.elements[uid].centerline.lineString.coords
-                                          ])
-                    for route in routes)
-  signals.extend(car.signal for car in cars)
-  lengths.extend(car.length for car in cars)
-  widths.extend(car.width for car in cars)
-  while True:
-    time = simulation().currentTime
-    footprints.append((time, tuple(car.position for car in cars)))
-    wait
-
 # Record seed info
 scenario Main():
   setup:
     p = network.elements[config['intersection']].polygon.centroid
-    ego = new Debris at p.x@p.y
+    ego = Debris at p.x@p.y
 
-    require monitor RecordSeedInfoMonitor()
+    monitor RecordSeedInfoMonitor:
+      cars = simulation().agents
+      routes.extend(car.route for car in cars)
+      transforms.extend(CurvilinearTransform([p for uid in route
+                                                for p in network.elements[uid].centerline.lineString.coords
+                                              ])
+                        for route in routes)
+      signals.extend(car.signal for car in cars)
+      lengths.extend(car.length for car in cars)
+      widths.extend(car.width for car in cars)
+      while True:
+        time = simulation().currentTime
+        footprints.append((time, tuple(car.position for car in cars)))
+        wait
+
     record final config as config
-    record final transforms as transforms
-    record final footprints as footprints
-    record final routes as routes
-    record final signals as signals
-    record final lengths as lengths
-    record final widths as widths
-
-    if simulator_name == 'carla':
-      from scenariogen.simulators.carla.monitors import ShowIntersectionMonitor
-      require monitor ShowIntersectionMonitor()
+    record final tuple(transforms) as transforms
+    record final tuple(footprints) as footprints
+    record final tuple(routes) as routes
+    record final tuple(signals) as signals
+    record final tuple(lengths) as lengths
+    record final tuple(widths) as widths
 
   compose:
+    if simulator_name == 'carla':
+      from scenariogen.simulators.carla.scenarios import ShowIntersectionScenario
+      do ShowIntersectionScenario()
+
     if save_sim_trajectories:
       do seed_scenario, \
           CheckCollisionsScenario([], simulation().agents), \

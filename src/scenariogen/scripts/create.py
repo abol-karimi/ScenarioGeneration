@@ -54,7 +54,6 @@ simulator2model = {'newtonian': 'scenic.simulators.newtonian.driving_model',
 # Run the scenario
 scenic_scenario = scenic.scenarioFromFile(
                     'src/scenariogen/scripts/create.scenic',
-                    mode2D=True,
                     model=simulator2model[args.simulator],
                     params = {'timestep': args.timestep,
                               'simulator': args.simulator,

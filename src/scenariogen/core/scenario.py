@@ -29,10 +29,7 @@ class Scenario:
               'blueprints': bps,
               'fuzz_input': self.fuzz_input,
               }
-
-    # Sample the nonego splines.
-    seconds = self.fuzz_input.timings[0].ctrlpts[-1][1]
-    
+  
     # For closed-loop fuzzing, simulate the ego too.
     params = {'carla_map': config['carla_map'],
               'map': config['map'],
@@ -46,7 +43,6 @@ class Scenario:
                       }
     scenic_scenario = scenic.scenarioFromFile(
                         'src/scenariogen/core/SUT.scenic',
-                        mode2D=True,
                         model=simulator2model[config['simulator']],
                         params=params)
     scene, _ = scenic_scenario.generate(maxIterations=1)
@@ -55,7 +51,7 @@ class Scenario:
     print(f'Simulating the scenario...')
     sim_result = simulator.simulate(
                     scene,
-                    maxSteps=int(seconds / config['timestep']),
+                    maxSteps=config['steps'],
                     maxIterations=1,
                     raiseGuardViolations=True)
 

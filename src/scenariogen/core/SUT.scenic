@@ -19,29 +19,29 @@ if config['closedLoop']:
   ego_scenario = ego_module.EgoScenario()
 
 coverage_module = importlib.import_module(config['coverage_module'])
-coverage_monitor = coverage_module.CoverageMonitor(400)
+coverage_scenario = coverage_module.CoverageScenario()
 
 nonegos_scenario = NonegosScenario()
 
 scenario Main():
   setup:
     p = intersection.polygon.centroid
-    ego = new Debris at p.x@p.y
-
-    require monitor coverage_monitor
-    if config['simulator'] == 'carla':
-      from scenariogen.simulators.carla.monitors import ShowIntersectionMonitor
-      require monitor ShowIntersectionMonitor()
+    ego = Debris at p.x@p.y
 
     record initial config as config
-    record final coverage_monitor.coverage as coverage    
 
   compose:
+    if config['simulator'] == 'carla':
+      from scenariogen.simulators.carla.scenarios import ShowIntersectionScenario
+      do ShowIntersectionScenario()
+
     if config['closedLoop']:
       do ego_scenario, \
           nonegos_scenario, \
+          coverage_scenario, \
           CheckCollisionsScenario(ego_scenario.cars, nonegos_scenario.cars)
     else:
       do nonegos_scenario, \
+          coverage_scenario, \
           CheckCollisionsScenario([], nonegos_scenario.cars)
 
