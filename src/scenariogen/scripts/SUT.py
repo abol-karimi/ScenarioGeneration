@@ -67,6 +67,5 @@ except NonegoNonegoCollisionError as err:
 except EgoCollisionError as err:
     print(f'Ego collided with {err.other.name}.')
 else:
-    events = sim_result.records['events']
-    for e in events:
-        print(e)
+    for p, count in sim_result.records['coverage'].coverage.items():
+        print(f'{p}: {count}')

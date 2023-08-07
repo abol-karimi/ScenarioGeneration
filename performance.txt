@@ -1,0 +1,137 @@
+Simulating the scenario...
+
+  _     ._   __/__   _ _  _  _ _/_   Recorded: 14:57:14  Samples:  79863
+ /_//_/// /_\ / //_// / //_'/ //     Duration: 81.239    CPU time: 83.874
+/   _/                      v4.5.1
+
+Program: /home/carla/ScenarioGeneration/src/scenariogen/scripts/SUT.py experiments/seeds/0.json --no_render
+
+81.237 <module>  SUT.py:2
+├─ 80.213 Scenario.run  ../core/scenario.py:20
+│  ├─ 77.258 NewtonianSimulator.simulate  scenic/core/simulators.py:81
+│  │  └─ 77.258 NewtonianSimulator._runSingleSimulation  scenic/core/simulators.py:209
+│  │     └─ 77.258 NewtonianSimulator.createSimulation  scenic/simulators/newtonian/simulator.py:63
+│  │        └─ 77.258 NewtonianSimulation.__init__  scenic/simulators/newtonian/simulator.py:70
+│  │           └─ 77.258 NewtonianSimulation.__init__  scenic/core/simulators.py:325
+│  │              └─ 77.248 NewtonianSimulation._run  scenic/core/simulators.py:415
+│  │                 ├─ 75.059 NewtonianSimulation.updateObjects  scenic/core/simulators.py:649
+│  │                 │  ├─ 71.160 Car._copyWith  scenic/core/object_types.py:501
+│  │                 │  │  └─ 69.798 Car._withProperties  scenic/core/object_types.py:178
+│  │                 │  │     ├─ 35.703 Car._withSpecifiers  scenic/core/object_types.py:195
+│  │                 │  │     │  ├─ 33.075 Car._resolveSpecifiers  scenic/core/object_types.py:225
+│  │                 │  │     │  │  ├─ 19.790 toDistribution  scenic/core/distributions.py:421
+│  │                 │  │     │  │  │  ├─ 17.391 <listcomp>  scenic/core/distributions.py:428
+│  │                 │  │     │  │  │  │  └─ 16.709 toDistribution  scenic/core/distributions.py:421
+│  │                 │  │     │  │  │  │     ├─ 7.172 <listcomp>  scenic/core/distributions.py:428
+│  │                 │  │     │  │  │  │     │  ├─ 5.013 toDistribution  scenic/core/distributions.py:421
+│  │                 │  │     │  │  │  │     │  │  ├─ 2.669 [self]  scenic/core/distributions.py
+│  │                 │  │     │  │  │  │     │  │  └─ 2.343 isinstance  <built-in>
+│  │                 │  │     │  │  │  │     │  └─ 2.159 [self]  scenic/core/distributions.py
+│  │                 │  │     │  │  │  │     ├─ 5.062 <genexpr>  scenic/core/distributions.py:429
+│  │                 │  │     │  │  │  │     │  ├─ 2.654 [self]  scenic/core/distributions.py
+│  │                 │  │     │  │  │  │     │  └─ 2.408 isLazy  scenic/core/lazy_eval.py:273
+│  │                 │  │     │  │  │  │     │     ├─ 1.471 [self]  scenic/core/lazy_eval.py
+│  │                 │  │     │  │  │  │     │     └─ 0.937 getattr  <built-in>
+│  │                 │  │     │  │  │  │     └─ 3.733 [self]  scenic/core/distributions.py
+│  │                 │  │     │  │  │  └─ 1.600 <genexpr>  scenic/core/distributions.py:429
+│  │                 │  │     │  │  │     └─ 0.820 [self]  scenic/core/distributions.py
+│  │                 │  │     │  │  ├─ 5.468 Car._specify  scenic/core/object_types.py:1681
+│  │                 │  │     │  │  │  └─ 4.725 Car._specify  scenic/core/object_types.py:1016
+│  │                 │  │     │  │  │     └─ 4.241 Car._specify  scenic/core/object_types.py:411
+│  │                 │  │     │  │  │        ├─ 1.726 toScalar  scenic/core/type_support.py:360
+│  │                 │  │     │  │  │        │  └─ 1.692 toType  scenic/core/type_support.py:352
+│  │                 │  │     │  │  │        │     └─ 1.651 toTypes  scenic/core/type_support.py:325
+│  │                 │  │     │  │  │        │        └─ 1.458 coerceToAny  scenic/core/type_support.py:302
+│  │                 │  │     │  │  │        │           └─ 0.946 coerce  scenic/core/type_support.py:168
+│  │                 │  │     │  │  │        └─ 1.036 toVector  scenic/core/type_support.py:386
+│  │                 │  │     │  │  │           └─ 0.916 toType  scenic/core/type_support.py:352
+│  │                 │  │     │  │  │              └─ 0.898 toTypes  scenic/core/type_support.py:325
+│  │                 │  │     │  │  ├─ 4.616 Specifier.getValuesFor  scenic/core/specifiers.py:53
+│  │                 │  │     │  │  │  └─ 4.287 valueInContext  scenic/core/lazy_eval.py:223
+│  │                 │  │     │  │  │     └─ 4.037 DelayedArgument.evaluateIn  scenic/core/lazy_eval.py:47
+│  │                 │  │     │  │  │        └─ 3.906 DelayedArgument.evaluateInner  scenic/core/lazy_eval.py:130
+│  │                 │  │     │  │  │           └─ 3.886 value  scenic/core/lazy_eval.py:215
+│  │                 │  │     │  │  │              └─ 3.819 <genexpr>  scenic/core/lazy_eval.py:216
+│  │                 │  │     │  │  │                 └─ 3.806 valueInContext  scenic/core/lazy_eval.py:223
+│  │                 │  │     │  │  │                    └─ 3.777 DelayedArgument.evaluateIn  scenic/core/lazy_eval.py:47
+│  │                 │  │     │  │  │                       └─ 3.676 DelayedArgument.evaluateInner  scenic/core/lazy_eval.py:130
+│  │                 │  │     │  │  │                          └─ 3.654 value  scenic/core/lazy_eval.py:215
+│  │                 │  │     │  │  │                             └─ 3.576 <genexpr>  scenic/core/lazy_eval.py:216
+│  │                 │  │     │  │  │                                └─ 3.562 valueInContext  scenic/core/lazy_eval.py:223
+│  │                 │  │     │  │  │                                   └─ 3.538 DelayedArgument.evaluateIn  scenic/core/lazy_eval.py:47
+│  │                 │  │     │  │  │                                      └─ 3.436 DelayedArgument.evaluateInner  scenic/core/lazy_eval.py:130
+│  │                 │  │     │  │  │                                         └─ 3.416 value  scenic/core/lazy_eval.py:215
+│  │                 │  │     │  │  │                                            └─ 3.342 <genexpr>  scenic/core/lazy_eval.py:216
+│  │                 │  │     │  │  │                                               └─ 3.324 valueInContext  scenic/core/lazy_eval.py:223
+│  │                 │  │     │  │  │                                                  └─ 3.284 DelayedArgument.evaluateIn  scenic/core/lazy_eval.py:47
+│  │                 │  │     │  │  │                                                     └─ 3.148 DelayedArgument.evaluateInner  scenic/core/lazy_eval.py:130
+│  │                 │  │     │  │  │                                                        ├─ 2.144 SimpleNamespace.<lambda>  scenic/core/object_types.py:810
+│  │                 │  │     │  │  │                                                        │  ├─ 1.083 Orientation.helper  scenic/core/distributions.py:603
+│  │                 │  │     │  │  │                                                        │  └─ 1.010 helper  scenic/core/distributions.py:506
+│  │                 │  │     │  │  │                                                        │     └─ 0.813 Orientation.fromEuler  scenic/core/vectors.py:233
+│  │                 │  │     │  │  │                                                        └─ 0.978 SimpleNamespace.<lambda>  scenic/core/object_types.py:821
+│  │                 │  │     │  │  └─ 1.810 [self]  scenic/core/object_types.py
+│  │                 │  │     │  └─ 1.413 Car.__init__  scenic/simulators/newtonian/driving_model.scenic:26
+│  │                 │  │     │     └─ 1.354 callWithStarArgs  scenic/syntax/veneer.py:448
+│  │                 │  │     │        └─ 1.250 helper  scenic/core/distributions.py:506
+│  │                 │  │     │           └─ 1.100 Car.__init__  scenic/core/object_types.py:1007
+│  │                 │  │     │              └─ 0.899 Car.__init__  scenic/core/object_types.py:842
+│  │                 │  │     │                 └─ 0.861 Car.__init__  scenic/core/object_types.py:169
+│  │                 │  │     └─ 33.337 Specifier.__init__  scenic/core/specifiers.py:34
+│  │                 │  │        ├─ 31.690 toLazyValue  scenic/core/lazy_eval.py:230
+│  │                 │  │        │  └─ 30.675 toLazyValue  scenic/core/lazy_eval.py:230
+│  │                 │  │        │     ├─ 29.283 <genexpr>  scenic/core/lazy_eval.py:235
+│  │                 │  │        │     │  └─ 29.007 toLazyValue  scenic/core/lazy_eval.py:230
+│  │                 │  │        │     │     ├─ 26.667 <genexpr>  scenic/core/lazy_eval.py:235
+│  │                 │  │        │     │     │  └─ 25.946 toLazyValue  scenic/core/lazy_eval.py:230
+│  │                 │  │        │     │     │     ├─ 23.036 <genexpr>  scenic/core/lazy_eval.py:235
+│  │                 │  │        │     │     │     │  ├─ 21.884 toLazyValue  scenic/core/lazy_eval.py:230
+│  │                 │  │        │     │     │     │  │  ├─ 10.056 <genexpr>  scenic/core/lazy_eval.py:235
+│  │                 │  │        │     │     │     │  │  │  ├─ 6.927 toLazyValue  scenic/core/lazy_eval.py:230
+│  │                 │  │        │     │     │     │  │  │  │  ├─ 3.688 [self]  scenic/core/lazy_eval.py
+│  │                 │  │        │     │     │     │  │  │  │  └─ 3.238 isinstance  <built-in>
+│  │                 │  │        │     │     │     │  │  │  └─ 3.129 [self]  scenic/core/lazy_eval.py
+│  │                 │  │        │     │     │     │  │  ├─ 5.598 [self]  scenic/core/lazy_eval.py
+│  │                 │  │        │     │     │     │  │  └─ 4.997 <genexpr>  scenic/core/lazy_eval.py:236
+│  │                 │  │        │     │     │     │  │     ├─ 2.603 needsLazyEvaluation  scenic/core/lazy_eval.py:258
+│  │                 │  │        │     │     │     │  │     │  ├─ 1.601 [self]  scenic/core/lazy_eval.py
+│  │                 │  │        │     │     │     │  │     │  └─ 1.002 getattr  <built-in>
+│  │                 │  │        │     │     │     │  │     └─ 2.394 [self]  scenic/core/lazy_eval.py
+│  │                 │  │        │     │     │     │  └─ 1.152 [self]  scenic/core/lazy_eval.py
+│  │                 │  │        │     │     │     ├─ 1.348 <genexpr>  scenic/core/lazy_eval.py:236
+│  │                 │  │        │     │     │     └─ 1.093 [self]  scenic/core/lazy_eval.py
+│  │                 │  │        │     │     └─ 1.466 [self]  scenic/core/lazy_eval.py
+│  │                 │  │        │     └─ 0.849 [self]  scenic/core/lazy_eval.py
+│  │                 │  │        └─ 1.117 [self]  scenic/core/specifiers.py
+│  │                 │  └─ 3.438 NewtonianSimulation.getProperties  scenic/simulators/newtonian/simulator.py:218
+│  │                 │     └─ 3.157 helper  scenic/core/distributions.py:506
+│  │                 │        └─ 2.932 Orientation.globalToLocalAngles  scenic/core/vectors.py:368
+│  │                 │           └─ 2.907 helper  scenic/core/distributions.py:506
+│  │                 │              └─ 1.994 Orientation.localAnglesFor  scenic/core/vectors.py:358
+│  │                 │                 ├─ 1.035 Orientation.helper  scenic/core/distributions.py:603
+│  │                 │                 └─ 0.931 Orientation.wrapper  scenic/core/utils.py:37
+│  │                 │                    └─ 0.843 Orientation.eulerAngles  scenic/core/vectors.py:309
+│  │                 └─ 1.067 NewtonianSimulation.step  scenic/simulators/newtonian/simulator.py:155
+│  └─ 2.953 scenarioFromFile  scenic/syntax/translator.py:108
+│     └─ 2.953 _scenarioFromStream  scenic/syntax/translator.py:147
+│        └─ 2.947 compileStream  scenic/syntax/translator.py:265
+│           └─ 2.844 executeCodeIn  scenic/syntax/translator.py:557
+│              └─ 2.844 <module>  ../core/SUT.scenic:1
+│                 └─ 2.541 model  scenic/syntax/veneer.py:902
+│                    └─ 2.541 import_module  importlib/__init__.py:109
+│                       └─ 2.412 ScenicLoader.exec_module  scenic/syntax/translator.py:393
+│                          └─ 2.412 compileStream  scenic/syntax/translator.py:265
+│                             └─ 2.304 executeCodeIn  scenic/syntax/translator.py:557
+│                                └─ 2.304 <module>  scenic/simulators/newtonian/driving_model.scenic:1
+│                                   └─ 2.288 ScenicLoader.exec_module  scenic/syntax/translator.py:393
+│                                      └─ 2.287 compileStream  scenic/syntax/translator.py:265
+│                                         └─ 1.714 executeCodeIn  scenic/syntax/translator.py:557
+│                                            └─ 1.714 <module>  scenic/domains/driving/model.scenic:1
+└─ 0.918 <module>  ../core/scenario.py:1
+   └─ 0.916 <module>  scenic/__init__.py:1
+      └─ 0.910 <module>  scenic/syntax/translator.py:1
+         └─ 0.827 <module>  scenic/core/distributions.py:1
+
+To view this report with different options, run:
+    pyinstrument --load-prev 2023-08-07T14-57-14 [options]
+

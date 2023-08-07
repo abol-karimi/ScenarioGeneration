@@ -64,10 +64,12 @@ RUN . .venv/bin/activate ; \
 # Carla RSS python module
 COPY --chown=carla:carla PythonAPI /home/carla/PythonAPI
 
-# Python modules needed for installing Scenic
 RUN . .venv/bin/activate ; \
+  # modules needed for installing Scenic
   pip install cpython ; \
-  pip install numpy scipy pybind11 wheel
+  pip install numpy scipy pybind11 wheel ; \
+  # modules needed for performance benchmarking
+  pip install pyinstrument
 
 # Apps needed for 3D geometry operations
 USER root

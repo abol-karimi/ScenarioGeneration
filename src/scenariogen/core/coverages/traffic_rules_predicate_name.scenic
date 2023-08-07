@@ -11,7 +11,7 @@ from scenariogen.core.utils import geometry_atoms
 from scenariogen.core.events import *
 from scenariogen.predicates.predicates import TemporalOrder
 
-from scenariogen.core.coverages.traffic_rules_predicate_name_coverage import Coverage
+from scenariogen.core.coverages.coverage import Coverage
 
 def to_coverage(events):
   print('Computing predicate-name coverage...')

@@ -1,10 +1,10 @@
 from collections import Counter
 
 class Coverage:
- 
-  def __init__(self, predicates=set()):
+
+  def __init__(self, predicates=[]):
     self.coverage = Counter(predicates)
-  
+
   def __sub__(self, other):
      return self.coverage - other.coverage
   
