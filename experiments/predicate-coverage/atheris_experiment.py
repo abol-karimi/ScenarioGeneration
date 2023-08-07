@@ -129,7 +129,7 @@ def SUT_target_wrapper(input_bytes):
     print(err.msg)
     return
   
-  seconds = seed.timings[0].ctrlpts[-1][1]
+  seconds = seed.timings[0].ctrlpts[-1][0]
   scenario_config.update({
             'steps': int(seconds // scenario_config['timestep']),
             })
