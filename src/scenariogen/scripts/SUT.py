@@ -67,5 +67,7 @@ except NonegoNonegoCollisionError as err:
 except EgoCollisionError as err:
     print(f'Ego collided with {err.other.name}.')
 else:
-    for p, count in sim_result.records['coverage'].coverage.items():
-        print(f'{p}: {count}')
+    coverage_space = sim_result.records['coverage_space']
+    coverage = sim_result.records['coverage']
+    print('Coverage ratio:', 1 if len(coverage_space) == 0 else len(coverage)/len(coverage_space))
+    print('Coverage gap:', coverage_space-coverage)

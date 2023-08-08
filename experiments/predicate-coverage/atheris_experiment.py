@@ -143,14 +143,17 @@ def SUT_target_wrapper(input_bytes):
       with open(f'experiments/predicate-coverage/{experiment_name}_ego-collisions/{iteration}.json', 'w') as f:
         f.write(jsonpickle.encode(seed, indent=1))
   else: 
+    coverage_space = sim_result.records['coverage_space'] # TODO for performance: do it only once
     coverage = sim_result.records['coverage']
     if coverage_sum is None:
       coverage_sum = coverage
-    elif coverage.is_novel_to(coverage_sum):
+    elif not coverage.issubset(coverage_sum):
       print('Found a seed increasing predicate-coverage! Adding it to corpus...')
       with open(f'experiments/predicate-coverage/{experiment_name}_coverage/{iteration}.json', 'w') as f:
         f.write(jsonpickle.encode(seed))
-      coverage_sum += coverage
+      coverage_sum.update(coverage)
+      print('Coverage ratio:', len(coverage_sum)/len(coverage_space))
+      print('Coverage gap:', coverage_space-coverage_sum)
 
 #-----------------------------------------------------
 #----------------- Experiment config -----------------

@@ -6,12 +6,22 @@ intersection = network.elements[config['intersection']]
 # python imports
 from collections import Counter
 import clingo
+from clingo.ast import Transformer, parse_string
 from scenic.domains.driving.roads import Network
 from scenariogen.core.utils import geometry_atoms
 from scenariogen.core.events import *
 from scenariogen.predicates.predicates import TemporalOrder
 
-from scenariogen.core.coverages.coverage import Coverage
+with open(f"src/scenariogen/predicates/{config['traffic_rules']}", 'r') as f:
+  encoding = f.read()
+
+coverage_space = set()
+class AtomNameRecorder(Transformer):
+  def visit_SymbolicAtom(self, node):
+    coverage_space.add(node.symbol.name)
+    return node
+anr = AtomNameRecorder()
+parse_string(encoding, lambda stm: anr(stm))
 
 def to_coverage(events):
   print('Computing predicate-name coverage...')
@@ -19,23 +29,23 @@ def to_coverage(events):
   atoms += geometry_atoms(network,
                           config['intersection'])
   atoms += [str(e) for e in events]
-  program = '.\n'.join(atoms)+'.\n'
+  instance = '.\n'.join(atoms)+'.\n'
 
   ctl = clingo.Control()
-  ctl.load(f"src/scenariogen/predicates/{config['traffic_rules']}")
-  ctl.add("base", [], program)
+  ctl.add("base", [], instance+encoding)
   ctl.ground([("base", [])], context=TemporalOrder())
   ctl.configuration.solve.models = "1"
-  predicates = set()
+  coverage = set()
   with ctl.solve(yield_=True) as handle:
       for model in handle:
           for atom in model.symbols(atoms=True):
-              predicates.add(str(atom.name))
-  return Coverage(predicates)
+              coverage.add(str(atom.name))
+  return coverage
 
 events = []
 scenario CoverageScenario():
   setup:
+    record final coverage_space as coverage_space
     record final to_coverage(events) as coverage
 
     monitor CoverageMonitor:

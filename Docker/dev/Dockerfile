@@ -27,13 +27,15 @@ RUN apt-get update ; \
   zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev \
   # since didn't install precompiled python binaries
   libbz2-dev
+# For python wrappers for sqlite
+RUN apt-get install -y libsqlite3-dev
 
 # Install Python 3.8.17
 WORKDIR /home/carla/python-setup
 RUN wget https://www.python.org/ftp/python/3.8.17/Python-3.8.17.tgz ; \
   tar -xvf Python-3.8.17.tgz ; \
   cd Python-3.8.17 ; \
-  ./configure --enable-optimizations ; \
+  ./configure --enable-loadable-sqlite-extensions --enable-optimizations ; \
   make altinstall
 
 # Setup python environment
@@ -68,17 +70,8 @@ RUN . .venv/bin/activate ; \
   # modules needed for installing Scenic
   pip install cpython ; \
   pip install numpy scipy pybind11 wheel ; \
-  # modules needed for performance benchmarking
-  pip install pyinstrument
-
-# Apps needed for 3D geometry operations
-USER root
-RUN apt-get install -y software-properties-common
-RUN add-apt-repository ppa:openscad/releases ; \
-  apt-get update ; \
-  apt-get install -y openscad
-RUN apt-get install -y blender
-USER carla
+  # modules needed for development
+  pip install pyinstrument coverage
 
 # Entrypoint script
 COPY --chown=carla:carla entrypoint.sh /home/carla/entrypoint.sh

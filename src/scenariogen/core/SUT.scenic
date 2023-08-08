@@ -19,6 +19,7 @@ if config['closedLoop']:
   ego_scenario = ego_module.EgoScenario()
 
 coverage_module = importlib.import_module(config['coverage_module'])
+coverage_space = coverage_module.coverage_space
 coverage_scenario = coverage_module.CoverageScenario()
 
 nonegos_scenario = NonegosScenario()
