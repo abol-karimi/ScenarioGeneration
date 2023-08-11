@@ -183,11 +183,11 @@ crossOver = StructureAwareCrossOver(max_parameters_size=50,
                                     randomizer_seed=0)
 corpus = {}
 target=SUT_target_wrapper
-iterations = 20
+max_total_time = 2*60*60 # 2 hours
 iteration = 0
 coverage_sum = None
 max_seed_length = 1e+6 # 1 MB
-libfuzzer_config = [f'-atheris_runs={iterations}',
+libfuzzer_config = [f'-max_total_time={max_total_time}',
                     f'-max_len={max_seed_length}',
                     f'experiments/predicate-coverage/{experiment_name}_Atheris',
                     f'experiments/seeds',

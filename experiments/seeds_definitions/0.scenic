@@ -37,15 +37,15 @@ minor_signal = SignalType.LEFT
 # Derived constants
 ego_route = route_from_turns(network, ego_init_lane, ego_turns)
 
-route_major = route_from_turns(network, major_init_lane, major_turns)
-route_major_lanes = [network.elements[l] for l in route_major]
-route_major_polyline = PolylineRegion.unionAll([l.centerline for l in route_major_lanes])
-p_major = route_major_polyline.pointAlongBy(major_init_progress)
+major_route = route_from_turns(network, major_init_lane, major_turns)
+major_lanes = [network.elements[l] for l in major_route]
+major_polyline = PolylineRegion.unionAll([l.centerline for l in major_lanes])
+major_p0 = major_polyline.pointAlongBy(major_init_progress)
 
-route_minor = route_from_turns(network, minor_init_lane, minor_turns)
-route_minor_lanes = [network.elements[l] for l in route_minor]
-route_minor_polyline = PolylineRegion.unionAll([l.centerline for l in route_minor_lanes])
-p_minor = route_minor_polyline.pointAlongBy(minor_init_progress)
+minor_route = route_from_turns(network, minor_init_lane, minor_turns)
+minor_lanes = [network.elements[l] for l in minor_route]
+minor_polyline = PolylineRegion.unionAll([l.centerline for l in minor_lanes])
+minor_p0 = minor_polyline.pointAlongBy(minor_init_progress)
 
 intersection = network.elements[intersection_uid]
 
@@ -75,24 +75,24 @@ scenario SeedScenario():
       do FollowTrajectoryBehavior(speed, trajectory)
       do FollowLaneBehavior(speed)
 
-    car_major = Car at p_major, facing roadDirection,
+    major_car = Car at major_p0, facing roadDirection,
       with name 'nonego_major',
-      with route route_major,
+      with route major_route,
       with physics True,
       with allowCollisions False,
       with signal major_signal,
-      with behavior PassBehavior(4, route_major_lanes),
+      with behavior PassBehavior(4, major_lanes),
       with length blueprints['vehicle.tesla.model3']['length'],
       with width blueprints['vehicle.tesla.model3']['width']
 
-    car_minor = Car at p_minor, facing roadDirection,
+    minor_car = Car at minor_p0, facing roadDirection,
       with name 'nonego_minor',
-      with route route_minor,
+      with route minor_route,
       with physics True,
       with allowCollisions False,
       with signal minor_signal,
-      with behavior PassBehavior(4, route_minor_lanes),
+      with behavior PassBehavior(4, minor_lanes),
       with length blueprints['vehicle.ford.crown']['length'],
       with width blueprints['vehicle.ford.crown']['width']
 
-    cars = [car_major, car_minor]
+    cars = [major_car, minor_car]
