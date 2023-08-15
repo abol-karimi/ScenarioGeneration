@@ -154,6 +154,8 @@ def SUT_target_wrapper(input_bytes):
       coverage_sum.update(coverage)
       print('Coverage ratio:', len(coverage_sum)/len(coverage_space))
       print('Coverage gap:', coverage_space-coverage_sum)
+    else:
+      print('Input did not yield new coverage.')
 
 #-----------------------------------------------------
 #----------------- Experiment config -----------------
@@ -165,7 +167,8 @@ scenario_config = {
   'weather': 'CloudySunset',
   'arrival_distance': 4,
   'stop_speed_threshold': 0.5,
-  'closedLoop': False,
+  'closedLoop': True,
+  'ego_module': 'experiments.agents.followRouteAvoidCollisions',
   'replay_raw': False,
   'simulator': 'newtonian',
   'coverage_module': 'scenariogen.core.coverages.traffic_rules_predicate_name',

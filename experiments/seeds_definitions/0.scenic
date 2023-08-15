@@ -22,7 +22,7 @@ traffic_rules = '3way-T_stopOnAll.lp'
 arrival_distance = 4
 ego_init_lane = 'road9_lane1'
 ego_turns = (ManeuverType.LEFT_TURN,)
-ego_init_progress = 40
+ego_init_progress = 50
 
 major_init_lane = 'road24_lane0'
 major_turns = (ManeuverType.STRAIGHT,)

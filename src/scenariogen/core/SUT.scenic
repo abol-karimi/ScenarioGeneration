@@ -13,6 +13,7 @@ import importlib
 from scenariogen.core.signals import SignalType
 from scenic.core.vectors import Vector
 from scenariogen.core.scenarios import NonegosScenario, CheckCollisionsScenario
+from scenariogen.simulators.carla.scenarios import ShowIntersectionScenario
 
 if config['closedLoop']:
   ego_module = importlib.import_module(config['ego_module'])
@@ -33,8 +34,7 @@ scenario Main():
 
   compose:
     if config['simulator'] == 'carla':
-      from scenariogen.simulators.carla.scenarios import ShowIntersectionScenario
-      do ShowIntersectionScenario()
+      do ShowIntersectionScenario(intersection)
 
     if config['closedLoop']:
       do ego_scenario, \

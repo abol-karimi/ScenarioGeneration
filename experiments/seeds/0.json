@@ -12,7 +12,7 @@
    "road1940_lane0",
    "road3_lane2"
   ],
-  "ego_init_progress": 40
+  "ego_init_progress": 50
  },
  "routes": {
   "py/tuple": [
