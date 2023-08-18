@@ -27,7 +27,7 @@ from scenic.domains.driving.roads import Network
 # My modules
 import scenariogen.core.fuzz_input as seed
 import src.scenariogen.core.mutators as mutators
-import src.scenariogen.core.fuzzers as fuzzers
+import src.scenariogen.core.fuzzers.fuzzers as fuzzers
 import src.scenariogen.core.schedulers as schedulers
 import scenariogen.core.coverages as coverages
 from src.scenariogen.core.signals import SignalType

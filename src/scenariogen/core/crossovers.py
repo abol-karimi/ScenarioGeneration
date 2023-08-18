@@ -42,6 +42,12 @@ class StructureAwareCrossOver():
                       #  self.trajectory_splice
                     ]
 
+  def getstate(self):
+    return self.random.getstate()
+  
+  def setstate(self, state):
+    self.random.setstate(state)
+
   def cross_over(self, input1, input2):
     for i in range(self.max_attempts):
       try:

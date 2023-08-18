@@ -66,7 +66,12 @@ class StructureAwareMutator():
       for maneuver in intersection.maneuvers:
         cls._predecessors_cache[carla_map][maneuver.endLane.uid].append(maneuver.connectingLane)
 
- 
+  def getstate(self):
+    return self.random.getstate()
+  
+  def setstate(self, state):
+    self.random.setstate(state)
+  
   def move_forward(self, fuzz_input):
     """Adds some longitudinal offset to a trajectory along its route.
     Extends the route randomly, if necessay.
@@ -200,7 +205,7 @@ class StructureAwareMutator():
     mutant = self.copy_to_route_with_params(fuzz_input, nonego_idx, maneuver)
     mutant = self.remove_vehicle_with_params(mutant, nonego_idx)
 
-    print(f'Mutation: Moved nonego {nonego_idx} to route {maneuver.startLane, maneuver.connectingLane, maneuver.endLane}.')
+    print(f'Mutation: Moved nonego {nonego_idx} to route {maneuver.startLane.uid, maneuver.connectingLane.uid, maneuver.endLane.uid}.')
 
     return mutant
   
