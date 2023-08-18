@@ -1,7 +1,6 @@
 #!/usr/bin/env python3.8
 
-import sys
-from pathlib import Path
+from multiprocessing import Process
 
 # This project
 from scenariogen.core.mutators import StructureAwareMutator
@@ -33,13 +32,20 @@ fuzzer_config = {
   'crossOver': StructureAwareCrossOver(max_parameters_size=50,
                                        max_attempts=1,
                                        randomizer_seed=0),
-  'max_total_time': 60, # 1 minute
+  'max_total_time': 10, # 1 minute
   'max_seed_length': 1e+6, # 1 MB
   'autosave_period': 60, # 1 minute
 }
 
-fuzzer = AtherisFuzzer(fuzzer_config)
-fuzzer.run()
+atheris_fuzzer = AtherisFuzzer(fuzzer_config)
+def run_fuzzer(fuzzer):
+    fuzzer.run()
+
+p = Process(target=run_fuzzer, args=(atheris_fuzzer,))
+p.start()
+p.join()
+
+atheris_fuzzer.save_state()
 
 
 

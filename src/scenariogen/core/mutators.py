@@ -66,10 +66,10 @@ class StructureAwareMutator():
       for maneuver in intersection.maneuvers:
         cls._predecessors_cache[carla_map][maneuver.endLane.uid].append(maneuver.connectingLane)
 
-  def getstate(self):
+  def get_state(self):
     return self.random.getstate()
   
-  def setstate(self, state):
+  def set_state(self, state):
     self.random.setstate(state)
   
   def move_forward(self, fuzz_input):

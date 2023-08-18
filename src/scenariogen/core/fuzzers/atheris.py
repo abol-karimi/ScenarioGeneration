@@ -24,6 +24,12 @@ class MutatorCallback:
   def __init__(self, mutator):
     self.mutator = mutator
   
+  def get_state(self):
+    return self.mutator.get_state()
+  
+  def set_state(self, state):
+    self.mutator.set_state(state)
+
   def __call__(self, *args: Any, **kwds: Any):
     data = args[0]
 
@@ -63,6 +69,12 @@ class CrossOverCallback:
   def __init__(self, crossOver):
     self.crossOver = crossOver
 
+  def get_state(self):
+    return self.crossOver.get_state()
+
+  def set_state(self, state):
+    self.crossOver.set_state(state)
+  
   def __call__(self, *args: Any, **kwds: Any):
     data1, data2 = args[0], args[1]
 
@@ -114,7 +126,7 @@ class SUTCallback:
     self.config = config
     self.SUT_config = config['SUT_config']
     self.ego_collisions_folder = f"{config['output_folder']}/ego-collisions"
-    self.coverage_folder = f"{config['output_folder']}/coverage"
+    self.predicate_coverage_folder = f"{config['output_folder']}/predicate-coverage"
     self.coverage_sum = set()
     self.iteration = 0
 
@@ -167,7 +179,7 @@ class SUTCallback:
         print('Input did not yield new coverage.')
       else:
         print('Found a seed increasing predicate-coverage! Adding it to corpus...')
-        with open(f'{self.coverage_folder}/{self.iteration}.json', 'w') as f:
+        with open(f'{self.predicate_coverage_folder}/{self.iteration}.json', 'w') as f:
           f.write(jsonpickle.encode(seed))
         self.coverage_sum.update(coverage)
         print('Coverage ratio:', len(self.coverage_sum)/len(coverage_space))
@@ -185,26 +197,21 @@ class AtherisFuzzer:
 
     self.libfuzzer_config = [f"-max_total_time={config['max_total_time']}",
                              f"-max_len={config['max_seed_length']}",
-                             (self.output_path/'atheris').as_posix(),
+                             (self.output_path/'code-coverage').as_posix(),
                              config['seeds_folder'],
                             ]
     self.SUT = SUTCallback(config)
 
   def run(self):
     state_file = self.output_path/'fuzzer_state.json'
-    if state_file.is_file():
-      #resume
+    if state_file.is_file(): #resume
       with open(state_file, 'r') as f:
         fuzzer_state = jsonpickle.decode(f.read())
         self.load_state(fuzzer_state)
-    else:
-      # start
-      (self.output_path/'atheris').mkdir(parents=True, exist_ok=True)
-      (self.output_path/'coverage').mkdir(parents=True, exist_ok=True)
+    else: # start
+      (self.output_path/'code-coverage').mkdir(parents=True, exist_ok=True)
+      (self.output_path/'predicate-coverage').mkdir(parents=True, exist_ok=True)
       (self.output_path/'ego-collisions').mkdir(parents=True, exist_ok=True)
-
-    # setup autosave
-    # TODO
 
     # run
     atheris.Setup(sys.argv + self.libfuzzer_config,
@@ -212,13 +219,15 @@ class AtherisFuzzer:
                   custom_mutator=self.mutator,
                   custom_crossover=self.crossOver
                   )
-    atheris.Fuzz()    
+    atheris.Fuzz()
   
   def save_state(self):
-    mutator_state = self.mutator.get_state()
-    crossOver_state = self.crossOver.get_state()
-    # atheris_state = ?
+    with open(self.output_path/'fuzzer_state.json', 'w') as f:
+      f.write(jsonpickle.encode({
+        'mutator_state': self.mutator.get_state(),
+        'crossOver_state': self.crossOver.get_state()
+      }))
    
-
-  def load_state(self):
-    pass
+  def load_state(self, fuzzer_state):
+    self.mutator.set_state(fuzzer_state['mutator_state'])
+    self.crossOver.set_state(fuzzer_state['crossOver_state'])
