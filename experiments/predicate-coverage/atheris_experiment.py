@@ -30,7 +30,7 @@ fuzzer_config = {
   'crossOver': StructureAwareCrossOver(max_parameters_size=50,
                                        max_attempts=1,
                                        randomizer_seed=0),
-  'atheris_runs': 3, # each run takes under 3 seconds
+  'atheris_runs': 60*60, # each run takes under 3 seconds
   'max_seed_length': 1e+6, # 1 MB
 }
 

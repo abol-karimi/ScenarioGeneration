@@ -158,13 +158,13 @@ class SUTCallback:
     except Exception as e:
       print(f'{e} ...in decoding the seed: ')
       print(input_str)
-      return
+      exit(1)
 
     try:
       validate_input(seed)
     except InvalidFuzzInputError as err:
       print(err.msg)
-      return
+      exit(1)
     
     seconds = seed.timings[0].ctrlpts[-1][0]
     self.SUT_config.update({
@@ -173,19 +173,21 @@ class SUTCallback:
 
     try:
       sim_result = Scenario(seed).run(self.SUT_config)
-    except NonegoNonegoCollisionError as err:
-        print(f'Collision between nonegos {err.nonego} and {err.other}, discarding the fuzz-input.')
-    except EgoCollisionError as err:
-        print(f'Ego collided with {err.other.name}. Saving the seed to corpus...')
-        with open(f'{self.ego_collisions_folder}/{self.current_iteration}.json', 'w') as f:
-          f.write(jsonpickle.encode(seed, indent=1))
-    else: 
       coverage_space = sim_result.records['coverage_space'] # TODO for performance: do it only once
       coverage = sim_result.records['coverage']
+    except NonegoNonegoCollisionError as err:
+      print(f'Collision between nonegos {err.nonego} and {err.other}! We skip predicate-coverage computation.')
+    except EgoCollisionError as err:
+      print(f'Ego collided with {err.other.name}. We save the fuzz input to the ego-collisions corpus.')
+      with open(f'{self.ego_collisions_folder}/{self.current_iteration}.json', 'w') as f:
+        f.write(jsonpickle.encode(seed, indent=1))
+    except Exception as e:
+      print(e)
+    else: 
       if coverage.issubset(self.coverage_sum):
         print('Input did not yield new coverage.')
       else:
-        print('Found a seed increasing predicate-coverage! Adding it to corpus...')
+        print('Found a fuzz-input increasing predicate-coverage! Adding it to predicate-coverage corpus...')
         with open(f'{self.predicate_coverage_folder}/{self.current_iteration}.json', 'w') as f:
           f.write(jsonpickle.encode(seed))
         self.coverage_sum.update(coverage)

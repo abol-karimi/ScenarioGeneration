@@ -54,7 +54,5 @@ class Scenario:
                     maxSteps=config['steps'],
                     maxIterations=1,
                     raiseGuardViolations=True)
-
-    del scenic_scenario, scene
-    
+  
     return sim_result
