@@ -12,6 +12,7 @@ export PATH=/home/carla/ScenarioGeneration/:$PATH
 export PATH=/home/carla/ScenarioGeneration/src/scenariogen/scripts/:$PATH
 export PATH=/home/carla/ScenarioGeneration/src/scenariogen/scripts/carla:$PATH
 export PATH=/home/carla/ScenarioGeneration/src/scenariogen/scripts/newtonian:$PATH
+export PATH=/home/carla/z3-4.8.10-x64-ubuntu-18.04/bin:$PATH
 export force_color_prompt=yes
 
 cd /home/carla/Scenic

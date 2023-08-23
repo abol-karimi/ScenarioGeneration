@@ -73,6 +73,11 @@ RUN . .venv/bin/activate ; \
   # modules needed for development
   pip install pyinstrument coverage
 
+# Z3 theorem prover
+COPY --chown=carla:carla z3-4.8.10-x64-ubuntu-18.04 /home/carla/z3-4.8.10-x64-ubuntu-18.04
+RUN . .venv/bin/activate ; \
+  pip install pysmt
+
 # Entrypoint script
 COPY --chown=carla:carla entrypoint.sh /home/carla/entrypoint.sh
 ENTRYPOINT [ "/bin/bash", "-c", "/home/carla/entrypoint.sh" ]
