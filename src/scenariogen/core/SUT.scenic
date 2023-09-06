@@ -17,13 +17,13 @@ from scenariogen.simulators.carla.scenarios import ShowIntersectionScenario
 
 if config['closedLoop']:
   ego_module = importlib.import_module(config['ego_module'])
-  ego_scenario = ego_module.EgoScenario()
+  ego_scenario = ego_module.EgoScenario(config)
 
 coverage_module = importlib.import_module(config['coverage_module'])
 coverage_space = coverage_module.coverage_space
 coverage_scenario = coverage_module.CoverageScenario()
 
-nonegos_scenario = NonegosScenario()
+nonegos_scenario = NonegosScenario(config)
 
 scenario Main():
   setup:
@@ -33,16 +33,17 @@ scenario Main():
     record initial config as config
 
   compose:
-    if config['simulator'] == 'carla':
-      do ShowIntersectionScenario(intersection)
-
+    nonegos = tuple(a for a in simulation().agents if a.name != 'ego')
+    egos = tuple(a for a in simulation().agents if a.name == 'ego')    
     if config['closedLoop']:
       do ego_scenario, \
           nonegos_scenario, \
           coverage_scenario, \
-          CheckCollisionsScenario(ego_scenario.cars, nonegos_scenario.cars)
+          CheckCollisionsScenario(egos, nonegos), \
+          ShowIntersectionScenario(intersection)
     else:
       do nonegos_scenario, \
           coverage_scenario, \
-          CheckCollisionsScenario([], nonegos_scenario.cars)
+          CheckCollisionsScenario([], nonegos), \
+          ShowIntersectionScenario(intersection)
 

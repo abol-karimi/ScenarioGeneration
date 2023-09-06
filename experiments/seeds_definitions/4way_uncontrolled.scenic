@@ -22,7 +22,7 @@ traffic_rules = '4way-uncontrolled.lp'
 arrival_distance = 4
 ego_init_lane = 'road9_lane2'
 ego_turns = (ManeuverType.LEFT_TURN,)
-ego_init_progress = 90
+ego_init_progress_ratio = 90
 
 left_init_lane = 'road44_lane1'
 left_turns = (ManeuverType.STRAIGHT,)
@@ -53,11 +53,11 @@ param config = {'carla_map': carla_map,
                 'intersection': intersection_uid,
                 'traffic_rules': traffic_rules,
                 'ego_route': ego_route,
-                'ego_init_progress': ego_init_progress}
+                'ego_init_progress_ratio': ego_init_progress_ratio}
 
 scenario SeedScenario():
   setup:
-    with open('src/scenariogen/simulators/carla/blueprint_library.json', 'r') as f:
+    with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f:
       blueprints = jsonpickle.decode(f.read())
 
     behavior StopBehavior():

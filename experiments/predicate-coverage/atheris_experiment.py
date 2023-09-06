@@ -25,10 +25,10 @@ fuzzer_config = {
   'experiment_name': experiment_name,
   'seeds_folder': f'experiments/seeds',
   'output_folder': f'experiments/predicate-coverage/{experiment_name}',
-  'mutator': StructureAwareMutator(max_parameters_size=50,
+  'mutator': StructureAwareMutator(max_spline_knots_size=50,
                                    max_mutations_per_iteration=1,
                                    randomizer_seed=0),
-  'crossOver': StructureAwareCrossOver(max_parameters_size=50,
+  'crossOver': StructureAwareCrossOver(max_spline_knots_size=50,
                                        max_attempts=1,
                                        randomizer_seed=0),
   'atheris_runs': 2, # each run takes under 3 seconds

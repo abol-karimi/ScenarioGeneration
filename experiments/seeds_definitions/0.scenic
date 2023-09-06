@@ -16,13 +16,14 @@ import jsonpickle
 from scenic.domains.driving.roads import ManeuverType
 from scenariogen.core.signals import SignalType
 from scenariogen.core.utils import route_from_turns
+from scenariogen.simulators.carla.behaviors import AutopilotFollowRoute
 
 intersection_uid = 'intersection1930'
 traffic_rules = '3way-T_stopOnAll.lp'
 arrival_distance = 4
 ego_init_lane = 'road9_lane1'
 ego_turns = (ManeuverType.LEFT_TURN,)
-ego_init_progress = 50
+ego_init_progress_ratio = 50
 
 major_init_lane = 'road24_lane0'
 major_turns = (ManeuverType.STRAIGHT,)
@@ -49,18 +50,18 @@ minor_p0 = minor_polyline.pointAlongBy(minor_init_progress)
 
 intersection = network.elements[intersection_uid]
 
-param config = {'description': description,
-                'carla_map': globalParameters.carla_map,
-                'map': globalParameters.map,
-                'intersection': intersection_uid,
-                'traffic_rules': traffic_rules,
-                'ego_route': ego_route,
-                'ego_init_progress': ego_init_progress
-                }
+config = {'description': description,
+          'carla_map': globalParameters.carla_map,
+          'map': globalParameters.map,
+          'intersection': intersection_uid,
+          'traffic_rules': traffic_rules,
+          'ego_route': ego_route,
+          'ego_init_progress_ratio': ego_init_progress_ratio
+          }
 
 scenario SeedScenario():
   setup:
-    with open('src/scenariogen/simulators/carla/blueprint_library.json', 'r') as f:
+    with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f:
       blueprints = jsonpickle.decode(f.read())
 
     behavior StopBehavior():
@@ -69,10 +70,15 @@ scenario SeedScenario():
       while True:
         wait
 
-    behavior PassBehavior(speed, trajectory):
-      do FollowTrajectoryBehavior(speed, trajectory) until (distance from (front of self) to intersection) <= arrival_distance
+    behavior FourWayStopBehavior(speed, route):
+      do AutopilotFollowRoute(route=route,
+                              aggressiveness='normal',
+                              rss_enabled=False) \
+          until (distance from (front of self) to intersection) <= arrival_distance
       do StopBehavior() until self.speed <= 0.1
-      do FollowTrajectoryBehavior(speed, trajectory)
+      do AutopilotFollowRoute(route=route,
+                              aggressiveness='normal',
+                              rss_enabled=False)
       do FollowLaneBehavior(speed)
 
     major_car = Car at major_p0, facing roadDirection,
@@ -81,7 +87,7 @@ scenario SeedScenario():
       with physics True,
       with allowCollisions False,
       with signal major_signal,
-      with behavior PassBehavior(4, major_lanes),
+      with behavior FourWayStopBehavior(4, major_lanes),
       with length blueprints['vehicle.tesla.model3']['length'],
       with width blueprints['vehicle.tesla.model3']['width']
 
@@ -91,8 +97,6 @@ scenario SeedScenario():
       with physics True,
       with allowCollisions False,
       with signal minor_signal,
-      with behavior PassBehavior(4, minor_lanes),
+      with behavior FourWayStopBehavior(4, minor_lanes),
       with length blueprints['vehicle.ford.crown']['length'],
       with width blueprints['vehicle.ford.crown']['width']
-
-    cars = [major_car, minor_car]

@@ -1,43 +1,31 @@
 from collections import OrderedDict
+from itertools import product
 import math
-from solver import NoASPSolutionError
-from utils import has_collision, frame_to_distance
-
 from pysmt.logics import QF_NRA
 from pysmt.shortcuts import get_env, Solver, get_model, Symbol, Equals, And, Real
 from pysmt.typing import REAL
 import pysmt
 import fractions
 import clingo
+import scenic
+from scenic.domains.driving.roads import Network
+from scenic.core.simulators import SimulationCreationError
+from scenic.core.dynamics import GuardViolation
+
+from scenariogen.core.events import StoppedAtForkEvent
+from scenariogen.core.errors import (NoASPSolutionError,
+                                     NoSMTSolutionError, 
+                                     EgoCollisionError, 
+                                     NonegoNonegoCollisionError)
+from scenariogen.core.utils import (geometry_atoms,
+                                    seed_from_sim)
+from scenariogen.core.signals import SignalType
 
 solver_name = "z3-binary"
-path = ["z3", "-in", "-smt2"]  # tested with z3-4.8.10-x64-ubuntu-18.04
-
-# solver_name = "mathsat-binary"
-# path = ["mathsat"] # tested with mathsat-5.6.6-linux-x86_64
-
-# solver_name = "cvc4-binary"
-# path = ["~/Downloads/cvc4-1.8-x86_64-linux-opt",
-#         "--lang=smt2", "--produce-models", "--no-interactive-prompt"]
-
-# solver_name = "yices-binary"
-# path = ["yices-smt2"]
-
+path = ["z3", "-in", "-smt2"]
 logics = [QF_NRA]
 env = get_env()
 env.factory.add_generic_solver(solver_name, path, logics)
-
-
-class NoSMTSolutionError(Exception):
-    """Exception raised for errors in SMT solving.
-
-    Attributes:
-        message -- explanation of the error
-    """
-
-    def __init__(self, message):
-        self.message = message
-
 
 def numeral_to_fp(num):
     if isinstance(num, fractions.Fraction):
@@ -126,76 +114,6 @@ def distance_to_time(t, d, d_val):
     return t_global
 
 
-def geometry_atoms(network, intersection_uid):
-    """Assumes the correct map is loaded in CARLA server."""
-    from signals import SignalType
-    intersection = network.elements[intersection_uid]
-    maneuvers = intersection.maneuvers
-    geometry = []
-    for maneuver in maneuvers:
-        lane = maneuver.connectingLane
-        fork = maneuver.startLane
-        exit = maneuver.endLane
-        geometry.append(
-            f'laneFromTo({lane.uid}, {fork.uid}, {exit.uid})')
-
-    for maneuver in maneuvers:
-        lane = maneuver.connectingLane
-        signal = SignalType.from_maneuver(maneuver).name.lower()
-        geometry.append(
-            f'laneCorrectSignal({lane.uid}, {signal})')
-
-    for i in range(len(maneuvers)):
-        li = maneuvers[i].connectingLane
-        geometry.append(f'overlaps({li.uid}, {li.uid})')
-        for j in range(i+1, len(maneuvers)):
-            lj = maneuvers[j].connectingLane
-            if li.intersects(lj):
-                geometry.append(f'overlaps({li.uid}, {lj.uid})')
-                geometry.append(f'overlaps({lj.uid}, {li.uid})')
-
-    roads = intersection.roads
-    incomings = intersection.incomingLanes
-    road2incomings = {road.uid: [] for road in roads}
-    for incoming in incomings:
-        road2incomings[incoming.road.uid].append(incoming.uid)
-    # An intersection stores the intersecting roads in CW or CCW order.
-    # Assuming the order is CCW, then:
-    import math
-    for i in range(len(roads)):
-        ii = (i+1) % len(roads)  # cyclic order
-        lefts = road2incomings[roads[i].uid]
-        rights = road2incomings[roads[ii].uid]
-        l0 = network.elements[lefts[0]]
-        r0 = network.elements[rights[0]]
-        hl = l0.centerline[-1] - l0.centerline[-2]  # heading
-        hr = r0.centerline[-1] - r0.centerline[-2]  # heading
-        # Ignore roads on opposing directions:
-        if abs(math.pi - abs(hr.angleWith(hl))) < math.pi/6:
-            continue
-        geometry += [
-            f'isOnRightOf({right}, {left})' for left in lefts for right in rights]
-
-    # To detect stop signs
-    import carla
-    client = carla.Client('127.0.0.1', 2000)
-    world = client.get_world()
-    map = world.get_map()
-
-    from scenic.simulators.carla.utils.utils import scenicToCarlaLocation
-    for lane in incomings:
-        end = lane.centerline[-1]
-        point = lane.flowFrom(end, -6.0)
-        loc = scenicToCarlaLocation(point, world=world)
-        wp = map.get_waypoint(loc)
-        landmarks = wp.get_landmarks_of_type(
-            6.0, '206')  # 206: stop sign or utencil
-        if len(landmarks) > 0:
-            geometry += [f'hasStopSign({lane.uid})']
-
-    return geometry
-
-
 def realtime_logicalTime_axioms():
     atoms = []
 
@@ -250,7 +168,6 @@ def logical_solution(scenario, config, sim_events):
     atoms += config['constraints']
 
     # TODO store geometry atoms in the scenario to avoid computing them each time.
-    from scenic.domains.driving.roads import Network
     network = Network.fromFile(scenario.map_path)
     atoms += geometry_atoms(network, scenario.intersection_uid)
 
@@ -345,7 +262,6 @@ def model_to_constraints(model, car2time2events, old_nonegos):
     constraints = {n: set() for n in order_names}
     constraints['stop'] = set()
 
-    from intersection_monitor import StoppedAtForkEvent
     for atom in model:
         name = str(atom.name)
         if name in order_names:
@@ -400,7 +316,6 @@ def smooth_trajectories(scenario, config,
       (b) speed is continuous (to model no impact)
       (c) speed is small at stop events
       (d) bounds on speed
-      (e) acceleration is bounded (to model bounded torque)
     """
     car2frame2simDistance = {car: frame_to_distance(sim_trajectories[car])
                              for car in sim_trajectories}
@@ -549,49 +464,6 @@ def smooth_trajectories(scenario, config,
             #                 3*(dr-dq2)/(tr-tq) <= maxSpeed]  # instantaneous speed
             constraints += [(dr-dq)/(tr-tq) <= Real(maxSpeed)]  # average speed
 
-    # 2. (e)
-    # Let am<0 and aM>0 be maximum deceleration and acceleration. Then we require
-    # am <= 6(dr-2dr1+dr2)/(ts-tr)**2 <= aM and
-    # am <= 6(dr1-2dr2+ds)/(ts-tr)**2 <= aM.
-    # for car in new_cars:
-    #     am = Real(config[car]['minAcceleration']) # -8 is used in RSS
-    #     aM = Real(config[car]['maxAcceleration']) # 4 is used in RSS
-    #     for i in range(len(t_list[car])-3):
-    #         tr, ts = tuple(t_list[car][i:i+2])
-    #         dr, dr1, dr2, ds = tuple(d_list[car][3*i:3*i+4])
-    #         constraints += [am*(ts-tr)*(ts-tr) <= 6*(dr-2*dr1+dr2),
-    #                         6*(dr-2*dr1+dr2) <= aM*(ts-tr)*(ts-tr),
-    #                         am*(ts-tr)*(ts-tr) <= 6*(dr1-2*dr2+ds),
-    #                         6*(dr1-2*dr2+ds) <= aM*(ts-tr)*(ts-tr)]
-
-    # Collision-avoidance
-    # min_dist = 2
-    # for i in range(len(new_cars)-1):
-    #     for j in range(i+1, len(new_cars)):
-    #         car1, car2 = new_cars[i], new_cars[j]
-    #         if car1 == 'illegal' or car2 == 'illegal':
-    #             continue
-    #         for m in range(1, len(t_list[car1])-1):
-    #             for n in range(1, len(t_list[car2])-1):
-    #                 dm, dn = d_list[car1][3*m], d_list[car2][3*n]
-    #                 if type(dm) != int and type(dm) != float:
-    #                     continue
-    #                 if type(dn) != int and type(dn) != float:
-    #                     continue
-    #                 tm, tn = t_list[car1][m], t_list[car2][n]
-    #                 f1 = car2time2events[car1][str(tm)][0].frame
-    #                 f2 = car2time2events[car2][str(tn)][0].frame
-    #                 pose1 = sim_trajectories[car1][f1][car1]
-    #                 pose2 = sim_trajectories[car2][f2][car2]
-    #                 x1, y1 = pose1[0].x, pose1[0].y
-    #                 x2, y2 = pose2[0].x, pose2[0].y
-    #                 dist = math.sqrt((x1-x2)**2+(y1-y2)**2)
-    #                 if dist < min_dist:
-    #                     delta = round_down(1/(min_dist - dist))
-    #                     print(
-    #                         f'Collision constraint: {z3.Or(tm-tn > delta, tm-tn < -delta)}')
-    #                     constraints += [z3.Or(tm-tn > delta, tm-tn < -delta)]
-
     with Solver(name=solver_name, logic=QF_NRA):
         m = get_model(And(constraints))
         if m == None:
@@ -661,15 +533,6 @@ def solution(scenario, config,
     if len(models) == 0:
         raise NoASPSolutionError('No ASP solution found!')
 
-    # from scenic.domains.driving.roads import Network
-    # from visualization import draw_intersection
-    # import carla
-    # client = carla.Client('127.0.0.1', 2000)
-    # world = client.load_world(scenario.map_name)
-    # network = Network.fromFile(scenario.map_path)
-    # intersection = network.elements[scenario.intersection_uid]
-    # draw_intersection(world, intersection)
-
     # Find trajectories that preserve the order of events in the logical solution
     import copy
     old_nonegos = {car for car in scenario.events if not car in {
@@ -684,7 +547,6 @@ def solution(scenario, config,
             new_events, curves = smooth_trajectories(scenario, config,
                                                      sim_trajectories,
                                                      constraints, car2time2events_updated)
-            break
             if has_collision(scenario, sim_trajectories, curves, car_sizes):
                 print('Collision in SMT solution. Trying next ASP solution...')
             else:
@@ -701,95 +563,73 @@ def solution(scenario, config,
 
     return sim_events, curves
 
-
-def extend(scenario, config):
-    import intersection_monitor
-    monitor = intersection_monitor.Monitor()
-
-    import scenic
-    params = {'map': scenario.map_path,
-              'carla_map': scenario.map_name,
-              'intersection_uid': scenario.intersection_uid,
-              'timestep': scenario.timestep,
-              'weather': scenario.weather,
-              'render': False,
-              'event_monitor': monitor}
-    sim_result = {}
-    config['ego']['maneuver_uid'] = scenario.maneuver_uid['ego']
-    config['ego']['blueprint'] = scenario.blueprints['ego']
-    car_sizes = {car: {'width': 0, 'length': 0}
-                 for car in config['cars']}  # output parameter of simulation
-    # TODO skip simulating ego by using the solvability evidence of the old scenario
-    for car in config['cars']:
-        print(f'Simulate {car}\'s trajectory...')
-        params['car_name'] = car
-        params['maneuver_uid'] = config[car]['maneuver_uid']
-        params['spawn_distance'] = config[car]['spawn_distance']
-        params['car_blueprint'] = config[car]['blueprint']
-        params['car_size'] = car_sizes[car]  # output parameter
-        scenic_scenario = scenic.scenarioFromFile(
-            'trajectory.scenic', params=params)
-        scene, _ = scenic_scenario.generate()
-        simulator = scenic_scenario.getSimulator()
-        settings = simulator.world.get_settings()
-        settings.no_rendering_mode = True
-        simulator.world.apply_settings(settings)
-        sim_result[car] = simulator.simulate(scene, maxSteps=scenario.maxSteps)
-        del scenic_scenario, scene
-
-    # Find a strict extension of the given scenario
-    sim_trajectories = {}
-    for car in config['cars']:
-        sim_trajectories[car] = [state[car]
-                                 for state in sim_result[car].trajectory]
-    sim_trajectories['illegal'] = sim_trajectories['ego']
-
-    new_events, new_curves = solution(
-        scenario,
-        config,
-        monitor.events,
-        sim_trajectories,
-        car_sizes)
-
-    from scenario import Scenario
-    scenario_ext = Scenario()
-    scenario_ext.maxSteps = scenario.maxSteps
-    scenario_ext.timestep = scenario.timestep
-    scenario_ext.weather = scenario.weather
-    scenario_ext.map_path = scenario.map_path
-    scenario_ext.map_name = scenario.map_name
-    scenario_ext.intersection_uid = scenario.intersection_uid
-    scenario_ext.rules_path = scenario.rules_path
-    scenario_ext.blueprints = dict(
-        scenario.blueprints, **{car: config[car]['blueprint'] for car in config['cars']})
-    scenario_ext.car_sizes = dict(scenario.car_sizes, **car_sizes)
-    scenario_ext.maneuver_uid = dict(
-        scenario.maneuver_uid, **{car: config[car]['maneuver_uid'] for car in config['cars']})
-    scenario_ext.events = dict(scenario.events, **new_events)
-    scenario_ext.curves = dict(scenario.curves, **new_curves)
-    scenario_ext.sim_trajectories = dict(
-        scenario.sim_trajectories, **sim_trajectories)
-
-    return scenario_ext
+def simulate(init_lane, turn, config):
+    blueprint = config['random'].choice(tuple(config['blueprints'].keys()))
+    scenario = scenic.scenarioFromFile(
+                    'src/scenariogen/core/seed_generators/footprint.scenic',
+                    model=config['model'],
+                    params={'timestep': config['timestep'],
+                            'render': config['render'],
+                            'config': {**config,
+                                       'init_lane': init_lane.uid,
+                                       'turns': (turn,),
+                                       'init_progress': 0, # TODO min(100, distance to intersection)
+                                       'blueprint': blueprint,
+                                       'length': config['blueprints'][blueprint]['length'],
+                                       'width': config['blueprints'][blueprint]['width'],
+                                       'signal': SignalType.from_maneuver_type(turn)
+                                      }
+                            },
+                    cacheImports=False
+                    )
+    scene, _ = scenario.generate(maxIterations=1)
+    simulator = scenario.getSimulator()
+    sim_result = simulator.simulate(
+                        scene,
+                        maxSteps=config['steps'],
+                        maxIterations=1,
+                        raiseGuardViolations=True
+                        )
+    return sim_result
 
 
-def new(config):
-    from scenario import Scenario
-    scenario = Scenario()
-    scenario.maxSteps = config['maxSteps']
-    scenario.timestep = config['timestep']
-    scenario.weather = config['weather']
-    scenario.map_path = config['map_path']
-    scenario.map_name = config['map_name']
-    scenario.intersection_uid = config['intersection_uid']
-    scenario.rules_path = config['rules_path']
-    scenario.blueprints = {car: config[car]
-                           ['blueprint'] for car in config['cars']}
-    scenario.car_sizes = {}
-    scenario.maneuver_uid = {
-        car: config[car]['maneuver_uid'] for car in config['cars']}
-    scenario.events = {}
-    scenario.curves = {}
-    scenario.sim_trajectories = {}
+def generate(config):
+    network = Network.fromFile(config['map'])
+    intersection = network.elements[config['intersection']]
+    for li, lj in product(intersection.incomingLanes, intersection.incomingLanes):
+        if li.uid == lj.uid:
+            continue
+        for mi in li.maneuvers:
+            ti = mi.type
+            # ego: simulate autopilot on li, record events
+            try:
+                ego_sim_result = simulate(li, ti, config)
+            except NonegoNonegoCollisionError as err:
+                print(f'Collision between nonegos {err.nonego} and {err.other}, discarding the simulation.')
+                continue
+            except SimulationCreationError:
+                print('Failed to create scenario.')
+                continue
+            except GuardViolation:
+                print('Guard violated in simulation.')
+                continue
+            
+            for mj in lj.maneuvers:
+                tj = mj.type
+                try:
+                    nonego_sim_result = simulate(lj, tj, config)
+                except NonegoNonegoCollisionError as err:
+                    print(f'Collision between nonegos {err.nonego} and {err.other}, discarding the simulation.')
+                    continue
+                except SimulationCreationError:
+                    print('Failed to create scenario.')
+                    continue
+                except GuardViolation:
+                    print('Guard violated in simulation.')
+                    continue
+                new_events, new_timings = solution(ego_sim_result, nonego_sim_result, config)
+                
+                
 
-    return extend(scenario, config)
+        
+

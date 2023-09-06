@@ -5,14 +5,13 @@ Two platoons of vehicles cross each other and collide at the intersection.
 #--- Python imports
 import jsonpickle
 from scenariogen.core.signals import SignalType
-from scenariogen.core.utils import is_collision_free
 
 #--- Defined constants
 carla_map = 'Town05'
 intersection_uid = 'intersection396'
 traffic_rules = '4way-uncontrolled.lp'
 ego_route = ('road9_lane2', 'road455_lane0', 'road45_lane1')
-ego_init_progress = 30
+ego_init_progress_ratio = 30
 arrival_distance = 4
 route_left = ('road44_lane1', 'road552_lane1', 'road45_lane1')
 route_right = ('road8_lane1', 'road415_lane1', 'road9_lane1')
@@ -33,10 +32,10 @@ config = {'carla_map': carla_map,
           'intersection': intersection_uid,
           'traffic_rules': traffic_rules,
           'ego_route': ego_route,
-          'ego_init_progress': ego_init_progress
+          'ego_init_progress_ratio': ego_init_progress_ratio
           }
 
-with open('src/scenariogen/simulators/carla/blueprint_library.json', 'r') as f:
+with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f:
   blueprints = jsonpickle.decode(f.read())
 
 cars = []

@@ -3,7 +3,7 @@ import scenic
 
 class Scenario:
   # Choose a blueprint of an appropriate size for each non-ego
-  with open('src/scenariogen/simulators/carla/blueprint_library.json', 'r') as f:
+  with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f:
       blueprints = jsonpickle.decode(f.read())
   dim2bp = {}
   for b, dims in blueprints.items():

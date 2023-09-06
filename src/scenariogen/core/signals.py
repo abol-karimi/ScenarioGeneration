@@ -10,12 +10,12 @@ class SignalType(enum.Enum):
     RIGHT = enum.auto()
 
     @classmethod
-    def from_maneuver(cls, maneuver):
-        if maneuver.type is ManeuverType.STRAIGHT:
+    def from_maneuver_type(cls, maneuver_type):
+        if maneuver_type is ManeuverType.STRAIGHT:
             return SignalType.OFF
-        if maneuver.type is ManeuverType.LEFT_TURN:
+        if maneuver_type is ManeuverType.LEFT_TURN:
             return SignalType.LEFT
-        if maneuver.type is ManeuverType.RIGHT_TURN:
+        if maneuver_type is ManeuverType.RIGHT_TURN:
             return SignalType.RIGHT
-        if maneuver.type is ManeuverType.U_TURN:
+        if maneuver_type is ManeuverType.U_TURN:
             return SignalType.LEFT

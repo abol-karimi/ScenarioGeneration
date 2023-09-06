@@ -24,7 +24,7 @@ with open('experiments/seeds/0.json', 'r') as f:
     seed = jsonpickle.decode(f.read())
     assert isinstance(seed, FuzzInput)
 
-mutator = StructureAwareMutator(max_parameters_size=50,
+mutator = StructureAwareMutator(max_spline_knots_size=50,
                         max_mutations_per_iteration=1,
                         randomizer_seed=0)
 network = StructureAwareMutator.get_network(seed)

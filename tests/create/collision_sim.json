@@ -12,7 +12,7 @@
     "road45_lane1"
    ]
   },
-  "ego_init_progress": 30
+  "ego_init_progress_ratio": 30
  },
  "routes": [
   {

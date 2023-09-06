@@ -5,26 +5,28 @@ Each car in the given scenario must have the following properties:
 """
 # imports
 import importlib
-from scenariogen.core.signals import SignalType
 from scenariogen.core.geometry import CurvilinearTransform
 
 # Load the given scenario
-param scenario_path = None
 scenario_path = globalParameters.scenario_path
 seed_module = importlib.import_module(scenario_path.replace('/', '.').replace('.scenic', ''))
+config = seed_module.config
 seed_scenario = seed_module.SeedScenario()
-config = globalParameters.config # initialized by seed_scenario
-model globalParameters.model # initialized by seed_scenario
+model scenic.simulators.carla.model # initialized by seed_module
 
 param save_sim_trajectories = None
 save_sim_trajectories = globalParameters.save_sim_trajectories
 
-param simulator_name = None
 simulator_name = globalParameters.simulator
 
 # Import auxiliary scenarios
 from scenariogen.core.scenarios import CheckCollisionsScenario, RecordSimTrajectories
 
+# It's expensive to load the carla module; do it only if necessary
+if simulator_name == 'carla':
+  from scenariogen.simulators.carla.scenarios import ShowIntersectionScenario
+
+names = []
 transforms = []
 footprints = []
 routes = []
@@ -35,25 +37,28 @@ widths = []
 # Record seed info
 scenario Main():
   setup:
-    p = network.elements[config['intersection']].polygon.centroid
-    ego = Debris at p.x@p.y
+    # intersection = network.elements[seed_scenario.config['intersection']]
+    # p = intersection.polygon.centroid
+    # ego = Debris at p.x@p.y
 
     monitor RecordSeedInfoMonitor:
-      cars = simulation().agents
-      routes.extend(car.route for car in cars)
+      nonegos = tuple(a for a in simulation().agents if a.name != 'ego')
+      names.extend(car.name for car in nonegos)
+      routes.extend(car.route for car in nonegos)
       transforms.extend(CurvilinearTransform([p for uid in route
                                                 for p in network.elements[uid].centerline.lineString.coords
                                               ])
                         for route in routes)
-      signals.extend(car.signal for car in cars)
-      lengths.extend(car.length for car in cars)
-      widths.extend(car.width for car in cars)
+      signals.extend(car.signal for car in nonegos)
+      lengths.extend(car.length for car in nonegos)
+      widths.extend(car.width for car in nonegos)
       while True:
         time = simulation().currentTime
-        footprints.append((time, tuple(car.position for car in cars)))
+        footprints.append((time, tuple(car.position for car in nonegos)))
         wait
 
     record final config as config
+    record final tuple(names) as names
     record final tuple(transforms) as transforms
     record final tuple(footprints) as footprints
     record final tuple(routes) as routes
@@ -62,16 +67,18 @@ scenario Main():
     record final tuple(widths) as widths
 
   compose:
-    if simulator_name == 'carla':
-      from scenariogen.simulators.carla.scenarios import ShowIntersectionScenario
-      do ShowIntersectionScenario()
-
+    intersection = network.elements[config['intersection']]
+    nonegos = tuple(a for a in simulation().agents if a.name != 'ego')
+    egos = tuple(a for a in simulation().agents if a.name == 'ego')
+    
     if save_sim_trajectories:
       do seed_scenario, \
-          CheckCollisionsScenario([], simulation().agents), \
-          RecordSimTrajectories(simulation().agents)
+          CheckCollisionsScenario(egos, nonegos), \
+          RecordSimTrajectories(cars), \
+          ShowIntersectionScenario(intersection)
     else:      
       do seed_scenario, \
-          CheckCollisionsScenario([], simulation().agents)
+          CheckCollisionsScenario(egos, nonegos), \
+          ShowIntersectionScenario(intersection)
 
 

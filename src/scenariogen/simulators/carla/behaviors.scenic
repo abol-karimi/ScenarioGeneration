@@ -3,18 +3,11 @@ model scenic.simulators.carla.model
 
 # imports
 import carla
-from carla import VehicleLightState
 from agents.navigation.behavior_agent import BehaviorAgent
 from scenic.simulators.carla.utils.utils import scenicToCarlaLocation
 from scenariogen.simulators.carla.rss_sensor import RssSensor
-
-def signal_to_vehicleLightState(signal):
-	if signal is SignalType.OFF:
-			return VehicleLightState.NONE
-	if signal is SignalType.LEFT:
-			return VehicleLightState.LeftBlinker
-	if signal is SignalType.RIGHT:
-			return VehicleLightState.RightBlinker
+from scenariogen.simulators.carla.utils import signal_to_vehicleLightState
+from scenariogen.core.signals import SignalType
 
 behavior AutopilotFollowRoute(route, aggressiveness, rss_enabled):
 	take SetVehicleLightStateAction(signal_to_vehicleLightState(self.signal))

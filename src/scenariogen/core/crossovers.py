@@ -30,10 +30,10 @@ class StructureAwareCrossOver():
   _route_lengths_cache = {}
   _predecessors_cache = {}
 
-  def __init__(self, max_parameters_size=50,
+  def __init__(self, max_spline_knots_size=50,
                       max_attempts=1,
                       randomizer_seed=0):
-    self.max_parameters_size = max_parameters_size
+    self.max_spline_knots_size = max_spline_knots_size
     self.max_attempts = max_attempts
     self.randomizer_seed = randomizer_seed
 

@@ -1,21 +1,17 @@
 # Scenic parameters
 model scenic.domains.driving.model
-param config = None
-config = globalParameters.config
 
-# imports
-from scenariogen.core.signals import SignalType
-
-scenario EgoScenario():
+scenario EgoScenario(config):
   setup:
     ego_lanes = [network.elements[l] for l in config['ego_route']]
     ego_centerline = PolylineRegion.unionAll([l.centerline for l in ego_lanes])
-    ego_init_pos = ego_centerline.pointAlongBy(config['ego_init_progress'])
+    ego_init_pos = ego_centerline.pointAlongBy(config['ego_init_progress_ratio'])
+    ego_blueprint = config['ego_blueprint']
     ego = Car at ego_init_pos,
       with name 'ego',
-      with width 2.163450002670288,
-      with length 4.791779518127441,
-      with blueprint 'vehicle.tesla.model3',
-      with signal SignalType.OFF,
+      with blueprint ego_blueprint,
+      with width blueprint2dims[ego_blueprint]['width'],
+      with length blueprint2dims[ego_blueprint]['length'],
+      with signal config['ego_signal'],
       with behavior FollowLaneBehavior(target_speed=6)
     cars = [ego]

@@ -1,27 +1,31 @@
 # Scenic parameters
 model scenic.simulators.carla.model
-param config = None
-config = globalParameters.config
 
 # imports
-from scenariogen.core.signals import SignalType
 from scenariogen.simulators.carla.behaviors import AutopilotFollowRoute
+import jsonpickle
 
-scenario EgoScenario(aggressiveness='normal', rss_enabled=False):
+with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f:
+  blueprint2dims = jsonpickle.decode(f.read())
+
+scenario EgoScenario(config):
   setup:
-    ego_lanes = [network.elements[l] for l in config['ego_route']]
+    config_with_defaults = {'aggressiveness': 'normal',
+              'rss_enabled': False,
+              **config}
+    ego_lanes = [network.elements[l] for l in config_with_defaults['ego_route']]
     ego_centerline = PolylineRegion.unionAll([l.centerline for l in ego_lanes])
-    ego_init_pos = ego_centerline.pointAlongBy(config['ego_init_progress'])
+    ego_init_pos = ego_centerline.pointAlongBy(config_with_defaults['ego_init_progress_ratio']*ego_lanes[0].centerline.length)
+    ego_blueprint = config_with_defaults['ego_blueprint']
     ego = Car at ego_init_pos,
       with name 'ego',
       with color Color(0, 1, 0),
-      with width 2.163450002670288,
-      with length 4.791779518127441,
-      with blueprint 'vehicle.tesla.model3',
-      with signal SignalType.OFF,
-      with behavior AutopilotFollowRoute(route=config['ego_route'],
-                                        aggressiveness=aggressiveness,
-                                        rss_enabled=rss_enabled),
+      with blueprint config_with_defaults['ego_blueprint'],
+      with width blueprint2dims[ego_blueprint]['width'],
+      with length blueprint2dims[ego_blueprint]['length'],
+      with signal config_with_defaults['ego_signal'],
+      with behavior AutopilotFollowRoute(route=config_with_defaults['ego_route'],
+                                        aggressiveness=config_with_defaults['aggressiveness'],
+                                        rss_enabled=config_with_defaults['rss_enabled']),
       with physics True,
       with allowCollisions True
-    cars = [ego]

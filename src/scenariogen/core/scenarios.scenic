@@ -1,7 +1,6 @@
 # Scenic parameters
 model scenic.domains.driving.model
-config = globalParameters.config
-intersection = network.elements[config['intersection']]
+# config = globalParameters.config
 
 # Python imports
 from pathlib import Path
@@ -11,20 +10,13 @@ from shapely.geometry import LineString
 from scenariogen.core.utils import sample_trajectories
 from scenariogen.core.signals import SignalType
 from scenariogen.core.errors import EgoCollisionError, NonegoNonegoCollisionError
-from scenariogen.core.utils import is_collision_free
 from scenariogen.core.geometry import CurvilinearTransform
 
 behavior AnimateBehavior():
 	for pose in self.traj_sample:
-		take SetPositionAction(pose[0]@pose[1]), SetHeadingAction(pose[2])
+		take SetTransformAction(pose[0]@pose[1], pose[2])
 
-behavior StopAndPassIntersectionBehavior(speed, trajectory, intersection, arrival_distance=4):
-  do FollowTrajectoryBehavior(speed, trajectory) until (distance from (front of self) to intersection) <= arrival_distance
-  do StopBehavior() until self.speed <= 0.1
-  do FollowTrajectoryBehavior(speed, trajectory)
-  do FollowLaneBehavior(speed)
-
-scenario NonegosScenario():
+scenario NonegosScenario(config):
   setup:
     cars = []
     fuzz_input = config['fuzz_input']

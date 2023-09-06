@@ -1,3 +1,4 @@
+from itertools import product
 import geomdl
 from geomdl import BSpline
 import numpy as np
@@ -28,7 +29,7 @@ def geometry_atoms(network, intersection_uid):
 
     for maneuver in maneuvers:
         lane = maneuver.connectingLane
-        signal = SignalType.from_maneuver(maneuver).name.lower()
+        signal = SignalType.from_maneuver_type(maneuver.type).name.lower()
         geometry.append(
             f'laneCorrectSignal({lane.uid}, {signal})')
 
@@ -138,14 +139,25 @@ def seed_from_sim(sim_result, timestep, degree=3, knots_size=20):
                     )
         footprints.append(footprint)
         timings.append(timing)
-      
-    return FuzzInput(config=sim_result.records['config'],
-                     routes=sim_result.records['routes'],
-                     footprints=tuple(footprints),
-                     timings=tuple(timings),
-                     signals=sim_result.records['signals'],
-                     lengths=sim_result.records['lengths'],
-                     widths=sim_result.records['widths'])
+    
+    try:
+        j = sim_result.records['names'].index('ego')
+        return FuzzInput(config=sim_result.records['config'],
+                        routes=tuple(r for k,r in enumerate(sim_result.records['routes']) if k != j),
+                        footprints=tuple(f for k,f in enumerate(footprints) if k != j),
+                        timings=tuple(t for k,t in enumerate(timings) if k != j),
+                        signals=tuple(s for k,s in enumerate(sim_result.records['signals']) if k != j),
+                        lengths=tuple(l for k,l in enumerate(sim_result.records['lengths']) if k != j),
+                        widths=tuple(w for k,w in enumerate(sim_result.records['widths']) if k != j)
+                        )
+    except ValueError:
+        return FuzzInput(config=sim_result.records['config'],
+                         routes=sim_result.records['routes'],
+                         footprints=tuple(footprints),
+                         timings=tuple(timings),
+                         signals=sim_result.records['signals'],
+                         lengths=sim_result.records['lengths'],
+                         widths=sim_result.records['widths'])
 
 def sample_trajectories(network, seed, sample_size, umin=0, umax=None):
     if umax is None:
@@ -188,14 +200,11 @@ def connecting_lane(network, start, end):
         if m.endLane.uid == end:
             return m.connectingLane.uid
 
-def is_collision_free(objects):
-  pairs = [(objects[i], objects[j]) 
-           for i in range(len(objects)) 
-           for j in range(i+1, len(objects))]
-  for c, d in pairs:
-    if c.intersects(d):
-      return False
-  return True
+def collides_with(query, data):
+  for q, d in product(query, data):
+    if q.intersects(d):
+      return True
+  return False
 
 def route_from_turns(network, init_lane, turns):
     """
@@ -210,10 +219,10 @@ def route_from_turns(network, init_lane, turns):
         while not current_lane.maneuvers[0].intersection:
             route.append(current_lane.successor.uid)
             current_lane = current_lane.successor
-        manuevers = tuple(filter(lambda i: i.type == turn, current_lane.maneuvers))
+        manuevers = tuple(filter(lambda m: m.type == turn, current_lane.maneuvers))
         if len(manuevers) == 0:
-            print('The expected turn not available at the junction!')
-            exit()
+            print('The expected turn not available at the intersection!')
+            exit(1)
         current_lane = manuevers[0].connectingLane
         route.append(current_lane.uid)
     while not current_lane.maneuvers[0].intersection:

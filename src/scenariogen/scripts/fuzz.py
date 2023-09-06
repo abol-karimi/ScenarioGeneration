@@ -36,7 +36,7 @@ parser.add_argument('--ego', action='store_true',
                     help='simulate the given ego together with the nonegos')
 parser.add_argument('--weather', default = 'CloudySunset')
 parser.add_argument('--spline_degree', default=3, type=int)
-parser.add_argument('--max_parameters_size', default=50, type=int)
+parser.add_argument('--max_spline_knots_size', default=50, type=int)
 parser.add_argument('--max_mutations_per_iteration', default=4, type=int)
 parser.add_argument('--arrival_distance', default=4., type=float)
 args = parser.parse_args()
@@ -60,7 +60,7 @@ config['timestep'] = args.timestep
 config['weather'] = args.weather
 config['arrival_distance'] = args.arrival_distance
 config['spline_degree'] = args.spline_degree
-config['max_parameters_size'] = args.max_parameters_size
+config['max_spline_knots_size'] = args.max_spline_knots_size
 config['max_mutations_per_iteration'] = args.max_mutations_per_iteration
 config['max_nonegos'] = args.max_nonegos
 config['iterations'] = args.iterations

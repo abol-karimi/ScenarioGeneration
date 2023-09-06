@@ -36,7 +36,7 @@ duration.add_argument('--seconds', type=float,
 parser.add_argument('--timestep', default=0.05, type=float, 
                     help='The length of one simulation step')
 parser.add_argument('--spline_degree', default = 3, type=int)
-parser.add_argument('--parameters_size', default = 50, type=int)
+parser.add_argument('--spline_knots_size', default = 50, type=int)
 args = parser.parse_args()
 
 # Default duration:
@@ -84,10 +84,10 @@ scenario_path = Path(args.scenario_path)
 seed = seed_from_sim(sim_result,
                      args.timestep,
                      degree=args.spline_degree,
-                     knots_size=args.parameters_size)
+                     knots_size=args.spline_knots_size)
 if args.out_path:
     with open(args.out_path, 'w') as f:
-        f.write(jsonpickle.encode(seed, indent=1))    
+        f.write(jsonpickle.encode(seed, indent=1))
 else:
     with open(scenario_path.parents[1]/'seeds'/f'{scenario_path.stem}.json', 'w') as f:
         f.write(jsonpickle.encode(seed, indent=1))

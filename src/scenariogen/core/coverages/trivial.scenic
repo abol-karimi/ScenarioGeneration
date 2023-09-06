@@ -6,8 +6,8 @@ coverage = set()
 
 scenario CoverageScenario():
   setup:
-    record initial coverage_space as coverage_space
-    record initial coverage as coverage
+    record final coverage_space as coverage_space
+    record final coverage as coverage
    
     monitor CoverageMonitor:
       wait
