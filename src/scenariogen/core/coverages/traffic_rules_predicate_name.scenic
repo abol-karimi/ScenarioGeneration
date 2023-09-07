@@ -70,7 +70,6 @@ monitor CoverageMonitor(maxSteps):
         elif wasOnLane and not isOnLane:
           lanes[car].remove(lane.uid)
           events.append(ExitedLaneEvent(car.name, lane.uid, time_seconds))
-    print(simulation().currentTime, len(events))
     wait
   coverage = to_coverage(events)
   print('Monitor last statement!')

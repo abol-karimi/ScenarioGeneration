@@ -1,0 +1,1 @@
+sudo docker run --rm -it --privileged --gpus all --net=host -e DISPLAY=$DISPLAY -e SDL_VIDEODRIVER=x11 -v /tmp/.X11-unix:/tmp/.X11-unix:rw   --mount type=bind,source=$HOME/ScenarioGeneration,target=/home/carla/ScenarioGeneration --mount type=bind,source=$HOME/Scenic3,target=/home/carla/Scenic scenariogen:scenic3

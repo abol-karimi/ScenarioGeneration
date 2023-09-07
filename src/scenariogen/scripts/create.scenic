@@ -55,12 +55,12 @@ scenario Main():
 
     require monitor RecordSeedInfoMonitor()
     record final config as config
-    record final transforms as transforms
-    record final footprints as footprints
-    record final routes as routes
-    record final signals as signals
-    record final lengths as lengths
-    record final widths as widths
+    record final tuple(transforms) as transforms
+    record final tuple(footprints) as footprints
+    record final tuple(routes) as routes
+    record final tuple(signals) as signals
+    record final tuple(lengths) as lengths
+    record final tuple(widths) as widths
 
     if simulator_name == 'carla':
       from scenariogen.simulators.carla.monitors import ShowIntersectionMonitor
