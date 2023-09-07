@@ -17,7 +17,7 @@ def from_corpus(SUT_config, corpus_folder):
     except NonegoNonegoCollisionError as err:
       print(f'Collision between nonegos {err.nonego} and {err.other}.')
     except EgoCollisionError as err:
-      print(f'Ego collided with {err.other.name}.')
+      print(f'Ego collided with {err.other}.')
     else:
       coverage_space = sim_result.records['coverage_space']
       coverage_sum.update(sim_result.records['coverage'])

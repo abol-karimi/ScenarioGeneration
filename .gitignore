@@ -17,3 +17,4 @@ htmlcov
 crash-*
 slow-unit-*
 experiments/predicate-coverage/*/*
+experiments/seeds_random/*

@@ -3,9 +3,11 @@ model scenic.domains.driving.model
 # config = globalParameters.config
 
 # Python imports
+from itertools import product
 from pathlib import Path
 import pickle
 from shapely.geometry import LineString
+import carla
 
 from scenariogen.core.utils import sample_trajectories
 from scenariogen.core.signals import SignalType
@@ -38,25 +40,17 @@ scenario NonegosScenario(config):
         with signal signal,
         with length l,
         with width w,
-        with blueprint bp
+        with blueprint bp,
+        with color Color(0, 0, 1)
       cars.append(car)
 
-scenario CheckCollisionsScenario(egos, nonegos):
+scenario CheckCollisionsScenario(cars1, cars2):
   setup:
     monitor collisions:
-      nonego_pairs = [(nonegos[i], nonegos[j]) 
-              for i in range(len(nonegos)) 
-              for j in range(i+1, len(nonegos))]
-      ego_nonego_pairs = [(e, n) for e in egos for n in nonegos]
       while True:
-        # Nonego-nonego collisions
-        for c, d in nonego_pairs:
-          if c.intersects(d):
+        for c, d in product(cars1, cars2):
+          if (not c is d) and c.intersects(d):
             raise NonegoNonegoCollisionError(c, d)
-        # Ego-nonego collisions
-        for e, n in ego_nonego_pairs:
-          if e.intersects(n):
-            raise EgoCollisionError(e, n)
         wait
 
 poses = []

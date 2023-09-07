@@ -7,6 +7,8 @@ Each car in the given scenario must have the following properties:
 import importlib
 from scenariogen.core.geometry import CurvilinearTransform
 
+param caller_config = None
+
 # Load the given scenario
 scenario_path = globalParameters.scenario_path
 seed_module = importlib.import_module(scenario_path.replace('/', '.').replace('.scenic', ''))
@@ -20,11 +22,8 @@ save_sim_trajectories = globalParameters.save_sim_trajectories
 simulator_name = globalParameters.simulator
 
 # Import auxiliary scenarios
-from scenariogen.core.scenarios import CheckCollisionsScenario, RecordSimTrajectories
-
-# It's expensive to load the carla module; do it only if necessary
-if simulator_name == 'carla':
-  from scenariogen.simulators.carla.scenarios import ShowIntersectionScenario
+from scenariogen.core.scenarios import RecordSimTrajectories
+from scenariogen.simulators.carla.scenarios import ShowIntersectionScenario, RaiseEgoCollisionScenario
 
 names = []
 transforms = []
@@ -68,17 +67,17 @@ scenario Main():
 
   compose:
     intersection = network.elements[config['intersection']]
-    nonegos = tuple(a for a in simulation().agents if a.name != 'ego')
-    egos = tuple(a for a in simulation().agents if a.name == 'ego')
+    nonegos = (a for a in simulation().agents if a.name != 'ego')
+    egos = (a for a in simulation().agents if a.name == 'ego')
     
     if save_sim_trajectories:
       do seed_scenario, \
-          CheckCollisionsScenario(egos, nonegos), \
+          RaiseEgoCollisionScenario(globalParameters.caller_config), \
           RecordSimTrajectories(cars), \
           ShowIntersectionScenario(intersection)
     else:      
       do seed_scenario, \
-          CheckCollisionsScenario(egos, nonegos), \
+          RaiseEgoCollisionScenario(globalParameters.caller_config), \
           ShowIntersectionScenario(intersection)
 
 

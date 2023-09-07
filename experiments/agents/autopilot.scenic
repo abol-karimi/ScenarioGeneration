@@ -28,4 +28,4 @@ scenario EgoScenario(config):
                                         aggressiveness=config_with_defaults['aggressiveness'],
                                         rss_enabled=config_with_defaults['rss_enabled']),
       with physics True,
-      with allowCollisions True
+      with allowCollisions False

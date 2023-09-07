@@ -5,8 +5,7 @@ class SUTError(Exception):
 class EgoCollisionError(SUTError):
     """Ego collides with another vehicle."""
 
-    def __init__(self, ego, other):
-        self.ego = ego
+    def __init__(self, other):
         self.other = other
 
 class NonegoNonegoCollisionError(SUTError):

@@ -16,7 +16,7 @@ config = {'scenario_path': 'experiments/seeds_definitions/Town05_intersection396
           'render': False,
           'prng_seed': 1,
           'spline_degree': 3,
-          'spline_knots_size': 30,
+          'spline_knots_size': 50,
           'scene_maxIterations': 50,
           'simulate_maxIterations': 1,
           'seeds_num': 50,

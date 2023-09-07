@@ -21,24 +21,36 @@ def run(config):
     seed_id = 0
 
     while seed_id < config['seeds_num']:
-        scenario = scenic.scenarioFromFile(
-                        'src/scenariogen/scripts/create.scenic',
-                        params={'timestep': config['timestep'],
-                                'render': config['render'],
-                                'scenario_path': config['scenario_path']
-                                },
-                        )
         try:
+            scenario = scenic.scenarioFromFile(
+                            'src/scenariogen/scripts/create.scenic',
+                            params={'timestep': config['timestep'],
+                                    'render': config['render'],
+                                    'scenario_path': config['scenario_path'],
+                                    'caller_config': config
+                                    },
+                            )
+            print('Scenario compiled successfully.')
             scene, iterations = scenario.generate(maxIterations=config['scene_maxIterations'])
-            print(f"Scene created in {iterations} iteration{'(s)' if iterations > 1 else ''}.")
+            print(f"Initial scene generated in {iterations} iteration{'(s)' if iterations > 1 else ''}.")
             sim_result = scenario.getSimulator().simulate(
                                 scene,
                                 maxSteps=config['steps'],
                                 maxIterations=config['simulate_maxIterations'],
                                 raiseGuardViolations=True
                                 )
-        except NonegoNonegoCollisionError as err:
-            print(f'Collision between nonegos {err.nonego} and {err.other}, discarding the simulation.')
+            print('Simulation finished successfully.')
+            seed = seed_from_sim(sim_result,
+                                 config['timestep'],
+                                 degree=config['spline_degree'],
+                                 knots_size=config['spline_knots_size']
+                                )
+            seed_id += 1
+            print(f'Saving seed {seed_id} ...')
+            with open(f"{config['output_folder']}/{seed_id}.json", 'w') as f:
+                f.write(jsonpickle.encode(seed, indent=1))
+        except EgoCollisionError as err:
+            print(f'Ego collided with {err.other}, discarding the simulation.')
             continue
         except SimulationCreationError as e:
             print(f'Failed to create simulation: {e}')
@@ -46,18 +58,14 @@ def run(config):
         except GuardViolation as e:
             print(f'Guard violated in simulation: {e}')
             continue
-        except Exception as e:
-            print(f'Unhandled exception: {e} !!!')
-        else:
-            seed_id += 1
-            print(f'Saving seed {seed_id} ...')
-            seed = seed_from_sim(sim_result,
-                                 config['timestep'],
-                                 degree=config['spline_degree'],
-                                 knots_size=config['spline_knots_size']
-                                )
-            with open(f"{config['output_folder']}/{seed_id}.json", 'w') as f:
-                f.write(jsonpickle.encode(seed, indent=1))
+        except (RuntimeError, AssertionError) as e:
+            print(f'Error of type {type(e)}: {e}')
+            continue
+        # except Exception as e:
+        #     print(f'Ignoring exception of type {type(e)}: {e}')
+        #     continue
+
+
         
 
             

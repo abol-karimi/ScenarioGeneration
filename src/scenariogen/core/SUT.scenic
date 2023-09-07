@@ -33,8 +33,8 @@ scenario Main():
     record initial config as config
 
   compose:
-    nonegos = tuple(a for a in simulation().agents if a.name != 'ego')
-    egos = tuple(a for a in simulation().agents if a.name == 'ego')    
+    nonegos = (a for a in simulation().agents if a.name != 'ego')
+    egos = (a for a in simulation().agents if a.name == 'ego')    
     if config['closedLoop']:
       do ego_scenario, \
           nonegos_scenario, \
@@ -44,6 +44,5 @@ scenario Main():
     else:
       do nonegos_scenario, \
           coverage_scenario, \
-          CheckCollisionsScenario([], nonegos), \
           ShowIntersectionScenario(intersection)
 

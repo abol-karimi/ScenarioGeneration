@@ -13,15 +13,15 @@ parser.add_argument('seed_path',
                     help='relative path of the seed')
 parser.add_argument('--timestep', type=float, default=0.05,
                     help='length of each simulation step')
-parser.add_argument('--no_render', action='store_true',
-                    help='disable rendering')
-parser.add_argument('--closedLoop', action='store_true',
+parser.add_argument('--render', action='store_true',
+                    help='render ego viewpoint')
+parser.add_argument('--openLoop', action='store_true',
                     help='simulate a VUT')
-parser.add_argument('--ego_module', default='experiments.agents.followRouteAvoidCollisions',
+parser.add_argument('--ego_module', default='experiments.agents.autopilot',
                     help='the scenic file containing the ego scenario')
-parser.add_argument('--coverage_module', default='scenariogen.core.coverages.trivial',
+parser.add_argument('--coverage_module', default='scenariogen.core.coverages.traffic_rules_predicate_name',
                     help='the scenic file containing ')
-parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='newtonian',
+parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='carla',
                     help='The simulator')
 parser.add_argument('--replay_raw', action='store_true',
                     help='Replay the original simulation if available, instead of the spline approximation')
@@ -52,11 +52,11 @@ config['weather'] = 'CloudySunset'
 config['fuzz_input'] = seed
 config['arrival_distance'] = 4
 config['stop_speed_threshold'] = 0.5  # meters/seconds
-config['closedLoop'] = args.closedLoop
+config['closedLoop'] = not args.openLoop
 config['ego_module'] = args.ego_module
 config['coverage_module'] = args.coverage_module
 config['simulator'] = args.simulator
-config['render'] = not args.no_render
+config['render'] = args.render
 config['replay_raw'] = args.replay_raw
 config['seed_path'] = args.seed_path
 
@@ -65,7 +65,7 @@ try:
 except NonegoNonegoCollisionError as err:
     print(f'Collision between nonegos {err.nonego} and {err.other}.')
 except EgoCollisionError as err:
-    print(f'Ego collided with {err.other.name}.')
+    print(f'Ego collided with {err.other}.')
 else:
     coverage_space = sim_result.records['coverage_space']
     coverage = sim_result.records['coverage']

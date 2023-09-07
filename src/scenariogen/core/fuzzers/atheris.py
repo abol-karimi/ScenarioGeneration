@@ -178,7 +178,7 @@ class SUTCallback:
     except NonegoNonegoCollisionError as err:
       print(f'Collision between nonegos {err.nonego} and {err.other}! We skip predicate-coverage computation.')
     except EgoCollisionError as err:
-      print(f'Ego collided with {err.other.name}. We save the fuzz input to the ego-collisions corpus.')
+      print(f'Ego collided with {err.other}. We save the fuzz input to the ego-collisions corpus.')
       with open(f'{self.ego_collisions_folder}/{self.current_iteration}.json', 'w') as f:
         f.write(jsonpickle.encode(seed, indent=1))
     except Exception as e:
