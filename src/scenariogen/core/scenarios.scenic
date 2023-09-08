@@ -1,6 +1,5 @@
 # Scenic parameters
 model scenic.domains.driving.model
-# config = globalParameters.config
 
 # Python imports
 from itertools import product
@@ -9,14 +8,15 @@ import pickle
 from shapely.geometry import LineString
 import carla
 
+# from scenic.core.vectors import Orientation
 from scenariogen.core.utils import sample_trajectories
 from scenariogen.core.signals import SignalType
 from scenariogen.core.errors import EgoCollisionError, NonegoNonegoCollisionError
 from scenariogen.core.geometry import CurvilinearTransform
 
-behavior AnimateBehavior():
-	for pose in self.traj_sample:
-		take SetTransformAction(pose[0]@pose[1], pose[2])
+behavior AnimateBehavior(traj_sample):
+	for pose in traj_sample:
+		take SetTransformAction(pose[0]@pose[1], Orientation._fromHeading(pose[2]))
 
 scenario NonegosScenario(config):
   setup:
@@ -31,12 +31,11 @@ scenario NonegosScenario(config):
       tjs = sample_trajectories(network, fuzz_input, int(config['steps'])+1, umax=config['steps']*config['timestep'])
     for i, (route, tj, signal, l, w, bp) in enumerate(zip(fuzz_input.routes, tjs, fuzz_input.signals, fuzz_input.lengths, fuzz_input.widths, config['blueprints'])):
       route_list = list(route)
-      car = Car at tj[0][0]@tj[0][1],
+      car = new Car at tj[0][0]@tj[0][1],
         with name f'{route_list[0]}_{signal.name}_{i}',
-        with behavior AnimateBehavior(),
+        with behavior AnimateBehavior(tj),
         with physics False,
         with allowCollisions False,
-        with traj_sample tj,
         with signal signal,
         with length l,
         with width w,
@@ -44,22 +43,9 @@ scenario NonegosScenario(config):
         with color Color(0, 0, 1)
       cars.append(car)
 
-scenario CheckCollisionsScenario(cars1, cars2):
-  setup:
-    monitor collisions:
-      while True:
-        for c, d in product(cars1, cars2):
-          if (not c is d) and c.intersects(d):
-            raise NonegoNonegoCollisionError(c, d)
-        wait
-
-poses = []
-scenario RecordSimTrajectories(cars):
-  setup:
-
-    monitor record_poses:
-      while True:
-        poses.append(tuple((car.position, car.heading) for car in cars))
-        wait
-
-    record final poses as poses
+monitor CheckCollisionsMonitor(cars1, cars2):
+  while True:
+    for c, d in product(cars1, cars2):
+      if (not c is d) and c.intersects(d):
+        raise NonegoNonegoCollisionError(c, d)
+    wait

@@ -42,7 +42,7 @@ scenario SeedScenario():
     ego_signal = SignalType.from_maneuver_type(ego_maneuver.type)
     ego_p0 = ego_maneuver.startLane.centerline.pointAlongBy(ego_maneuver.startLane.centerline.length*ego_init_progress_ratio)
     ego_blueprint = Uniform(*blueprint2dims.keys())
-    car = Car at ego_p0, facing roadDirection,
+    car = new Car at ego_p0, facing roadDirection,
       with name 'ego',
       with physics True,
       with allowCollisions False,
@@ -71,7 +71,7 @@ scenario SeedScenario():
       blueprint = Uniform(*blueprint2dims.keys())
       p0 = centerline.pointAlongBy(init_progress)
      
-      car = Car at p0, facing roadDirection,
+      car = new Car at p0, facing roadDirection,
         with name f'{route[0]}_{init_progress}_{maneuver.type}',
         with physics True,
         with allowCollisions False,

@@ -13,7 +13,7 @@ del _errors
 from scenic.core.simulators import SimulationCreationError
 from scenic.core.dynamics import GuardViolation
 
-from scenariogen.core.errors import EgoCollisionError, NonegoNonegoCollisionError
+from scenariogen.core.errors import EgoCollisionError
 from scenariogen.core.utils import seed_from_sim
 
 def run(config):
@@ -24,6 +24,7 @@ def run(config):
         try:
             scenario = scenic.scenarioFromFile(
                             'src/scenariogen/scripts/create.scenic',
+                            mode2D=True,
                             params={'timestep': config['timestep'],
                                     'render': config['render'],
                                     'scenario_path': config['scenario_path'],
@@ -58,9 +59,9 @@ def run(config):
         except GuardViolation as e:
             print(f'Guard violated in simulation: {e}')
             continue
-        except (RuntimeError, AssertionError) as e:
-            print(f'Error of type {type(e)}: {e}')
-            continue
+        # except (RuntimeError, AssertionError) as e:
+        #     print(f'Error of type {type(e)}: {e}')
+        #     continue
         # except Exception as e:
         #     print(f'Ignoring exception of type {type(e)}: {e}')
         #     continue

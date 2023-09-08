@@ -39,12 +39,12 @@ minor_signal = SignalType.LEFT
 ego_route = route_from_turns(network, ego_init_lane, ego_turns)
 
 major_route = route_from_turns(network, major_init_lane, major_turns)
-major_lanes = [network.elements[l] for l in major_route]
+major_lanes = [network.elements[uid] for uid in major_route]
 major_polyline = PolylineRegion.unionAll([l.centerline for l in major_lanes])
 major_p0 = major_polyline.pointAlongBy(major_init_progress)
 
 minor_route = route_from_turns(network, minor_init_lane, minor_turns)
-minor_lanes = [network.elements[l] for l in minor_route]
+minor_lanes = [network.elements[uid] for uid in minor_route]
 minor_polyline = PolylineRegion.unionAll([l.centerline for l in minor_lanes])
 minor_p0 = minor_polyline.pointAlongBy(minor_init_progress)
 
@@ -81,7 +81,7 @@ scenario SeedScenario():
                               rss_enabled=False)
       do FollowLaneBehavior(speed)
 
-    major_car = Car at major_p0, facing roadDirection,
+    major_car = new Car at major_p0, facing roadDirection,
       with name 'nonego_major',
       with route major_route,
       with physics True,
@@ -91,7 +91,7 @@ scenario SeedScenario():
       with length blueprints['vehicle.tesla.model3']['length'],
       with width blueprints['vehicle.tesla.model3']['width']
 
-    minor_car = Car at minor_p0, facing roadDirection,
+    minor_car = new Car at minor_p0, facing roadDirection,
       with name 'nonego_minor',
       with route minor_route,
       with physics True,

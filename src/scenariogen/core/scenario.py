@@ -30,21 +30,20 @@ class Scenario:
               'fuzz_input': self.fuzz_input,
               }
   
-    # For closed-loop fuzzing, simulate the ego too.
-    params = {'carla_map': config['carla_map'],
-              'map': config['map'],
-              'render': config['render'],
-              'timestep': config['timestep'],
-              'config': config,
-              }
-
     simulator2model = {'newtonian': 'scenic.simulators.newtonian.driving_model',
                        'carla': 'scenic.simulators.carla.model'
                       }
     scenic_scenario = scenic.scenarioFromFile(
                         'src/scenariogen/core/SUT.scenic',
+                        mode2D=True,
                         model=simulator2model[config['simulator']],
-                        params=params)
+                        params= {'carla_map': config['carla_map'],
+                                  'map': config['map'],
+                                  'render': config['render'],
+                                  'timestep': config['timestep'],
+                                  'config': config,
+                                }
+                        )
     scene, _ = scenic_scenario.generate(maxIterations=1)
     simulator = scenic_scenario.getSimulator()
 

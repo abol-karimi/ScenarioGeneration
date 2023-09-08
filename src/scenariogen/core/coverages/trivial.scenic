@@ -9,6 +9,6 @@ scenario CoverageScenario():
     record final coverage_space as coverage_space
     record final coverage as coverage
    
-    monitor CoverageMonitor:
+    monitor CoverageMonitor():
       wait
 

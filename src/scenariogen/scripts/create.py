@@ -19,7 +19,7 @@ from scenariogen.core.errors import NonegoNonegoCollisionError
 parser = argparse.ArgumentParser(description='Make a seed from a scenic scenario.')
 parser.add_argument('scenario_path', 
                     help='Path of the Scenic file specifying the scenario')
-parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='newtonian',
+parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='carla',
                     help='The simulator')
 parser.add_argument('--no_render', action='store_true',
                     help='disable rendering')
@@ -54,12 +54,16 @@ simulator2model = {'newtonian': 'scenic.simulators.newtonian.driving_model',
 # Run the scenario
 scenic_scenario = scenic.scenarioFromFile(
                     'src/scenariogen/scripts/create.scenic',
+                    mode2D=True,
                     model=simulator2model[args.simulator],
                     params = {'timestep': args.timestep,
                               'simulator': args.simulator,
                               'render': not args.no_render,
                               'scenario_path': args.scenario_path,
-                              'save_sim_trajectories': args.save_sim_trajectories})
+                              'save_sim_trajectories': args.save_sim_trajectories,
+                              'caller_config':{'steps': steps}
+                              }
+                    )
 scene, _ = scenic_scenario.generate(maxIterations=1)
 simulator = scenic_scenario.getSimulator()
 try:

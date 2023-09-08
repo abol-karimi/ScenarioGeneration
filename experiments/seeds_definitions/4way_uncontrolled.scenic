@@ -15,14 +15,17 @@ import jsonpickle
 from scenic.domains.driving.roads import ManeuverType
 from scenariogen.core.signals import SignalType
 from scenariogen.core.utils import route_from_turns
+from scenariogen.simulators.carla.behaviors import AutopilotFollowRoute
 
 #--- Constants
+param weather = 'CloudySunset'
 intersection_uid = 'intersection396'
 traffic_rules = '4way-uncontrolled.lp'
 arrival_distance = 4
+ego_blueprint = 'vehicle.tesla.model3'
 ego_init_lane = 'road9_lane2'
 ego_turns = (ManeuverType.LEFT_TURN,)
-ego_init_progress_ratio = 90
+ego_init_progress_ratio = .5
 
 left_init_lane = 'road44_lane1'
 left_turns = (ManeuverType.STRAIGHT,)
@@ -48,47 +51,45 @@ right_polyline = PolylineRegion.unionAll([l.centerline for l in right_lanes])
 right_p0 = right_polyline.pointAlongBy(right_init_progress)
 
 intersection = network.elements[intersection_uid]
-param config = {'carla_map': carla_map,
-                'map': globalParameters.map,
-                'intersection': intersection_uid,
-                'traffic_rules': traffic_rules,
-                'ego_route': ego_route,
-                'ego_init_progress_ratio': ego_init_progress_ratio}
+config = {'carla_map': carla_map,
+          'map': globalParameters.map,
+          'weather': globalParameters.weather,
+          'intersection': intersection_uid,
+          'traffic_rules': traffic_rules,
+          'ego_blueprint': ego_blueprint,
+          'ego_route': ego_route,
+          'ego_init_progress_ratio': ego_init_progress_ratio}
 
 scenario SeedScenario():
   setup:
     with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f:
       blueprints = jsonpickle.decode(f.read())
 
-    behavior StopBehavior():
-      take SetThrottleAction(0)
-      take SetBrakeAction(1)
-      while True:
-        wait
-
-    behavior PassBehavior(speed, trajectory):
-      do FollowTrajectoryBehavior(speed, trajectory) until (distance from (front of self) to trajectory[1]) <= arrival_distance
-      do StopBehavior() until self.speed <= 0.1
-      do FollowTrajectoryBehavior(speed, trajectory)
-
-    left_car = Car at left_p0, facing roadDirection,
+    left_car = new Car at left_p0, facing roadDirection,
       with name 'nonego_left',
       with route left_route,
       with physics True,
       with allowCollisions False,
       with signal left_signal,
-      with behavior PassBehavior(4, left_lanes),
+      with behavior AutopilotFollowRoute(route=left_route,
+                                        aggressiveness='normal',
+                                        rss_enabled=False),
+      with blueprint 'vehicle.tesla.model3',
       with length blueprints['vehicle.tesla.model3']['length'],
       with width blueprints['vehicle.tesla.model3']['width']
 
-    right_car = Car at right_p0, facing roadDirection,
+    right_car = new Car at right_p0, facing roadDirection,
       with name 'nonego_right',
       with route right_route,
       with physics True,
       with allowCollisions False,
       with signal right_signal,
-      with behavior PassBehavior(4, right_lanes),
+      with behavior AutopilotFollowRoute(route=right_route,
+                                        aggressiveness='normal',
+                                        rss_enabled=False),
+      with blueprint 'vehicle.ford.crown',
       with length blueprints['vehicle.ford.crown']['length'],
       with width blueprints['vehicle.ford.crown']['width']
+
     
     cars = [left_car, right_car]

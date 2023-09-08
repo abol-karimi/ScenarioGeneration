@@ -12,10 +12,10 @@ SUT_config = {
   'weather': 'CloudySunset',
   'arrival_distance': 4,
   'stop_speed_threshold': 0.5,
-  'closedLoop': False,
-  'ego_module': 'experiments.agents.followRouteAvoidCollisions',
+  'closedLoop': True,
+  'ego_module': 'experiments.agents.autopilot',
   'replay_raw': False,
-  'simulator': 'newtonian',
+  'simulator': 'carla',
   'coverage_module': 'scenariogen.core.coverages.traffic_rules_predicate_name',
 }
 
@@ -31,7 +31,7 @@ fuzzer_config = {
   'crossOver': StructureAwareCrossOver(max_spline_knots_size=50,
                                        max_attempts=1,
                                        randomizer_seed=0),
-  'atheris_runs': 2, # each run takes under 3 seconds
+  'atheris_runs': 20, # each run takes under 3 seconds
   'max_seed_length': 1e+6, # 1 MB
 }
 

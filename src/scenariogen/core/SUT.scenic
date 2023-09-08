@@ -10,39 +10,35 @@ intersection = network.elements[config['intersection']]
 
 # imports
 import importlib
-from scenariogen.core.signals import SignalType
-from scenic.core.vectors import Vector
-from scenariogen.core.scenarios import NonegosScenario, CheckCollisionsScenario
-from scenariogen.simulators.carla.scenarios import ShowIntersectionScenario
+from scenariogen.core.scenarios import NonegosScenario
+from scenariogen.simulators.carla.monitors import ShowIntersectionMonitor
 
 if config['closedLoop']:
   ego_module = importlib.import_module(config['ego_module'])
   ego_scenario = ego_module.EgoScenario(config)
 
+nonegos_scenario = NonegosScenario(config)
+
 coverage_module = importlib.import_module(config['coverage_module'])
 coverage_space = coverage_module.coverage_space
-coverage_scenario = coverage_module.CoverageScenario()
-
-nonegos_scenario = NonegosScenario(config)
+coverage_monitor = coverage_module.CoverageMonitor()
 
 scenario Main():
   setup:
     p = intersection.polygon.centroid
-    ego = Debris at p.x@p.y
+    ego = new Debris at p.x@p.y
+
+    require monitor ShowIntersectionMonitor(intersection)
+    require monitor coverage_monitor
 
     record initial config as config
+    record final coverage_space as coverage_space
+    record final coverage_module.coverage as coverage
 
   compose:
-    nonegos = (a for a in simulation().agents if a.name != 'ego')
-    egos = (a for a in simulation().agents if a.name == 'ego')    
     if config['closedLoop']:
       do ego_scenario, \
-          nonegos_scenario, \
-          coverage_scenario, \
-          CheckCollisionsScenario(egos, nonegos), \
-          ShowIntersectionScenario(intersection)
+          nonegos_scenario
     else:
-      do nonegos_scenario, \
-          coverage_scenario, \
-          ShowIntersectionScenario(intersection)
+      do nonegos_scenario
 
