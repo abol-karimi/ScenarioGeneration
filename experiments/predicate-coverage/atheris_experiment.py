@@ -143,7 +143,8 @@ def SUT_target_wrapper(input_bytes):
       print(f'Ego collided with {err.other.name}. Saving the seed to corpus...')
       with open(f'experiments/predicate-coverage/{experiment_name}_ego-collisions/{iteration}.json', 'w') as f:
         f.write(jsonpickle.encode(seed, indent=1))
-  else: 
+  else:
+    print('Simulation done!')
     coverage = sim_result.records['coverage']
     if coverage_sum is None:
       coverage_sum = coverage
@@ -181,7 +182,7 @@ crossOver = StructureAwareCrossOver(max_parameters_size=50,
                                     randomizer_seed=0)
 corpus = {}
 target=SUT_target_wrapper
-iterations = 20
+iterations = 2
 iteration = 0
 coverage_sum = None
 max_seed_length = 1e+6 # 1 MB
@@ -189,6 +190,7 @@ libfuzzer_config = [f'-atheris_runs={iterations}',
                     f'-max_len={max_seed_length}',
                     f'experiments/predicate-coverage/{experiment_name}_Atheris',
                     f'experiments/seeds',
+                    f'-rss_limit_mb=0' # No memory limit
                   ]
 Path(f'experiments/predicate-coverage/{experiment_name}_ego-collisions').mkdir(parents=True, exist_ok=True)
 Path(f'experiments/predicate-coverage/{experiment_name}_Atheris').mkdir(parents=True, exist_ok=True)
