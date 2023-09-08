@@ -12,7 +12,7 @@ SUT_config = {
   'weather': 'CloudySunset',
   'arrival_distance': 4,
   'stop_speed_threshold': 0.5,
-  'closedLoop': True,
+  'closedLoop': False,
   'ego_module': 'experiments.agents.followRouteAvoidCollisions',
   'replay_raw': False,
   'simulator': 'newtonian',
@@ -40,10 +40,10 @@ atheris_fuzzer.run()
 atheris_fuzzer.save_state()
 
 # Coverage results
-predicate_coverage_corpus = f'experiments/predicate-coverage/{experiment_name}/predicate-coverage'
-coverage_space, coverage = from_corpus(SUT_config, predicate_coverage_corpus)
-print('Coverage ratio:', 1 if len(coverage_space) == 0 else len(coverage)/len(coverage_space))
-print('Coverage gap:', coverage_space-coverage)
+# predicate_coverage_corpus = f'experiments/predicate-coverage/{experiment_name}/predicate-coverage'
+# coverage_space, coverage = from_corpus(SUT_config, predicate_coverage_corpus)
+# print('Coverage ratio:', 1 if len(coverage_space) == 0 else len(coverage)/len(coverage_space))
+# print('Coverage gap:', coverage_space-coverage)
 
 
 

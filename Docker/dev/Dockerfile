@@ -78,6 +78,15 @@ COPY --chown=carla:carla z3-4.8.10-x64-ubuntu-18.04 /home/carla/z3-4.8.10-x64-ub
 RUN . .venv/bin/activate ; \
   pip install pysmt
 
+# Apps needed for 3D geometry operations
+USER root
+RUN apt-get install -y software-properties-common
+RUN add-apt-repository ppa:openscad/releases ; \
+  apt-get update ; \
+  apt-get install -y openscad
+RUN apt-get install -y blender
+USER carla
+
 # Entrypoint script
 COPY --chown=carla:carla entrypoint.sh /home/carla/entrypoint.sh
 ENTRYPOINT [ "/bin/bash", "-c", "/home/carla/entrypoint.sh" ]
