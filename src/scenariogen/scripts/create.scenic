@@ -49,8 +49,9 @@ scenario Main():
     ego = new Debris at p.x@p.y
   
     require monitor RecordSeedInfoMonitor()
-    require monitor ShowIntersectionMonitor(intersection)
     require monitor RaiseEgoCollisionMonitor(caller_config)
+    if caller_config['render']:
+      require monitor ShowIntersectionMonitor(intersection)
 
     record final config as config
     record final tuple(names) as names

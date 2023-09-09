@@ -34,7 +34,13 @@ def run(config):
             print('Scenario compiled successfully.')
             scene, iterations = scenario.generate(maxIterations=config['scene_maxIterations'])
             print(f"Initial scene generated in {iterations} iteration{'(s)' if iterations > 1 else ''}.")
-            sim_result = scenario.getSimulator().simulate(
+            
+            simulator = scenario.getSimulator()
+            if not config['render']:
+                settings = simulator.world.get_settings()
+                settings.no_rendering_mode = True
+                simulator.world.apply_settings(settings)           
+            sim_result = simulator.simulate(
                                 scene,
                                 maxSteps=config['steps'],
                                 maxIterations=config['simulate_maxIterations'],
