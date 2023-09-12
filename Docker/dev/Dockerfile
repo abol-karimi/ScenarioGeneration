@@ -30,12 +30,23 @@ RUN apt-get update ; \
 # For python wrappers for sqlite
 RUN apt-get install -y libsqlite3-dev
 
+# Needed for enabling TK with python
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=US/NewYork
+RUN apt-get install -y tk-dev
+
 # Install Python 3.8.17
 WORKDIR /home/carla/python-setup
 RUN wget https://www.python.org/ftp/python/3.8.17/Python-3.8.17.tgz ; \
   tar -xvf Python-3.8.17.tgz ; \
   cd Python-3.8.17 ; \
-  ./configure --enable-loadable-sqlite-extensions --enable-optimizations ; \
+  ./configure --enable-loadable-sqlite-extensions \
+              --enable-optimizations \
+              --with-tcltk-includes='-I/usr/include' \
+              --with-tcltk-libs='-L/usr/lib' ; \
+  # Number of cpu cores to use:
+  make -j12 ; \
+  # Alternative installation since Ubuntu's GUI depends on the default Python 2.7
   make altinstall
 
 # Setup python environment
