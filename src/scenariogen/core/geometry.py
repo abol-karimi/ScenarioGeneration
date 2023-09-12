@@ -29,7 +29,7 @@ class CurvilinearTransform:
     def __init__(self, axis_coords):
         self.axis = PolylineRegion(points=simplify(axis_coords))
     
-    def rectilinear(self, p):
+    def rectilinear(self, p, heading=0):
         """Transforms coordinates from the curvilinear frame to the rectilienar frame."""
         proj = self.axis.lineString.interpolate(p[0])
         proj = Vector(proj.x, proj.y)
@@ -37,7 +37,8 @@ class CurvilinearTransform:
         tangent = (end - start).normalized()
         normal = tangent.rotatedBy(math.pi/2)
         position = proj + normal*p[1]
-        return (position[0], position[1])
+        north = Vector(0,1)
+        return (position[0], position[1], north.angleWith(tangent) + heading)
     
     def curvilinear(self, p):
         """Transforms coordinates from the rectilinear frame to the curvilinear frame.
@@ -49,8 +50,5 @@ class CurvilinearTransform:
         start, end = self.axis.nearestSegmentTo(proj)
         tangent = (end - start).normalized()
         y = dist if tangent.angleWith(v - start) >= 0 else -dist
-        normal = tangent.rotatedBy(math.pi/2)
-        splitter = shapely.geometry.LineString([proj+normal, proj-normal])
-        parts = shapely.ops.split(self.axis.lineString, splitter).geoms
-        x = parts[0].length
+        x = shapely.line_locate_point(self.axis.lineString, proj)
         return (x, y)
