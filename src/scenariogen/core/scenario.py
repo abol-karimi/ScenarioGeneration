@@ -3,17 +3,6 @@ import scenic
 
 class Scenario:
   # Choose a blueprint of an appropriate size for each non-ego
-  with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f:
-      blueprints = jsonpickle.decode(f.read())
-  dim2bp = {}
-  for b, dims in blueprints.items():
-      length = int(100*dims['length'])
-      width = int(100*dims['width'])
-      if not (length, width) in dim2bp:
-          dim2bp[(length, width)] = [b]
-      else:
-          dim2bp[(length, width)].append(b)
-
   def __init__(self, fuzz_input):
     self.fuzz_input = fuzz_input
   
@@ -21,12 +10,8 @@ class Scenario:
     """ Runs the scenario.
     Returns the discrete-time trajectories.
     """
-    bps = [self.dim2bp[(int(l*100), int(w*100))][0]
-       for l, w in zip(self.fuzz_input.lengths, self.fuzz_input.widths)]
-    
     config = {**self.fuzz_input.config,
               **config,
-              'blueprints': bps,
               'fuzz_input': self.fuzz_input,
               }
   

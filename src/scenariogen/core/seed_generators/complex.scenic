@@ -39,7 +39,7 @@ scenario ActorScenario():
       with allowCollisions False,
       with behavior AutopilotFollowRoute(route=route,
                                         aggressiveness=config['aggressiveness'],
-                                        rss_enabled=config['rss_enabled']),
+                                        use_rss=config['use_rss']),
       with blueprint config['blueprint'],
       with length config['length'],
       with width config['width'],

@@ -1,8 +1,12 @@
-from itertools import product
+from itertools import product 
+from more_itertools import pairwise
+from cachetools import cached
+from cachetools.keys import hashkey
 import geomdl
 from geomdl import BSpline
 import numpy as np
-import scipy
+from scipy.interpolate import splprep, splev
+import matplotlib.pyplot as plt
 
 from scenic.core.object_types import OrientedPoint
 from scenic.core.vectors import Vector
@@ -12,6 +16,7 @@ from scenic.core.geometry import headingOfSegment
 from scenariogen.core.fuzz_input import FuzzInput, Spline
 from scenariogen.core.signals import SignalType
 from scenariogen.core.geometry import CurvilinearTransform
+from scenariogen.core.errors import SplineApproximationError
 
 def route_length(route):
   return sum([l.centerline.length for l in route])
@@ -91,77 +96,86 @@ def seed_from_sim(sim_result, timestep, degree=3, knots_size=20):
     
     footprints = []
     timings = []
-    for sim_traj, transform in zip(sim_trajs, sim_result.records['transforms']):
-        xs = [sim_traj[0][0]]
-        ys = [sim_traj[0][1]]
-        ts = [sim_traj[0][2]]
+    for name, sim_traj, transform in zip(sim_result.records['names'],
+                                         sim_trajs,
+                                         sim_result.records['transforms']):
         ds = [0]
-        v1 = Vector(xs[-1], ys[-1])
-        for i in range(1, len(sim_traj)):
-            v2 = Vector(sim_traj[i][0], sim_traj[i][1])
-            dv = v2 - v1
-            if dv[0] != 0 and dv[1] != 0:
-                xs.append(sim_traj[i][0])
-                ys.append(sim_traj[i][1])
-                ts.append(sim_traj[i][2])
-                ds.append(ds[-1] + dv.norm())
-                v1 = Vector(xs[-1], ys[-1])
-        
-        knotvector = [ds[0]]*degree \
-                    + list(np.linspace(ds[0], ds[-1], knots_size)) \
-                    + [ds[-1]]*degree 
-        tck, _ = scipy.interpolate.splprep([xs, ys], # curve samples
-                                        u=ds, # parameterize by travelled distance
+        for i in range(0, len(sim_traj)-1):
+            dv = Vector(sim_traj[i+1][0], sim_traj[i+1][1]) \
+                - Vector(sim_traj[i][0], sim_traj[i][1])
+            ds.append(ds[-1] + dv.norm())
+        xs = [p[0] for p,(d1,d2) in zip(sim_traj, pairwise([-1, *ds])) if d1 < d2]
+        ys = [p[1] for p,(d1,d2) in zip(sim_traj, pairwise([-1, *ds])) if d1 < d2]
+        ds_increasing = [d2 for d1,d2 in pairwise([-1, *ds]) if d1 < d2]
+
+        try:
+            ((t, c, k), u), fp, ier, msg = splprep([xs, ys], # curve samples
+                                        u=ds_increasing, # parameterize by travelled distance
                                         k=degree,
-                                        task=-1, # spline approximation
-                                        t=knotvector
-                                        )
+                                        task=0, # spline approximation with smoothing
+                                        s=.1, # Larger s means more smoothing
+                                        full_output=1
+                                       )
+            print(f'Then footprint spline for car {name} has {len(t)} knots.')
+            print(f'The weighted sum of squared residuals of the spline approximation for footprint: {fp}')
+            print(f'ier: {ier}, msg: {msg}')
+        except Exception as e:
+            raise SplineApproximationError(f'SplineApproximationError when approximating the footprint for car {name}: {e}')
+        
+       
         # Transform control points to curvilinear coordinates
         footprint = Spline(degree=degree,
-                        ctrlpts=tuple(transform.curvilinear((x, y))
-                                        for x,y in zip(tck[1][0], tck[1][1])),
-                        knotvector=tuple(float(knot) for knot in tck[0])
-                        )
+                           ctrlpts=tuple(transform.curvilinear((x, y))
+                                           for x,y in zip(c[0], c[1])),
+                           knotvector=tuple(float(knot) for knot in t)
+                          )
+        fig, axs = plt.subplots(2)
+        fig.suptitle(f'Car {name}')
+        axs[0].set_title('xy-plain')
+        axs[0].plot(xs, ys, 'go')
+        sample = splev(ds_increasing, (t, c, k))
+        axs[0].plot(sample[0], sample[1], 'r-')
+
+        ts = [p[2] for p in sim_traj]
+
+        try:
+            ((t, c, k), u), fp, ier, msg = splprep([ts, ds], # curve samples
+                                                   u=ts, # curve parameters corresponding to the samples
+                                                   k=degree, 
+                                                   task=0, # spline approximation with smoothing
+                                                   s=.1, # Larger s means more smoothing
+                                                   full_output=1
+                                                  )
+            print(f'Then timing spline for car {name} has {len(t)} knots.')
+            print(f'The weighted sum of squared residuals of the spline approximation for timing: {fp}')
+            print(f'ier: {ier}, msg: {msg}')
+        except Exception as e:
+            raise SplineApproximationError(f'SplineApproximationError when approximating the timing for car {name}: {e}')
         
-        knotvector = [ts[0]]*degree \
-                    + list(np.linspace(ts[0], ts[-1], knots_size)) \
-                    + [ts[-1]]*degree # knotvector
-        tck, _ = scipy.interpolate.splprep([ts, ds], # curve samples
-                                        u=ts, # curve parameters corresponding to the samples
-                                        k=degree, 
-                                        task=-1, # spline approximation
-                                        t=knotvector
-                                        )
         timing = Spline(degree=degree,
-                    ctrlpts=tuple((float(x),float(y))
-                                    for x,y in zip(tck[1][0], tck[1][1])),
-                    knotvector=tuple(float(knot) for knot in tck[0])
-                    )
+                        ctrlpts=tuple((float(x),float(y))
+                                        for x,y in zip(c[0], c[1])),
+                        knotvector=tuple(float(knot) for knot in t)
+                       )
+        axs[1].set_title('td-plain')
+        axs[1].plot(ts, ds, 'go')
+        sample = splev(ts, (t, c, k))
+        axs[1].plot(sample[0], sample[1], 'r-')
+        plt.show()
+
         footprints.append(footprint)
         timings.append(timing)
     
-    try:
-        j = sim_result.records['names'].index('ego')
-        return FuzzInput(config=sim_result.records['config'],
-                        routes=tuple(r for k,r in enumerate(sim_result.records['routes']) if k != j),
-                        footprints=tuple(f for k,f in enumerate(footprints) if k != j),
-                        timings=tuple(t for k,t in enumerate(timings) if k != j),
-                        signals=tuple(s for k,s in enumerate(sim_result.records['signals']) if k != j),
-                        lengths=tuple(l for k,l in enumerate(sim_result.records['lengths']) if k != j),
-                        widths=tuple(w for k,w in enumerate(sim_result.records['widths']) if k != j)
-                        )
-    except ValueError:
-        return FuzzInput(config=sim_result.records['config'],
-                         routes=sim_result.records['routes'],
-                         footprints=tuple(footprints),
-                         timings=tuple(timings),
-                         signals=sim_result.records['signals'],
-                         lengths=sim_result.records['lengths'],
-                         widths=sim_result.records['widths'])
+    return FuzzInput(config=sim_result.records['config'],
+                    blueprints=sim_result.records['blueprints'],
+                    routes=sim_result.records['routes'],
+                    footprints=tuple(footprints),
+                    timings=tuple(timings),
+                    signals=sim_result.records['signals'])
 
 def sample_trajectories(network, seed, sample_size, umin=0, umax=None):
     if umax is None:
-        umax = seed.timings[0].ctrlpts[-1][0]
+        umax = seed.timings[0].knotvector[-1]
     trajectories = []
     ts = np.linspace(umin, umax, num=sample_size)
     for route, footprint, timing in zip(seed.routes, seed.footprints, seed.timings):
@@ -201,10 +215,10 @@ def connecting_lane(network, start, end):
             return m.connectingLane.uid
 
 def collides_with(query, data):
-  for q, d in product(query, data):
-    if q.intersects(d):
-      return True
-  return False
+    for q, d in product(query, data):
+        if q.intersects(d):
+            return True
+    return False
 
 def route_from_turns(network, init_lane, turns):
     """
@@ -229,3 +243,37 @@ def route_from_turns(network, init_lane, turns):
         route.append(current_lane.successor.uid)
         current_lane = current_lane.successor
     return route
+
+def extend_lane_forward(lane, length, random):
+    maneuver = random.choice(lane.maneuvers)
+    ext = [maneuver.connectingLane if maneuver.connectingLane else maneuver.endLane]
+    ext_len = ext[-1].centerline.length
+    while ext_len < length:
+        maneuver = random.choice(ext[-1].maneuvers)
+        ext.append(maneuver.connectingLane if maneuver.connectingLane else maneuver.endLane)
+        ext_len += ext[-1].centerline.length
+    return ext
+
+@cached(cache={}, key=lambda network: hashkey(tuple(i.uid for i in network.intersections)))
+def lane_to_predecessors(network):
+    lane2predecessors = {lane:[] for lane in network.lanes}
+    for lane in network.lanes:
+        if not lane.predecessor is None:
+            lane2predecessors[lane].append(lane.predecessor)
+    for intersection in network.intersections:
+        for maneuver in intersection.maneuvers:
+            lane2predecessors[maneuver.endLane].append(maneuver.connectingLane)
+    return lane2predecessors
+
+
+def extend_lane_backward(lane, length, random):
+    print(f'Extending lane {lane.uid} backwards...')
+    lane2predecessors = lane_to_predecessors(lane.network)
+    print('lane2pred calculated!')
+    ext = [random.choice(lane2predecessors[lane])]
+    ext_len = ext[-1].centerline.length
+    while ext_len < length:
+      ext.append(random.choice(lane2predecessors[ext[-1]]))
+      ext_len += ext[-1].centerline.length
+    ext.reverse()
+    return ext

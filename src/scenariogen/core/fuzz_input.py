@@ -15,12 +15,12 @@ class Spline:
 @dataclass
 class FuzzInput:
   config: Dict = None
+  blueprints: Tuple[str] = None
   routes: Tuple[str] = None
   footprints: Tuple[Spline] = None # maps the timing output (below) to the location of the car
   timings: Tuple[Spline] = None # maps time to the parameter value of the footprint spline
   signals: Tuple[SignalType] = None
-  lengths: Tuple[float] = None
-  widths: Tuple[float] = None
+
   
 def validate_spline(spline):
   # Spline degree range

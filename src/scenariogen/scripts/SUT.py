@@ -11,8 +11,10 @@ parser = argparse.ArgumentParser(
     description='play the given scenario with a Carla autopilot driving the ego.')
 parser.add_argument('seed_path', 
                     help='relative path of the seed')
-parser.add_argument('--timestep', type=float, default=0.05,
+parser.add_argument('--timestep', type=float,
                     help='length of each simulation step')
+parser.add_argument('--weather', type=str,
+                    help='weather in the simulation')
 parser.add_argument('--render', action='store_true',
                     help='render ego viewpoint')
 parser.add_argument('--openLoop', action='store_true',
@@ -35,20 +37,30 @@ args = parser.parse_args()
 with open(args.seed_path, 'r') as f:
     seed = jsonpickle.decode(f.read())
 
+# Default timestep is defined by the seed
+timestep = seed.config['timestep']
+if args.timestep:
+    timestep = args.timestep
+
 # Default duration is the whole scenario:
-seconds = seed.timings[0].ctrlpts[-1][0]
-# Override with custom duration:
+seconds = seed.timings[0].knotvector[-1]
 if args.steps:
-    seconds = args.steps * args.timestep
+    seconds = args.steps * timestep
 elif args.seconds:
     seconds = args.seconds
-steps = int(seconds // args.timestep)
+
+steps = int(seconds / timestep)
+
+# Default weather is defined by the seed
+weather = seed.config['weather']
+if args.weather:
+    weather = args.weather
 
 # Scenario config
 config = {**seed.config}
 config['steps'] = steps
-config['timestep'] = args.timestep
-config['weather'] = 'CloudySunset'
+config['timestep'] = timestep
+config['weather'] = weather
 config['fuzz_input'] = seed
 config['arrival_distance'] = 4
 config['stop_speed_threshold'] = 0.5  # meters/seconds

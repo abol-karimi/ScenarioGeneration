@@ -32,3 +32,9 @@ class NoSMTSolutionError(Exception):
 
     def __init__(self, message):
         self.msg = message
+
+class SplineApproximationError(Exception):
+    """Exception raised if scipy.interpolate.splprep throws an exception."""
+
+    def __init__(self, message):
+        self.msg = message

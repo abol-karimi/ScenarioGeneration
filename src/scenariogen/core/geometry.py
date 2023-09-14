@@ -50,5 +50,5 @@ class CurvilinearTransform:
         start, end = self.axis.nearestSegmentTo(proj)
         tangent = (end - start).normalized()
         y = dist if tangent.angleWith(v - start) >= 0 else -dist
-        x = shapely.line_locate_point(self.axis.lineString, proj)
-        return (x, y)
+        x = shapely.line_locate_point(self.axis.lineString, shapely.Point(proj[0], proj[1]))
+        return (float(x), float(y))

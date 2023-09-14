@@ -3,10 +3,10 @@ import queue
 import scenariogen.simulators.carla.visualization as visualization
 from scenariogen.core.errors import EgoCollisionError
 
-monitor ShowIntersectionMonitor(intersection):
+monitor ShowIntersectionMonitor(intersection, draw_lanes=False, label_lanes=False):
   carla_world = simulation().world
-  visualization.draw_intersection(carla_world, intersection, draw_lanes=False)
-  visualization.set_camera(carla_world, intersection, height=70)
+  visualization.draw_intersection(carla_world, intersection, draw_lanes=draw_lanes, label_lanes=label_lanes)
+  visualization.set_camera(carla_world, intersection, height=90)
   wait
 
 

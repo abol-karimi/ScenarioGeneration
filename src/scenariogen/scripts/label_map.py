@@ -32,6 +32,7 @@ else:
 if args.intersections:
     for i in network.intersections:
         centroid = i.polygon.centroid
+        print(i.uid, centroid)
         loc = carla.Location(centroid.x, -centroid.y, 0.5)
         world.debug.draw_string(loc, i.uid, life_time=1000)
 
