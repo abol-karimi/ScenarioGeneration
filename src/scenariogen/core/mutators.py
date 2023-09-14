@@ -54,13 +54,13 @@ class StructureAwareMutator():
     if not carla_map in cls._networks_cache:
       network = Network.fromFile(fuzz_input.config['map'])
       cls._networks_cache[carla_map] = network
-      cls._cache_predessors(carla_map, network)
+      cls._cache_predecessors(carla_map, network)
       return network
     else:
       return cls._networks_cache[carla_map]
   
   @classmethod
-  def _cache_predessors(cls, carla_map, network):
+  def _cache_predecessors(cls, carla_map, network):
     cls._predecessors_cache[carla_map] = {m.endLane.uid: [] for intersection in network.intersections for m in intersection.maneuvers}
     for intersection in network.intersections:
       for maneuver in intersection.maneuvers:

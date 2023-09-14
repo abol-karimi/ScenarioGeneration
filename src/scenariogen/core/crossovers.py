@@ -6,7 +6,6 @@ import numpy as np
 import shapely
 from scenic.domains.driving.roads import LinearElement, Network
 from scenic.core.regions import PolygonalRegion, PolylineRegion
-from scenic.core.vectors import Vector
 
 # This project
 import src.scenariogen.core.utils as utils
@@ -83,13 +82,13 @@ class StructureAwareCrossOver():
     if not carla_map in cls._networks_cache:
       network = Network.fromFile(seed.config['map'])
       cls._networks_cache[carla_map] = network
-      cls._cache_predessors(carla_map, network)
+      cls._cache_predecessors(carla_map, network)
       return network
     else:
       return cls._networks_cache[carla_map]
   
   @classmethod
-  def _cache_predessors(cls, carla_map, network):
+  def _cache_predecessors(cls, carla_map, network):
     cls._predecessors_cache[carla_map] = {m.endLane.uid: [] for intersection in network.intersections for m in intersection.maneuvers}
     for intersection in network.intersections:
       for maneuver in intersection.maneuvers:
