@@ -73,7 +73,7 @@ scenario SeedScenario():
       with signal left_signal,
       with behavior AutopilotFollowRoute(route=left_route,
                                         aggressiveness='normal',
-                                        rss_enabled=False),
+                                        use_rss=False),
       with blueprint 'vehicle.tesla.model3',
       with length blueprints['vehicle.tesla.model3']['length'],
       with width blueprints['vehicle.tesla.model3']['width']
@@ -86,7 +86,7 @@ scenario SeedScenario():
       with signal right_signal,
       with behavior AutopilotFollowRoute(route=right_route,
                                         aggressiveness='normal',
-                                        rss_enabled=False),
+                                        use_rss=False),
       with blueprint 'vehicle.ford.crown',
       with length blueprints['vehicle.ford.crown']['length'],
       with width blueprints['vehicle.ford.crown']['width']

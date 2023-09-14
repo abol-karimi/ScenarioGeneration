@@ -53,6 +53,7 @@ intersection = network.elements[intersection_uid]
 config = {'description': description,
           'carla_map': globalParameters.carla_map,
           'map': globalParameters.map,
+          'simulator': 'carla',
           'intersection': intersection_uid,
           'traffic_rules': traffic_rules,
           'ego_route': ego_route,
@@ -73,12 +74,12 @@ scenario SeedScenario():
     behavior FourWayStopBehavior(speed, route):
       do AutopilotFollowRoute(route=route,
                               aggressiveness='normal',
-                              rss_enabled=False) \
+                              use_rss=False) \
           until (distance from (front of self) to intersection) <= arrival_distance
       do StopBehavior() until self.speed <= 0.1
       do AutopilotFollowRoute(route=route,
                               aggressiveness='normal',
-                              rss_enabled=False)
+                              use_rss=False)
       do FollowLaneBehavior(speed)
 
     major_car = new Car at major_p0, facing roadDirection,
@@ -87,7 +88,7 @@ scenario SeedScenario():
       with physics True,
       with allowCollisions False,
       with signal major_signal,
-      with behavior FourWayStopBehavior(4, major_lanes),
+      with behavior FourWayStopBehavior(4, major_route),
       with length blueprints['vehicle.tesla.model3']['length'],
       with width blueprints['vehicle.tesla.model3']['width']
 
@@ -97,6 +98,6 @@ scenario SeedScenario():
       with physics True,
       with allowCollisions False,
       with signal minor_signal,
-      with behavior FourWayStopBehavior(4, minor_lanes),
+      with behavior FourWayStopBehavior(4, minor_route),
       with length blueprints['vehicle.ford.crown']['length'],
       with width blueprints['vehicle.ford.crown']['width']

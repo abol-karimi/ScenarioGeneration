@@ -12,7 +12,7 @@ with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f
 scenario EgoScenario(config):
   setup:
     config_with_defaults = {'aggressiveness': 'normal',
-                            'rss_enabled': False,
+                            'use_rss': False,
                             'ego_signal': SignalType.OFF,
                             **config}
     ego_lanes = [network.elements[l] for l in config_with_defaults['ego_route']]
@@ -28,6 +28,6 @@ scenario EgoScenario(config):
       with signal config_with_defaults['ego_signal'],
       with behavior AutopilotFollowRoute(route=config_with_defaults['ego_route'],
                                         aggressiveness=config_with_defaults['aggressiveness'],
-                                        rss_enabled=config_with_defaults['rss_enabled']),
+                                        use_rss=config_with_defaults['use_rss']),
       with physics True,
       with allowCollisions False

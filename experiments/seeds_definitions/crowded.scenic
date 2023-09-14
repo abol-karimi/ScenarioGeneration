@@ -59,7 +59,7 @@ scenario SeedScenario():
           with allowCollisions False,
           with behavior AutopilotFollowRoute(route=r,
                                             aggressiveness='cautious',
-                                            rss_enabled=False),
+                                            use_rss=False),
           with length car_blueprints[b]['length'],
           with width car_blueprints[b]['width'],
           with route tuple(r),
