@@ -3,21 +3,24 @@ import shapely
 from scenic.core.vectors import Vector
 from scenic.core.regions import PolylineRegion
 
-def simplify(ps):
+def simplify(points):
     """Removes overlapping segments of a polyline.
     Assumes that the curve does not bend more than 90 degrees.
 
     ps: list of points
     Returns: a sublist of ps
     """
-    ps_simple = [ps[0], ps[1]]
-    v0 = Vector(*ps_simple[-1]) - Vector(*ps_simple[-2])
-    for i in range(2, len(ps)):
-        v1 = Vector(*ps[i]) - Vector(*ps_simple[-1])
-        if v0.dot(v1) >= 0:
-            ps_simple.append(ps[i])
-            v0 = v1
-    return ps_simple
+    vs = tuple(Vector(*p[:2]) for p in points)
+    vs_simple = [vs[0], vs[1]]
+    dv0 = vs_simple[-1] - vs_simple[-2]
+    for i in range(2, len(vs)):
+        dv1 = vs[i] - vs_simple[-1]
+        if dv0.dot(dv1) >= 0:
+            vs_simple.append(vs[i])
+            dv0 = dv1
+        else:
+            print(f"Excluding the {i}th point of the polyline from the curvilinear-transform's axis.")
+    return vs_simple
 
 class CurvilinearTransform:
     """Transforms from a rectilinear frame to a curvilinear frame as defined by a polyline

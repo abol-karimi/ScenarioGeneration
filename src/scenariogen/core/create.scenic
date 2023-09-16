@@ -18,7 +18,7 @@ param save_sim_trajectories = None
 save_sim_trajectories = globalParameters.save_sim_trajectories
 
 # Import auxiliary scenarios
-from scenariogen.simulators.carla.monitors import ShowIntersectionMonitor, RaiseEgoCollisionMonitor
+from scenariogen.simulators.carla.monitors import ShowIntersectionMonitor, RaiseEgoCollisionMonitor, LabelCarsMonitor
 from scenariogen.core.geometry import CurvilinearTransform
 
 names = []
@@ -54,7 +54,8 @@ scenario Main():
     require monitor RecordSeedInfoMonitor()
     require monitor RaiseEgoCollisionMonitor(config)
     if caller_config['render_spectator']:
-      require monitor ShowIntersectionMonitor(intersection)
+      require monitor ShowIntersectionMonitor(intersection, label_lanes=True)
+      require monitor LabelCarsMonitor()
 
     record final config as config
     record final tuple(names) as names

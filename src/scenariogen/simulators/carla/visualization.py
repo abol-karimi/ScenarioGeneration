@@ -55,6 +55,7 @@ def draw_intersection(world, intersection,
                       draw_lanes=False,
                       label_lanes=False,
                       draw_crossings=False,
+                      draw_carla_axes=False,
                       arrival_distance=4, 
                       height=0.1,
                       life_time=-1
@@ -100,6 +101,15 @@ def draw_intersection(world, intersection,
         for m in intersection.maneuvers:
             l = m.connectingLane
             draw_lane(world, l, height=height)
+    
+    if draw_carla_axes:
+        origin = carla.Location(0, 0, 0)
+        x_axis = carla.Location(1, 0, 0)
+        y_axis = carla.Location(0, 1, 0)
+        z_axis = carla.Location(0, 0, 1)
+        world.debug.draw_arrow(origin, x_axis, color=carla.Color(255, 0, 0))
+        world.debug.draw_arrow(origin, y_axis, color=carla.Color(0, 255, 0))
+        world.debug.draw_arrow(origin, z_axis, color=carla.Color(0, 0, 255))
 
 def set_camera(world, intersection, height=30):
     centroid = intersection.polygon.centroid  # a Shapely point
@@ -158,4 +168,9 @@ def draw_spline(world, footprint, timing, resolution, umin, umax,
     if draw_ctrlpts:
         for x, y in footprint.ctrlpts:
             draw_point(world, (x, y), None, 0.2, carla.Color(255, 255, 255), lifetime)
+
+def draw_transform(world, translation=carla.Location(), rotation=carla.Rotation()):
+    world.debug.draw_arrow(translation, translation + rotation.get_forward_vector(), color=carla.Color(255, 0, 0))
+    world.debug.draw_arrow(translation, translation + rotation.get_right_vector(), color=carla.Color(0, 255, 0))
+    world.debug.draw_arrow(translation, translation + rotation.get_up_vector(), color=carla.Color(0, 0, 255))
 

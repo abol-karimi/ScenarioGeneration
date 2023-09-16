@@ -12,18 +12,18 @@ from scenariogen.simulators.carla.monitors import ShowIntersectionMonitor
 intersection = network.elements['intersection1574']
 
 cars = []
-for m in intersection.maneuvers:
-  lanes = (m.startLane, m.connectingLane, m.endLane)
-  centerline = PolylineRegion.unionAll([l.centerline for l in lanes])
-  d = centerline.length * random.uniform(0, 1)
-  p = centerline.pointAlongBy(d)
-  car = new Car at p,
-    with name f'{lanes[0].uid, lanes[1].uid, lanes[2].uid}_{d}',
-    with blueprint 'vehicle.tesla.model3',
-    with behavior FollowLaneBehavior(target_speed = 1),
-    with physics False,
-    with allowCollisions True
-  cars.append(car)
+m = Uniform(*intersection.maneuvers)
+lanes = (m.startLane, m.connectingLane, m.endLane)
+centerline = PolylineRegion.unionAll([l.centerline for l in lanes])
+d = centerline.length * random.uniform(0, 1)
+p = centerline.pointAlongBy(d)
+car = new Car at p,
+  with name f'{lanes[0].uid, lanes[1].uid, lanes[2].uid}_{d}',
+  with blueprint 'vehicle.tesla.model3',
+  with behavior FollowLaneBehavior(target_speed = 1),
+  with physics False,
+  with allowCollisions True
+cars.append(car)
 
 ego = cars[0]
 
