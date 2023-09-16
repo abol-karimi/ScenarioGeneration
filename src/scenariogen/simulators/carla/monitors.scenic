@@ -3,31 +3,40 @@ import queue
 import scenariogen.simulators.carla.visualization as visualization
 from scenariogen.core.errors import EgoCollisionError
 
-monitor ShowIntersectionMonitor(intersection, draw_lanes=False, label_lanes=False):
+monitor ShowIntersectionMonitor(intersection, show_lanes=False, label_lanes=False, show_carla_axes=False):
   carla_world = simulation().world
-  visualization.draw_intersection(carla_world, intersection, draw_lanes=draw_lanes, label_lanes=label_lanes)
+  visualization.draw_intersection(carla_world,
+                                  intersection, 
+                                  draw_lanes=show_lanes,
+                                  label_lanes=label_lanes, 
+                                  draw_carla_axes=show_carla_axes)
   visualization.set_camera(carla_world, intersection, height=90)
   wait
 
+monitor LabelCarsMonitor():
+  agents = simulation().agents
+  while True:
+    for agent in agents:
+      visualization.label_car(simulation().world, agent)
+    wait
 
 def on_collision(event, q):
-  q.put(event.other_actor.id)
+  q.put(event)
   
 monitor RaiseEgoCollisionMonitor(config):
   agents = simulation().agents
-  id2name = {agent.carlaActor.id:agent.name for agent in agents}
-  if 'ego' in id2name.values():
+  names = {agent.name for agent in agents}
+  if 'ego' in names:
     ego_carla_actor = next(x for x in agents if x.name == 'ego').carlaActor
-    id_queue = queue.Queue()
+    event_queue = queue.Queue()
     carla_world = simulation().world
     bp = carla_world.get_blueprint_library().find('sensor.other.collision')
     sensor = carla_world.spawn_actor(bp, carla.Transform(), attach_to=ego_carla_actor)
-    sensor.listen(lambda e: on_collision(e, id_queue))
-    while (simulation().currentTime < config['steps']) and id_queue.empty():
+    sensor.listen(lambda e: on_collision(e, event_queue))
+    while (simulation().currentTime < config['steps']) and event_queue.empty():
       wait
     sensor.destroy()
-    if not id_queue.empty():
-      agent_id = id_queue.get()
-      raise EgoCollisionError(id2name[agent_id])
+    if not event_queue.empty():
+      raise EgoCollisionError(event_queue.get().other_actor)
   else:
     wait

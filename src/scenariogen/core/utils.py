@@ -129,12 +129,12 @@ def seed_from_sim(sim_result, timestep, degree=3, knots_size=20):
                                            for x,y in zip(c[0], c[1])),
                            knotvector=tuple(float(knot) for knot in t)
                           )
-        fig, axs = plt.subplots(2)
-        fig.suptitle(f'Car {name}')
-        axs[0].set_title('xy-plain')
-        axs[0].plot(xs, ys, 'go')
-        sample = splev(ds_increasing, (t, c, k))
-        axs[0].plot(sample[0], sample[1], 'r-')
+        # fig, axs = plt.subplots(2)
+        # fig.suptitle(f'Car {name}')
+        # axs[0].set_title('xy-plain')
+        # axs[0].plot(xs, ys, 'go')
+        # sample = splev(ds_increasing, (t, c, k))
+        # axs[0].plot(sample[0], sample[1], 'r-')
 
         ts = [p[2] for p in sim_traj]
 
@@ -157,11 +157,11 @@ def seed_from_sim(sim_result, timestep, degree=3, knots_size=20):
                                         for x,y in zip(c[0], c[1])),
                         knotvector=tuple(float(knot) for knot in t)
                        )
-        axs[1].set_title('td-plain')
-        axs[1].plot(ts, ds, 'go')
-        sample = splev(ts, (t, c, k))
-        axs[1].plot(sample[0], sample[1], 'r-')
-        plt.show()
+        # axs[1].set_title('td-plain')
+        # axs[1].plot(ts, ds, 'go')
+        # sample = splev(ts, (t, c, k))
+        # axs[1].plot(sample[0], sample[1], 'r-')
+        # plt.show()
 
         footprints.append(footprint)
         timings.append(timing)

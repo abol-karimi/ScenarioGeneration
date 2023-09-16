@@ -23,7 +23,7 @@ def run(config):
     while seed_id < config['seeds_num']:
         try:
             scenario = scenic.scenarioFromFile(
-                            'src/scenariogen/scripts/create.scenic',
+                            'src/scenariogen/core/create.scenic',
                             mode2D=True,
                             params={'render': config['render_ego'],
                                     'scenario_path': config['scenario_path'],
