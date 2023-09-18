@@ -38,7 +38,7 @@ def run(config):
             if not config['render_spectator']:
                 settings = simulator.world.get_settings()
                 settings.no_rendering_mode = True
-                simulator.world.apply_settings(settings)           
+                simulator.world.apply_settings(settings)
             sim_result = simulator.simulate(
                                 scene,
                                 maxSteps=int(config['seconds']/scenario.params['timestep']),

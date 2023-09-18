@@ -19,15 +19,14 @@ from scenariogen.core.errors import NonegoNonegoCollisionError
 parser = argparse.ArgumentParser(description='Make a seed from a scenic scenario.')
 parser.add_argument('scenario_path', 
                     help='Path of the Scenic file specifying the scenario')
-parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='carla',
+parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='newtonian',
                     help='The simulator')
-parser.add_argument('--no_render', action='store_true',
-                    help='disable rendering')
+parser.add_argument('--render_spectator', action='store_true',
+                    help='render a spectator above the intersection')
+parser.add_argument('--render_ego', action='store_true',
+                    help='render ego viewpoint (only in the Carla simulator)')
 parser.add_argument('--out_path',
                     help='Path where the generated seed will be stored')
-parser.add_argument('--save_sim_trajectories', action='store_true',
-                    help="""Save the simulated trajectories for debugging.
-                            Note that each trajectory saved in the seed is a spline approximation of the simulated counterpart.""")
 duration = parser.add_mutually_exclusive_group()
 duration.add_argument('--steps', type=int,
                       help='The duration of the scenario in steps')
@@ -48,24 +47,26 @@ elif args.seconds:
     seconds = args.seconds
 steps = seconds // args.timestep
 
-simulator2model = {'newtonian': 'scenic.simulators.newtonian.driving_model',
-                    'carla': 'scenic.simulators.carla.model'
-                    }
 # Run the scenario
 scenic_scenario = scenic.scenarioFromFile(
-                    'src/scenariogen/scripts/create.scenic',
+                    'src/scenariogen/core/create.scenic',
                     mode2D=True,
-                    model=simulator2model[args.simulator],
                     params = {'timestep': args.timestep,
-                              'simulator': args.simulator,
-                              'render': not args.no_render,
-                              'scenario_path': args.scenario_path,
-                              'save_sim_trajectories': args.save_sim_trajectories,
-                              'caller_config':{'steps': steps}
+                              'caller_config':{'scenario_path': args.scenario_path,
+                                               'simulator_name': args.simulator,
+                                               'steps': steps,
+                                               'render_spectator': args.render_spectator,
+                                               'render_ego': args.render_ego,
+                                               }
                               }
                     )
 scene, _ = scenic_scenario.generate(maxIterations=1)
 simulator = scenic_scenario.getSimulator()
+if args.simulator == 'carla' and not args.render_spectator:
+    settings = simulator.world.get_settings()
+    settings.no_rendering_mode = True
+    simulator.world.apply_settings(settings)
+
 try:
     sim_result = simulator.simulate(
                     scene,
@@ -93,11 +94,5 @@ if args.out_path:
     with open(args.out_path, 'w') as f:
         f.write(jsonpickle.encode(seed, indent=1))
 else:
-    with open(scenario_path.parents[1]/'seeds'/f'{scenario_path.stem}.json', 'w') as f:
+    with open(scenario_path.parents[1]/'seeds_manual'/f'{scenario_path.stem}.json', 'w') as f:
         f.write(jsonpickle.encode(seed, indent=1))
-
-# Save the simulated trajectories for debugging
-if args.save_sim_trajectories:
-    sim_trajs = sim_trajectories(sim_result, args.timestep)
-    with open(scenario_path.with_name(f'{scenario_path.stem}_sim_trajectories.pickle'), 'wb') as f:
-        pickle.dump(sim_trajs, f)

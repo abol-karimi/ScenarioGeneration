@@ -27,7 +27,7 @@ settings.synchronous_mode = False
 world.apply_settings(settings)
 
 seed_path = Path(args.seed_path)
-with open(seed_path.parents[1]/'seeds_definitions'/f'{seed_path.stem}_sim_trajectories.pickle', 'rb') as f:
+with open(seed_path.parents[1]/'seed_definitions'/f'{seed_path.stem}_sim_trajectories.pickle', 'rb') as f:
     sim_trajectories = pickle.load(f)
 
 #--- Draw the simulated trajectories, in green

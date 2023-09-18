@@ -2,23 +2,33 @@ param caller_config = None
 caller_config = globalParameters.caller_config
 
 # Load the given scenario
-scenario_path = globalParameters.scenario_path
 import importlib
-seed_module = importlib.import_module(scenario_path.replace('/', '.').replace('.scenic', ''))
-config = seed_module.config
+seed_module = importlib.import_module(caller_config['scenario_path'].replace('/', '.').replace('.scenic', ''))
+seed_config = seed_module.config
 seed_scenario = seed_module.SeedScenario()
-if config['simulator'] == 'carla':
+if 'simulator_name' in caller_config:
+  if caller_config['simulator_name'] in seed_config['compatible_simulators']:
+    simulator_name = caller_config['simulator_name']
+  else:
+    raise ValueError(f'Requested simulator {simulator_name} not supported by the seed.')
+else:
+  simulator_name = seed_config['compatible_simulators'][0]
+
+# Simulator-specific settings
+if simulator_name == 'carla':
   model scenic.simulators.carla.model
-elif config['simulator'] == 'newtonian':
+  from scenariogen.simulators.carla.monitors import RaiseEgoCollisionMonitor, ShowIntersectionMonitor, LabelCarsMonitor
+  if caller_config['render_ego']:
+    param render = True
+  else:
+    param render = False
+elif simulator_name == 'newtonian':
   model scenic.simulators.newtonian.driving_model
+  if not caller_config['render_spectator']:
+    param render = False
 else:
   model scenic.domains.driving.model
 
-param save_sim_trajectories = None
-save_sim_trajectories = globalParameters.save_sim_trajectories
-
-# Import auxiliary scenarios
-from scenariogen.simulators.carla.monitors import ShowIntersectionMonitor, RaiseEgoCollisionMonitor, LabelCarsMonitor
 from scenariogen.core.geometry import CurvilinearTransform
 
 names = []
@@ -43,7 +53,7 @@ monitor RecordSeedInfoMonitor():
     footprints.append((time, tuple(nonego.position for nonego in nonegos)))
     wait
 
-intersection = network.elements[config['intersection']]
+intersection = network.elements[seed_config['intersection']]
 
 # Record seed info
 scenario Main():
@@ -52,12 +62,13 @@ scenario Main():
     ego = new Debris at p.x@p.y
   
     require monitor RecordSeedInfoMonitor()
-    require monitor RaiseEgoCollisionMonitor(config)
-    if caller_config['render_spectator']:
-      require monitor ShowIntersectionMonitor(intersection, label_lanes=True)
-      require monitor LabelCarsMonitor()
+    if simulator_name == 'carla':
+      require monitor RaiseEgoCollisionMonitor(seed_config)
+      if caller_config['render_spectator']:
+        require monitor ShowIntersectionMonitor(seed_config['intersection'], label_lanes=True)
+        require monitor LabelCarsMonitor()
 
-    record final config as config
+    record final seed_config as config
     record final tuple(names) as names
     record final tuple(blueprints) as blueprints
     record final tuple(transforms) as transforms

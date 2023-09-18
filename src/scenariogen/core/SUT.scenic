@@ -2,17 +2,29 @@
 Nonegos + optionally ego i.e. VUT (Vehicle Under Test)
 """
 
-# Scenic parameters
-model scenic.domains.driving.model
 param config = None
 config = globalParameters.config
-intersection = network.elements[config['intersection']]
 
 # imports
 import importlib
 from scenariogen.core.scenarios import NonegosScenario
-from scenariogen.simulators.carla.monitors import ShowIntersectionMonitor
 
+# Simulator-specific settings
+if config['simulator'] == 'carla':
+  model scenic.simulators.carla.model
+  from scenariogen.simulators.carla.monitors import RaiseEgoCollisionMonitor, ShowIntersectionMonitor, LabelCarsMonitor
+  if config['render_ego']:
+    param render = True
+  else:
+    param render = False
+elif simulator_name == 'newtonian':
+  model scenic.simulators.newtonian.driving_model
+  if not config['render_spectator']:
+    param render = False
+else:
+  model scenic.domains.driving.model
+
+intersection = network.elements[config['intersection']]
 if config['closedLoop']:
   ego_module = importlib.import_module(config['ego_module'])
   ego_scenario = ego_module.EgoScenario(config)
@@ -28,10 +40,13 @@ scenario Main():
     p = intersection.polygon.centroid
     ego = new Debris at p.x@p.y
 
-    require monitor ShowIntersectionMonitor(intersection)
+    if config['simulator'] == 'carla':
+      require monitor RaiseEgoCollisionMonitor(config)
+      if config['render_spectator']:
+        require monitor ShowIntersectionMonitor(config['intersection'], label_lanes=True)
     require monitor coverage_monitor
 
-    record initial config as config
+    record initial config as config # needed?
     record final coverage_space as coverage_space
     record final coverage_module.coverage as coverage
 

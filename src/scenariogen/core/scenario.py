@@ -24,14 +24,16 @@ class Scenario:
                         model=simulator2model[config['simulator']],
                         params= {'carla_map': config['carla_map'],
                                   'map': config['map'],
-                                  'render': config['render'],
                                   'timestep': config['timestep'],
                                   'config': config,
                                 }
                         )
     scene, _ = scenic_scenario.generate(maxIterations=1)
     simulator = scenic_scenario.getSimulator()
-
+    if config['simulator'] == 'carla' and not config['render_spectator']:
+        settings = simulator.world.get_settings()
+        settings.no_rendering_mode = True
+        simulator.world.apply_settings(settings)
     print(f'Simulating the scenario...')
     sim_result = simulator.simulate(
                     scene,

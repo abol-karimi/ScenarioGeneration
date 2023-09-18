@@ -28,7 +28,7 @@ scenario NonegosScenario(config):
     fuzz_input = config['fuzz_input']
     if config['replay_raw']:
       fuzz_input_path = Path(config['fuzz_input_path'])
-      with open(fuzz_input_path.parents[1]/'seeds_definitions'/f'{fuzz_input_path.stem}_sim_trajectories.pickle', 'rb') as f:
+      with open(fuzz_input_path.parents[1]/'seed_definitions'/f'{fuzz_input_path.stem}_sim_trajectories.pickle', 'rb') as f:
           sim_tjs = pickle.load(f)
       tjs = [[pose for pose, time in tj] for tj in sim_tjs]
     else:
