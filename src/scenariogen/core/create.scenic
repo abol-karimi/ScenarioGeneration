@@ -59,7 +59,7 @@ intersection = network.elements[seed_config['intersection']]
 scenario Main():
   setup:
     p = intersection.polygon.centroid
-    ego = new Debris at p.x@p.y
+    ego = new Garbage at p.x@p.y
   
     require monitor RecordSeedInfoMonitor()
     if simulator_name == 'carla':

@@ -9,7 +9,7 @@ from scenariogen.simulators.carla.rss_sensor import RssSensor
 from scenariogen.simulators.carla.utils import signal_to_vehicleLightState
 from scenariogen.core.signals import SignalType
 
-behavior AutopilotFollowRoute(route, aggressiveness, use_rss):
+behavior AutopilotReachDestination(route, aggressiveness, use_rss):
 	waypoints_separation = 50
 	take SetVehicleLightStateAction(signal_to_vehicleLightState(self.signal))
 	take SetAutopilotAction(True)
@@ -17,19 +17,13 @@ behavior AutopilotFollowRoute(route, aggressiveness, use_rss):
 	carla_world = simulation().world
 	lanes = [network.elements[uid] for uid in route]
 	centerline = PolylineRegion.unionAll([l.centerline for l in lanes])
-	waypoints = centerline.pointsSeparatedBy(waypoints_separation)
+	dest = scenicToCarlaLocation(lanes[-1].centerline[-1], world=carla_world)
+	agent.set_destination(dest)
 	if not use_rss:
-		for wp in waypoints:
-			if not self can see wp:
-				continue
-			agent.set_destination(scenicToCarlaLocation(wp, world=carla_world))
-			while not agent.done():
-				self.carlaActor.apply_control(agent.run_step())
-				wait
+		while not agent.done():
+			self.carlaActor.apply_control(agent.run_step())
+			wait
 	else:
-		# TODO apply waypoints as above
-		dest = scenicToCarlaLocation(route_lanes[-1].centerline[-1], world=carla_world)
-		agent.set_destination(dest)
 		transforms = [pair[0].transform for pair in agent._local_planner._waypoints_queue]
 		rss_sensor = RssSensor(self.carlaActor, carla_world, 
 														None, None, None,
