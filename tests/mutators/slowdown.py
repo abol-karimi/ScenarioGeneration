@@ -20,7 +20,7 @@ settings.synchronous_mode = False
 world.apply_settings(settings)
 
 # Load a seed, plot its trajectory
-with open('experiments/seeds/0.json', 'r') as f:
+with open('experiments/seeds_manual/0.json', 'r') as f:
     seed = jsonpickle.decode(f.read())
     assert isinstance(seed, FuzzInput)
 

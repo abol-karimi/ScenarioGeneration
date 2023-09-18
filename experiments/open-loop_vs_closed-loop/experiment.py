@@ -33,7 +33,7 @@ import scenariogen.core.coverages as coverages
 from src.scenariogen.core.signals import SignalType
 from src.scenariogen.core.utils import route_length
 
-in_corpus_path = '../seeds/3way-stop.json'
+in_corpus_path = '../seeds_manual/3way-stop.json'
 in_corpus = seed.SeedCorpus([])
 in_corpus.load(in_corpus_path)
 

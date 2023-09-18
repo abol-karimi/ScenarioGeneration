@@ -7,7 +7,7 @@ carla_map = globalParameters.carla_map
 param map = f'/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/{carla_map}.xodr'
 model scenic.simulators.carla.model
 param weather = 'CloudySunset'
-param timestep = 0.05
+param timestep = 0.1
 duration_seconds = 20
 intersection_uid = 'intersection396'
 traffic_rules = '4way-uncontrolled.lp'
@@ -35,11 +35,11 @@ intersection = network.elements[intersection_uid]
 config = {'carla_map': carla_map,
           'map': globalParameters.map,
           'weather': globalParameters.weather,
-          'intersection': intersection_uid,
+          'compatible_simulators': ('carla',),
           'traffic_rules': traffic_rules,
-          'simulator': 'carla',
           'timestep': globalParameters.timestep,
-          'steps': int(duration_seconds/globalParameters.timestep)
+          'steps': int(duration_seconds/globalParameters.timestep),
+          'intersection': intersection_uid,
           }
 
 scenario SeedScenario():

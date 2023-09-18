@@ -1,27 +1,22 @@
-""" Scenario Description
+#--- Scenario parameters
+description = """
 Two non-egos arrive at the intersection simultaneously,
 	one is to the right of the other,
 	and they both proceed simultaneously.
 """
-
-#--- Scenic parameters
 param carla_map = 'Town05'
 carla_map = globalParameters.carla_map
 param map = f'/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/{carla_map}.xodr'
-model scenic.domains.driving.model
-
-#--- Python imports
-import jsonpickle
-from scenic.domains.driving.roads import ManeuverType
-from scenariogen.core.signals import SignalType
-from scenariogen.core.utils import route_from_turns
-from scenariogen.simulators.carla.behaviors import AutopilotFollowRoute
-
-#--- Constants
+model scenic.simulators.carla.model
 param weather = 'CloudySunset'
+param timestep = 0.1
+duration_seconds = 20
 intersection_uid = 'intersection396'
 traffic_rules = '4way-uncontrolled.lp'
 arrival_distance = 4
+
+from scenic.domains.driving.roads import ManeuverType
+from scenariogen.core.signals import SignalType
 ego_blueprint = 'vehicle.tesla.model3'
 ego_init_lane = 'road9_lane2'
 ego_turns = (ManeuverType.LEFT_TURN,)
@@ -37,6 +32,11 @@ right_turns = (ManeuverType.STRAIGHT,)
 right_init_progress = 10
 right_signal = SignalType.OFF
 
+#--- Python imports
+import jsonpickle
+from scenariogen.core.utils import route_from_turns
+from scenariogen.simulators.carla.behaviors import AutopilotFollowRoute
+
 #--- Derived constants
 ego_route = route_from_turns(network, ego_init_lane, ego_turns)
 
@@ -51,9 +51,13 @@ right_polyline = PolylineRegion.unionAll([l.centerline for l in right_lanes])
 right_p0 = right_polyline.pointAlongBy(right_init_progress)
 
 intersection = network.elements[intersection_uid]
+
 config = {'carla_map': carla_map,
           'map': globalParameters.map,
           'weather': globalParameters.weather,
+          'compatible_simulators': ('carla'),
+          'timestep': globalParameters.timestep,
+          'steps': int(duration_seconds/globalParameters.timestep),          
           'intersection': intersection_uid,
           'traffic_rules': traffic_rules,
           'ego_blueprint': ego_blueprint,
@@ -90,6 +94,3 @@ scenario SeedScenario():
       with blueprint 'vehicle.ford.crown',
       with length blueprints['vehicle.ford.crown']['length'],
       with width blueprints['vehicle.ford.crown']['width']
-
-    
-    cars = [left_car, right_car]
