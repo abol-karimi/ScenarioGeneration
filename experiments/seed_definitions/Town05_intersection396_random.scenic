@@ -47,7 +47,7 @@ scenario SeedScenario():
     blueprints = tuple(blueprint2dims.keys())
     min_distance_to_intersection = 0
     blueprint = Uniform(*blueprints)
-    init_progress_ratio = Range(0, 0.5)
+    init_progress_ratio = Range(0, 0.1)
     maneuver = Uniform(*intersection.maneuvers)
     signal = SignalType.from_maneuver_type(maneuver.type)
     lanes = (maneuver.startLane, maneuver.connectingLane, maneuver.endLane)
@@ -66,7 +66,7 @@ scenario SeedScenario():
     p = transform.rectilinear(x0@y0, h0)
     waypoints_separation = 50
     waypoints = (Vector(*transform.rectilinear(x@0))
-                 for x in np.arange(x0+waypoints_separation, init_lanes_length, waypoints_separation))
+                 for x in np.arange(x0+waypoints_separation, transform.axis.length, waypoints_separation))
     car = new Car at p[0]@p[1], facing p[2],
       with name 'ego',
       with physics True,
@@ -82,7 +82,7 @@ scenario SeedScenario():
       with signal signal
     
     config['ego_route'] = route
-    config['ego_init_progress_ratio'] = init_progress_ratio
+    config['ego_init_progress_ratio'] = x0 / transform.axis.length
     config['ego_blueprint'] = blueprint
     config['ego_signal'] = signal
 

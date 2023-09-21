@@ -16,7 +16,7 @@ config = {'scenario_path': 'experiments/seed_definitions/Town05_intersection396_
           'spline_knots_size': 50,
           'scene_maxIterations': 50,
           'simulate_maxIterations': 1,
-          'seeds_num': 50,
+          'seeds_num': 20,
           }
 
 random_seed_generator.run(config)
