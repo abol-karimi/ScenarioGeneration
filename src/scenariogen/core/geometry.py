@@ -18,8 +18,6 @@ def simplify(points):
         if dv0.dot(dv1) >= 0:
             vs_simple.append(vs[i])
             dv0 = dv1
-        else:
-            print(f"Excluding the {i}th point of the polyline from the curvilinear-transform's axis.")
     return vs_simple
 
 class CurvilinearTransform:

@@ -126,7 +126,7 @@ class StructureAwareMutator():
     # Choose random parameters
     nonego_idx = self.random.randrange(len(fuzz_input.routes))
     max_dist = 100
-    car_length = self.blueprint2dims[fuzz_input.blueprints[nonego_idx]]
+    car_length = self.blueprint2dims[fuzz_input.blueprints[nonego_idx]]['length']
     offset = self.random.uniform(car_length, max_dist)
 
     # Mutate
@@ -143,7 +143,7 @@ class StructureAwareMutator():
     # Choose random parameters
     nonego_idx = self.random.randrange(len(fuzz_input.routes))
     max_dist = 100 # bigger than any vehicle length
-    car_length = self.blueprint2dims[fuzz_input.blueprints[nonego_idx]]
+    car_length = self.blueprint2dims[fuzz_input.blueprints[nonego_idx]]['length']
     offset = self.random.uniform(car_length, max_dist)
 
     # Mutate
@@ -185,7 +185,7 @@ class StructureAwareMutator():
     # Choose random parameters
     nonego_idx = self.random.randrange(len(fuzz_input.routes))
     max_dist = 100 # bigger than any vehicle length
-    car_length = self.blueprint2dims[fuzz_input.blueprints[nonego_idx]]
+    car_length = self.blueprint2dims[fuzz_input.blueprints[nonego_idx]]['length']
     offset = self.random.uniform(car_length, max_dist)
 
     # Mutate
