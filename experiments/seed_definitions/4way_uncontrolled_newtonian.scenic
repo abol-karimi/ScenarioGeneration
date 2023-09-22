@@ -7,7 +7,7 @@ Two non-egos arrive at the intersection simultaneously,
 param carla_map = 'Town05'
 carla_map = globalParameters.carla_map
 param map = f'/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/{carla_map}.xodr'
-model scenic.simulators.carla.model
+model scenic.simulators.newtonian.driving_model
 param weather = 'CloudySunset'
 param timestep = 0.1
 duration_seconds = 20
@@ -36,8 +36,8 @@ right_signal = SignalType.OFF
 import jsonpickle
 import numpy as np
 from scenariogen.core.utils import route_from_turns
-from scenariogen.simulators.carla.behaviors import AutopilotFollowWaypoints
 from scenariogen.core.geometry import CurvilinearTransform
+from scenariogen.simulators.newtonian.behaviors import FollowRouteAvoidCollisionsBehavior
 
 #--- Derived constants
 ego_route = route_from_turns(network, ego_init_lane, ego_turns)
@@ -77,7 +77,7 @@ intersection = network.elements[intersection_uid]
 config = {'carla_map': carla_map,
           'map': globalParameters.map,
           'weather': globalParameters.weather,
-          'compatible_simulators': ('carla'),
+          'compatible_simulators': ('newtonian',),
           'timestep': globalParameters.timestep,
           'steps': int(duration_seconds/globalParameters.timestep),          
           'intersection': intersection_uid,
@@ -97,9 +97,7 @@ scenario SeedScenario():
       with physics True,
       with allowCollisions False,
       with signal left_signal,
-      with behavior AutopilotFollowWaypoints(waypoints=left_waypoints,
-                                            aggressiveness='normal',
-                                            use_rss=False),
+      with behavior FollowRouteAvoidCollisionsBehavior(4, left_lanes),
       with blueprint 'vehicle.tesla.model3',
       with length blueprints['vehicle.tesla.model3']['length'],
       with width blueprints['vehicle.tesla.model3']['width']
@@ -110,9 +108,7 @@ scenario SeedScenario():
       with physics True,
       with allowCollisions False,
       with signal right_signal,
-      with behavior AutopilotFollowWaypoints(waypoints=right_waypoints,
-                                        aggressiveness='normal',
-                                        use_rss=False),
+      with behavior FollowRouteAvoidCollisionsBehavior(4, right_lanes),
       with blueprint 'vehicle.ford.crown',
       with length blueprints['vehicle.ford.crown']['length'],
       with width blueprints['vehicle.ford.crown']['width']

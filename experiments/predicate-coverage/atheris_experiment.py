@@ -8,14 +8,15 @@ from scenariogen.core.coverages.predicate_coverage import from_corpus
 
 SUT_config = {
   'timestep': 0.05,
-  'render': False,
+  'render_spectator': False,
+  'render_ego': False,
   'weather': 'CloudySunset',
   'arrival_distance': 4,
   'stop_speed_threshold': 0.5,
   'closedLoop': True,
-  'ego_module': 'experiments.agents.autopilot',
+  'ego_module': 'experiments.agents.followRouteAvoidCollisions',
   'replay_raw': False,
-  'simulator': 'carla',
+  'simulator': 'newtonian',
   'coverage_module': 'scenariogen.core.coverages.traffic_rules_predicate_name',
 }
 
@@ -23,7 +24,7 @@ experiment_name = 'TrafficRulesPredicateName'
 fuzzer_config = {
   'SUT_config': SUT_config,
   'experiment_name': experiment_name,
-  'seeds_folder': f'experiments/seeds',
+  'seeds_folder': f'experiments/seeds_manual',
   'output_folder': f'experiments/predicate-coverage/{experiment_name}',
   'mutator': StructureAwareMutator(max_spline_knots_size=50,
                                    max_mutations_per_iteration=1,
@@ -31,7 +32,7 @@ fuzzer_config = {
   'crossOver': StructureAwareCrossOver(max_spline_knots_size=50,
                                        max_attempts=1,
                                        randomizer_seed=0),
-  'atheris_runs': 100,
+  'atheris_runs': 10,
   'max_seed_length': 1e+6, # 1 MB
 }
 

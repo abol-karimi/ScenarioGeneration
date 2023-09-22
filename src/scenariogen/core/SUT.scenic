@@ -17,7 +17,7 @@ if config['simulator'] == 'carla':
     param render = True
   else:
     param render = False
-elif simulator_name == 'newtonian':
+elif config['simulator'] == 'newtonian':
   model scenic.simulators.newtonian.driving_model
   if not config['render_spectator']:
     param render = False
@@ -38,8 +38,7 @@ coverage_monitor = coverage_module.CoverageMonitor()
 scenario Main():
   setup:
     p = intersection.polygon.centroid
-    ego = new Garbage at p.x@p.y,
-      with blueprint 'static.prop.garbage02'
+    ego = new Debris at p.x@p.y
 
     if config['simulator'] == 'carla':
       require monitor RaiseEgoCollisionMonitor(config)

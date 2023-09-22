@@ -21,11 +21,11 @@ parser.add_argument('--render_ego', action='store_true',
                     help='render ego viewpoint (only in the Carla simulator)')
 parser.add_argument('--openLoop', action='store_true',
                     help='simulate a VUT')
-parser.add_argument('--ego_module', default='experiments.agents.autopilot_waypoints',
+parser.add_argument('--ego_module', default='experiments.agents.followRouteAvoidCollisions',
                     help='the scenic file containing the ego scenario')
 parser.add_argument('--coverage_module', default='scenariogen.core.coverages.traffic_rules_predicate_name',
                     help='the scenic file containing ')
-parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='carla',
+parser.add_argument('--simulator', choices=['newtonian', 'carla'],
                     help='The simulator')
 parser.add_argument('--replay_raw', action='store_true',
                     help='Replay the original simulation if available, instead of the spline approximation')
@@ -60,6 +60,10 @@ if args.weather:
 
 # Scenario config
 config = {**seed.config}
+if args.simulator:
+    config['simulator'] = args.simulator
+else:
+    config['simulator'] = seed.config['compatible_simulators'][0]
 config['steps'] = steps
 config['timestep'] = timestep
 config['weather'] = weather
@@ -69,7 +73,6 @@ config['stop_speed_threshold'] = 0.5  # meters/seconds
 config['closedLoop'] = not args.openLoop
 config['ego_module'] = args.ego_module
 config['coverage_module'] = args.coverage_module
-config['simulator'] = args.simulator
 config['render_spectator'] = args.render_spectator,
 config['render_ego'] = args.render_ego,
 config['replay_raw'] = args.replay_raw

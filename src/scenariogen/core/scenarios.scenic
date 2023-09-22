@@ -20,7 +20,7 @@ with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f
 
 behavior AnimateBehavior(traj_sample):
 	for pose in traj_sample:
-		take SetTransformAction(pose[0]@pose[1], Orientation._fromHeading(pose[2]))
+		take SetPositionAction(pose[0]@pose[1]), SetHeadingAction(pose[2])
 
 scenario NonegosScenario(config):
   setup:
@@ -33,6 +33,10 @@ scenario NonegosScenario(config):
       tjs = [[pose for pose, time in tj] for tj in sim_tjs]
     else:
       tjs = sample_trajectories(network, fuzz_input, int(config['steps'])+1, umax=config['steps']*config['timestep'])
+    assert not fuzz_input.routes is None
+    assert not tjs is None
+    assert not fuzz_input.signals is None
+    assert not fuzz_input.blueprints is None
     for i, (route, tj, signal, blueprint) in enumerate(zip(fuzz_input.routes,
                                                            tjs, 
                                                            fuzz_input.signals, 

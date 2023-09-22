@@ -7,9 +7,8 @@ seed_module = importlib.import_module(caller_config['scenario_path'].replace('/'
 seed_config = seed_module.config
 seed_scenario = seed_module.SeedScenario()
 if 'simulator_name' in caller_config:
-  if caller_config['simulator_name'] in seed_config['compatible_simulators']:
-    simulator_name = caller_config['simulator_name']
-  else:
+  simulator_name = caller_config['simulator_name']
+  if not simulator_name in seed_config['compatible_simulators']:
     raise ValueError(f'Requested simulator {simulator_name} not supported by the seed.')
 else:
   simulator_name = seed_config['compatible_simulators'][0]
@@ -59,8 +58,7 @@ intersection = network.elements[seed_config['intersection']]
 scenario Main():
   setup:
     p = intersection.polygon.centroid
-    ego = new Garbage at p.x@p.y,
-      with name 'garbage'
+    ego = new Debris at p.x@p.y
   
     require monitor RecordSeedInfoMonitor()
     if simulator_name == 'carla':

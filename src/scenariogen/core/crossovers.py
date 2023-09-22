@@ -62,12 +62,11 @@ class StructureAwareCrossOver():
     idx2 = self.random.sample(range(n2), n2)
 
     crossover = FuzzInput(config=input1.config,
+                  blueprints=tuple(itertools.chain((input1.blueprints[i] for i in idx1),(input2.blueprints[i] for i in idx2))),
                   routes=tuple(itertools.chain((input1.routes[i] for i in idx1),(input2.routes[i] for i in idx2))),
                   footprints=tuple(itertools.chain((input1.footprints[i] for i in idx1),(input2.footprints[i] for i in idx2))),
                   timings=tuple(itertools.chain((input1.timings[i] for i in idx1),(input2.timings[i] for i in idx2))),
-                  signals=tuple(itertools.chain((input1.signals[i] for i in idx1),(input2.signals[i] for i in idx2))),
-                  lengths=tuple(itertools.chain((input1.lengths[i] for i in idx1),(input2.lengths[i] for i in idx2))),
-                  widths=tuple(itertools.chain((input1.widths[i] for i in idx1),(input2.widths[i] for i in idx2))),
+                  signals=tuple(itertools.chain((input1.signals[i] for i in idx1),(input2.signals[i] for i in idx2)))
                   )
     print(f'Population-splice crossover: {n1} cars from input1 and {n2} cars from input2.')
     return crossover

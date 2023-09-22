@@ -70,12 +70,6 @@ def validate_input(fuzz_input):
   if not isinstance(fuzz_input.signals, tuple):
     raise InvalidFuzzInputError('Invalid input: fuzz_input.signals not an instance of tuple')
 
-  if not isinstance(fuzz_input.lengths, tuple):
-    raise InvalidFuzzInputError('Invalid input: fuzz_input.lengths not an instance of tuple')
-
-  if not isinstance(fuzz_input.widths, tuple):
-    raise InvalidFuzzInputError('Invalid input: fuzz_input.widths not an instance of tuple')
-
   n = len(fuzz_input.routes)
   if n == 0:
     raise InvalidFuzzInputError('Invalid input: len(fuzz_input.routes) = 0')
@@ -88,12 +82,6 @@ def validate_input(fuzz_input):
   
   if n != len(fuzz_input.signals):
     raise InvalidFuzzInputError('Invalid input: len(signals) != len(routes)')
-
-  if n != len(fuzz_input.lengths):
-    raise InvalidFuzzInputError('Invalid input: len(lengths) != len(routes)')
-
-  if n != len(fuzz_input.widths):
-    raise InvalidFuzzInputError('Invalid input: len(widths) != len(routes)')
 
   for spline in fuzz_input.footprints + fuzz_input.timings:
     validate_spline(spline)

@@ -37,7 +37,7 @@ class MutatorCallback:
     try:
       decoded = jsonpickle.decode(input_str)
     except Exception as e:
-      print(f'{e} ...in decoding the seed:')
+      print(f'{e} ...in decoding the fuzz_input:')
       print(input_str)
       return
 
@@ -154,25 +154,26 @@ class SUTCallback:
 
     # Skip mutant if structurally invalid.
     try:
-      seed = jsonpickle.decode(input_str)
+      fuzz_input = jsonpickle.decode(input_str)
     except Exception as e:
-      print(f'{e} ...in decoding the seed: ')
+      print(f'{e} ...in decoding the fuzz_input: ')
       print(input_str)
       exit(1)
 
     try:
-      validate_input(seed)
+      validate_input(fuzz_input)
+      assert not fuzz_input.blueprints is None
     except InvalidFuzzInputError as err:
       print(err.msg)
       exit(1)
     
-    seconds = seed.timings[0].ctrlpts[-1][0]
+    seconds = fuzz_input.timings[0].ctrlpts[-1][0]
     self.SUT_config.update({
               'steps': int(seconds // self.SUT_config['timestep']),
               })
 
     try:
-      sim_result = Scenario(seed).run(self.SUT_config)
+      sim_result = Scenario(fuzz_input).run(self.SUT_config)
       coverage_space = sim_result.records['coverage_space'] # TODO for performance: do it only once
       coverage = sim_result.records['coverage']
     except NonegoNonegoCollisionError as err:
@@ -180,16 +181,16 @@ class SUTCallback:
     except EgoCollisionError as err:
       print(f'Ego collided with {err.other}. We save the fuzz input to the ego-collisions corpus.')
       with open(f'{self.ego_collisions_folder}/{self.current_iteration}.json', 'w') as f:
-        f.write(jsonpickle.encode(seed, indent=1))
-    except Exception as e:
-      print(e)
+        f.write(jsonpickle.encode(fuzz_input, indent=1))
+    # except Exception as e:
+    #   print(e)
     else: 
       if coverage.issubset(self.coverage_sum):
         print('Input did not yield new coverage.')
       else:
         print('Found a fuzz-input increasing predicate-coverage! Adding it to predicate-coverage corpus...')
         with open(f'{self.predicate_coverage_folder}/{self.current_iteration}.json', 'w') as f:
-          f.write(jsonpickle.encode(seed))
+          f.write(jsonpickle.encode(fuzz_input))
         self.coverage_sum.update(coverage)
         print('Coverage ratio:', len(self.coverage_sum)/len(coverage_space))
         print('Coverage gap:', coverage_space-self.coverage_sum)

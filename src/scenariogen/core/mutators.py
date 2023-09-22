@@ -1,4 +1,5 @@
 from random import Random
+import jsonpickle
 import geomdl
 from geomdl import BSpline
 import numpy as np
@@ -48,6 +49,8 @@ class StructureAwareMutator():
                      self.slowdown,
                     # self.change_ego_route,                 
                     ]
+    with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f:
+      self.blueprint2dims = jsonpickle.decode(f.read())
   @classmethod
   def get_network(cls, fuzz_input):
     carla_map = fuzz_input.config['carla_map']
@@ -79,7 +82,8 @@ class StructureAwareMutator():
     # Choose random parameters
     nonego_idx = self.random.randrange(len(fuzz_input.routes))
     max_dist = 100
-    offset = self.random.uniform(fuzz_input.lengths[nonego_idx], max_dist)
+    car_length = self.blueprint2dims[fuzz_input.blueprints[nonego_idx]]
+    offset = self.random.uniform(car_length, max_dist)
 
     # Mutate
     mutant = self.copy_forward_with_params(fuzz_input, nonego_idx, offset)
@@ -108,12 +112,11 @@ class StructureAwareMutator():
     new_route = tuple(l.uid for l in lanes)
 
     mutant = FuzzInput(config=fuzz_input.config,
+                  blueprints=fuzz_input.blueprints+(fuzz_input.blueprints[nonego_idx],),
                   routes=fuzz_input.routes+(new_route,),
                   footprints=fuzz_input.footprints+(new_footprint,),
                   timings=fuzz_input.timings+(fuzz_input.timings[nonego_idx],),
-                  signals=fuzz_input.signals+(fuzz_input.signals[nonego_idx],),
-                  lengths=fuzz_input.lengths+(fuzz_input.lengths[nonego_idx],),
-                  widths=fuzz_input.widths+(fuzz_input.widths[nonego_idx],)
+                  signals=fuzz_input.signals+(fuzz_input.signals[nonego_idx],)
                   )
     return mutant
     
@@ -123,7 +126,8 @@ class StructureAwareMutator():
     # Choose random parameters
     nonego_idx = self.random.randrange(len(fuzz_input.routes))
     max_dist = 100
-    offset = self.random.uniform(fuzz_input.lengths[nonego_idx], max_dist)
+    car_length = self.blueprint2dims[fuzz_input.blueprints[nonego_idx]]
+    offset = self.random.uniform(car_length, max_dist)
 
     # Mutate
     mutant = self.copy_forward_with_params(fuzz_input, nonego_idx, offset)
@@ -139,7 +143,8 @@ class StructureAwareMutator():
     # Choose random parameters
     nonego_idx = self.random.randrange(len(fuzz_input.routes))
     max_dist = 100 # bigger than any vehicle length
-    offset = self.random.uniform(fuzz_input.lengths[nonego_idx], max_dist)
+    car_length = self.blueprint2dims[fuzz_input.blueprints[nonego_idx]]
+    offset = self.random.uniform(car_length, max_dist)
 
     # Mutate
     mutant = self.copy_backward_with_params(fuzz_input, nonego_idx, offset)
@@ -166,12 +171,11 @@ class StructureAwareMutator():
     new_route = tuple(l.uid for l in lanes)
 
     mutant = FuzzInput(config=fuzz_input.config,
+                  blueprints=fuzz_input.blueprints+(fuzz_input.blueprints[nonego_idx],),                       
                   routes=fuzz_input.routes+(new_route,),
                   footprints=fuzz_input.footprints+(new_footprint,),
                   timings=fuzz_input.timings+(fuzz_input.timings[nonego_idx],),
-                  signals=fuzz_input.signals+(fuzz_input.signals[nonego_idx],),
-                  lengths=fuzz_input.lengths+(fuzz_input.lengths[nonego_idx],),
-                  widths=fuzz_input.widths+(fuzz_input.widths[nonego_idx],)
+                  signals=fuzz_input.signals+(fuzz_input.signals[nonego_idx],)
                   )
     return mutant
   
@@ -181,7 +185,8 @@ class StructureAwareMutator():
     # Choose random parameters
     nonego_idx = self.random.randrange(len(fuzz_input.routes))
     max_dist = 100 # bigger than any vehicle length
-    offset = self.random.uniform(fuzz_input.lengths[nonego_idx], max_dist)
+    car_length = self.blueprint2dims[fuzz_input.blueprints[nonego_idx]]
+    offset = self.random.uniform(car_length, max_dist)
 
     # Mutate
     mutant = self.copy_backward_with_params(fuzz_input, nonego_idx, offset)
@@ -223,12 +228,11 @@ class StructureAwareMutator():
     route = tuple(l.uid for l in lanes)
 
     mutant = FuzzInput(config=fuzz_input.config,
+                  blueprints=fuzz_input.blueprints+(fuzz_input.blueprints[nonego_idx],),
                   routes=fuzz_input.routes+(route,),
                   footprints=fuzz_input.footprints+(fuzz_input.footprints[nonego_idx],),
                   timings=fuzz_input.timings+(fuzz_input.timings[nonego_idx],),
-                  signals=fuzz_input.signals+(fuzz_input.signals[nonego_idx],),
-                  lengths=fuzz_input.lengths+(fuzz_input.lengths[nonego_idx],),
-                  widths=fuzz_input.widths+(fuzz_input.widths[nonego_idx],)
+                  signals=fuzz_input.signals+(fuzz_input.signals[nonego_idx],)
                   )
     
     return mutant
@@ -251,12 +255,11 @@ class StructureAwareMutator():
 
   def remove_vehicle_with_params(self, fuzz_input, nonego_idx):
     mutant = FuzzInput(config=fuzz_input.config,
+                  blueprints=fuzz_input.blueprints[0:nonego_idx]+fuzz_input.blueprints[nonego_idx+1:],
                   routes=fuzz_input.routes[0:nonego_idx]+fuzz_input.routes[nonego_idx+1:],
                   footprints=fuzz_input.footprints[0:nonego_idx]+fuzz_input.footprints[nonego_idx+1:],
                   timings=fuzz_input.timings[0:nonego_idx]+fuzz_input.timings[nonego_idx+1:],                  
-                  signals=fuzz_input.signals[0:nonego_idx]+fuzz_input.signals[nonego_idx+1:],
-                  lengths=fuzz_input.lengths[0:nonego_idx]+fuzz_input.lengths[nonego_idx+1:],
-                  widths=fuzz_input.widths[0:nonego_idx]+fuzz_input.widths[nonego_idx+1:]
+                  signals=fuzz_input.signals[0:nonego_idx]+fuzz_input.signals[nonego_idx+1:]
                   )
     return mutant
   
@@ -299,15 +302,14 @@ class StructureAwareMutator():
                               )
     
     mutant = FuzzInput(config=fuzz_input.config,
+                  blueprints=fuzz_input.blueprints,
                   routes=fuzz_input.routes,
                   footprints=fuzz_input.footprints,
                   timings=
                     fuzz_input.timings[0:nonego_idx] \
                     + (timing_mutated,) \
                     + fuzz_input.timings[nonego_idx+1:],
-                  signals=fuzz_input.signals,
-                  lengths=fuzz_input.lengths,
-                  widths=fuzz_input.widths
+                  signals=fuzz_input.signals
                   )
   
     return mutant
@@ -351,15 +353,14 @@ class StructureAwareMutator():
                             )
 
     mutant = FuzzInput(config=fuzz_input.config,
+                  blueprints=fuzz_input.blueprints,
                   routes=fuzz_input.routes,
                   footprints=fuzz_input.footprints,
                   timings=
                     fuzz_input.timings[0:nonego_idx] \
                     + (timing_mutated,) \
                     + fuzz_input.timings[nonego_idx+1:],
-                  signals=fuzz_input.signals,
-                  lengths=fuzz_input.lengths,
-                  widths=fuzz_input.widths
+                  signals=fuzz_input.signals
                   )
   
     return mutant
