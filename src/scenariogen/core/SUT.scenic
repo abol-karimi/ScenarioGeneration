@@ -13,14 +13,8 @@ from scenariogen.core.scenarios import NonegosScenario
 if config['simulator'] == 'carla':
   model scenic.simulators.carla.model
   from scenariogen.simulators.carla.monitors import RaiseEgoCollisionMonitor, ShowIntersectionMonitor, LabelCarsMonitor
-  if config['render_ego']:
-    param render = True
-  else:
-    param render = False
 elif config['simulator'] == 'newtonian':
   model scenic.simulators.newtonian.driving_model
-  if not config['render_spectator']:
-    param render = False
 else:
   model scenic.domains.driving.model
 

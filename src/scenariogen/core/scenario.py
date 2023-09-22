@@ -18,6 +18,8 @@ class Scenario:
     simulator2model = {'newtonian': 'scenic.simulators.newtonian.driving_model',
                        'carla': 'scenic.simulators.carla.model'
                       }
+    render = (config['simulator'] == 'carla' and config['render_ego']) or \
+             (config['simulator'] == 'newtonian' and config['render_spectator'])
     scenic_scenario = scenic.scenarioFromFile(
                         'src/scenariogen/core/SUT.scenic',
                         mode2D=True,
@@ -25,6 +27,7 @@ class Scenario:
                         params= {'carla_map': config['carla_map'],
                                   'map': config['map'],
                                   'timestep': config['timestep'],
+                                  'render': render,
                                   'config': config,
                                 }
                         )

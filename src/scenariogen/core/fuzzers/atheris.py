@@ -162,7 +162,6 @@ class SUTCallback:
 
     try:
       validate_input(fuzz_input)
-      assert not fuzz_input.blueprints is None
     except InvalidFuzzInputError as err:
       print(err.msg)
       exit(1)

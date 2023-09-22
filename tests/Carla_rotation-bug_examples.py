@@ -6,17 +6,17 @@ world = client.load_world('Town05')
 
 blueprint = world.get_blueprint_library().find('vehicle.tesla.model3')
 
-spawn_rot = carla.Rotation(pitch=90, yaw=0, roll=90)
+spawn_rot = carla.Rotation(pitch=90, yaw=0, roll=0)
 spawn_loc = carla.Location(0, 0, 20)
 carlaActor1 = world.try_spawn_actor(blueprint, carla.Transform(spawn_loc, spawn_rot))
 carlaActor1.set_simulate_physics(False)
 
-spawn_rot = carla.Rotation(pitch=45, yaw=0, roll=0)
+spawn_rot = carla.Rotation(pitch=0, yaw=90, roll=0)
 spawn_loc = carla.Location(10, 0, 20)
 carlaActor2 = world.try_spawn_actor(blueprint, carla.Transform(spawn_loc, spawn_rot))
 carlaActor2.set_simulate_physics(False)
 
-spawn_rot = carla.Rotation(pitch=0, yaw=45, roll=0)
+spawn_rot = carla.Rotation(pitch=0, yaw=0, roll=90)
 spawn_loc = carla.Location(20, 0, 20)
 carlaActor3 = world.try_spawn_actor(blueprint, carla.Transform(spawn_loc, spawn_rot))
 carlaActor3.set_simulate_physics(False)
