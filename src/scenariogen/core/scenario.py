@@ -20,6 +20,7 @@ class Scenario:
                       }
     render = (config['simulator'] == 'carla' and config['render_ego']) or \
              (config['simulator'] == 'newtonian' and config['render_spectator'])
+    render = 1 if render else 0
     scenic_scenario = scenic.scenarioFromFile(
                         'src/scenariogen/core/SUT.scenic',
                         mode2D=True,

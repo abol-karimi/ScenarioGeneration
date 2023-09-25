@@ -55,7 +55,7 @@ monitor CoverageMonitor():
   for step in range(config['steps']):
     time_seconds = step * config['timestep']
     for car in cars:
-      inIntersection[car] = car.occupiedSpace.intersects(intersection.footprint)
+      inIntersection[car] = intersection.intersects(PolygonalRegion(polygon=car._boundingPolygon))
       
       if (not arrived[car]) and (distance from (front of car) to intersection) < config['arrival_distance']:
         arrived[car] = True
@@ -71,7 +71,7 @@ monitor CoverageMonitor():
       for maneuver in maneuvers:
         lane = maneuver.connectingLane
         wasOnLane = lane.uid in lanes[car]
-        isOnLane = car.occupiedSpace.intersects(lane.footprint)
+        isOnLane = lane.intersects(PolygonalRegion(polygon=car._boundingPolygon))
         if isOnLane and not wasOnLane:
           lanes[car].add(lane.uid)
           events.append(EnteredLaneEvent(car.name, lane.uid, time_seconds))
