@@ -3,7 +3,7 @@ import jsonpickle
 from pathlib import Path
 import atheris
 from typing import Any
-from multiprocessing import Process, Queue
+# from multiprocessing import Process, Queue
 
 # This project
 from src.scenariogen.core.scenario import Scenario
@@ -118,9 +118,10 @@ class CrossOverCallback:
 #---------- SUT wrapper to make an Atheris target ----------
 #-----------------------------------------------------------
 class SUTCallback:
-  def __init__(self, config, comm):
+  def __init__(self, config):
+  # def __init__(self, config, comm):
     self.config = config
-    self.comm = comm
+    # self.comm = comm
     self.SUT_config = config['SUT_config']
     self.ego_collisions_folder = f"{config['output_folder']}/ego-collisions"
     self.predicate_coverage_folder = f"{config['output_folder']}/predicate-coverage"
@@ -194,8 +195,8 @@ class SUTCallback:
         print('Coverage ratio:', len(self.coverage_sum)/len(coverage_space))
         print('Coverage gap:', coverage_space-self.coverage_sum)
     
-    if self.current_iteration == self.initial_iteration + self.config['atheris_runs']:
-      self.comm.put(self.get_state())
+    # if self.current_iteration == self.initial_iteration + self.config['atheris_runs']:
+    #   self.comm.put(self.get_state())
 
 #------------------------------------
 #---------- Atheris wrapper ---------
@@ -209,11 +210,13 @@ class AtherisFuzzer:
 
     self.libfuzzer_config = [f"-atheris_runs={config['atheris_runs']}",
                              f"-max_len={config['max_seed_length']}",
+                             f"-rss_limit_mb=4096",
                              (self.output_path/'code-coverage').as_posix(),
                              config['seeds_folder'],
                             ]
-    self.comm = Queue(maxsize=1)
-    self.SUT = SUTCallback(self.config, self.comm)
+    # self.comm = Queue(maxsize=1)
+    # self.SUT = SUTCallback(self.config, self.comm)    
+    self.SUT = SUTCallback(self.config)
 
   def run(self):
     state_file = self.output_path/'fuzzer_state.json'
@@ -233,11 +236,12 @@ class AtherisFuzzer:
                     custom_crossover=self.crossOver
                     )
       atheris.Fuzz()
-    
-    p = Process(target=_run, args=())
-    p.start()
-    p.join()
-    self.SUT.set_state(self.comm.get())
+
+    _run()
+    # p = Process(target=_run, args=())
+    # p.start()
+    # p.join()
+    # self.SUT.set_state(self.comm.get())
   
   def save_state(self):
     with open(self.output_path/'fuzzer_state.json', 'w') as f:

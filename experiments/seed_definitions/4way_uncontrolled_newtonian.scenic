@@ -74,17 +74,19 @@ right_waypoints = (Vector(*transform.rectilinear(x@0))
 
 intersection = network.elements[intersection_uid]
 
-config = {'carla_map': carla_map,
+config = {'description': description,
+          'carla_map': carla_map,
           'map': globalParameters.map,
           'weather': globalParameters.weather,
           'compatible_simulators': ('newtonian',),
           'timestep': globalParameters.timestep,
-          'steps': int(duration_seconds/globalParameters.timestep),          
+          'steps': int(duration_seconds/globalParameters.timestep),
           'intersection': intersection_uid,
           'traffic_rules': traffic_rules,
           'ego_blueprint': ego_blueprint,
           'ego_route': ego_route,
-          'ego_init_progress_ratio': ego_init_progress_ratio}
+          'ego_init_progress_ratio': ego_init_progress_ratio,
+          }
 
 scenario SeedScenario():
   setup:
@@ -97,7 +99,7 @@ scenario SeedScenario():
       with physics True,
       with allowCollisions False,
       with signal left_signal,
-      with behavior FollowRouteAvoidCollisionsBehavior(4, left_lanes),
+      with behavior FollowRouteAvoidCollisionsBehavior(left_lanes),
       with blueprint 'vehicle.tesla.model3',
       with length blueprints['vehicle.tesla.model3']['length'],
       with width blueprints['vehicle.tesla.model3']['width']
@@ -108,7 +110,7 @@ scenario SeedScenario():
       with physics True,
       with allowCollisions False,
       with signal right_signal,
-      with behavior FollowRouteAvoidCollisionsBehavior(4, right_lanes),
+      with behavior FollowRouteAvoidCollisionsBehavior(right_lanes),
       with blueprint 'vehicle.ford.crown',
       with length blueprints['vehicle.ford.crown']['length'],
       with width blueprints['vehicle.ford.crown']['width']

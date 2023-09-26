@@ -25,8 +25,6 @@ elif simulator_name == 'newtonian':
   model scenic.simulators.newtonian.driving_model
   if not caller_config['render_spectator']:
     param render = False
-else:
-  model scenic.domains.driving.model
 
 from scenariogen.core.geometry import CurvilinearTransform
 

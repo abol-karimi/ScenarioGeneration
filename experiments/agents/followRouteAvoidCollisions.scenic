@@ -1,5 +1,5 @@
 # Scenic parameters
-model scenic.domains.driving.model
+model scenic.simulators.newtonian.driving_model
 param config = None
 config = globalParameters.config
 
@@ -15,14 +15,14 @@ scenario EgoScenario(config):
   setup:
     ego_lanes = [network.elements[l] for l in config['ego_route']]
     ego_centerline = PolylineRegion.unionAll([l.centerline for l in ego_lanes])
-    ego_init_pos = ego_centerline.pointAlongBy(config['ego_init_progress_ratio'])
+    ego_init_pos = ego_centerline.pointAlongBy(config['ego_init_progress_ratio']*ego_centerline.length)
     ego_blueprint = config['ego_blueprint']
     ego = new Car at ego_init_pos,
       with name 'ego',
       with blueprint ego_blueprint,
-      with width blueprint2dims[ego_blueprint]['width'],
       with length blueprint2dims[ego_blueprint]['length'],
+      with width blueprint2dims[ego_blueprint]['width'],
       with signal SignalType.OFF, # TODO SignalType.from_route
-      with behavior FollowRouteAvoidCollisionsBehavior(6, ego_lanes)
+      with behavior FollowRouteAvoidCollisionsBehavior(ego_lanes, target_speed=6)
     cars = [ego]
 
