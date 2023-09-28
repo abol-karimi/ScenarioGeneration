@@ -4,13 +4,14 @@ Two non-egos arrive at the intersection simultaneously,
 	one is to the right of the other,
 	and they both proceed simultaneously.
 """
+
 param carla_map = 'Town05'
 carla_map = globalParameters.carla_map
 param map = f'/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/{carla_map}.xodr'
 model scenic.simulators.carla.model
 param weather = 'CloudySunset'
 param timestep = 0.1
-duration_seconds = 20
+param steps = 200
 intersection_uid = 'intersection396'
 traffic_rules = '4way-uncontrolled.lp'
 arrival_distance = 4
@@ -74,17 +75,19 @@ right_waypoints = (Vector(*transform.rectilinear(x@0))
 
 intersection = network.elements[intersection_uid]
 
-config = {'carla_map': carla_map,
+config = {'description': description,
+          'carla_map': carla_map,
           'map': globalParameters.map,
           'weather': globalParameters.weather,
-          'compatible_simulators': ('carla',),
           'timestep': globalParameters.timestep,
-          'steps': int(duration_seconds/globalParameters.timestep),          
+          'steps': globalParameters.steps,
+          'compatible_simulators': ('carla',),
           'intersection': intersection_uid,
           'traffic_rules': traffic_rules,
           'ego_blueprint': ego_blueprint,
           'ego_route': ego_route,
-          'ego_init_progress_ratio': ego_init_progress_ratio}
+          'ego_init_progress_ratio': ego_init_progress_ratio
+          }
 
 scenario SeedScenario():
   setup:

@@ -8,7 +8,7 @@ param map = f'/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/{carla_map}.xodr
 model scenic.simulators.carla.model
 param weather = 'CloudySunset'
 param timestep = 0.1
-duration_seconds = 20
+param steps = 200
 intersection_uid = 'intersection396'
 traffic_rules = '4way-uncontrolled.lp'
 arrival_distance = 4
@@ -25,21 +25,22 @@ from scenariogen.core.utils import route_from_turns
 from scenariogen.core.geometry import CurvilinearTransform
 from scenariogen.core.utils import extend_lane_backward
 import random
-from scenariogen.simulators.carla.behaviors import AutopilotFollowWaypoints
+from scenariogen.simulators.carla.behaviors import AutopilotFollowWaypoints, AutopilotReachDestination
 
 with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f:
   blueprint2dims = jsonpickle.decode(f.read())
 
 intersection = network.elements[intersection_uid]
 
-config = {'carla_map': carla_map,
+config = {'description': description,
+          'carla_map': carla_map,
           'map': globalParameters.map,
           'weather': globalParameters.weather,
-          'compatible_simulators': ('carla',),
-          'traffic_rules': traffic_rules,
           'timestep': globalParameters.timestep,
-          'steps': int(duration_seconds/globalParameters.timestep),
+          'steps': globalParameters.steps,
+          'compatible_simulators': ('carla',),
           'intersection': intersection_uid,
+          'traffic_rules': traffic_rules,
           }
 
 scenario SeedScenario():
@@ -71,7 +72,7 @@ scenario SeedScenario():
       with name 'ego',
       with physics True,
       with allowCollisions False,
-      with behavior AutopilotFollowWaypoints(waypoints=waypoints,
+      with behavior AutopilotReachDestination(route=route,
                                         aggressiveness='normal',
                                         use_rss=False),
       with blueprint blueprint,
@@ -81,10 +82,9 @@ scenario SeedScenario():
       with route route,
       with signal signal
     
+    config['ego_blueprint'] = blueprint
     config['ego_route'] = route
     config['ego_init_progress_ratio'] = x0 / transform.axis.length
-    config['ego_blueprint'] = blueprint
-    config['ego_signal'] = signal
 
     init_progress_ratio = Range(0, .9)
     for i in range(DiscreteRange(1, max_nonegos)):
@@ -109,7 +109,7 @@ scenario SeedScenario():
         with name f'{route[0]}_{(x0,y0,h0)}_{maneuver.type.name}',
         with physics True,
         with allowCollisions False,
-        with behavior AutopilotFollowWaypoints(waypoints=waypoints,
+        with behavior AutopilotReachDestination(route=route,
                                           aggressiveness=Uniform('cautious', 'normal'),
                                           use_rss=False),
         with blueprint blueprint,

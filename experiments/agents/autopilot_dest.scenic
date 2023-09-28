@@ -17,7 +17,7 @@ scenario EgoScenario(config):
                             **config}
     ego_lanes = [network.elements[l] for l in config_with_defaults['ego_route']]
     ego_centerline = PolylineRegion.unionAll([l.centerline for l in ego_lanes])
-    ego_init_pos = ego_centerline.pointAlongBy(config_with_defaults['ego_init_progress_ratio']*ego_lanes[0].centerline.length)
+    ego_init_pos = ego_centerline.pointAlongBy(config_with_defaults['ego_init_progress_ratio']*ego_centerline.length)
     ego_blueprint = config_with_defaults['ego_blueprint']
     ego = new Car at ego_init_pos,
       with name 'ego',

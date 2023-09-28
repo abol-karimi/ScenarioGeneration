@@ -1,5 +1,7 @@
-import jsonpickle
 import scenic
+import scenic.core.errors as _errors
+_errors.showInternalBacktrace = True
+del _errors
 
 class Scenario:
   # Choose a blueprint of an appropriate size for each non-ego

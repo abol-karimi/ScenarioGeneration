@@ -20,7 +20,7 @@ with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f
 
 behavior AnimateBehavior(traj_sample):
 	for pose in traj_sample:
-		take SetPositionAction(pose[0]@pose[1]), SetHeadingAction(pose[2])
+		take SetPoseAction(pose[0]@pose[1], pose[2])
 
 scenario NonegosScenario(config):
   setup:

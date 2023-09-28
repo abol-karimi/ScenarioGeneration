@@ -84,6 +84,8 @@ except NonegoNonegoCollisionError as err:
     print(f'Collision between nonegos {err.nonego} and {err.other}.')
 except EgoCollisionError as err:
     print(f'Ego collided with {err.other}.')
+except Exception as e:
+    print(e)
 else:
     coverage_space = sim_result.records['coverage_space']
     coverage = sim_result.records['coverage']
