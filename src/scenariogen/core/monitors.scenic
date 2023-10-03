@@ -12,3 +12,10 @@ monitor CheckCollisionsMonitor(cars1, cars2):
       if (not c is d) and c.intersects(d):
         raise NonegoNonegoCollisionError(c, d)
     wait
+
+monitor RequireOnRoadMonitor():
+  cars = simulation().agents
+  while True:
+    for car in cars:
+      require car.position in road
+    wait

@@ -7,6 +7,7 @@ from pathlib import Path
 
 # Scenic modules
 import scenic
+scenic.setDebuggingOptions(verbosity=1, fullBacktrace=True)
 from scenic.core.simulators import SimulationCreationError
 from scenic.core.dynamics import GuardViolation
 
@@ -19,7 +20,7 @@ from scenariogen.core.errors import NonegoNonegoCollisionError
 parser = argparse.ArgumentParser(description='Make a seed from a scenic scenario.')
 parser.add_argument('scenario_path', 
                     help='Path of the Scenic file specifying the scenario')
-parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='newtonian',
+parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='carla',
                     help='The simulator')
 parser.add_argument('--render_spectator', action='store_true',
                     help='render a spectator above the intersection')
@@ -60,25 +61,26 @@ try:
                     maxIterations=1,
                     raiseGuardViolations=True
                     )
+    if sim_result is None:
+        raise RuntimeError('Simulation rejected.')
 except NonegoNonegoCollisionError as err:
     print(f'Collision between nonegos {err.nonego} and {err.other}, discarding the simulation.')
     exit()
 except SimulationCreationError:
     print('Failed to create scenario.')
     exit()
-except GuardViolation:
-    print('Guard violated in simulation.')
-    exit()
-
-# Save the seed
-scenario_path = Path(args.scenario_path)
-seed = seed_from_sim(sim_result,
-                     scenic_scenario.params['timestep'],
-                     degree=args.spline_degree,
-                     knots_size=args.spline_knots_size)
-if args.out_path:
-    with open(args.out_path, 'w') as f:
-        f.write(jsonpickle.encode(seed, indent=1))
+except Exception as e:
+    print(f'Unhandled exception of type {type(e)}: {e}')
 else:
-    with open(scenario_path.parents[1]/'seeds_manual'/f'{scenario_path.stem}.json', 'w') as f:
-        f.write(jsonpickle.encode(seed, indent=1))
+    # Save the seed
+    scenario_path = Path(args.scenario_path)
+    seed = seed_from_sim(sim_result,
+                        scenic_scenario.params['timestep'],
+                        degree=args.spline_degree,
+                        knots_size=args.spline_knots_size)
+    if args.out_path:
+        with open(args.out_path, 'w') as f:
+            f.write(jsonpickle.encode(seed, indent=1))
+    else:
+        with open(scenario_path.parents[1]/'seeds_manual'/f'{scenario_path.stem}.json', 'w') as f:
+            f.write(jsonpickle.encode(seed, indent=1))

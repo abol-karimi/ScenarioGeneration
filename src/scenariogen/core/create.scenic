@@ -27,6 +27,7 @@ elif simulator_name == 'newtonian':
     param render = False
 
 from scenariogen.core.geometry import CurvilinearTransform
+from scenariogen.core.monitors import RequireOnRoadMonitor
 
 names = []
 blueprints = []
@@ -58,6 +59,7 @@ scenario Main():
     p = intersection.polygon.centroid
     ego = new Debris at p.x@p.y
   
+    require monitor RequireOnRoadMonitor()
     require monitor RecordSeedInfoMonitor()
     if simulator_name == 'carla':
       require monitor RaiseEgoCollisionMonitor(seed_config)
