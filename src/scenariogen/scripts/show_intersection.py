@@ -2,7 +2,7 @@
 import argparse
 from scenic.domains.driving.roads import Network
 import carla
-from scenariogen.simulators.carla.visualization import draw_intersection, set_camera, draw_lane
+from scenariogen.simulators.carla.visualization import draw_arrival, set_camera, draw_lane
 
 parser = argparse.ArgumentParser(
     description='Show a bird-eye view of the intersection.')
@@ -12,6 +12,10 @@ parser.add_argument('--no_boundaries', action='store_true',
                     help='Draw lane boundaries')
 parser.add_argument('--no_labels', action='store_true',
                     help='Draw lane boundaries')
+parser.add_argument('--arrival', action='store_true',
+                    help='Draw the arrival box for arrival to the intersection')
+parser.add_argument('--arrival_dist', type=float, default=4,
+                    help='Arrival distance to the intersection')
 drawings = parser.add_mutually_exclusive_group()
 drawings.add_argument('--outside', action='store_true',
                     help='Draw the incoming and outgoing lanes')
@@ -45,6 +49,9 @@ settings.synchronous_mode = False
 world.apply_settings(settings)
 
 intersection = network.elements[args.intersection_uid]
+
+if args.arrival:
+    draw_arrival(world, intersection, args.arrival_dist)
 
 lanes_to_draw = []
 boundaries = not args.no_boundaries

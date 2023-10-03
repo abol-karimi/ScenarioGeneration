@@ -21,14 +21,12 @@ parser.add_argument('--render_ego', action='store_true',
                     help='render ego viewpoint (only in the Carla simulator)')
 parser.add_argument('--openLoop', action='store_true',
                     help='simulate a VUT')
-parser.add_argument('--ego_module', default='experiments.agents.followRouteAvoidCollisions',
+parser.add_argument('--ego_module', default='experiments.agents.autopilot_dest',
                     help='the scenic file containing the ego scenario')
 parser.add_argument('--coverage_module', default='scenariogen.core.coverages.traffic_rules_predicate_name',
-                    help='the scenic file containing ')
+                    help='the scenic file containing coverage monitor')
 parser.add_argument('--simulator', choices=['newtonian', 'carla'],
                     help='The simulator')
-parser.add_argument('--replay_raw', action='store_true',
-                    help='Replay the original simulation if available, instead of the spline approximation')
 duration = parser.add_mutually_exclusive_group()
 duration.add_argument('--steps', type=int, 
                       help='max number of simulation steps')
@@ -62,8 +60,6 @@ if args.weather:
 config = {**seed.config}
 if args.simulator:
     config['simulator'] = args.simulator
-else:
-    config['simulator'] = seed.config['compatible_simulators'][0]
 config['steps'] = steps
 config['timestep'] = timestep
 config['weather'] = weather
@@ -75,7 +71,6 @@ config['ego_module'] = args.ego_module
 config['coverage_module'] = args.coverage_module
 config['render_spectator'] = args.render_spectator,
 config['render_ego'] = args.render_ego,
-config['replay_raw'] = args.replay_raw
 config['seed_path'] = args.seed_path
 
 try:
@@ -84,8 +79,6 @@ except NonegoNonegoCollisionError as err:
     print(f'Collision between nonegos {err.nonego} and {err.other}.')
 except EgoCollisionError as err:
     print(f'Ego collided with {err.other}.')
-except Exception as e:
-    print(e)
 else:
     coverage_space = sim_result.records['coverage_space']
     coverage = sim_result.records['coverage']

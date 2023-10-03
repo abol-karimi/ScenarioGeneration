@@ -7,9 +7,7 @@ Generates random seeds using simulation.
 import random
 import jsonpickle
 import scenic
-import scenic.core.errors as _errors
-_errors.showInternalBacktrace = True   # see comment in errors module
-del _errors
+scenic.setDebuggingOptions(verbosity=2, fullBacktrace=True)
 from scenic.core.simulators import SimulationCreationError
 from scenic.core.dynamics import GuardViolation
 
@@ -20,17 +18,18 @@ def run(config):
     random.seed(config['PRNG_seed'])
     seed_id = 0
 
+    scenario = scenic.scenarioFromFile(
+                    'src/scenariogen/core/create.scenic',
+                    mode2D=True,
+                    params={'render': config['render_ego'],
+                            'scenario_path': config['scenario_path'],
+                            'caller_config': config
+                            },
+                    )
+    print('Scenario compiled successfully.')
+
     while seed_id < config['seeds_num']:
         try:
-            scenario = scenic.scenarioFromFile(
-                            'src/scenariogen/core/create.scenic',
-                            mode2D=True,
-                            params={'render': config['render_ego'],
-                                    'scenario_path': config['scenario_path'],
-                                    'caller_config': config
-                                    },
-                            )
-            print('Scenario compiled successfully.')
             scene, iterations = scenario.generate(maxIterations=config['scene_maxIterations'])
             print(f"Initial scene generated in {iterations} iteration{'(s)' if iterations > 1 else ''}.")
             
@@ -39,33 +38,37 @@ def run(config):
                 settings = simulator.world.get_settings()
                 settings.no_rendering_mode = True
                 simulator.world.apply_settings(settings)
+
             sim_result = simulator.simulate(
                                 scene,
-                                maxSteps=int(config['seconds']/scenario.params['timestep']),
+                                maxSteps=scenario.params['steps'],
                                 maxIterations=config['simulate_maxIterations'],
                                 raiseGuardViolations=True
                                 )
-            print('Simulation finished successfully.')
+        except EgoCollisionError as err:
+            print(f'Ego collided with {err.other}, discarding the simulation.')
+        except SimulationCreationError as e:
+            print(f'Failed to create simulation: {e}')
+
+        if sim_result is None:
+            print(f'Simulation rejected!')
+            continue
+
+        print('Simulation finished successfully.')
+        try:           
             seed = seed_from_sim(sim_result,
                                  scenario.params['timestep'],
                                  degree=config['spline_degree'],
                                  knots_size=config['spline_knots_size']
                                 )
-            seed_id += 1
-            print(f'Saving seed {seed_id} ...')
-            with open(f"{config['output_folder']}/{seed_id}.json", 'w') as f:
-                f.write(jsonpickle.encode(seed, indent=1))
-        except EgoCollisionError as err:
-            print(f'Ego collided with {err.other}, discarding the simulation.')
-        except SimulationCreationError as e:
-            print(f'Failed to create simulation: {e}')
-        except GuardViolation as e:
-            print(f'Guard violated in simulation: {e}')
         except SplineApproximationError as e:
             print(e)
-        # except Exception as e:
-        #     print(f'Ignoring exception of type {type(e)}: {e}')
-        #     continue
+            continue
+
+        seed_id += 1
+        print(f'Saving seed {seed_id} ...')
+        with open(f"{config['output_folder']}/{seed_id}.json", 'w') as f:
+            f.write(jsonpickle.encode(seed, indent=1))
 
 
         

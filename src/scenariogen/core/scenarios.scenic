@@ -26,17 +26,7 @@ scenario NonegosScenario(config):
   setup:
     cars = []
     fuzz_input = config['fuzz_input']
-    if config['replay_raw']:
-      fuzz_input_path = Path(config['fuzz_input_path'])
-      with open(fuzz_input_path.parents[1]/'seed_definitions'/f'{fuzz_input_path.stem}_sim_trajectories.pickle', 'rb') as f:
-          sim_tjs = pickle.load(f)
-      tjs = [[pose for pose, time in tj] for tj in sim_tjs]
-    else:
-      tjs = sample_trajectories(network, fuzz_input, int(config['steps'])+1, umax=config['steps']*config['timestep'])
-    assert not fuzz_input.routes is None
-    assert not tjs is None
-    assert not fuzz_input.signals is None
-    assert not fuzz_input.blueprints is None
+    tjs = sample_trajectories(network, fuzz_input, int(config['steps'])+1, umax=config['steps']*config['timestep'])
     for i, (route, tj, signal, blueprint) in enumerate(zip(fuzz_input.routes,
                                                            tjs, 
                                                            fuzz_input.signals, 

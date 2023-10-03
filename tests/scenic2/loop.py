@@ -1,9 +1,6 @@
 #!/usr/bin/env python3.8
 import scenic
-import scenic.core.errors as _errors
-_errors.showInternalBacktrace = True   # see comment in errors module
-del _errors
-
+scenic.setDebuggingOptions(verbosity=2, fullBacktrace=True)
 
 seconds = 20
 timestep = .05

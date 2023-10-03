@@ -51,6 +51,20 @@ def draw_lane(world, lane,
             world.debug.draw_string(loc, lane.uid, life_time=1000)
 
 
+def draw_arrival(world, intersection, arrival_distance, thickness=.1):
+    world_map = world.get_map()
+    for lane in intersection.incomingLanes:
+        l = lane.leftEdge[-1]
+        vl = lane.flowFrom(l, -arrival_distance)
+        r = lane.rightEdge[-1]
+        vr = lane.flowFrom(r, -arrival_distance)
+        waypoint = world_map.get_waypoint(carla.Location(0.5*(vl.x+vr.x), -0.5*(vl.y+vr.y), 0))
+        height = waypoint.transform.location.z + thickness
+        loc_l = carla.Location(vl.x, -vl.y, height)
+        loc_r = carla.Location(vr.x, -vr.y, height)
+        world.debug.draw_line(
+            loc_l, loc_r, thickness=thickness, life_time=1000)
+
 def draw_intersection(world, intersection, 
                       draw_lanes=False,
                       label_lanes=False,

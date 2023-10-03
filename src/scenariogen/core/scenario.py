@@ -1,20 +1,19 @@
 import scenic
-import scenic.core.errors as _errors
-_errors.showInternalBacktrace = True
-del _errors
+scenic.setDebuggingOptions(verbosity=2, fullBacktrace=True)
 
 class Scenario:
   # Choose a blueprint of an appropriate size for each non-ego
   def __init__(self, fuzz_input):
     self.fuzz_input = fuzz_input
   
-  def run(self, config={}):
+  def run(self, _config={}):
     """ Runs the scenario.
     Returns the discrete-time trajectories.
     """
     config = {**self.fuzz_input.config,
-              **config,
+              **_config,
               'fuzz_input': self.fuzz_input,
+              'simulator': _config['simulator'] if 'simulator' in _config else self.fuzz_input.config['compatible_simulators'][0]
               }
   
     simulator2model = {'newtonian': 'scenic.simulators.newtonian.driving_model',
