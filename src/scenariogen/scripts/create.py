@@ -7,7 +7,7 @@ from pathlib import Path
 
 # Scenic modules
 import scenic
-scenic.setDebuggingOptions(verbosity=1, fullBacktrace=True)
+scenic.setDebuggingOptions(verbosity=2, fullBacktrace=True)
 from scenic.core.simulators import SimulationCreationError
 from scenic.core.dynamics import GuardViolation
 
@@ -69,8 +69,6 @@ except NonegoNonegoCollisionError as err:
 except SimulationCreationError:
     print('Failed to create scenario.')
     exit()
-except Exception as e:
-    print(f'Unhandled exception of type {type(e)}: {e}')
 else:
     # Save the seed
     scenario_path = Path(args.scenario_path)

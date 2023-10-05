@@ -56,8 +56,9 @@ intersection = network.elements[seed_config['intersection']]
 # Record seed info
 scenario Main():
   setup:
-    p = intersection.polygon.centroid
-    ego = new Debris at p.x@p.y
+    if caller_config['render_ego']:
+      p = intersection.polygon.centroid
+      ego = new Debris at p.x@p.y
   
     require monitor RequireOnRoadMonitor()
     require monitor RecordSeedInfoMonitor()

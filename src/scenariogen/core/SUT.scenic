@@ -31,8 +31,9 @@ coverage_monitor = coverage_module.CoverageMonitor()
 
 scenario Main():
   setup:
-    p = intersection.polygon.centroid
-    ego = new Debris at p.x@p.y
+    if config['render_ego']:
+      p = intersection.polygon.centroid
+      ego = new Debris at p.x@p.y
 
     if config['simulator'] == 'carla':
       require monitor RaiseEgoCollisionMonitor(config)
