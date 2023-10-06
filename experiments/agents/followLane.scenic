@@ -12,6 +12,5 @@ scenario EgoScenario(config):
       with blueprint ego_blueprint,
       with width blueprint2dims[ego_blueprint]['width'],
       with length blueprint2dims[ego_blueprint]['length'],
-      with signal config['ego_signal'],
       with behavior FollowLaneBehavior(target_speed=6)
     cars = [ego]

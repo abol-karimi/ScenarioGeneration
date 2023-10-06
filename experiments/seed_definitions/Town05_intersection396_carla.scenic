@@ -36,6 +36,7 @@ import numpy as np
 from scenariogen.core.utils import route_from_turns
 from scenariogen.simulators.carla.behaviors import AutopilotReachDestination
 from scenariogen.core.geometry import CurvilinearTransform
+from scenariogen.core.signals import SignalType
 
 #--- Derived constants
 ego_route = route_from_turns(network, ego_init_lane, ego_turns)

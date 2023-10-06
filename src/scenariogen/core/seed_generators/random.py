@@ -7,9 +7,8 @@ Generates random seeds using simulation.
 import random
 import jsonpickle
 import scenic
-scenic.setDebuggingOptions(verbosity=2, fullBacktrace=True)
+scenic.setDebuggingOptions(verbosity=1, fullBacktrace=True)
 from scenic.core.simulators import SimulationCreationError
-from scenic.core.dynamics import GuardViolation
 
 from scenariogen.core.errors import EgoCollisionError, SplineApproximationError
 from scenariogen.core.utils import seed_from_sim
@@ -18,18 +17,18 @@ def run(config):
     random.seed(config['PRNG_seed'])
     seed_id = 0
 
-    scenario = scenic.scenarioFromFile(
-                    'src/scenariogen/core/create.scenic',
-                    mode2D=True,
-                    params={'render': config['render_ego'],
-                            'scenario_path': config['scenario_path'],
-                            'caller_config': config
-                            },
-                    )
-    print('Scenario compiled successfully.')
-
     while seed_id < config['seeds_num']:
         try:
+            scenario = scenic.scenarioFromFile(
+                            'src/scenariogen/core/create.scenic',
+                            mode2D=True,
+                            params={'render': config['render_ego'],
+                                    'scenario_path': config['scenario_path'],
+                                    'caller_config': config
+                                    },
+                            )
+            print('Scenario compiled successfully.')
+
             scene, iterations = scenario.generate(maxIterations=config['scene_maxIterations'])
             print(f"Initial scene generated in {iterations} iteration{'(s)' if iterations > 1 else ''}.")
             
@@ -47,12 +46,14 @@ def run(config):
                                 )
         except EgoCollisionError as err:
             print(f'Ego collided with {err.other}, discarding the simulation.')
+            continue
         except SimulationCreationError as e:
             print(f'Failed to create simulation: {e}')
-
-        if sim_result is None:
-            print(f'Simulation rejected!')
             continue
+        else:
+            if sim_result is None:
+                print(f'Simulation rejected!')
+                continue
 
         print('Simulation finished successfully.')
         try:           

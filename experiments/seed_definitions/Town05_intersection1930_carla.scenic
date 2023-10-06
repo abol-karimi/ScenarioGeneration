@@ -70,7 +70,6 @@ scenario SeedScenario():
       with route major_route,
       with physics True,
       with allowCollisions False,
-      with signal major_signal,
       with behavior FourWayStopBehavior(major_route),
       with length blueprints['vehicle.tesla.model3']['length'],
       with width blueprints['vehicle.tesla.model3']['width']
@@ -80,7 +79,6 @@ scenario SeedScenario():
       with route minor_route,
       with physics True,
       with allowCollisions False,
-      with signal minor_signal,
       with behavior FourWayStopBehavior(minor_route),
       with length blueprints['vehicle.ford.crown']['length'],
       with width blueprints['vehicle.ford.crown']['width']

@@ -14,15 +14,13 @@ scenario Nonego(name, lane):
   setup:
     car = Car following roadDirection from lane.centerline[-1] for -5,
       with name name,
-      with behavior FollowLaneBehavior(target_speed=4),
-      with signal SignalType.OFF
+      with behavior FollowLaneBehavior(target_speed=4)
     cars.append(car)
 
 scenario Ego():
   ego = Car following roadDirection from intersection.incomingLanes[2].centerline[-1] for -20,
     with name 'ego',
     with behavior FollowLaneBehavior(target_speed=4),
-    with signal SignalType.OFF,
     with physics True
 
 scenario Main():

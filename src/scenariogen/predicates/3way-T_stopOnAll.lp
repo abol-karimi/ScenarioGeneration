@@ -30,7 +30,10 @@ enteredAtTime(V, T):-
   enteredForkAtTime(V, _, T).
 
 signaledAtFork(V, S, F):-
-  signaledAtForkAtTime(V, S, F, _).
+  signaledAtTime(V, S, Ts),
+  arrivedAtForkAtTime(V, F, Ta),
+  1 = @lessThan(Ts, Ta),
+  #count {0:signaledAtTime(V, S, T): 1 = @lessThan(Ts, T), 1 = @lessThan(T, Ta)} = 0.
 
 signaledLeft(V):-
   signaledAtFork(V, left, _).

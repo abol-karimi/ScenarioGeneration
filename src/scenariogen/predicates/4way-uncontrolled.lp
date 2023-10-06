@@ -20,14 +20,45 @@ forksOnDifferentHighways(F1, F2):-
 %---------------------------------------------
 %---Auxiliary predicates for traffic events---
 %---------------------------------------------
+eventTime(T):-
+  arrivedAtForkAtTime(_, _, T).
+
+eventTime(T):-
+  signaledAtTime(_, _, T).
+
+eventTime(T):-
+  stoppedAtForkAtTime(_, _, T).
+
+eventTime(T):-
+  enteredForkAtTime(_, _, T).
+
+eventTime(T):-
+  enteredLaneAtTime(_, _, T).
+
+eventTime(T):-
+  leftLaneAtTime(_, _, T).
+
+eventTime(T):-
+  exitedFromAtTime(_, _, T).
+
 arrivedAtFork(Vehicle, Fork):-
   arrivedAtForkAtTime(Vehicle, Fork, _).
 
 arrivedAtTime(V, T):-
   arrivedAtForkAtTime(V, _, T).
 
+changedSignalBetween(V, T1, T2):-
+  signaledAtTime(V, _, Tm),
+  eventTime(T1),
+  eventTime(T2),
+  1 = @lessThan(T1, Tm),
+  1 = @lessThan(Tm, T2).
+
 signaledAtFork(V, S, F):-
-  signaledAtForkAtTime(V, S, F, _).
+  signaledAtTime(V, S, Ts),
+  arrivedAtForkAtTime(V, F, Ta),
+  1 = @lessThan(Ts, Ta),
+  not changedSignalBetween(V, Ts, Ta).
 
 signaledLeft(Vehicle):-
   signaledAtFork(Vehicle, left, _).

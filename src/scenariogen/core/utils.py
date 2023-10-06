@@ -134,9 +134,10 @@ def seed_from_sim(sim_result, timestep, degree=3, knots_size=20):
         fig, axs = plt.subplots(2)
         fig.suptitle(f'Car {name}')
         axs[0].set_title('xy-plain')
-        axs[0].plot(xs, ys, 'go')
+        axs[0].set_aspect('equal', adjustable='box')
+        axs[0].plot(tuple(-y for y in ys), xs, 'go')
         sample = splev(ds_increasing, (t, c, k))
-        axs[0].plot(sample[0], sample[1], 'r-')
+        axs[0].plot(tuple(-s for s in sample[1]), sample[0], 'r-')
 
         ts = [p[2] for p in sim_traj]
 
@@ -168,30 +169,22 @@ def seed_from_sim(sim_result, timestep, degree=3, knots_size=20):
         footprints.append(footprint)
         timings.append(timing)
 
-    sim_signals = [[] for k in range(cars_num)]
+    signals_states = [[] for k in range(cars_num)]
     for i, signals in sim_result.records['signals']:
         for j, s in enumerate(signals):
-            sim_signals[j].append((i*timestep, s))
-    signals = []
-    for sim_signal in sim_signals:
-        events = (sim_signal[0],) + tuple((tii,sii) for (ti,si),(tii,sii) in pairwise(sim_signal) if sii != si)
-        t_events = (e[0] for e in events)
-        s_events = (e[1] for e in events)
-
-        spline = BSpline.Curve(normalize_kv = False)
-        spline.degree = timing.degree
-        spline.ctrlpts = timing.ctrlpts
-        spline.knotvector = timing.knotvector
-        d_events = tuple(t_d[1] for t_d in spline.evaluate_list(t_events))
-
-        signals.append(tuple(zip(d_events, s_events)))
+            signals_states[j].append((i*timestep, s))
+    signals_events = []
+    for signal_states in signals_states:
+        signal_events = (signal_states[0],) if signal_states[0][1] == signal_states[1][1] else ()
+        signal_events = signal_events + tuple((tii,sii) for (ti,si),(tii,sii) in pairwise(signal_states) if sii != si)
+        signals_events.append(signal_events)
     
     return FuzzInput(config=sim_result.records['config'],
                     blueprints=sim_result.records['blueprints'],
                     routes=sim_result.records['routes'],
                     footprints=tuple(footprints),
                     timings=tuple(timings),
-                    signals=tuple(signals))
+                    signals=tuple(signals_events))
 
 def sample_trajectories(network, seed, sample_size):
     trajectories = []

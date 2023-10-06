@@ -89,7 +89,6 @@ scenario SeedScenario():
       with route major_route,
       with physics True,
       with allowCollisions False,
-      with signal major_signal,
       with behavior FourWayStopBehavior(major_lanes, target_speed=6, arrival_distance=5),
       with length blueprint2dims[major_blueprint]['length'],
       with width blueprint2dims[major_blueprint]['width']
@@ -100,7 +99,6 @@ scenario SeedScenario():
       with route minor_route,
       with physics True,
       with allowCollisions False,
-      with signal minor_signal,
       with behavior FourWayStopBehavior(minor_lanes, target_speed=6, arrival_distance=5),
       with length blueprint2dims[minor_blueprint]['length'],
       with width blueprint2dims[minor_blueprint]['width']

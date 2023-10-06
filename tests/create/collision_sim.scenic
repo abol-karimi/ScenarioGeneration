@@ -52,8 +52,7 @@ for p, d in zip(spawn_points, distances):
     with behavior FollowTrajectoryBehavior(3, route_left_lanes),
     with length blueprints[bp]['length'],
     with width blueprints[bp]['width'],
-    with route route_left,
-    with signal SignalType.OFF
+    with route route_left
   cars.append(car)
 
 distances = [0, 9, 18, 27]
@@ -68,8 +67,7 @@ for p, d in zip(spawn_points, distances):
     with behavior FollowTrajectoryBehavior(4, route_right_lanes),
     with length blueprints[bp]['length'],
     with width blueprints[bp]['width'],
-    with route route_right,
-    with signal SignalType.OFF
+    with route route_right
   cars.append(car)
 
 ego = cars[0]

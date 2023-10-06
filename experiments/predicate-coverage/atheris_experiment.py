@@ -4,7 +4,6 @@
 from scenariogen.core.mutators import StructureAwareMutator
 from scenariogen.core.crossovers import StructureAwareCrossOver
 from scenariogen.core.fuzzers.atheris import AtherisFuzzer
-from scenariogen.core.coverages.predicate_coverage import from_corpus
 
 SUT_config = {
   'timestep': 0.05,
@@ -15,7 +14,6 @@ SUT_config = {
   'stop_speed_threshold': 0.5,
   'closedLoop': True,
   'ego_module': 'experiments.agents.followRouteAvoidCollisions',
-  'replay_raw': False,
   'simulator': 'newtonian',
   'coverage_module': 'scenariogen.core.coverages.traffic_rules_predicate_name',
 }
@@ -40,11 +38,6 @@ atheris_fuzzer = AtherisFuzzer(fuzzer_config)
 atheris_fuzzer.run()
 atheris_fuzzer.save_state()
 
-# Coverage results
-# predicate_coverage_corpus = f'experiments/predicate-coverage/{experiment_name}/predicate-coverage'
-# coverage_space, coverage = from_corpus(SUT_config, predicate_coverage_corpus)
-# print('Coverage ratio:', 1 if len(coverage_space) == 0 else len(coverage)/len(coverage_space))
-# print('Coverage gap:', coverage_space-coverage)
 
 
 

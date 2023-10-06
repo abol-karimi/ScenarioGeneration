@@ -8,15 +8,14 @@ from scenariogen.core.seed_generators import random as random_seed_generator
 
 config = {'scenario_path': 'experiments/seed_definitions/Town05_intersection396_random_carla',
           'output_folder': 'experiments/seeds_random',
-          'seconds': 20,
           'render_ego': False,
           'render_spectator': True,
-          'PRNG_seed': 0,
+          'PRNG_seed': 1,
           'spline_degree': 3,
           'spline_knots_size': 50,
           'scene_maxIterations': 50,
           'simulate_maxIterations': 1,
-          'seeds_num': 10,
+          'seeds_num': 1,
           }
 
 random_seed_generator.run(config)

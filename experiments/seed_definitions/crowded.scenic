@@ -74,5 +74,4 @@ scenario SeedScenario():
                                             use_rss=False),
           with length car_blueprints[b]['length'],
           with width car_blueprints[b]['width'],
-          with route tuple(r),
-          with signal SignalType.from_maneuver_type(m.type)
+          with route tuple(r)

@@ -53,8 +53,7 @@ scenario SeedScenario():
       with length blueprint2dims[ego_blueprint]['length'],
       with width blueprint2dims[ego_blueprint]['width'],
       with color Color(0, 1, 0),
-      with route ego_route,
-      with signal ego_signal
+      with route ego_route
     
     config['ego_route'] = ego_route
     config['ego_init_progress_ratio'] = ego_init_progress_ratio
@@ -82,5 +81,4 @@ scenario SeedScenario():
         with length blueprint2dims[blueprint]['length'],
         with width blueprint2dims[blueprint]['width'],
         with color Color(0, 0, 1),
-        with route route,
-        with signal SignalType.from_maneuver_type(maneuver.type)
+        with route route

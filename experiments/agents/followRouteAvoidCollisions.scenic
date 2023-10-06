@@ -22,7 +22,6 @@ scenario EgoScenario(config):
       with blueprint ego_blueprint,
       with length blueprint2dims[ego_blueprint]['length'],
       with width blueprint2dims[ego_blueprint]['width'],
-      with signal SignalType.OFF, # TODO SignalType.from_route
       with behavior FollowRouteAvoidCollisionsBehavior(ego_lanes, target_speed=6)
     cars = [ego]
 

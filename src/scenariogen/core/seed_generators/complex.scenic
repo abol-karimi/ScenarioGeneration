@@ -43,8 +43,7 @@ scenario ActorScenario():
       with blueprint config['blueprint'],
       with length config['length'],
       with width config['width'],
-      with route route,
-      with signal config['signal']
+      with route route
 
 scenario Main():
   compose:

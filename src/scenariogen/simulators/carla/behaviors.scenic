@@ -6,6 +6,7 @@ import carla
 from agents.navigation.behavior_agent import BehaviorAgent
 from scenic.simulators.carla.utils.utils import scenicToCarlaLocation
 from scenariogen.simulators.carla.rss_sensor import RssSensor
+from scenariogen.simulators.carla.utils import signal_to_vehicleLightState
 
 behavior AutopilotReachDestination(route, aggressiveness, use_rss):
 	waypoints_separation = 50
