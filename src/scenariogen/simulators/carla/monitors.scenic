@@ -16,7 +16,7 @@ monitor ShowIntersectionMonitor(intersection_uid, show_lanes=False, label_lanes=
                                   draw_lanes=show_lanes,
                                   label_lanes=label_lanes, 
                                   draw_carla_axes=show_carla_axes)
-  visualization.set_camera(carla_world, intersection, height=90)
+  visualization.set_camera(carla_world, intersection, height=100)
   wait
 
 monitor LabelCarsMonitor():
@@ -41,6 +41,8 @@ monitor RaiseEgoCollisionMonitor(config):
     sensor.listen(lambda e: on_collision(e, event_queue))
     while (simulation().currentTime < config['steps']) and event_queue.empty():
       wait
+    if sensor.is_listening():
+      sensor.stop()
     sensor.destroy()
     if not event_queue.empty():
       raise EgoCollisionError(event_queue.get().other_actor)

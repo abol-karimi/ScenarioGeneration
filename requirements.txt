@@ -5,3 +5,4 @@ atheris
 z3-solver==4.8.10.0
 cachetools
 more-itertools
+sympy

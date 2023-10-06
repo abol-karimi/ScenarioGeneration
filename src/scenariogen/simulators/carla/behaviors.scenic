@@ -6,12 +6,9 @@ import carla
 from agents.navigation.behavior_agent import BehaviorAgent
 from scenic.simulators.carla.utils.utils import scenicToCarlaLocation
 from scenariogen.simulators.carla.rss_sensor import RssSensor
-from scenariogen.simulators.carla.utils import signal_to_vehicleLightState
-from scenariogen.core.signals import SignalType
 
 behavior AutopilotReachDestination(route, aggressiveness, use_rss):
 	waypoints_separation = 50
-	take SetVehicleLightStateAction(signal_to_vehicleLightState(self.signal))
 	take SetAutopilotAction(True)
 	agent = BehaviorAgent(self.carlaActor, behavior=aggressiveness)
 	carla_world = simulation().world
@@ -38,9 +35,10 @@ behavior AutopilotReachDestination(route, aggressiveness, use_rss):
 						control, rss_proper_response, rss_sensor.ego_dynamics_on_route, vehicle_physics)
 			self.carlaActor.apply_control(control)
 			wait
+	take SetAutopilotAction(False), SetThrottleAction(0), SetBrakeAction(1)
+	wait
 
 behavior AutopilotFollowWaypoints(waypoints, aggressiveness, use_rss):
-	take SetVehicleLightStateAction(signal_to_vehicleLightState(self.signal))
 	take SetAutopilotAction(True)
 	agent = BehaviorAgent(self.carlaActor, behavior=aggressiveness)
 	carla_world = simulation().world

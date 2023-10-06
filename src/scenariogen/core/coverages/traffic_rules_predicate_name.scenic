@@ -11,6 +11,7 @@ from scenic.domains.driving.roads import Network
 from scenariogen.core.utils import geometry_atoms
 from scenariogen.core.events import *
 from scenariogen.predicates.predicates import TemporalOrder
+from scenariogen.simulators.carla.utils import vehicleLightState_to_signal # TODO bring signal to driving domain
 
 with open(f"src/scenariogen/predicates/{config['traffic_rules']}", 'r') as f:
   encoding = f.read()
@@ -30,7 +31,7 @@ def to_coverage(events):
                           config['intersection'])
   atoms += [str(e) for e in events]
   instance = '.\n'.join(atoms)+'.\n'
-
+ 
   ctl = clingo.Control()
   ctl.add("base", [], instance+encoding)
   ctl.ground([("base", [])], context=TemporalOrder())
@@ -52,15 +53,19 @@ monitor CoverageMonitor():
   exited = {car: False for car in cars}
   lanes = {car: set() for car in cars}
   inIntersection = {car: False for car in cars}
+  lightState = {car: None for car in cars}
   for step in range(config['steps']):
     time_seconds = step * config['timestep']
     for car in cars:
+      light_state = car.carlaActor.get_light_state()
+      if lightState[car] != light_state:
+        lightState[car] = light_state
+        events.append(SignaledEvent(car.name, vehicleLightState_to_signal(light_state).name.lower(), time_seconds))
       inIntersection[car] = intersection.intersects(PolygonalRegion(polygon=car._boundingPolygon))
       
       if (not arrived[car]) and (distance from (front of car) to intersection) < config['arrival_distance']:
         arrived[car] = True
         events.append(ArrivedAtIntersectionEvent(car.name, car.lane.uid, time_seconds))
-        events.append(SignaledAtForkEvent(car.name, car.lane.uid, car.signal.name.lower(), time_seconds))
       if inIntersection[car] and not entered[car]:
         entered[car] = True
         events.append(EnteredIntersectionEvent(car.name, car.lane.uid, time_seconds))

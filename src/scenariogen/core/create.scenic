@@ -28,6 +28,7 @@ elif simulator_name == 'newtonian':
 
 from scenariogen.core.geometry import CurvilinearTransform
 from scenariogen.core.monitors import RequireOnRoadMonitor
+from scenariogen.simulators.carla.utils import vehicleLightState_to_signal # TODO add vehicle signal to Scenic
 
 names = []
 blueprints = []
@@ -45,10 +46,10 @@ monitor RecordSeedInfoMonitor():
                                             for p in network.elements[uid].centerline.lineString.coords
                                           ])
                     for route in routes)
-  signals.extend(nonego.signal for nonego in nonegos)
   while True:
     time = simulation().currentTime
     footprints.append((time, tuple(nonego.position for nonego in nonegos)))
+    signals.append((time, tuple(vehicleLightState_to_signal(nonego.carlaActor.get_light_state()) for nonego in nonegos))) # TODO Add signals to the driving domain
     wait
 
 intersection = network.elements[seed_config['intersection']]

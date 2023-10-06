@@ -16,18 +16,16 @@ class ArrivedAtIntersectionEvent:
         return f'arrivedAtForkAtTime({self.vehicle}, {self.incoming_lane}, {time_to_term(self.seconds)})'
 
 
-class SignaledAtForkEvent:
-    """Using a turn signal when arriving at an intersection."""
+class SignaledEvent:
+    """A vehicle signaling when turning, stopping, etc."""
 
-    def __init__(self, vehicle, signal, incoming_lane, seconds):
+    def __init__(self, vehicle, signal, seconds):
         self.vehicle = vehicle
         self.signal = signal
-        self.incoming_lane = incoming_lane
         self.seconds = seconds
 
     def __str__(self):
-        time = self.seconds
-        return f'signaledAtForkAtTime({self.vehicle}, {self.signal}, {self.incoming_lane}, {time_to_term(self.seconds)})'
+        return f'signaledAtTime({self.vehicle}, {self.signal}, {time_to_term(self.seconds)})'
 
 
 class StoppedAtForkEvent:

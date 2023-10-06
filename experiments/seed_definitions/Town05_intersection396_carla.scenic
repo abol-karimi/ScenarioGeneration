@@ -17,27 +17,24 @@ traffic_rules = '4way-uncontrolled.lp'
 arrival_distance = 4
 
 from scenic.domains.driving.roads import ManeuverType
-from scenariogen.core.signals import SignalType
 ego_blueprint = 'vehicle.tesla.model3'
 ego_init_lane = 'road9_lane2'
 ego_turns = (ManeuverType.LEFT_TURN,)
 ego_init_progress_ratio = .1
 
 left_init_lane = 'road44_lane1'
-left_turns = (ManeuverType.STRAIGHT,)
+left_turns = (ManeuverType.LEFT_TURN,)
 left_init_progress_ratio = .2
-left_signal = SignalType.OFF
 
 right_init_lane = 'road8_lane1'
 right_turns = (ManeuverType.STRAIGHT,)
 right_init_progress_ratio = .1
-right_signal = SignalType.OFF
 
 #--- Python imports
 import jsonpickle
 import numpy as np
 from scenariogen.core.utils import route_from_turns
-from scenariogen.simulators.carla.behaviors import AutopilotFollowWaypoints
+from scenariogen.simulators.carla.behaviors import AutopilotReachDestination
 from scenariogen.core.geometry import CurvilinearTransform
 
 #--- Derived constants
@@ -99,8 +96,7 @@ scenario SeedScenario():
       with route left_route,
       with physics True,
       with allowCollisions False,
-      with signal left_signal,
-      with behavior AutopilotFollowWaypoints(waypoints=left_waypoints,
+      with behavior AutopilotReachDestination(route=left_route,
                                             aggressiveness='normal',
                                             use_rss=False),
       with blueprint 'vehicle.tesla.model3',
@@ -112,8 +108,7 @@ scenario SeedScenario():
       with route right_route,
       with physics True,
       with allowCollisions False,
-      with signal right_signal,
-      with behavior AutopilotFollowWaypoints(waypoints=right_waypoints,
+      with behavior AutopilotReachDestination(route=right_route,
                                         aggressiveness='normal',
                                         use_rss=False),
       with blueprint 'vehicle.ford.crown',

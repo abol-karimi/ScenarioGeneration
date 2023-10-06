@@ -1,16 +1,18 @@
-from itertools import product 
+from itertools import product, chain
 from more_itertools import pairwise
 from cachetools import cached
 from cachetools.keys import hashkey
 import geomdl
 from geomdl import BSpline
 import numpy as np
+import sympy
 from scipy.interpolate import splprep, splev
 import matplotlib.pyplot as plt
 
 from scenic.core.object_types import OrientedPoint
 from scenic.core.vectors import Vector
 from scenic.core.geometry import headingOfSegment
+from scenic.domains.driving.roads import ManeuverType
 
 # This project
 from scenariogen.core.fuzz_input import FuzzInput, Spline
@@ -129,12 +131,12 @@ def seed_from_sim(sim_result, timestep, degree=3, knots_size=20):
                                            for x,y in zip(c[0], c[1])),
                            knotvector=tuple(float(knot) for knot in t)
                           )
-        # fig, axs = plt.subplots(2)
-        # fig.suptitle(f'Car {name}')
-        # axs[0].set_title('xy-plain')
-        # axs[0].plot(xs, ys, 'go')
-        # sample = splev(ds_increasing, (t, c, k))
-        # axs[0].plot(sample[0], sample[1], 'r-')
+        fig, axs = plt.subplots(2)
+        fig.suptitle(f'Car {name}')
+        axs[0].set_title('xy-plain')
+        axs[0].plot(xs, ys, 'go')
+        sample = splev(ds_increasing, (t, c, k))
+        axs[0].plot(sample[0], sample[1], 'r-')
 
         ts = [p[2] for p in sim_traj]
 
@@ -157,27 +159,43 @@ def seed_from_sim(sim_result, timestep, degree=3, knots_size=20):
                                         for x,y in zip(c[0], c[1])),
                         knotvector=tuple(float(knot) for knot in t)
                        )
-        # axs[1].set_title('td-plain')
-        # axs[1].plot(ts, ds, 'go')
-        # sample = splev(ts, (t, c, k))
-        # axs[1].plot(sample[0], sample[1], 'r-')
-        # plt.show()
+        axs[1].set_title('td-plain')
+        axs[1].plot(ts, ds, 'go')
+        sample = splev(ts, (t, c, k))
+        axs[1].plot(sample[0], sample[1], 'r-')
+        plt.show()
 
         footprints.append(footprint)
         timings.append(timing)
+
+    sim_signals = [[] for k in range(cars_num)]
+    for i, signals in sim_result.records['signals']:
+        for j, s in enumerate(signals):
+            sim_signals[j].append((i*timestep, s))
+    signals = []
+    for sim_signal in sim_signals:
+        events = (sim_signal[0],) + tuple((tii,sii) for (ti,si),(tii,sii) in pairwise(sim_signal) if sii != si)
+        t_events = (e[0] for e in events)
+        s_events = (e[1] for e in events)
+
+        spline = BSpline.Curve(normalize_kv = False)
+        spline.degree = timing.degree
+        spline.ctrlpts = timing.ctrlpts
+        spline.knotvector = timing.knotvector
+        d_events = tuple(t_d[1] for t_d in spline.evaluate_list(t_events))
+
+        signals.append(tuple(zip(d_events, s_events)))
     
     return FuzzInput(config=sim_result.records['config'],
                     blueprints=sim_result.records['blueprints'],
                     routes=sim_result.records['routes'],
                     footprints=tuple(footprints),
                     timings=tuple(timings),
-                    signals=sim_result.records['signals'])
+                    signals=tuple(signals))
 
-def sample_trajectories(network, seed, sample_size, umin=0, umax=None):
-    if umax is None:
-        umax = seed.timings[0].knotvector[-1]
+def sample_trajectories(network, seed, sample_size):
     trajectories = []
-    ts = np.linspace(umin, umax, num=sample_size)
+    ts = np.linspace(0, seed.timings[0].knotvector[-1], num=sample_size)
     for route, footprint, timing in zip(seed.routes, seed.footprints, seed.timings):
         axis_coords = [p for uid in route for p in network.elements[uid].centerline.lineString.coords]
         transform = CurvilinearTransform(axis_coords)
@@ -205,6 +223,27 @@ def sample_trajectory(footprint, timing, ts):
                   headingOfSegment((0, 0), (s[1][0], s[1][1])), # heading
                   )
                   for s in sample)
+
+def sample_signal_actions(seed, sample_size):
+    signals_actions = []
+    ts = np.linspace(0, seed.timings[0].knotvector[-1], num=sample_size)
+    for timing, signal in zip(seed.timings, seed.signals):
+        spline = BSpline.Curve(normalize_kv = False)
+        spline.degree = timing.degree
+        spline.ctrlpts = timing.ctrlpts
+        spline.knotvector = timing.knotvector
+        ds = tuple(max(t_d[1], 0) for t_d in spline.evaluate_list(ts))
+        x = sympy.Symbol('x', real=True)
+        pieces = tuple(chain(((s.value, x >= d) for d,s in reversed(signal)),
+                             ((SignalType.OFF.value, x >= 0),)
+                            )
+                      )
+        d2s = sympy.Piecewise(*pieces)
+        signals = tuple(d2s.subs(x, d) for d in ds)
+        signal_actions = tuple(SignalType(sii) if si != sii else None for si,sii in pairwise(signals))
+        signals_actions.append(signal_actions)
+
+    return signals_actions
 
 def classify_intersection(intersection):
     return
@@ -277,3 +316,13 @@ def extend_lane_backward(lane, length, random):
       ext_len += ext[-1].centerline.length
     ext.reverse()
     return ext
+
+def signal_from_lanes(lanes):
+    signal = []
+    for i in range(len(lanes)-2):
+        dist = sum(lanes[j].centerline.length for j in range(i))
+        maneuver_type = ManeuverType.guessTypeFromLanes(lanes[i], lanes[i+2], lanes[i+1])
+        sig = SignalType.from_maneuver_type(maneuver_type)
+        signal.append((dist, sig))
+
+    return tuple(signal)
