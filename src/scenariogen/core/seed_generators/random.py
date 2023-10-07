@@ -17,27 +17,27 @@ def run(config):
     random.seed(config['PRNG_seed'])
     seed_id = 0
 
+    scenario = scenic.scenarioFromFile(
+                    'src/scenariogen/core/create.scenic',
+                    mode2D=True,
+                    params={'render': config['render_ego'],
+                            'scenario_path': config['scenario_path'],
+                            'caller_config': config
+                            },
+                    )
+    print('Scenario compiled successfully.')
+
+    simulator = scenario.getSimulator()
+    if not config['render_spectator']:
+        settings = simulator.world.get_settings()
+        settings.no_rendering_mode = True
+        simulator.world.apply_settings(settings)
+        
     while seed_id < config['seeds_num']:
         try:
-            scenario = scenic.scenarioFromFile(
-                            'src/scenariogen/core/create.scenic',
-                            mode2D=True,
-                            params={'render': config['render_ego'],
-                                    'scenario_path': config['scenario_path'],
-                                    'caller_config': config
-                                    },
-                            )
-            print('Scenario compiled successfully.')
-
             scene, iterations = scenario.generate(maxIterations=config['scene_maxIterations'])
             print(f"Initial scene generated in {iterations} iteration{'(s)' if iterations > 1 else ''}.")
             
-            simulator = scenario.getSimulator()
-            if not config['render_spectator']:
-                settings = simulator.world.get_settings()
-                settings.no_rendering_mode = True
-                simulator.world.apply_settings(settings)
-
             sim_result = simulator.simulate(
                                 scene,
                                 maxSteps=scenario.params['steps'],
