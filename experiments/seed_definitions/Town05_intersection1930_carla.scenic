@@ -10,30 +10,29 @@ param carla_map = 'Town05'
 carla_map = globalParameters.carla_map
 param map = f'/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/{carla_map}.xodr'
 model scenic.simulators.carla.model
-
-#--- Python imports
-import jsonpickle
-from scenic.domains.driving.roads import ManeuverType
-from scenariogen.core.signals import SignalType
-from scenariogen.core.utils import route_from_turns
-from scenariogen.simulators.carla.behaviors import AutopilotFollowRoute
-
+param weather = 'CloudySunset'
+param timestep = 0.1
+param steps = 200
 intersection_uid = 'intersection1930'
-traffic_rules = '3way-T_stopOnAll.lp'
-arrival_distance = 4
+
+from scenic.domains.driving.roads import ManeuverType
+ego_blueprint = 'vehicle.tesla.model3'
 ego_init_lane = 'road9_lane1'
 ego_turns = (ManeuverType.LEFT_TURN,)
-ego_init_progress_ratio = 50
+ego_init_progress_ratio = .1
 
 major_init_lane = 'road24_lane0'
 major_turns = (ManeuverType.STRAIGHT,)
-major_init_progress = 70
-major_signal = SignalType.OFF
+major_init_progress_ratio = .7
 
 minor_init_lane = 'road3_lane1'
 minor_turns = (ManeuverType.LEFT_TURN,)
-minor_init_progress = 10
-minor_signal = SignalType.LEFT
+minor_init_progress_ratio = .1
+
+#--- Python imports
+import jsonpickle
+from scenariogen.core.utils import route_from_turns
+from scenariogen.simulators.carla.behaviors import AutopilotReachDestination
 
 # Derived constants
 ego_route = route_from_turns(network, ego_init_lane, ego_turns)
@@ -41,21 +40,24 @@ ego_route = route_from_turns(network, ego_init_lane, ego_turns)
 major_route = route_from_turns(network, major_init_lane, major_turns)
 major_lanes = [network.elements[uid] for uid in major_route]
 major_polyline = PolylineRegion.unionAll([l.centerline for l in major_lanes])
-major_p0 = major_polyline.pointAlongBy(major_init_progress)
+major_p0 = major_polyline.pointAlongBy(major_init_progress_ratio*major_polyline.length)
 
 minor_route = route_from_turns(network, minor_init_lane, minor_turns)
 minor_lanes = [network.elements[uid] for uid in minor_route]
 minor_polyline = PolylineRegion.unionAll([l.centerline for l in minor_lanes])
-minor_p0 = minor_polyline.pointAlongBy(minor_init_progress)
+minor_p0 = minor_polyline.pointAlongBy(minor_init_progress_ratio*minor_polyline.length)
 
 intersection = network.elements[intersection_uid]
 
 config = {'description': description,
           'carla_map': globalParameters.carla_map,
           'map': globalParameters.map,
+          'weather': globalParameters.weather,
+          'timestep': globalParameters.timestep,
+          'steps': globalParameters.steps,
           'compatible_simulators': ('carla',),
           'intersection': intersection_uid,
-          'traffic_rules': traffic_rules,
+          'ego_blueprint': ego_blueprint,
           'ego_route': ego_route,
           'ego_init_progress_ratio': ego_init_progress_ratio
           }
@@ -70,7 +72,7 @@ scenario SeedScenario():
       with route major_route,
       with physics True,
       with allowCollisions False,
-      with behavior FourWayStopBehavior(major_route),
+      with behavior AutopilotReachDestination(major_route),
       with length blueprints['vehicle.tesla.model3']['length'],
       with width blueprints['vehicle.tesla.model3']['width']
 
@@ -79,6 +81,6 @@ scenario SeedScenario():
       with route minor_route,
       with physics True,
       with allowCollisions False,
-      with behavior FourWayStopBehavior(minor_route),
+      with behavior AutopilotReachDestination(minor_route),
       with length blueprints['vehicle.ford.crown']['length'],
       with width blueprints['vehicle.ford.crown']['width']

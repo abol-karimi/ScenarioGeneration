@@ -13,8 +13,6 @@ param weather = 'CloudySunset'
 param timestep = 0.1
 param steps = 200
 intersection_uid = 'intersection396'
-traffic_rules = '4way-uncontrolled.lp'
-arrival_distance = 4
 
 from scenic.domains.driving.roads import ManeuverType
 ego_blueprint = 'vehicle.tesla.model3'
@@ -36,7 +34,6 @@ import numpy as np
 from scenariogen.core.utils import route_from_turns
 from scenariogen.simulators.carla.behaviors import AutopilotReachDestination
 from scenariogen.core.geometry import CurvilinearTransform
-from scenariogen.core.signals import SignalType
 
 #--- Derived constants
 ego_route = route_from_turns(network, ego_init_lane, ego_turns)
@@ -81,7 +78,6 @@ config = {'description': description,
           'steps': globalParameters.steps,
           'compatible_simulators': ('carla',),
           'intersection': intersection_uid,
-          'traffic_rules': traffic_rules,
           'ego_blueprint': ego_blueprint,
           'ego_route': ego_route,
           'ego_init_progress_ratio': ego_init_progress_ratio
@@ -97,9 +93,7 @@ scenario SeedScenario():
       with route left_route,
       with physics True,
       with allowCollisions False,
-      with behavior AutopilotReachDestination(route=left_route,
-                                            aggressiveness='normal',
-                                            use_rss=False),
+      with behavior AutopilotReachDestination(route=left_route),
       with blueprint 'vehicle.tesla.model3',
       with length blueprints['vehicle.tesla.model3']['length'],
       with width blueprints['vehicle.tesla.model3']['width']
@@ -109,9 +103,7 @@ scenario SeedScenario():
       with route right_route,
       with physics True,
       with allowCollisions False,
-      with behavior AutopilotReachDestination(route=right_route,
-                                        aggressiveness='normal',
-                                        use_rss=False),
+      with behavior AutopilotReachDestination(route=right_route),
       with blueprint 'vehicle.ford.crown',
       with length blueprints['vehicle.ford.crown']['length'],
       with width blueprints['vehicle.ford.crown']['width']

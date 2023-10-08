@@ -23,6 +23,16 @@ from scenariogen.core.errors import SplineApproximationError
 def route_length(route):
   return sum([l.centerline.length for l in route])
 
+def classify_intersection(network, intersection_uid):
+    # Assuming Town05
+    if intersection_uid == 'intersection396':
+        return '4way-uncontrolled'
+    elif intersection_uid == 'intersection1930':
+        return '3way-T_stopOnAll'
+    
+    # TODO classify based on network geometry and semantics
+    return None
+
 def geometry_atoms(network, intersection_uid):
     intersection = network.elements[intersection_uid]
     maneuvers = intersection.maneuvers
@@ -131,13 +141,13 @@ def seed_from_sim(sim_result, timestep, degree=3, knots_size=20):
                                            for x,y in zip(c[0], c[1])),
                            knotvector=tuple(float(knot) for knot in t)
                           )
-        fig, axs = plt.subplots(2)
-        fig.suptitle(f'Car {name}')
-        axs[0].set_title('xy-plain')
-        axs[0].set_aspect('equal', adjustable='box')
-        axs[0].plot(tuple(-y for y in ys), xs, 'go')
-        sample = splev(ds_increasing, (t, c, k))
-        axs[0].plot(tuple(-s for s in sample[1]), sample[0], 'r-')
+        # fig, axs = plt.subplots(2)
+        # fig.suptitle(f'Car {name}')
+        # axs[0].set_title('xy-plain')
+        # axs[0].set_aspect('equal', adjustable='box')
+        # axs[0].plot(tuple(-y for y in ys), xs, 'go')
+        # sample = splev(ds_increasing, (t, c, k))
+        # axs[0].plot(tuple(-s for s in sample[1]), sample[0], 'r-')
 
         ts = [p[2] for p in sim_traj]
 
@@ -160,11 +170,11 @@ def seed_from_sim(sim_result, timestep, degree=3, knots_size=20):
                                         for x,y in zip(c[0], c[1])),
                         knotvector=tuple(float(knot) for knot in t)
                        )
-        axs[1].set_title('td-plain')
-        axs[1].plot(ts, ds, 'go')
-        sample = splev(ts, (t, c, k))
-        axs[1].plot(sample[0], sample[1], 'r-')
-        plt.show()
+        # axs[1].set_title('td-plain')
+        # axs[1].plot(ts, ds, 'go')
+        # sample = splev(ts, (t, c, k))
+        # axs[1].plot(sample[0], sample[1], 'r-')
+        # plt.show()
 
         footprints.append(footprint)
         timings.append(timing)
@@ -237,9 +247,6 @@ def sample_signal_actions(seed, sample_size):
         signals_actions.append(signal_actions)
 
     return signals_actions
-
-def classify_intersection(intersection):
-    return
 
 def connecting_lane(network, start, end):
     for m in network.elements[start].maneuvers:

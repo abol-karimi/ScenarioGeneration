@@ -69,9 +69,7 @@ scenario SeedScenario():
           with name f'{r[0]}_{d}_{t}',
           with physics True,
           with allowCollisions False,
-          with behavior AutopilotReachDestination(route=r,
-                                            aggressiveness='cautious',
-                                            use_rss=False),
+          with behavior AutopilotReachDestination(route=r),
           with length car_blueprints[b]['length'],
           with width car_blueprints[b]['width'],
           with route tuple(r)

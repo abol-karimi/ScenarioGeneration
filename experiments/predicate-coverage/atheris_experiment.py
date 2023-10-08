@@ -6,15 +6,15 @@ from scenariogen.core.crossovers import StructureAwareCrossOver
 from scenariogen.core.fuzzers.atheris import AtherisFuzzer
 
 SUT_config = {
-  'timestep': 0.05,
-  'render_spectator': False,
+  'render_spectator': True,
   'render_ego': False,
   'weather': 'CloudySunset',
   'arrival_distance': 4,
-  'stop_speed_threshold': 0.5,
+  'stopping_speed': 0.5,
+  'moving_speed': 0.6,
   'closedLoop': True,
-  'ego_module': 'experiments.agents.followRouteAvoidCollisions',
-  'simulator': 'newtonian',
+  'ego_module': 'experiments.agents.autopilot_dest',
+  'simulator': 'carla',
   'coverage_module': 'scenariogen.core.coverages.traffic_rules_predicate_name',
 }
 

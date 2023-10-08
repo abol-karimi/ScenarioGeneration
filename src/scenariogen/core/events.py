@@ -28,16 +28,26 @@ class SignaledEvent:
         return f'signaledAtTime({self.vehicle}, {self.signal}, {time_to_term(self.seconds)})'
 
 
-class StoppedAtForkEvent:
-    """Stopping after arrival at a stop sign and before entrance to the intersection."""
+class StoppedEvent:
+    """Slowing down to a speed threshold or less."""
 
-    def __init__(self, vehicle, incoming_lane, seconds):
+    def __init__(self, vehicle, seconds):
         self.vehicle = vehicle
-        self.incoming_lane = incoming_lane
         self.seconds = seconds
 
     def __str__(self):
-        return f'stoppedAtForkAtTime({self.vehicle}, {self.incoming_lane}, {time_to_term(self.seconds)})'
+        return f'stoppedAtTime({self.vehicle}, {time_to_term(self.seconds)})'
+
+
+class MovedEvent:
+    """Speeding up to a speed threshold or more."""
+
+    def __init__(self, vehicle, seconds):
+        self.vehicle = vehicle
+        self.seconds = seconds
+
+    def __str__(self):
+        return f'movedAtTime({self.vehicle}, {time_to_term(self.seconds)})'
 
 
 class EnteredLaneEvent:

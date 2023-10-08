@@ -44,6 +44,7 @@ monitor RaiseEgoCollisionMonitor(config):
     if sensor.is_listening():
       sensor.stop()
     sensor.destroy()
+    print('Ego collision sensor destroyed.')
     if not event_queue.empty():
       raise EgoCollisionError(event_queue.get().other_actor)
   else:

@@ -20,6 +20,30 @@ forkOnOppositeDirection(F1, F2):-
 %---------------------------------------------
 %---Auxiliary predicates for traffic events---
 %---------------------------------------------
+eventTime(T):-
+  signaledAtTime(_, _, T).
+
+eventTime(T):-
+  arrivedAtForkAtTime(_, _, T).
+
+eventTime(T):-
+  stoppedAtTime(_, T).
+
+eventTime(T):-
+  movedAtTime(_, T).
+
+eventTime(T):-
+  enteredForkAtTime(_, _, T).
+
+eventTime(T):-
+  enteredLaneAtTime(_, _, T).
+
+eventTime(T):-
+  leftLaneAtTime(_, _, T).
+
+eventTime(T):-
+  exitedFromAtTime(_, _, T).
+
 arrivedAtFork(Vehicle, Fork):-
   arrivedAtForkAtTime(Vehicle, Fork, _).
 
@@ -29,11 +53,21 @@ arrivedAtTime(V, T):-
 enteredAtTime(V, T):-
   enteredForkAtTime(V, _, T).
 
+entered(V):-
+  enteredAtTime(V, _).
+
+changedSignalBetween(V, T1, T2):-
+  signaledAtTime(V, _, Tm),
+  eventTime(T1),
+  eventTime(T2),
+  1 = @lessThan(T1, Tm),
+  1 = @lessThan(Tm, T2).
+
 signaledAtFork(V, S, F):-
   signaledAtTime(V, S, Ts),
   arrivedAtForkAtTime(V, F, Ta),
   1 = @lessThan(Ts, Ta),
-  #count {0:signaledAtTime(V, S, T): 1 = @lessThan(Ts, T), 1 = @lessThan(T, Ta)} = 0.
+  not changedSignalBetween(V, Ts, Ta).
 
 signaledLeft(V):-
   signaledAtFork(V, left, _).
@@ -111,7 +145,17 @@ violatesRightOfForRule(V2, V1, yieldToLeftTurnFromContinuingHighway):-
 % The driver of any vehicle approaching a stop sign at the entrance to, or within, an intersection
 %  shall stop as required by Section 22450.
 stoppedAtFork(V, F):-
-  stoppedAtForkAtTime(V, F, T).
+  arrivedAtForkAtTime(V, F, Ta),
+  stoppedAtTime(V, Ts),
+  1 = @lessThan(Ta, Ts),
+  enteredAtTime(V, Te),
+  1 = @lessThan(Ts, Te).
+
+stoppedAtFork(V, F):-
+  arrivedAtForkAtTime(V, F, Ta),
+  stoppedAtTime(V, Ts),
+  1 = @lessThan(Ta, Ts),
+  not entered(V).
 
 violatesRule(V, stopAtSign):-
   arrivedAtFork(V, F),

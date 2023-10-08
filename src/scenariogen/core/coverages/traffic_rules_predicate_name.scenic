@@ -8,12 +8,13 @@ from collections import Counter
 import clingo
 from clingo.ast import Transformer, parse_string
 from scenic.domains.driving.roads import Network
-from scenariogen.core.utils import geometry_atoms
+from scenariogen.core.utils import geometry_atoms, classify_intersection
 from scenariogen.core.events import *
 from scenariogen.predicates.predicates import TemporalOrder
 from scenariogen.simulators.carla.utils import vehicleLightState_to_signal # TODO bring signal to driving domain
 
-with open(f"src/scenariogen/predicates/{config['traffic_rules']}", 'r') as f:
+traffic_rules_file = classify_intersection(network, config['intersection']) + '.lp'
+with open(f"src/scenariogen/predicates/{traffic_rules_file}", 'r') as f:
   encoding = f.read()
 
 coverage_space = set()
@@ -55,6 +56,7 @@ monitor CoverageMonitor():
   lanes = {car: set() for car in cars}
   inIntersection = {car: False for car in cars}
   lightState = {car: None for car in cars}
+  moving = {car: False for car in cars}  
   for step in range(config['steps']):
     time_seconds = step * config['timestep']
     for car in cars:
@@ -62,6 +64,14 @@ monitor CoverageMonitor():
       if lightState[car] != light_state:
         lightState[car] = light_state
         events.append(SignaledEvent(car.name, vehicleLightState_to_signal(light_state).name.lower(), time_seconds))
+
+      if moving[car] and car.speed <= config['stopping_speed']:
+        events.append(StoppedEvent(car.name, time_seconds))
+        moving[car] = False
+      elif (not moving[car]) and car.speed >= config['moving_speed']:
+        events.append(MovedEvent(car.name, time_seconds))
+        moving[car] = True
+
       inIntersection[car] = intersection.intersects(PolygonalRegion(polygon=car._boundingPolygon))
       
       if (not arrived[car]) and (distance from (front of car) to intersection) < config['arrival_distance']:

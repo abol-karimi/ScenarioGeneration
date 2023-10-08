@@ -27,9 +27,6 @@ eventTime(T):-
   signaledAtTime(_, _, T).
 
 eventTime(T):-
-  stoppedAtForkAtTime(_, _, T).
-
-eventTime(T):-
   enteredForkAtTime(_, _, T).
 
 eventTime(T):-
