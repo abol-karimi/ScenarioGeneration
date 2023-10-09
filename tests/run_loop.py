@@ -10,6 +10,7 @@ scenario = scenic.scenarioFromFile('tests/random.scenic',
 simulator = scenario.getSimulator()
 
 for i in range(2):
+    print(f'Iteration {i}:')
     scene, _ = scenario.generate(maxIterations=50)
     sim_result = simulator.simulate(
                     scene,

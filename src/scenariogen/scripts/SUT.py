@@ -23,7 +23,7 @@ parser.add_argument('--openLoop', action='store_true',
                     help='simulate a VUT')
 parser.add_argument('--ego_module', default='experiments.agents.autopilot_dest',
                     help='the scenic file containing the ego scenario')
-parser.add_argument('--coverage_module', default='scenariogen.core.coverages.traffic_rules_predicate_name',
+parser.add_argument('--coverage_module', default='scenariogen.core.coverages.traffic_rules_predicates',
                     help='the scenic file containing coverage monitor')
 parser.add_argument('--simulator', choices=['newtonian', 'carla'],
                     help='The simulator')
@@ -70,8 +70,8 @@ config['moving_speed'] = 0.6
 config['closedLoop'] = not args.openLoop
 config['ego_module'] = args.ego_module
 config['coverage_module'] = args.coverage_module
-config['render_spectator'] = args.render_spectator,
-config['render_ego'] = args.render_ego,
+config['render_spectator'] = args.render_spectator
+config['render_ego'] = args.render_ego
 config['seed_path'] = args.seed_path
 
 try:
@@ -83,5 +83,8 @@ except EgoCollisionError as err:
 else:
     coverage_space = sim_result.records['coverage_space']
     coverage = sim_result.records['coverage']
-    print('Coverage ratio:', 1 if len(coverage_space) == 0 else len(coverage)/len(coverage_space))
-    print('Coverage gap:', coverage_space-coverage)
+    print('Predicate coverage:')
+    for pred_name in coverage:
+        print(f'{pred_name}:')
+        for pred_args in coverage[pred_name]:
+            print(f'\t{pred_args}')

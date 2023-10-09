@@ -15,7 +15,7 @@ SUT_config = {
   'closedLoop': True,
   'ego_module': 'experiments.agents.autopilot_dest',
   'simulator': 'carla',
-  'coverage_module': 'scenariogen.core.coverages.traffic_rules_predicate_name',
+  'coverage_module': 'scenariogen.core.coverages.traffic_rules_predicate_names',
 }
 
 experiment_name = 'TrafficRulesPredicateName'
