@@ -4,7 +4,6 @@ config = globalParameters.config
 intersection = network.elements[config['intersection']]
 
 # python imports
-from collections import Counter
 import clingo
 from clingo.ast import Transformer, parse_string
 from scenic.domains.driving.roads import Network
@@ -12,18 +11,12 @@ from scenariogen.core.utils import geometry_atoms, classify_intersection
 from scenariogen.core.events import *
 from scenariogen.predicates.predicates import TemporalOrder
 from scenariogen.simulators.carla.utils import vehicleLightState_to_signal # TODO bring signal to driving domain
+from scenariogen.core.coverages.coverage import PredicateCoverage
+coverage = PredicateCoverage()
 
 traffic_rules_file = classify_intersection(network, config['intersection']) + '.lp'
 with open(f"src/scenariogen/predicates/{traffic_rules_file}", 'r') as f:
   encoding = f.read()
-
-coverage_space = {}
-class AtomNameRecorder(Transformer):
-  def visit_SymbolicAtom(self, node):
-    coverage_space[node.symbol.name] = set()
-    return node
-anr = AtomNameRecorder()
-parse_string(encoding, lambda stm: anr(stm))
 
 def to_coverage(events):
   print('Computing predicate-name coverage...')
@@ -37,14 +30,14 @@ def to_coverage(events):
   ctl.add("base", [], instance+encoding)
   ctl.ground([("base", [])], context=TemporalOrder())
   ctl.configuration.solve.models = "1"
-  coverage = {predicate_name:set() for predicate_name in coverage_space}
+  _coverage = PredicateCoverage()
   with ctl.solve(yield_=True) as handle:
     for model in handle:
       for atom in model.symbols(atoms=True):
-        coverage[atom.name].add(tuple(str(arg) for arg in atom.arguments))
-  return coverage
+        _coverage.add(atom.name)
 
-coverage = {}
+  return _coverage
+
 monitor CoverageMonitor():
   events = []
   cars = simulation().agents
@@ -55,7 +48,7 @@ monitor CoverageMonitor():
   lanes = {car: set() for car in cars}
   inIntersection = {car: False for car in cars}
   lightState = {car: None for car in cars}
-  moving = {car: False for car in cars}
+  moving = {car: False for car in cars}  
   for step in range(config['steps']):
     time_seconds = step * config['timestep']
     for car in cars:

@@ -23,7 +23,7 @@ parser.add_argument('--openLoop', action='store_true',
                     help='simulate a VUT')
 parser.add_argument('--ego_module', default='experiments.agents.autopilot_dest',
                     help='the scenic file containing the ego scenario')
-parser.add_argument('--coverage_module', default='scenariogen.core.coverages.traffic_rules_predicates',
+parser.add_argument('--coverage_module', default='scenariogen.core.coverages.traffic_rules_statements',
                     help='the scenic file containing coverage monitor')
 parser.add_argument('--simulator', choices=['newtonian', 'carla'],
                     help='The simulator')
@@ -81,10 +81,5 @@ except NonegoNonegoCollisionError as err:
 except EgoCollisionError as err:
     print(f'Ego collided with {err.other}.')
 else:
-    coverage_space = sim_result.records['coverage_space']
     coverage = sim_result.records['coverage']
-    print('Predicate coverage:')
-    for pred_name in coverage:
-        print(f'{pred_name}:')
-        for pred_args in coverage[pred_name]:
-            print(f'\t{pred_args}')
+    coverage.print()

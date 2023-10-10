@@ -26,7 +26,6 @@ if config['closedLoop']:
 nonegos_scenario = NonegosScenario(config)
 
 coverage_module = importlib.import_module(config['coverage_module'])
-coverage_space = coverage_module.coverage_space
 coverage_monitor = coverage_module.CoverageMonitor()
 
 scenario Main():
@@ -42,7 +41,6 @@ scenario Main():
     require monitor coverage_monitor
 
     record initial config as config # needed?
-    record final coverage_space as coverage_space
     record final coverage_module.coverage as coverage
 
   compose:

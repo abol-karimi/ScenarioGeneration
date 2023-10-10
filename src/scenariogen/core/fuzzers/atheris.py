@@ -174,7 +174,6 @@ class SUTCallback:
 
     try:
       sim_result = Scenario(fuzz_input).run(self.SUT_config)
-      coverage_space = sim_result.records['coverage_space'] # TODO for performance: do it only once
       coverage = sim_result.records['coverage']
     except NonegoNonegoCollisionError as err:
       print(f'Collision between nonegos {err.nonego} and {err.other}! We skip predicate-coverage computation.')
@@ -192,8 +191,6 @@ class SUTCallback:
         with open(f'{self.predicate_coverage_folder}/{self.current_iteration}.json', 'w') as f:
           f.write(jsonpickle.encode(fuzz_input))
         self.coverage_sum.update(coverage)
-        print('Coverage ratio:', len(self.coverage_sum)/len(coverage_space))
-        print('Coverage gap:', coverage_space-self.coverage_sum)
     
     # if self.current_iteration == self.initial_iteration + self.config['atheris_runs']:
     #   self.comm.put(self.get_state())

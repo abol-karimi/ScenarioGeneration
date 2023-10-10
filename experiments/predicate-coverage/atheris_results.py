@@ -7,6 +7,4 @@ config = {
   'coverage_module': 'scenariogen.core.coverages.traffic_rules_predicate_names',
   'arrival_distance': 4,
 }
-coverage_space, coverage = predicate_coverage.from_corpus(predicate_coverage_corpus, config)
-print('Coverage ratio:', 1 if len(coverage_space) == 0 else len(coverage)/len(coverage_space))
-print('Coverage gap:', coverage_space-coverage)
+coverage = predicate_coverage.from_corpus(predicate_coverage_corpus, config)
