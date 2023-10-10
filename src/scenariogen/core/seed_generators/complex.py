@@ -16,7 +16,7 @@ from scenariogen.core.events import StoppedAtForkEvent
 from scenariogen.core.errors import (NoASPSolutionError,
                                      NoSMTSolutionError, 
                                      EgoCollisionError, 
-                                     NonegoNonegoCollisionError)
+                                     NonegoCollisionError)
 from scenariogen.core.utils import (geometry_atoms,
                                     seed_from_sim)
 from scenariogen.core.signals import SignalType
@@ -604,7 +604,7 @@ def generate(config):
             # ego: simulate autopilot on li, record events
             try:
                 ego_sim_result = simulate(li, ti, config)
-            except NonegoNonegoCollisionError as err:
+            except NonegoCollisionError as err:
                 print(f'Collision between nonegos {err.nonego} and {err.other}, discarding the simulation.')
                 continue
             except SimulationCreationError:
@@ -618,7 +618,7 @@ def generate(config):
                 tj = mj.type
                 try:
                     nonego_sim_result = simulate(lj, tj, config)
-                except NonegoNonegoCollisionError as err:
+                except NonegoCollisionError as err:
                     print(f'Collision between nonegos {err.nonego} and {err.other}, discarding the simulation.')
                     continue
                 except SimulationCreationError:

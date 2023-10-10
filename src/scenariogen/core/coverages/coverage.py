@@ -2,7 +2,7 @@ from pathlib import Path
 import jsonpickle
 
 from scenariogen.core.scenario import Scenario
-from scenariogen.core.errors import EgoCollisionError, NonegoNonegoCollisionError
+from scenariogen.core.errors import EgoCollisionError, NonegoCollisionError
 
 def from_corpus(corpus_folder, config={}):
   coverage_sum = set()
@@ -19,7 +19,7 @@ def from_corpus(corpus_folder, config={}):
                                        **config,
                                        }
                                       )
-    except NonegoNonegoCollisionError as err:
+    except NonegoCollisionError as err:
       print(f'Collision between nonegos {err.nonego} and {err.other}.')
     except EgoCollisionError as err:
       print(f'Ego collided with {err.other}.')

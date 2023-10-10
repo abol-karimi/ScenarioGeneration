@@ -4,7 +4,7 @@ import jsonpickle
 
 # This project
 from scenariogen.core.scenario import Scenario
-from scenariogen.core.errors import EgoCollisionError, NonegoNonegoCollisionError
+from scenariogen.core.errors import EgoCollisionError, NonegoCollisionError
 
 
 parser = argparse.ArgumentParser(
@@ -76,7 +76,7 @@ config['seed_path'] = args.seed_path
 
 try:
     sim_result = Scenario(seed).run(config)
-except NonegoNonegoCollisionError as err:
+except NonegoCollisionError as err:
     print(f'Collision between nonegos {err.nonego} and {err.other}.')
 except EgoCollisionError as err:
     print(f'Ego collided with {err.other}.')

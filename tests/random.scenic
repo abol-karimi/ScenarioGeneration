@@ -12,4 +12,4 @@ actors_scenario = Actors()
 
 scenario Main():
   compose:
-    do actors_scenario
+    do actors_scenario # instantiating the scenario here avoids the bug

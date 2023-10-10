@@ -12,7 +12,7 @@ from scenariogen.core.scenarios import NonegosScenario
 # Simulator-specific settings
 if config['simulator'] == 'carla':
   model scenic.simulators.carla.model
-  from scenariogen.simulators.carla.monitors import RaiseEgoCollisionMonitor, ShowIntersectionMonitor, LabelCarsMonitor
+  from scenariogen.simulators.carla.monitors import ForbidEgoCollisionsMonitor, ShowIntersectionMonitor, LabelCarsMonitor
 elif config['simulator'] == 'newtonian':
   model scenic.simulators.newtonian.driving_model
 else:
@@ -35,7 +35,7 @@ scenario Main():
       ego = new Debris at p.x@p.y
 
     if config['simulator'] == 'carla':
-      require monitor RaiseEgoCollisionMonitor(config)
+      require monitor ForbidEgoCollisionsMonitor(config)
       if config['render_spectator']:
         require monitor ShowIntersectionMonitor(config['intersection'], label_lanes=True)
     require monitor coverage_monitor

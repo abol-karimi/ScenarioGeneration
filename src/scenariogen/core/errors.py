@@ -8,7 +8,7 @@ class EgoCollisionError(SUTError):
     def __init__(self, other):
         self.other = other
 
-class NonegoNonegoCollisionError(SUTError):
+class NonegoCollisionError(SUTError):
     """Two non-egos collide, so the seed is invalid."""
 
     def __init__(self, nonego, other):

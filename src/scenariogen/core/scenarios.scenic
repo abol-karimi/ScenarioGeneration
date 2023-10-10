@@ -11,7 +11,7 @@ import carla
 
 from scenariogen.core.utils import sample_trajectories, sample_signal_actions
 from scenariogen.core.signals import SignalType
-from scenariogen.core.errors import EgoCollisionError, NonegoNonegoCollisionError
+from scenariogen.core.errors import EgoCollisionError, NonegoCollisionError
 from scenariogen.core.geometry import CurvilinearTransform
 from scenariogen.simulators.carla.utils import signal_to_vehicleLightState
 
@@ -51,5 +51,5 @@ monitor CheckCollisionsMonitor(cars1, cars2):
   while True:
     for c, d in product(cars1, cars2):
       if (not c is d) and c.intersects(d):
-        raise NonegoNonegoCollisionError(c, d)
+        raise NonegoCollisionError(c, d)
     wait

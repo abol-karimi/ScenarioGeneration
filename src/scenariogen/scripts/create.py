@@ -14,7 +14,7 @@ from scenic.core.dynamics import GuardViolation
 
 # My modules
 from scenariogen.core.utils import sim_trajectories, seed_from_sim
-from scenariogen.core.errors import NonegoNonegoCollisionError
+from scenariogen.core.errors import NonegoCollisionError
 
 #----------Main Script----------
 parser = argparse.ArgumentParser(description='Make a seed from a scenic scenario.')
@@ -63,8 +63,8 @@ try:
                     )
     if sim_result is None:
         raise RuntimeError('Simulation rejected.')
-except NonegoNonegoCollisionError as err:
-    print(f'Collision between nonegos {err.nonego} and {err.other}, discarding the simulation.')
+except NonegoCollisionError as err:
+    print(f'Collision between nonego {err.nonego} and actor {err.other}, discarding the simulation.')
     exit()
 except SimulationCreationError:
     print('Failed to create scenario.')

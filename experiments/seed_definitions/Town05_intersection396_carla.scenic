@@ -18,7 +18,7 @@ from scenic.domains.driving.roads import ManeuverType
 ego_blueprint = 'vehicle.tesla.model3'
 ego_init_lane = 'road9_lane2'
 ego_turns = (ManeuverType.LEFT_TURN,)
-ego_init_progress_ratio = .1
+ego_init_progress_ratio = .35
 
 left_init_lane = 'road44_lane1'
 left_turns = (ManeuverType.LEFT_TURN,)
@@ -26,7 +26,7 @@ left_init_progress_ratio = .2
 
 right_init_lane = 'road8_lane1'
 right_turns = (ManeuverType.STRAIGHT,)
-right_init_progress_ratio = .1
+right_init_progress_ratio = .2
 
 #--- Python imports
 import jsonpickle

@@ -7,7 +7,7 @@ from typing import Any
 
 # This project
 from src.scenariogen.core.scenario import Scenario
-from scenariogen.core.errors import EgoCollisionError, NonegoNonegoCollisionError, InvalidFuzzInputError
+from scenariogen.core.errors import EgoCollisionError, NonegoCollisionError, InvalidFuzzInputError
 from scenariogen.core.scenario import Scenario
 from scenariogen.core.fuzz_input import validate_input
 
@@ -175,7 +175,7 @@ class SUTCallback:
     try:
       sim_result = Scenario(fuzz_input).run(self.SUT_config)
       coverage = sim_result.records['coverage']
-    except NonegoNonegoCollisionError as err:
+    except NonegoCollisionError as err:
       print(f'Collision between nonegos {err.nonego} and {err.other}! We skip predicate-coverage computation.')
     except EgoCollisionError as err:
       print(f'Ego collided with {err.other}. We save the fuzz input to the ego-collisions corpus.')

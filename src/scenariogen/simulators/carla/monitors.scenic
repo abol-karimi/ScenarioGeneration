@@ -6,7 +6,7 @@ model scenic.simulators.carla.model
 import carla
 import queue
 import scenariogen.simulators.carla.visualization as visualization
-from scenariogen.core.errors import EgoCollisionError
+from scenariogen.core.errors import EgoCollisionError, NonegoCollisionError
 
 monitor ShowIntersectionMonitor(intersection_uid, show_lanes=False, label_lanes=False, show_carla_axes=False):
   intersection = network.elements[intersection_uid]
@@ -29,7 +29,7 @@ monitor LabelCarsMonitor():
 def on_collision(event, q):
   q.put(event)
   
-monitor RaiseEgoCollisionMonitor(config):
+monitor ForbidEgoCollisionsMonitor(config):
   agents = simulation().agents
   names = {agent.name for agent in agents}
   if 'ego' in names:
@@ -47,5 +47,32 @@ monitor RaiseEgoCollisionMonitor(config):
     print('Ego collision sensor destroyed.')
     if not event_queue.empty():
       raise EgoCollisionError(event_queue.get().other_actor)
+  else:
+    wait
+
+monitor ForbidNonegoCollisionsMonitor(config):
+  event_queue = queue.Queue()
+  carla_world = simulation().world
+  bp = carla_world.get_blueprint_library().find('sensor.other.collision')
+  sensors = []
+  for agent in simulation().agents:
+    if agent.name == 'ego':
+      continue
+    sensor = carla_world.spawn_actor(bp, carla.Transform(), attach_to=agent.carlaActor)
+    sensors.append(sensor)
+    sensor.listen(lambda e: on_collision(e, event_queue))
+
+  while (simulation().currentTime < config['steps']) and event_queue.empty():
+    wait
+  
+  for sensor in sensors:
+    if sensor.is_listening():
+      sensor.stop()
+    sensor.destroy()
+  print('All nonego collision sensors destroyed.')
+
+  if not event_queue.empty():
+    event = event_queue.get()
+    raise NonegoCollisionError(event.actor, event.other_actor)
   else:
     wait

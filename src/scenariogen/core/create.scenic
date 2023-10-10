@@ -5,7 +5,7 @@ caller_config = globalParameters.caller_config
 import importlib
 seed_module = importlib.import_module(caller_config['scenario_path'].replace('/', '.').replace('.scenic', ''))
 seed_config = seed_module.config
-seed_scenario = seed_module.SeedScenario()
+# seed_scenario = seed_module.SeedScenario()
 if 'simulator_name' in caller_config:
   simulator_name = caller_config['simulator_name']
   if not simulator_name in seed_config['compatible_simulators']:
@@ -16,7 +16,10 @@ else:
 # Simulator-specific settings
 if simulator_name == 'carla':
   model scenic.simulators.carla.model
-  from scenariogen.simulators.carla.monitors import RaiseEgoCollisionMonitor, ShowIntersectionMonitor, LabelCarsMonitor
+  from scenariogen.simulators.carla.monitors import (ForbidEgoCollisionsMonitor,
+                                                    ForbidNonegoCollisionsMonitor,
+                                                    ShowIntersectionMonitor,
+                                                    LabelCarsMonitor)
   if caller_config['render_ego']:
     param render = True
   else:
@@ -61,13 +64,14 @@ scenario Main():
       p = intersection.polygon.centroid
       ego = new Debris at p.x@p.y
   
-    require monitor RequireOnRoadMonitor()
+    # require monitor RequireOnRoadMonitor()
     require monitor RecordSeedInfoMonitor()
     if simulator_name == 'carla':
-      require monitor RaiseEgoCollisionMonitor(seed_config)
+      require monitor ForbidEgoCollisionsMonitor(seed_config)
+      require monitor ForbidNonegoCollisionsMonitor(seed_config)
       if caller_config['render_spectator']:
-        require monitor ShowIntersectionMonitor(seed_config['intersection'], label_lanes=True)
-        require monitor LabelCarsMonitor()
+        require monitor ShowIntersectionMonitor(seed_config['intersection'], label_lanes=False)
+        # require monitor LabelCarsMonitor()
 
     record final seed_config as config
     record final tuple(names) as names
@@ -78,7 +82,7 @@ scenario Main():
     record final tuple(signals) as signals
 
   compose:
-    do seed_scenario
+    do seed_module.SeedScenario()
         
 
 
