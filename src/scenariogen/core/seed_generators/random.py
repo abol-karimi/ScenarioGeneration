@@ -50,6 +50,9 @@ def run(config):
         except SimulationCreationError as e:
             print(f'Failed to create simulation: {e}')
             continue
+        except Exception as e:
+            print(f'Exception of type {type(e)}: {e}. Discarding the simulation...')
+            continue
         else:
             if sim_result is None:
                 print(f'Simulation rejected!')

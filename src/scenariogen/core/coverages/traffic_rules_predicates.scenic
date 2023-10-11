@@ -47,15 +47,15 @@ monitor CoverageMonitor():
   exited = {car: False for car in cars}
   lanes = {car: set() for car in cars}
   inIntersection = {car: False for car in cars}
-  lightState = {car: None for car in cars}
+  signal = {car: None for car in cars}
   moving = {car: False for car in cars}  
   for step in range(config['steps']):
     time_seconds = step * config['timestep']
     for car in cars:
-      light_state = car.carlaActor.get_light_state()
-      if lightState[car] != light_state:
-        lightState[car] = light_state
-        events.append(SignaledEvent(car.name, vehicleLightState_to_signal(light_state).name.lower(), time_seconds))
+      signal_curr = vehicleLightState_to_signal(car.carlaActor.get_light_state())
+      if signal[car] != signal_curr:
+        signal[car] = signal_curr
+        events.append(SignaledEvent(car.name, signal_curr.name.lower(), time_seconds))
 
       if moving[car] and car.speed <= config['stopping_speed']:
         events.append(StoppedEvent(car.name, time_seconds))

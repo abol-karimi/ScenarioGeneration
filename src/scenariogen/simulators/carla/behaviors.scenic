@@ -11,6 +11,12 @@ from scenariogen.simulators.carla.utils import signal_to_vehicleLightState
 behavior AutopilotReachDestination(route, aggressiveness='normal', use_rss=False):
 	waypoints_separation = 50
 	take SetAutopilotAction(True)
+	traffic_manager = simulation().tm
+	traffic_manager.update_vehicle_lights(self.carlaActor, True)
+	traffic_manager.random_left_lanechange_percentage(self.carlaActor, 0)
+	traffic_manager.random_right_lanechange_percentage(self.carlaActor, 0)
+	traffic_manager.auto_lane_change(self.carlaActor, False)
+	traffic_manager.ignore_signs_percentage(self.carlaActor, 0)
 	agent = BehaviorAgent(self.carlaActor, behavior=aggressiveness)
 	carla_world = simulation().world
 	lanes = [network.elements[uid] for uid in route]

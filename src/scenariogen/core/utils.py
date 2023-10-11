@@ -141,13 +141,13 @@ def seed_from_sim(sim_result, timestep, degree=3, knots_size=20):
                                            for x,y in zip(c[0], c[1])),
                            knotvector=tuple(float(knot) for knot in t)
                           )
-        # fig, axs = plt.subplots(2)
-        # fig.suptitle(f'Car {name}')
-        # axs[0].set_title('xy-plain')
-        # axs[0].set_aspect('equal', adjustable='box')
-        # axs[0].plot(tuple(-y for y in ys), xs, 'go')
-        # sample = splev(ds_increasing, (t, c, k))
-        # axs[0].plot(tuple(-s for s in sample[1]), sample[0], 'r-')
+        fig, axs = plt.subplots(2)
+        fig.suptitle(f'Car {name}')
+        axs[0].set_title('xy-plain')
+        axs[0].set_aspect('equal', adjustable='box')
+        axs[0].plot(tuple(-y for y in ys), xs, 'go')
+        sample = splev(ds_increasing, (t, c, k))
+        axs[0].plot(tuple(-s for s in sample[1]), sample[0], 'r-')
 
         ts = [p[2] for p in sim_traj]
 
@@ -170,11 +170,11 @@ def seed_from_sim(sim_result, timestep, degree=3, knots_size=20):
                                         for x,y in zip(c[0], c[1])),
                         knotvector=tuple(float(knot) for knot in t)
                        )
-        # axs[1].set_title('td-plain')
-        # axs[1].plot(ts, ds, 'go')
-        # sample = splev(ts, (t, c, k))
-        # axs[1].plot(sample[0], sample[1], 'r-')
-        # plt.show()
+        axs[1].set_title('td-plain')
+        axs[1].plot(ts, ds, 'go')
+        sample = splev(ts, (t, c, k))
+        axs[1].plot(sample[0], sample[1], 'r-')
+        plt.show()
 
         footprints.append(footprint)
         timings.append(timing)
@@ -229,20 +229,17 @@ def sample_trajectory(footprint, timing, ts):
 
 def sample_signal_actions(seed, sample_size):
     signals_actions = []
-    ts = np.linspace(0, seed.timings[0].knotvector[-1], num=sample_size)
-    for timing, signal in zip(seed.timings, seed.signals):
-        spline = BSpline.Curve(normalize_kv = False)
-        spline.degree = timing.degree
-        spline.ctrlpts = timing.ctrlpts
-        spline.knotvector = timing.knotvector
-        ds = tuple(max(t_d[1], 0) for t_d in spline.evaluate_list(ts))
-        x = sympy.Symbol('x', real=True)
-        pieces = tuple(chain(((s.value, x >= d) for d,s in reversed(signal)),
+    duration = seed.config['timestep']*seed.config['steps']
+    ts = np.linspace(0, duration, num=sample_size)
+    x = sympy.Symbol('x', real=True)
+    for signal in seed.signals:
+        print(signal)
+        pieces = tuple(chain(((s.value, x >= t) for t,s in reversed(signal)),
                              ((SignalType.OFF.value, x >= 0),)
                             )
                       )
-        d2s = sympy.Piecewise(*pieces)
-        signals = tuple(d2s.subs(x, d) for d in ds)
+        t2s = sympy.Piecewise(*pieces)
+        signals = tuple(t2s.subs(x, t) for t in ts)
         signal_actions = tuple(SignalType(sii) if si != sii else None for si,sii in pairwise(signals))
         signals_actions.append(signal_actions)
 

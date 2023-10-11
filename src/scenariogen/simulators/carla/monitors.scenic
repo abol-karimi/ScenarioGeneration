@@ -73,6 +73,7 @@ monitor ForbidNonegoCollisionsMonitor(config):
 
   if not event_queue.empty():
     event = event_queue.get()
-    raise NonegoCollisionError(event.actor, event.other_actor)
+    print(f'{event.actor} collided with {event.other_actor} with impulse {event.normal_impulse.length()}.')
+    require False
   else:
     wait

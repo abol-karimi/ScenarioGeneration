@@ -10,9 +10,9 @@ def signal_to_vehicleLightState(signal):
     return VehicleLightState.RightBlinker
 
 def vehicleLightState_to_signal(vehicleLightState):
-  if vehicleLightState is VehicleLightState.NONE:
-    return SignalType.OFF
-  if vehicleLightState is VehicleLightState.LeftBlinker:
+  if vehicleLightState.LeftBlinker:
     return SignalType.LEFT
-  if vehicleLightState is VehicleLightState.RightBlinker:
+  elif vehicleLightState.RightBlinker:
     return SignalType.RIGHT
+  else:
+    return SignalType.OFF

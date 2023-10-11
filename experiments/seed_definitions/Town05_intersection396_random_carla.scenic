@@ -97,8 +97,8 @@ scenario SeedScenario():
         with physics True,
         with allowCollisions False,
         with behavior AutopilotReachDestination(route=route,
-                                          aggressiveness=Uniform('cautious', 'normal')
-                                          ),
+                                                aggressiveness='cautious'
+                                                ),
         with blueprint blueprint,
         with length blueprint2dims[blueprint]['length'],
         with width blueprint2dims[blueprint]['width'],
