@@ -6,7 +6,7 @@ from itertools import product
 
 from scenariogen.core.errors import NonegoCollisionError
 
-monitor CheckCollisionsMonitor(cars1, cars2):
+monitor RaiseOverlapsMonitor(cars1, cars2):
   while True:
     for c, d in product(cars1, cars2):
       if (not c is d) and c.intersects(d):

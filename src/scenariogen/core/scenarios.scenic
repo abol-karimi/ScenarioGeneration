@@ -47,9 +47,3 @@ scenario NonegosScenario(config):
         with behavior AnimateBehavior(tj, signal_actions)
       cars.append(car)
 
-monitor CheckCollisionsMonitor(cars1, cars2):
-  while True:
-    for c, d in product(cars1, cars2):
-      if (not c is d) and c.intersects(d):
-        raise NonegoCollisionError(c, d)
-    wait

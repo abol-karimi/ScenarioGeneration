@@ -5,21 +5,19 @@ intersection = network.elements[config['intersection']]
 
 # python imports
 import clingo
-from clingo.ast import Transformer, parse_string
 from scenic.domains.driving.roads import Network
-from scenariogen.core.utils import geometry_atoms, classify_intersection
-from scenariogen.core.events import *
-from scenariogen.predicates.predicates import TemporalOrder
+from scenariogen.core.utils import classify_intersection
+from scenariogen.predicates.predicates import TemporalOrder, geometry_atoms
+from scenariogen.predicates.events import *
 from scenariogen.simulators.carla.utils import vehicleLightState_to_signal # TODO bring signal to driving domain
-from scenariogen.core.coverages.coverage import PredicateCoverage
-coverage = PredicateCoverage()
+from scenariogen.core.coverages.coverage import PredicateCoverage as Coverage
 
 traffic_rules_file = classify_intersection(network, config['intersection']) + '.lp'
 with open(f"src/scenariogen/predicates/{traffic_rules_file}", 'r') as f:
   encoding = f.read()
 
 def to_coverage(events):
-  print('Computing predicate-name coverage...')
+  print('Computing predicate coverage...')
   atoms = []
   atoms += geometry_atoms(network,
                           config['intersection'])
@@ -30,64 +28,31 @@ def to_coverage(events):
   ctl.add("base", [], instance+encoding)
   ctl.ground([("base", [])], context=TemporalOrder())
   ctl.configuration.solve.models = "1"
-  _coverage = PredicateCoverage()
+  coverage = Coverage()
   with ctl.solve(yield_=True) as handle:
     for model in handle:
       for atom in model.symbols(atoms=True):
-        _coverage.add(atom.name)
+        coverage.add(atom.name)
 
-  return _coverage
+  return coverage
 
-monitor CoverageMonitor():
-  events = []
-  cars = simulation().agents
-  maneuvers = intersection.maneuvers
-  arrived = {car: False for car in cars}
-  entered = {car: False for car in cars}
-  exited = {car: False for car in cars}
-  lanes = {car: set() for car in cars}
-  inIntersection = {car: False for car in cars}
-  signal = {car: None for car in cars}
-  moving = {car: False for car in cars}  
+from scenariogen.predicates.monitors import (ArrivingAtIntersectionMonitor,
+                                             VehicleSignalMonitor,
+                                             StoppingMonitor,
+                                             RegionOverlapMonitor)
+
+events = []
+trigger_regions = [intersection] + [m.connectingLane for m in intersection.maneuvers]
+
+monitor CoverageMonitor(coverageOut):
+  require monitor VehicleSignalMonitor(config, events)
+  require monitor ArrivingAtIntersectionMonitor({**config, 'network': network}, events)
+  require monitor StoppingMonitor(config, events)
+  require monitor RegionOverlapMonitor({**config, 'regions': trigger_regions}, events)
+
   for step in range(config['steps']):
-    time_seconds = step * config['timestep']
-    for car in cars:
-      signal_curr = vehicleLightState_to_signal(car.carlaActor.get_light_state())
-      if signal[car] != signal_curr:
-        signal[car] = signal_curr
-        events.append(SignaledEvent(car.name, signal_curr.name.lower(), time_seconds))
-
-      if moving[car] and car.speed <= config['stopping_speed']:
-        events.append(StoppedEvent(car.name, time_seconds))
-        moving[car] = False
-      elif (not moving[car]) and car.speed >= config['moving_speed']:
-        events.append(MovedEvent(car.name, time_seconds))
-        moving[car] = True
-
-      inIntersection[car] = intersection.intersects(PolygonalRegion(polygon=car._boundingPolygon))
-      
-      if (not arrived[car]) and (distance from (front of car) to intersection) < config['arrival_distance']:
-        arrived[car] = True
-        events.append(ArrivedAtIntersectionEvent(car.name, car.lane.uid, time_seconds))
-      if inIntersection[car] and not entered[car]:
-        entered[car] = True
-        events.append(EnteredIntersectionEvent(car.name, car.lane.uid, time_seconds))
-      if entered[car] and (not exited[car]) and not inIntersection[car]:
-        exited[car] = True
-        events.append(ExitedIntersectionEvent(car.name, car.lane.uid, time_seconds))
-
-      for maneuver in maneuvers:
-        lane = maneuver.connectingLane
-        wasOnLane = lane.uid in lanes[car]
-        isOnLane = lane.intersects(PolygonalRegion(polygon=car._boundingPolygon))
-        if isOnLane and not wasOnLane:
-          lanes[car].add(lane.uid)
-          events.append(EnteredLaneEvent(car.name, lane.uid, time_seconds))
-        elif wasOnLane and not isOnLane:
-          lanes[car].remove(lane.uid)
-          events.append(ExitedLaneEvent(car.name, lane.uid, time_seconds))
     wait
-  coverage.update(to_coverage(events))
+  coverageOut.update(to_coverage(events))
   print('Coverage monitor last statement!')
   wait
   print('Should not reach here!')

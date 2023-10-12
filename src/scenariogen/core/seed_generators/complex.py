@@ -12,7 +12,7 @@ from scenic.domains.driving.roads import Network
 from scenic.core.simulators import SimulationCreationError
 from scenic.core.dynamics import GuardViolation
 
-from scenariogen.core.events import StoppedAtForkEvent
+from src.scenariogen.predicates.events import StoppedAtForkEvent
 from scenariogen.core.errors import (NoASPSolutionError,
                                      NoSMTSolutionError, 
                                      EgoCollisionError, 
