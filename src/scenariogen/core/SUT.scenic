@@ -26,7 +26,7 @@ if config['closedLoop']:
 nonegos_scenario = NonegosScenario(config)
 
 coverage_module = importlib.import_module(config['coverage_module'])
-coverage = coverage_module.Coverage()
+coverage = coverage_module.Coverage([])
 
 scenario Main():
   setup:

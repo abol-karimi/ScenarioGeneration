@@ -125,7 +125,7 @@ class SUTCallback:
     self.SUT_config = config['SUT_config']
     self.ego_collisions_folder = f"{config['output_folder']}/ego-collisions"
     self.predicate_coverage_folder = f"{config['output_folder']}/predicate-coverage"
-    self.coverage_sum = set()
+    self.coverage_sum = None
     self.initial_iteration = 0
     self.current_iteration = 0
   
@@ -167,11 +167,6 @@ class SUTCallback:
       print(err.msg)
       exit(1)
     
-    seconds = fuzz_input.timings[0].ctrlpts[-1][0]
-    self.SUT_config.update({
-              'steps': int(seconds // self.SUT_config['timestep']),
-              })
-
     try:
       sim_result = Scenario(fuzz_input).run(self.SUT_config)
       coverage = sim_result.records['coverage']
@@ -183,14 +178,21 @@ class SUTCallback:
         f.write(jsonpickle.encode(fuzz_input, indent=1))
     # except Exception as e:
     #   print(e)
-    else: 
-      if coverage.issubset(self.coverage_sum):
-        print('Input did not yield new coverage.')
-      else:
-        print('Found a fuzz-input increasing predicate-coverage! Adding it to predicate-coverage corpus...')
+    else:
+      if self.coverage_sum is None:
+        self.coverage_sum = type(coverage)([])
+
+      new_coverage = coverage - self.coverage_sum
+
+      if len(new_coverage) > 0:
+        print('Found a fuzz-input with new coverage:')
+        new_coverage.print()
+        print('Adding the fuzz-input to the predicate-coverage corpus...')
         with open(f'{self.predicate_coverage_folder}/{self.current_iteration}.json', 'w') as f:
           f.write(jsonpickle.encode(fuzz_input))
         self.coverage_sum.update(coverage)
+      else:
+        print('Input did not yield new coverage.')
     
     # if self.current_iteration == self.initial_iteration + self.config['atheris_runs']:
     #   self.comm.put(self.get_state())

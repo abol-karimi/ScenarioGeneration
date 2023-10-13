@@ -1,10 +1,13 @@
 #!/usr/bin/env python3.8
-import scenariogen.core.coverages.predicate_coverage as predicate_coverage
+from scenariogen.core.coverages.coverage import from_corpus
 
-predicate_coverage_corpus = f'experiments/seeds_random'
+SUT_inputs_corpus = f'experiments/seeds_random'
 config = {
   'ego_module': 'experiments.agents.autopilot_dest',
-  'coverage_module': 'scenariogen.core.coverages.traffic_rules_predicate_names',
+  'coverage_module': 'scenariogen.core.coverages.traffic_rules_predicates',
   'arrival_distance': 4,
+  'stopping_speed': 0.5,
+  'moving_speed': 0.6,
 }
-coverage = predicate_coverage.from_corpus(predicate_coverage_corpus, config)
+coverage = from_corpus(SUT_inputs_corpus, config)
+coverage.print()

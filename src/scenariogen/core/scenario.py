@@ -1,5 +1,5 @@
 import scenic
-scenic.setDebuggingOptions(verbosity=2, fullBacktrace=True)
+scenic.setDebuggingOptions(verbosity=0, fullBacktrace=True)
 
 class Scenario:
   # Choose a blueprint of an appropriate size for each non-ego

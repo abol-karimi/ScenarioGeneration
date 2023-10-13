@@ -28,7 +28,7 @@ def to_coverage(events):
   ctl.add("base", [], instance+encoding)
   ctl.ground([("base", [])], context=TemporalOrder())
   ctl.configuration.solve.models = "1"
-  coverage = Coverage()
+  coverage = Coverage([])
   with ctl.solve(yield_=True) as handle:
     for model in handle:
       for atom in model.symbols(atoms=True):

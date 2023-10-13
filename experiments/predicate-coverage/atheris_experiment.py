@@ -6,7 +6,7 @@ from scenariogen.core.crossovers import StructureAwareCrossOver
 from scenariogen.core.fuzzers.atheris import AtherisFuzzer
 
 SUT_config = {
-  'render_spectator': True,
+  'render_spectator': False,
   'render_ego': False,
   'weather': 'CloudySunset',
   'arrival_distance': 4,
@@ -15,14 +15,14 @@ SUT_config = {
   'closedLoop': True,
   'ego_module': 'experiments.agents.autopilot_dest',
   'simulator': 'carla',
-  'coverage_module': 'scenariogen.core.coverages.traffic_rules_predicate_names',
+  'coverage_module': 'scenariogen.core.coverages.traffic_rules_predicates',
 }
 
-experiment_name = 'TrafficRulesPredicateName'
+experiment_name = 'TrafficRulesPredicates'
 fuzzer_config = {
   'SUT_config': SUT_config,
   'experiment_name': experiment_name,
-  'seeds_folder': f'experiments/seeds_manual',
+  'seeds_folder': f'experiments/seeds_random',
   'output_folder': f'experiments/predicate-coverage/{experiment_name}',
   'mutator': StructureAwareMutator(max_spline_knots_size=50,
                                    max_mutations_per_iteration=1,

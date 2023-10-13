@@ -1,35 +1,9 @@
+import os
 from pathlib import Path
 import jsonpickle
 
 from scenariogen.core.scenario import Scenario
 from scenariogen.core.errors import EgoCollisionError, NonegoCollisionError
-
-def from_corpus(corpus_folder, config={}):
-  coverage_sum = set()
-  pathlist = Path(corpus_folder).glob('*.json')
-  for path in pathlist:
-    with open(path, 'r') as f:
-      fuzz_input = jsonpickle.decode(f.read())
-    try:
-      print(f'Running {path.stem}')
-      sim_result = Scenario(fuzz_input).run({'simulator': fuzz_input.config['compatible_simulators'][0],
-                                       'render_spectator': False,
-                                       'render_ego': False,
-                                       'closedLoop': True,
-                                       **config,
-                                       }
-                                      )
-    except NonegoCollisionError as err:
-      print(f'Collision between nonegos {err.nonego} and {err.other}.')
-    except EgoCollisionError as err:
-      print(f'Ego collided with {err.other}.')
-    else:
-      if sim_result:
-        coverage_sum += sim_result.records['coverage']
-      else:
-        print(f'Simulation of {path} rejected!')
-  return coverage_sum
-
 
 class PredicateCoverage:
   """
@@ -37,8 +11,8 @@ class PredicateCoverage:
   TODO make it a subclass of abc
   """
 
-  def __init__(self, predicates=set()) -> None:
-    self.predicates = predicates
+  def __init__(self, items) -> None:
+    self.predicates = set(items)
   
   def add(self, pred):
     self.predicates.add(pred)
@@ -47,17 +21,14 @@ class PredicateCoverage:
     self.predicates.update(other.predicates)
   
   def update(self, other):
-    self += other
+    self.predicates.update(other.predicates)
     
   def __sub__(self, other):
-    return self.predicates - other.predicates
+    return PredicateCoverage(self.predicates-other.predicates)
 
   def __len__(self):
     return len(self.predicates)
   
-  def is_novel_to(self, other):
-    return len(self - other) > 0
-
   def print(self):
     print('Predicate coverage:')
     for pred in self.predicates:
@@ -95,12 +66,43 @@ class StatementCoverage:
   def __len__(self):
     return sum(len(args) for args in self.pred2args.values())
   
-  def is_novel_to(self, other):
-    return len(self - other) > 0
-
   def print(self):
     print('Statement coverage:')
     for pred_name in self.pred2args:
         print(f'{pred_name}:')
         for pred_args in self.pred2args[pred_name]:
             print(f'\t{pred_args}')
+
+
+def from_corpus(corpus_folder, config):
+  coverage_sum = None
+  pathlist = list(Path(corpus_folder).glob('*.json'))
+  pathlist_sorted = sorted(pathlist, key=os.path.getctime)
+
+  for path in pathlist_sorted:
+    with open(path, 'r') as f:
+      fuzz_input = jsonpickle.decode(f.read())
+    try:
+      print(f'Running {path.name}')
+      sim_result = Scenario(fuzz_input).run({'render_spectator': False,
+                                             'render_ego': False,
+                                             'closedLoop': True,
+                                             **config,
+                                             }
+                                            )
+    except NonegoCollisionError as err:
+      print(f'Collision between {err.nonego} and {err.other}.')
+    except EgoCollisionError as err:
+      print(f'Ego collided with {err.other}.')
+    else:
+      if not sim_result:
+        print(f'Simulation rejected!')
+      elif sim_result.records['coverage'] is None:
+        print(f'Simulation failed to report coverage!')
+      elif coverage_sum is None:
+        coverage_sum = type(sim_result.records['coverage'])([])
+        coverage_sum.update(sim_result.records['coverage'])
+      else:
+        coverage_sum.update(sim_result.records['coverage'])
+
+  return coverage_sum
