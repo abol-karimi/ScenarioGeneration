@@ -13,7 +13,7 @@ monitor RaiseOverlapsMonitor(cars1, cars2):
         raise NonegoCollisionError(c, d)
     wait
 
-monitor RequireOnRoadMonitor():
+monitor RequireAgentsBeInRoadMonitor():
   cars = simulation().agents
   while True:
     for car in cars:

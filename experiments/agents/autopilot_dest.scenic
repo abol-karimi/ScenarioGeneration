@@ -25,5 +25,3 @@ scenario EgoScenario(config):
       with behavior AutopilotReachDestination(route=config['ego_route']),
       with physics True,
       with allowCollisions False
-    
-    require always ego.position in road

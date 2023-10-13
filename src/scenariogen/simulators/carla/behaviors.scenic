@@ -17,6 +17,7 @@ behavior AutopilotReachDestination(route, aggressiveness='normal', use_rss=False
 	traffic_manager.random_right_lanechange_percentage(self.carlaActor, 0)
 	traffic_manager.auto_lane_change(self.carlaActor, False)
 	traffic_manager.ignore_signs_percentage(self.carlaActor, 0)
+	# TODO make autopilot's behavior deterministic
 	agent = BehaviorAgent(self.carlaActor, behavior=aggressiveness)
 	carla_world = simulation().world
 	lanes = [network.elements[uid] for uid in route]

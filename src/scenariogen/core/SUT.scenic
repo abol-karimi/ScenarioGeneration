@@ -41,7 +41,6 @@ scenario Main():
       if config['render_spectator']:
         require monitor ShowIntersectionMonitor(config['intersection'], label_lanes=True)
 
-    record initial config as config # needed?
     record final coverage as coverage
 
   compose:

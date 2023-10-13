@@ -73,7 +73,7 @@ def seed_from_sim(sim_result, timestep, degree=3, knots_size=20):
                                         s=.1, # Larger s means more smoothing
                                         full_output=1
                                        )
-            print(f'Then footprint spline for car {name} has {len(t)} knots.')
+            print(f'The footprint spline for car {name} has {len(t)} knots.')
             print(f'The weighted sum of squared residuals of the spline approximation for footprint: {fp}')
             print(f'ier: {ier}, msg: {msg}')
         except Exception as e:

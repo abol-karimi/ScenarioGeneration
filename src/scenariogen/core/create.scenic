@@ -30,7 +30,6 @@ elif simulator_name == 'newtonian':
     param render = False
 
 from scenariogen.core.geometry import CurvilinearTransform
-from scenariogen.core.monitors import RequireOnRoadMonitor
 from scenariogen.simulators.carla.utils import vehicleLightState_to_signal # TODO add vehicle signal to Scenic
 
 names = []
@@ -41,6 +40,9 @@ routes = []
 signals = []
 
 monitor RecordSeedInfoMonitor():
+  for l in (names, blueprints, transforms, footprints, routes, signals):
+    l.clear()
+
   nonegos = tuple(a for a in simulation().agents if a.name != 'ego')
   names.extend(nonego.name for nonego in nonegos)
   blueprints.extend(nonego.blueprint for nonego in nonegos)
@@ -64,7 +66,6 @@ scenario Main():
       p = intersection.polygon.centroid
       ego = new Debris at p.x@p.y
   
-    # require monitor RequireOnRoadMonitor()
     require monitor RecordSeedInfoMonitor()
     if simulator_name == 'carla':
       require monitor ForbidEgoCollisionsMonitor(seed_config)
