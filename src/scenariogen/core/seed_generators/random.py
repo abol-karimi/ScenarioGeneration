@@ -28,6 +28,10 @@ def run(config):
     print('Scenario compiled successfully.')
 
     simulator = scenario.getSimulator()
+
+    # Make Carla's traffic manager deterministic, so that autopilot's behavior is reproducible
+    simulator.tm.set_random_device_seed(config['PRNG_seed'])
+
     if not config['render_spectator']:
         settings = simulator.world.get_settings()
         settings.no_rendering_mode = True
