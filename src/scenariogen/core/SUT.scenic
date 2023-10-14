@@ -44,6 +44,10 @@ scenario Main():
     record final coverage as coverage
 
   compose:
+    if simulator_name == 'carla':
+      # Make Carla's traffic manager deterministic, with a common seed across all simulations so that autopilot's behavior is reproducible
+      simulation().tm.set_random_device_seed(0)
+    
     if config['closedLoop']:
       do ego_scenario, \
           nonegos_scenario
