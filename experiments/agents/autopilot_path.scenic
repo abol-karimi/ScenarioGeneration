@@ -3,18 +3,15 @@ model scenic.simulators.carla.model
 
 # imports
 import numpy as np
-from scenariogen.simulators.carla.behaviors import BehaviorAgentFollowWaypoints
+from scenariogen.simulators.carla.behaviors import AutopilotPathBehavior
 from scenariogen.core.geometry import CurvilinearTransform
 import jsonpickle
 
 with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f:
   blueprint2dims = jsonpickle.decode(f.read())
 
-scenario EgoScenario(_config):
+scenario EgoScenario(config):
   setup:
-    config = {'aggressiveness': 'normal',
-              'use_rss': False,
-              **_config}
     lanes = [network.elements[l] for l in config['ego_route']]
     transform = CurvilinearTransform([p for lane in lanes
                                         for p in lane.centerline.lineString.coords
@@ -33,8 +30,6 @@ scenario EgoScenario(_config):
       with blueprint config['ego_blueprint'],
       with width blueprint2dims[ego_blueprint]['width'],
       with length blueprint2dims[ego_blueprint]['length'],
-      with behavior BehaviorAgentFollowWaypoints(waypoints=waypoints,
-                                            aggressiveness=config['aggressiveness'],
-                                            use_rss=config['use_rss']),
+      with behavior AutopilotPathBehavior(waypoints),
       with physics True,
       with allowCollisions False

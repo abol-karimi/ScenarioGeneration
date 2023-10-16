@@ -97,7 +97,7 @@ scenario SeedScenario():
       with route left_route,
       with physics True,
       with allowCollisions False,
-      with behavior AutopilotRouteBehavior(maneuvers=left_turns),
+      with behavior AutopilotRouteBehavior(left_turns),
       with blueprint left_blueprint,
       with length blueprint2dims['vehicle.tesla.model3']['length'],
       with width blueprint2dims['vehicle.tesla.model3']['width']
@@ -107,7 +107,7 @@ scenario SeedScenario():
       with route right_route,
       with physics True,
       with allowCollisions False,
-      with behavior AutopilotRouteBehavior(maneuvers=right_turns),
+      with behavior AutopilotRouteBehavior(right_turns),
       with blueprint right_blueprint,
       with length right_car_length,
       with width right_car_width

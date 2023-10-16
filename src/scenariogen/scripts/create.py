@@ -13,7 +13,7 @@ from scenic.core.dynamics import GuardViolation
 
 
 # My modules
-from scenariogen.core.utils import sim_trajectories, seed_from_sim
+from scenariogen.core.utils import seed_from_sim
 from scenariogen.core.errors import NonegoCollisionError
 
 #----------Main Script----------

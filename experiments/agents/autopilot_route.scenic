@@ -4,7 +4,8 @@ model scenic.simulators.carla.model
 # imports
 import jsonpickle
 from scenariogen.core.signals import SignalType
-from scenariogen.simulators.carla.behaviors import BehaviorAgentReachDestination
+from scenariogen.core.utils import turns_from_route
+from scenariogen.simulators.carla.behaviors import AutopilotRouteBehavior
 
 
 with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f:
@@ -22,6 +23,6 @@ scenario EgoScenario(config):
       with blueprint config['ego_blueprint'],
       with width blueprint2dims[ego_blueprint]['width'],
       with length blueprint2dims[ego_blueprint]['length'],
-      with behavior BehaviorAgentReachDestination(route=config['ego_route']),
+      with behavior AutopilotRouteBehavior(turns_from_route(ego_lanes)),
       with physics True,
       with allowCollisions False

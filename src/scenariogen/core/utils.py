@@ -20,8 +20,6 @@ from scenariogen.core.signals import SignalType
 from scenariogen.core.geometry import CurvilinearTransform
 from scenariogen.core.errors import SplineApproximationError
 
-def route_length(route):
-  return sum([l.centerline.length for l in route])
 
 def classify_intersection(network, intersection_uid):
     # Assuming Town05
@@ -33,18 +31,7 @@ def classify_intersection(network, intersection_uid):
     # TODO classify based on network geometry and semantics
     return None
 
-def sim_trajectories(sim_result, timestep):
-    cars_num = len(sim_result.records['poses'][0])
-    sim_trajs = [[] for k in range(cars_num)]
-    for i, poses in enumerate(sim_result.records['poses']):
-        time = i * timestep
-        for j, ((x, y), heading) in enumerate(poses):
-            p = Vector(x, y)
-            pose = OrientedPoint(position=p, heading=heading)
-            sim_trajs[j].append((pose, time))
-    return sim_trajs
-
-def seed_from_sim(sim_result, timestep, degree=3, knots_size=20):
+def seed_from_sim(sim_result, timestep, degree=3, knots_size=20, plot_splines=False):
     cars_num = len(sim_result.records['routes'])
     sim_trajs = [[] for k in range(cars_num)]
     for i, footprints in sim_result.records['footprints']:
@@ -86,13 +73,14 @@ def seed_from_sim(sim_result, timestep, degree=3, knots_size=20):
                                            for x,y in zip(c[0], c[1])),
                            knotvector=tuple(float(knot) for knot in t)
                           )
-        # fig, axs = plt.subplots(2)
-        # fig.suptitle(f'Car {name}')
-        # axs[0].set_title('xy-plain')
-        # axs[0].set_aspect('equal', adjustable='box')
-        # axs[0].plot(tuple(-y for y in ys), xs, 'go')
-        # sample = splev(ds_increasing, (t, c, k))
-        # axs[0].plot(tuple(-s for s in sample[1]), sample[0], 'r-')
+        if plot_splines:
+            fig, axs = plt.subplots(2)
+            fig.suptitle(f'Car {name}')
+            axs[0].set_title('xy-plain')
+            axs[0].set_aspect('equal', adjustable='box')
+            axs[0].plot(tuple(-y for y in ys), xs, 'go')
+            sample = splev(ds_increasing, (t, c, k))
+            axs[0].plot(tuple(-s for s in sample[1]), sample[0], 'r-')
 
         ts = [p[2] for p in sim_traj]
 
@@ -115,11 +103,13 @@ def seed_from_sim(sim_result, timestep, degree=3, knots_size=20):
                                         for x,y in zip(c[0], c[1])),
                         knotvector=tuple(float(knot) for knot in t)
                        )
-        # axs[1].set_title('td-plain')
-        # axs[1].plot(ts, ds, 'go')
-        # sample = splev(ts, (t, c, k))
-        # axs[1].plot(sample[0], sample[1], 'r-')
-        # plt.show()
+        
+        if plot_splines:
+            axs[1].set_title('td-plain')
+            axs[1].plot(ts, ds, 'go')
+            sample = splev(ts, (t, c, k))
+            axs[1].plot(sample[0], sample[1], 'r-')
+            plt.show()
 
         footprints.append(footprint)
         timings.append(timing)
@@ -202,8 +192,8 @@ def collides_with(query, data):
 
 def route_from_turns(network, init_lane, turns):
     """
-    init_lane: the first lane in the mission
-    turns: a tuple of turning directions of the route at each intersection
+    init_lane: the first lane of the route
+    turns: a list, consisting of the maneuver at each intersection
     
     Returns a tuple of lanes.
     """
@@ -223,6 +213,17 @@ def route_from_turns(network, init_lane, turns):
         route.append(current_lane.successor.uid)
         current_lane = current_lane.successor
     return route
+
+
+def turns_from_route(route_lanes):
+    turns = []
+    for li, lii in pairwise(route_lanes):
+        if li.maneuvers[0].intersection:
+            turn = tuple(filter(lambda m: m.connectingLane == lii, li.maneuvers))[0].type
+            turns.append(turn)
+    
+    return turns
+
 
 def extend_lane_forward(lane, length, random, return_maneuvers=False):
     maneuver = random.choice(lane.maneuvers)
