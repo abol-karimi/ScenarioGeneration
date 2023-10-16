@@ -27,7 +27,7 @@ import jsonpickle
 import numpy as np
 import random
 from scenariogen.core.utils import route_from_turns
-from scenariogen.simulators.carla.behaviors import AutopilotReachDestination
+from scenariogen.simulators.carla.behaviors import BehaviorAgentReachDestination
 
 ego_route = route_from_turns(network, ego_init_lane, ego_turns)
 
@@ -69,7 +69,7 @@ scenario SeedScenario():
           with name f'{r[0]}_{d}_{t}',
           with physics True,
           with allowCollisions False,
-          with behavior AutopilotReachDestination(route=r),
+          with behavior BehaviorAgentReachDestination(route=r),
           with length car_blueprints[b]['length'],
           with width car_blueprints[b]['width'],
           with route tuple(r)

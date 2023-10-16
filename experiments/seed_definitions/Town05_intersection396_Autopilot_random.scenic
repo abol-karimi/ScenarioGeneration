@@ -21,7 +21,7 @@ from scenariogen.core.utils import route_from_turns
 from scenariogen.core.geometry import CurvilinearTransform
 from scenariogen.core.utils import extend_lane_backward, extend_lane_forward
 import random
-from scenariogen.simulators.carla.behaviors import AutopilotReachDestination
+from scenariogen.simulators.carla.behaviors import AutopilotRouteBehavior
 
 with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f:
   blueprint2dims = jsonpickle.decode(f.read())
@@ -47,14 +47,18 @@ scenario SeedScenario():
     blueprint = Uniform(*blueprints)
 
     lanes = [Uniform(*intersection.incomingLanes)]
+    maneuvers = []
     if lanes[0].centerline.length < min_distance_to_intersection:
+      print('Incoming lane is too short, need to extend it backwards...')
       lanes = extend_lane_backward(lanes[0], min_distance_to_intersection - lanes[0].centerline.length, random)\
               + lanes
     route_length = sum(l.centerline.length for l in lanes)
     x0 = Range(0, route_length - min_distance_to_intersection)
 
     if route_length - x0 < min_route_length:
-      lanes.extend(extend_lane_forward(lanes[-1], min_route_length-route_length+x0, random))
+      ext, ms = extend_lane_forward(lanes[-1], min_route_length-route_length+x0, random, return_maneuvers=True)
+      lanes.extend(ext)
+      maneuvers.extend((m.type for m in ms))
 
     route = tuple(l.uid for l in lanes)
     transform = CurvilinearTransform([p for lane in lanes
@@ -67,7 +71,7 @@ scenario SeedScenario():
       with name 'ego',
       with physics True,
       with allowCollisions False,
-      with behavior AutopilotReachDestination(route=route),
+      with behavior AutopilotRouteBehavior(maneuvers),
       with blueprint blueprint,
       with length blueprint2dims[blueprint]['length'],
       with width blueprint2dims[blueprint]['width'],
@@ -80,10 +84,9 @@ scenario SeedScenario():
 
     for i in range(DiscreteRange(1, max_nonegos)):
       blueprint = Uniform(*blueprints)
-      maneuver = Uniform(*intersection.maneuvers)
-      init_lane = Uniform(maneuver.startLane, maneuver.connectingLane, maneuver.endLane)
-      x0 = Uniform(1, init_lane.centerline.length-1)
-      ext = extend_lane_forward(init_lane, min_route_length - init_lane.centerline.length + x0, random)
+      init_lane = Uniform(*intersection.incomingLanes, *intersection.outgoingLanes)
+      x0 = Uniform(0, init_lane.centerline.length-2)
+      ext, maneuvers = extend_lane_forward(init_lane, min_route_length - init_lane.centerline.length + x0, random, return_maneuvers=True)
       lanes = (init_lane,) + tuple(ext)
       route = tuple(l.uid for l in lanes)
       transform = CurvilinearTransform([p for lane in lanes
@@ -96,9 +99,7 @@ scenario SeedScenario():
         with name f'{route[0]}_{(x0,y0,h0)}',
         with physics True,
         with allowCollisions False,
-        with behavior AutopilotReachDestination(route=route,
-                                                aggressiveness='cautious'
-                                                ),
+        with behavior AutopilotRouteBehavior([m.type for m in maneuvers]),
         with blueprint blueprint,
         with length blueprint2dims[blueprint]['length'],
         with width blueprint2dims[blueprint]['width'],

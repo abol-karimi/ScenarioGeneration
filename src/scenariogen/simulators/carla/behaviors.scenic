@@ -3,74 +3,98 @@ model scenic.simulators.carla.model
 
 # imports
 import carla
+# from examples.rss.rss_sensor import RssSensor
 from agents.navigation.behavior_agent import BehaviorAgent
 from scenic.simulators.carla.utils.utils import scenicToCarlaLocation
-from scenariogen.simulators.carla.rss_sensor import RssSensor
-from scenariogen.simulators.carla.utils import signal_to_vehicleLightState
+from scenariogen.simulators.carla.rss_sensor import RssSensor # TODO replace with carla module above
+from scenariogen.simulators.carla.utils import signal_to_vehicleLightState, maneuverType_to_Autopilot_turn
+import scenariogen.simulators.carla.visualization as visualization
 
-behavior AutopilotReachDestination(route, aggressiveness='normal', use_rss=False):
-	waypoints_separation = 50
+behavior AutopilotRouteBehavior(maneuver_types):
+	# Use turn signals when turning:
+	simulation().tm.update_vehicle_lights(self.carlaActor, True)
+	# Follow traffic rules:
+	simulation().tm.ignore_signs_percentage(self.carlaActor, 0)
+	# No lane changes as we are interested in behavior at intersections:
+	simulation().tm.random_left_lanechange_percentage(self.carlaActor, 0)
+	simulation().tm.random_right_lanechange_percentage(self.carlaActor, 0)
+	simulation().tm.auto_lane_change(self.carlaActor, False)
+
+	turns = [maneuverType_to_Autopilot_turn(m) for m in maneuver_types]
+	simulation().tm.set_route(self.carlaActor, turns)
 	take SetAutopilotAction(True)
-	traffic_manager = simulation().tm
-	traffic_manager.update_vehicle_lights(self.carlaActor, True)
-	traffic_manager.random_left_lanechange_percentage(self.carlaActor, 0)
-	traffic_manager.random_right_lanechange_percentage(self.carlaActor, 0)
-	traffic_manager.auto_lane_change(self.carlaActor, False)
-	traffic_manager.ignore_signs_percentage(self.carlaActor, 0)
-	# TODO make autopilot's behavior deterministic
+
+behavior AutopilotPathBehavior(path):
+	for p in path:
+		visualization.draw_point(simulation().world, p, 1,
+															size=0.1,
+															color=carla.Color(255, 0, 0),
+															lifetime=120)
+
+	print(f'Turning autopilot on for {self.name} at step {simulation().currentTime}...')
+	# Use turn signals when turning:
+	simulation().tm.update_vehicle_lights(self.carlaActor, True)
+	# Follow traffic rules:
+	simulation().tm.ignore_signs_percentage(self.carlaActor, 0)	
+	# No lane changes as we are interested in behavior at intersections:
+	simulation().tm.random_left_lanechange_percentage(self.carlaActor, 0)
+	simulation().tm.random_right_lanechange_percentage(self.carlaActor, 0)
+	simulation().tm.auto_lane_change(self.carlaActor, False)
+
+	carla_path = [scenicToCarlaLocation(wp, world=simulation().world) for wp in path]
+	simulation().tm.set_path(self.carlaActor, carla_path)
+	take SetAutopilotAction(True)
+
+behavior BehaviorAgentReachDestination(dest, aggressiveness='normal'):
+	agent = BehaviorAgent(self.carlaActor, behavior=aggressiveness)
+	agent.set_destination(scenicToCarlaLocation(dest, world=simulation().world))
+
+	while not agent.done():
+		self.carlaActor.apply_control(agent.run_step())
+		wait
+
+	print(f'Car {self.name} reached its destination.')
+
+
+behavior BehaviorAgentRSSReachDestination(dest, aggressiveness='normal'):
+	agent = BehaviorAgent(self.carlaActor, behavior=aggressiveness)
+	agent.set_destination(scenicToCarlaLocation(dest, world=simulation().world))
+
+	transforms = [pair[0].transform for pair in agent._local_planner._waypoints_queue]
+	rss_sensor = RssSensor(self.carlaActor, carla_world, 
+													None, None, None,
+													routing_targets=transforms)
+	restrictor = carla.RssRestrictor()
+	vehicle_physics = self.carlaActor.get_physics_control()
+	while not agent.done():
+		control = agent.run_step()
+		rss_proper_response = rss_sensor.proper_response if rss_sensor.response_valid else None
+		if rss_proper_response:
+			control = restrictor.restrict_vehicle_control(
+					control, rss_proper_response, rss_sensor.ego_dynamics_on_route, vehicle_physics)
+		self.carlaActor.apply_control(control)
+		wait
+	print(f'Car {self.name} reached its destination.')
+
+
+behavior BehaviorAgentFollowWaypoints(waypoints, aggressiveness):
 	agent = BehaviorAgent(self.carlaActor, behavior=aggressiveness)
 	carla_world = simulation().world
-	lanes = [network.elements[uid] for uid in route]
-	centerline = PolylineRegion.unionAll([l.centerline for l in lanes])
-	dest = scenicToCarlaLocation(lanes[-1].centerline[-1], world=carla_world)
-	agent.set_destination(dest)
-	if not use_rss:
+
+	for wp in waypoints:
+		agent.set_destination(scenicToCarlaLocation(wp, world=carla_world))
 		while not agent.done():
 			self.carlaActor.apply_control(agent.run_step())
 			wait
-	else:
-		transforms = [pair[0].transform for pair in agent._local_planner._waypoints_queue]
-		rss_sensor = RssSensor(self.carlaActor, carla_world, 
-														None, None, None,
-														routing_targets=transforms)
-		restrictor = carla.RssRestrictor()
-		vehicle_physics = self.carlaActor.get_physics_control()
-		while not agent.done():
-			control = agent.run_step()
-			rss_proper_response = rss_sensor.proper_response if rss_sensor.response_valid else None
-			if rss_proper_response:
-				control = restrictor.restrict_vehicle_control(
-						control, rss_proper_response, rss_sensor.ego_dynamics_on_route, vehicle_physics)
-			self.carlaActor.apply_control(control)
-			wait
-	take SetAutopilotAction(False), SetThrottleAction(0), SetBrakeAction(1)
-	wait
 
-behavior AutopilotFollowWaypoints(waypoints, aggressiveness, use_rss):
-	take SetAutopilotAction(True)
+	print(f'Car {self.name} reached its last waypoint.')
+
+	take SetThrottleAction(0), SetBrakeAction(1), SetSteerAction(0)
+
+
+behavior BehaviorAgentRSSFollowWaypoints(waypoints, aggressiveness):
 	agent = BehaviorAgent(self.carlaActor, behavior=aggressiveness)
 	carla_world = simulation().world
-	if not use_rss:
-		for wp in waypoints:
-			agent.set_destination(scenicToCarlaLocation(wp, world=carla_world))
-			while not agent.done():
-				self.carlaActor.apply_control(agent.run_step())
-				wait
-	else:
-		# TODO apply waypoints as above
-		dest = scenicToCarlaLocation(route_lanes[-1].centerline[-1], world=carla_world)
-		agent.set_destination(dest)
-		transforms = [pair[0].transform for pair in agent._local_planner._waypoints_queue]
-		rss_sensor = RssSensor(self.carlaActor, carla_world, 
-														None, None, None,
-														routing_targets=transforms)
-		restrictor = carla.RssRestrictor()
-		vehicle_physics = self.carlaActor.get_physics_control()
-		while not agent.done():
-			control = agent.run_step()
-			rss_proper_response = rss_sensor.proper_response if rss_sensor.response_valid else None
-			if rss_proper_response:
-				control = restrictor.restrict_vehicle_control(
-						control, rss_proper_response, rss_sensor.ego_dynamics_on_route, vehicle_physics)
-			self.carlaActor.apply_control(control)
-			wait
+
+	# TODO
+

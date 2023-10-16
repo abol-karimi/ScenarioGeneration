@@ -32,7 +32,7 @@ minor_init_progress_ratio = .1
 #--- Python imports
 import jsonpickle
 from scenariogen.core.utils import route_from_turns
-from scenariogen.simulators.carla.behaviors import AutopilotReachDestination
+from scenariogen.simulators.carla.behaviors import BehaviorAgentReachDestination
 
 # Derived constants
 ego_route = route_from_turns(network, ego_init_lane, ego_turns)
@@ -72,7 +72,7 @@ scenario SeedScenario():
       with route major_route,
       with physics True,
       with allowCollisions False,
-      with behavior AutopilotReachDestination(major_route),
+      with behavior BehaviorAgentReachDestination(major_route),
       with length blueprints['vehicle.tesla.model3']['length'],
       with width blueprints['vehicle.tesla.model3']['width']
 
@@ -81,6 +81,6 @@ scenario SeedScenario():
       with route minor_route,
       with physics True,
       with allowCollisions False,
-      with behavior AutopilotReachDestination(minor_route),
+      with behavior BehaviorAgentReachDestination(minor_route),
       with length blueprints['vehicle.ford.crown']['length'],
       with width blueprints['vehicle.ford.crown']['width']

@@ -84,7 +84,7 @@ scenario Main():
 
   compose:
     if simulator_name == 'carla':
-      # Make Carla's traffic manager deterministic, with a common seed across all simulations so that autopilot's behavior is reproducible
+      # Deterministic traffic manager with a common seed across all simulations so that autopilot's behavior is reproducible
       simulation().tm.set_random_device_seed(0)
 
     do seed_module.SeedScenario()

@@ -6,7 +6,7 @@ matplotlib.use('TkAgg')
 
 from scenariogen.core.seed_generators import random as random_seed_generator
 
-config = {'scenario_path': 'experiments/seed_definitions/Town05_intersection396_random_carla',
+config = {'scenario_path': 'experiments/seed_definitions/Town05_intersection396_Autopilot_random',
           'output_folder': 'experiments/seeds_random',
           'render_ego': False,
           'render_spectator': True,

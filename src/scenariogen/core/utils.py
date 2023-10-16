@@ -224,15 +224,20 @@ def route_from_turns(network, init_lane, turns):
         current_lane = current_lane.successor
     return route
 
-def extend_lane_forward(lane, length, random):
+def extend_lane_forward(lane, length, random, return_maneuvers=False):
     maneuver = random.choice(lane.maneuvers)
+    maneuvers = [maneuver]
     ext = [maneuver.connectingLane if maneuver.connectingLane else maneuver.endLane]
     ext_len = ext[-1].centerline.length
     while ext_len < length:
         maneuver = random.choice(ext[-1].maneuvers)
+        maneuvers.append(maneuver)
         ext.append(maneuver.connectingLane if maneuver.connectingLane else maneuver.endLane)
         ext_len += ext[-1].centerline.length
-    return ext
+    if return_maneuvers:
+        return ext, maneuvers
+    else:
+        return ext
 
 @cached(cache={}, key=lambda network: hashkey(tuple(i.uid for i in network.intersections)))
 def lane_to_predecessors(network):

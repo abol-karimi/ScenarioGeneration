@@ -7,7 +7,7 @@ from pathlib import Path
 
 # Scenic modules
 import scenic
-scenic.setDebuggingOptions(verbosity=2, fullBacktrace=True)
+scenic.setDebuggingOptions(verbosity=0, fullBacktrace=True)
 from scenic.core.simulators import SimulationCreationError
 from scenic.core.dynamics import GuardViolation
 

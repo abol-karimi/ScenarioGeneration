@@ -2,6 +2,7 @@
 import numpy as np
 import random
 import carla
+from scenic.simulators.carla.utils.utils import scenicToCarlaLocation
 
 # This project
 from scenariogen.core.utils import sample_trajectory
@@ -149,19 +150,8 @@ def draw_point(world, point, height=None, size=0.1,
         """The point can be either a list or a Point object,
         with Scenic's coordinates.
         """
-        if isinstance(point, list) or isinstance(point, tuple):
-            x, y = point[0], -point[1]
-        else:
-            x, y = point.x, -point.y
 
-        if not height is None:
-            z = height
-        elif len(point) == 3:
-            z = point[2]
-        else:
-            waypoint = world.get_map().get_waypoint(carla.Location(x, y, 0))
-            z = waypoint.transform.location.z
-        loc = carla.Location(x, y, z)
+        loc = scenicToCarlaLocation(point, z=height, world=world)
         world.debug.draw_point(loc, size, color, lifetime)
 
 def draw_rect(world, rect, height=0.1):

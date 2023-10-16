@@ -32,7 +32,7 @@ class PredicateCoverage:
   def print(self):
     print('Predicate coverage:')
     for pred in self.predicates:
-      print(pred)
+      print(f'\t{pred}')
 
 
 class StatementCoverage:
