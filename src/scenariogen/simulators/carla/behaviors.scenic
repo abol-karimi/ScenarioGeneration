@@ -10,6 +10,7 @@ from scenariogen.simulators.carla.rss_sensor import RssSensor # TODO replace wit
 from scenariogen.simulators.carla.utils import signal_to_vehicleLightState, maneuverType_to_Autopilot_turn
 import scenariogen.simulators.carla.visualization as visualization
 
+
 behavior AutopilotRouteBehavior(maneuver_types):
 	# Use turn signals when turning:
 	simulation().tm.update_vehicle_lights(self.carlaActor, True)
@@ -23,6 +24,7 @@ behavior AutopilotRouteBehavior(maneuver_types):
 	turns = [maneuverType_to_Autopilot_turn(m) for m in maneuver_types]
 	simulation().tm.set_route(self.carlaActor, turns)
 	take SetAutopilotAction(True)
+
 
 behavior AutopilotPathBehavior(path):
 	for p in path:
@@ -44,6 +46,7 @@ behavior AutopilotPathBehavior(path):
 	carla_path = [scenicToCarlaLocation(wp, world=simulation().world) for wp in path]
 	simulation().tm.set_path(self.carlaActor, carla_path)
 	take SetAutopilotAction(True)
+
 
 behavior BehaviorAgentReachDestination(dest, aggressiveness='normal'):
 	agent = BehaviorAgent(self.carlaActor, behavior=aggressiveness)
