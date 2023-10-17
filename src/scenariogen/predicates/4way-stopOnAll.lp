@@ -1,48 +1,96 @@
-%----------------------------------------------
-%---Auxiliary predicates for geometric facts---
-%----------------------------------------------
-onSameHighway(Fork1, Fork2):-
-  isOnRightOf(Fork1, F),
-  isOnRightOf(F, Fork2).
+%--------------------------------------------
+%------ Auxiliary geometric predicates ------
+%--------------------------------------------
+opposingArrivalLanes(L1, L2):-
+  isOnRightOf(L1, L),
+  isOnRightOf(L, L2).
 
-onSameHighway(Fork1, Fork2):-
-  onSameHighway(Fork2, Fork1).
+opposingArrivalLanes(L1, L2):-
+  opposingArrivalLanes(L2, L1).
 
-onDifferentHighways(F1, F2):-
-  isOnRightOf(F1, F2).
+lanesOnDifferentHighways(L1, L2):-
+  isOnRightOf(L1, L2).
 
-onDifferentHighways(F1, F2):-
-  isOnRightOf(F2, F1).
-
-branchOf(Lane, Fork):-
-  laneFromTo(Lane, Fork, _).
+lanesOnDifferentHighways(L1, L2):-
+  isOnRightOf(L2, L1).
 
 %---------------------------------------------
-%---Auxiliary predicates for traffic events---
+%------- Auxiliary traffic predicates -------
 %---------------------------------------------
-arrivedAtFork(Vehicle, Fork):-
-  arrivedAtForkAtTime(Vehicle, Fork, _).
+eventTime(T):-
+  arrivedFromLaneAtTime(_, _, T).
+
+eventTime(T):-
+  signaledAtTime(_, _, T).
+
+eventTime(T):-
+  stoppedAtTime(_, T).
+
+eventTime(T):-
+  movedAtTime(_, T).
+
+eventTime(T):-
+  enteredIntersectionAtTime(_, _, T).
+
+eventTime(T):-
+  enteredLaneAtTime(_, _, T).
+
+eventTime(T):-
+  leftLaneAtTime(_, _, T).
+
+eventTime(T):-
+  leftIntersectionAtTime(_, _, T).
+
+arrivedFromLane(Vehicle, Lane):-
+  arrivedFromLaneAtTime(Vehicle, Lane, _).
 
 arrivedAtTime(V, T):-
-  arrivedAtForkAtTime(V, _, T).
+  arrivedFromLaneAtTime(V, _, T).
 
-signaledAtFork(V, S, F):-
-  signaledAtForkAtTime(V, S, F, _).
+changedSignalBetween(V, T1, T2):-
+  signaledAtTime(V, _, Tm),
+  eventTime(T1),
+  eventTime(T2),
+  1 = @lessThan(T1, Tm),
+  1 = @lessThan(Tm, T2).
 
-signaledLeft(Vehicle):-
-  signaledAtFork(Vehicle, left, _).
+signaledAtArrivalFromLane(V, S, La):-
+  signaledAtTime(V, S, Ts),
+  arrivedFromLaneAtTime(V, La, Ta),
+  1 = @lessThan(Ts, Ta),
+  not changedSignalBetween(V, Ts, Ta).
 
-arrivedFromSameHighway(V1, V2):-
-  arrivedAtFork(V1, F1), arrivedAtFork(V2, F2),
-  onSameHighway(F1, F2).
+signaledLeftAtArrival(Vehicle):-
+  signaledAtArrivalFromLane(Vehicle, left, _).
+
+arrivedFromTheOppositeDirection(V1, V2):-
+  arrivedFromLane(V1, L1), arrivedFromLane(V2, L2),
+  opposingArrivalLanes(L1, L2).
+
+arrivedFromDifferentHighways(V1, V2):-
+  arrivedFromLane(V1, L1),
+  arrivedFromLane(V2, L2),
+  lanesOnDifferentHighways(L1, L2).
+
+arrivedFromRightOf(V1, V2):-
+  arrivedFromLane(V1, L1),
+  arrivedFromLane(V2, L2),
+  isOnRightOf(L1, L2).
+
+enteredIntersectionAfter(V, I, T):-
+  enteredIntersectionAtTime(V, I, Te),
+  eventTime(T),
+  1 = @lessThan(T, Te).
+
 
 %--------------------------------------------
 %---Auxiliary predicates for traffic rules---
 %--------------------------------------------
-requestedLane(Vehicle, Lane):-
-  signaledAtFork(Vehicle, Signal, Fork),
-  branchOf(Lane, Fork),
-  laneCorrectSignal(Lane, Signal).
+requestedLane(V, L):-
+  signaledAtArrivalFromLane(V, S, La),
+  lanePrecedes(La, L),
+  laneCorrectSignal(L, S).
+
 
 %---------------- Rules ---------------
 % http://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?lawCode=VEH&division=11.&title=&part=&chapter=4.&article=
@@ -52,16 +100,16 @@ requestedLane(Vehicle, Lane):-
 %  to any vehicle which has entered the intersection from a different highway.
 violatesRightOfForRule(V1, V2, yieldToInside):-
   V1 != V2,
-  enteredForkAtTime(V1, F1, Te1),
-  enteredForkAtTime(V2, F2, Te2),
-  onDifferentHighways(F1, F2),
+  arrivedFromLaneAtTime(V1, La, Ta),
+  enteredIntersectionAtTime(V2, I, Te),
+  1 = @lessThan(Te, Ta),
+  arrivedFromDifferentHighways(V1, V2),
   requestedLane(V1, L1),
   requestedLane(V2, L2),
   overlaps(L1, L2),
-  lessThan(Te2, Te1),
   leftLaneAtTime(V2, L1, T1),
   enteredLaneAtTime(V1, L2, T2),
-  lessThan(T2, T1).
+  1 = @lessThan(T2, T1).
 
 %---------------------------------------------------------------------------------
 % 21800 (c)
@@ -71,16 +119,16 @@ violatesRightOfForRule(V1, V2, yieldToInside):-
 %  to the vehicle on his or her immediate right.
 violatesRightOfForRule(V1, V2, yieldToRight):-
   V1 != V2,
-  enteredForkAtTime(V1, F1, Te1),
-  enteredForkAtTime(V2, F2, Te2),
-  isOnRightOf(F2, F1),
+  enteredIntersectionAtTime(V1, I, Te1),
+  enteredIntersectionAtTime(V2, I, Te2),
+  1 = @equal(Te1, Te2),
+  arrivedFromRightOf(V2, V1),
   requestedLane(V1, L1),
   requestedLane(V2, L2),
   overlaps(L1, L2),
-  equal(Te1, Te2; Te2, Te1),
-  leftLaneAtTime(V2, L1, T1),
-  enteredLaneAtTime(V1, L2, T2),
-  lessThan(T2, T1).
+  leftLaneAtTime(V2, L1, TV2L1l),
+  enteredLaneAtTime(V1, L2, TV1L2e),
+  1 = @lessThan(TV1L2e, TV2L1l). % V1 entered the overlap before V2 left it
 
 %--------------------------------------------------------------------------------------------
 % 21801 (a)
@@ -91,16 +139,16 @@ violatesRightOfForRule(V1, V2, yieldToRight):-
 %  until the left turn or U-turn can be made with reasonable safety.
 violatesRightOfForRule(V1, V2, leftTurn):-
   V1 != V2,
-  signaledLeft(V1),
-  arrivedFromSameHighway(V1, V2),
+  signaledLeftAtArrival(V1),
+  arrivedFromTheOppositeDirection(V1, V2),
   requestedLane(V1, L1),
   requestedLane(V2, L2),
   overlaps(L1, L2),
   arrivedAtTime(V2, Ta),
   enteredLaneAtTime(V1, L2, Te1),
-  lessThan(Ta, Te1),
+  1 = @lessThan(Ta, Te1),
   leftLaneAtTime(V2, L1, Tl2),
-  lessThan(Te1, Tl2).
+  1 = @lessThan(Te1, Tl2).
 
 % 22450 (a):
 % The driver of any vehicle approaching a stop sign at the entrance to, or within, an intersection
@@ -111,37 +159,30 @@ violatesRightOfForRule(V1, V2, leftTurn):-
 % 21802 (a):
 % The driver of any vehicle approaching a stop sign at the entrance to, or within, an intersection
 %  shall stop as required by Section 22450.
-stoppedAtFork(V, F):-
-  stoppedAtForkAtTime(V, F, T).
+stoppedAfterArrivalFromLane(V, L):-
+  arrivedFromLaneAtTime(V, L, Ta),
+  stoppedAtTime(V, Ts),
+  1 = @lessThan(Ta, Ts),
+  incomingLaneOf(L, I),
+  enteredIntersectionAtTime(V, I, Te),
+  1 = @lessThan(Ts, Te).
+
+stoppedAfterArrivalFromLane(V, L):-
+  arrivedFromLaneAtTime(V, L, Ta),
+  stoppedAtTime(V, Ts),
+  1 = @lessThan(Ta, Ts),
+  incomingLaneOf(L, I),
+  not enteredIntersectionAfter(V, I, Ts).
 
 violatesRule(V, stopAtSign):-
-  arrivedAtFork(V, F),
-  hasStopSign(F),
-  not stoppedAtFork(V, F).
+  arrivedFromLaneAtTime(V, L, Ta),
+  hasStopSign(L),
+  incomingLaneOf(L, I),  
+  enteredIntersectionAtTime(V, I, Te),
+  not stoppedAfterArrivalFromLane(V, L).
 
 % 22526 (a) (Signalized intersection?)
 % Notwithstanding any official traffic control signal indication to proceed,
 %  a driver of a vehicle shall not enter an intersection or marked crosswalk
 %  unless there is sufficient space on the other side of the intersection or marked crosswalk
 %  to accommodate the vehicle driven without obstructing the through passage of vehicles from either side.
-% mustYieldToForRuleAtTime(V1, V2, antiGridlock, T):-
-%   V1 != V2,
-%   requestedLane(V1, L1),
-%   requestedLane(V2, L2),
-%   laneFromTo(L1, _, E),
-%   laneFromTo(L2, _, E),
-%   enteredAtTime(V1, T1),
-%   enteredAtTime(V2, T2),
-%   T1 > T2,
-%   time(T),
-%   T >= T1,
-%   not leftLaneByTime(V2, L2, T).
-
-% violatesRightOfForRule(V1, V2, antiGridlock):-
-%   mustYieldToForRuleAtTime(V1, V2, antiGridlock, T),
-%   enteredByTime(V1, T).
-
-%-------------------------------------------------
-violatesRightOf(V1, V2):-
-  violatesRightOfForRule(V1, V2, _).
-

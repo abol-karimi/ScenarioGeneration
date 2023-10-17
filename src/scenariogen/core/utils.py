@@ -24,7 +24,7 @@ from scenariogen.core.errors import SplineApproximationError
 def classify_intersection(network, intersection_uid):
     # Assuming Town05
     if intersection_uid == 'intersection396':
-        return '4way-uncontrolled'
+        return '4way-stopOnAll'
     elif intersection_uid == 'intersection1930':
         return '3way-T_stopOnAll'
     

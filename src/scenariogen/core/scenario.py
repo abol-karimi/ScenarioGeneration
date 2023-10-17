@@ -27,6 +27,7 @@ class Scenario:
                         model=simulator2model[config['simulator']],
                         params= {'carla_map': config['carla_map'],
                                   'map': config['map'],
+                                  'weather': config['weather'],
                                   'timestep': config['timestep'],
                                   'render': 1 if render else 0,
                                   'config': config,

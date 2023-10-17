@@ -1,6 +1,6 @@
-%----------------------------------------------
-%---Auxiliary predicates for geometric facts---
-%----------------------------------------------
+%--------------------------------------------
+%------ Auxiliary geometric predicates ------
+%--------------------------------------------
 opposingArrivalLanes(L1, L2):-
   isOnRightOf(L1, L),
   isOnRightOf(L, L2).
@@ -15,7 +15,7 @@ lanesOnDifferentHighways(L1, L2):-
   isOnRightOf(L2, L1).
 
 %---------------------------------------------
-%---Auxiliary predicates for traffic events---
+%------- Auxiliary traffic predicates -------
 %---------------------------------------------
 eventTime(T):-
   arrivedFromLaneAtTime(_, _, T).
@@ -72,6 +72,12 @@ arrivedFromDifferentHighways(V1, V2):-
   arrivedFromLane(V2, L2),
   lanesOnDifferentHighways(L1, L2).
 
+arrivedFromRightOf(V1, V2):-
+  arrivedFromLane(V1, L1),
+  arrivedFromLane(V2, L2),
+  isOnRightOf(L1, L2).
+
+
 %--------------------------------------------
 %---Auxiliary predicates for traffic rules---
 %--------------------------------------------
@@ -106,16 +112,16 @@ violatesRightOfForRule(V1, V2, yieldToInside):-
 %  to the vehicle on his or her immediate right.
 violatesRightOfForRule(V1, V2, yieldToRight):-
   V1 != V2,
-  arrivedFromDifferentHighways(V1, V2),
   enteredIntersectionAtTime(V1, I, Te1),
   enteredIntersectionAtTime(V2, I, Te2),
   1 = @equal(Te1, Te2),
+  arrivedFromRightOf(V2, V1),
   requestedLane(V1, L1),
   requestedLane(V2, L2),
   overlaps(L1, L2),
-  leftLaneAtTime(V2, L1, T1),
-  enteredLaneAtTime(V1, L2, T2),
-  1 = @lessThan(T2, T1).
+  leftLaneAtTime(V2, L1, TV2L1l),
+  enteredLaneAtTime(V1, L2, TV1L2e),
+  1 = @lessThan(TV1L2e, TV2L1l). % V1 entered the overlap before V2 left it
 
 %--------------------------------------------------------------------------------------------
 % 21801 (a)
@@ -143,24 +149,3 @@ violatesRightOfForRule(V1, V2, leftTurn):-
 %  a driver of a vehicle shall not enter an intersection or marked crosswalk
 %  unless there is sufficient space on the other side of the intersection or marked crosswalk
 %  to accommodate the vehicle driven without obstructing the through passage of vehicles from either side.
-% mustYieldToForRuleAtTime(V1, V2, antiGridlock, T):-
-%   V1 != V2,
-%   requestedLane(V1, L1),
-%   requestedLane(V2, L2),
-%   laneFromTo(L1, _, E),
-%   laneFromTo(L2, _, E),
-%   enteredAtTime(V1, T1),
-%   enteredAtTime(V2, T2),
-%   T1 > T2,
-%   time(T),
-%   T >= T1,
-%   not leftLaneByTime(V2, L2, T).
-
-% violatesRightOfForRule(V1, V2, antiGridlock):-
-%   mustYieldToForRuleAtTime(V1, V2, antiGridlock, T),
-%   enteredByTime(V1, T).
-
-%-------------------------------------------------
-violatesRightOf(V1, V2):-
-  violatesRightOfForRule(V1, V2, _).
-
