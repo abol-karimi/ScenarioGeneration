@@ -71,8 +71,8 @@ scenario Main():
       require monitor ForbidEgoCollisionsMonitor(seed_config)
       require monitor ForbidNonegoCollisionsMonitor(seed_config)
       if caller_config['render_spectator']:
-        require monitor ShowIntersectionMonitor(seed_config['intersection'], label_lanes=False)
-        # require monitor LabelCarsMonitor()
+        require monitor ShowIntersectionMonitor(seed_config['intersection'], label_lanes=True)
+        require monitor LabelCarsMonitor()
 
     record final seed_config as config
     record final tuple(names) as names

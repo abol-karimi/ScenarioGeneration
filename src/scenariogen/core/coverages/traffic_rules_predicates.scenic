@@ -23,6 +23,7 @@ def to_coverage(events):
                           config['intersection'])
   atoms += [str(e) for e in events]
   instance = '.\n'.join(atoms)+'.\n'
+  print(instance)
  
   ctl = clingo.Control()
   ctl.add("base", [], instance+encoding)
