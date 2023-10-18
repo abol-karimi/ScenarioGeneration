@@ -13,24 +13,22 @@ SUT_config = {
   'stopping_speed': 0.5,
   'moving_speed': 0.6,
   'closedLoop': True,
-  'ego_module': 'experiments.agents.autopilot_dest',
+  'ego_module': 'experiments.agents.autopilot_route',
   'simulator': 'carla',
   'coverage_module': 'scenariogen.core.coverages.traffic_rules_predicates',
 }
 
-experiment_name = 'TrafficRulesPredicates'
 fuzzer_config = {
   'SUT_config': SUT_config,
-  'experiment_name': experiment_name,
   'seeds_folder': f'experiments/seeds_random',
-  'output_folder': f'experiments/predicate-coverage/{experiment_name}',
+  'output_folder': f'experiments/Atheris/output',
   'mutator': StructureAwareMutator(max_spline_knots_size=50,
                                    max_mutations_per_iteration=1,
                                    randomizer_seed=0),
   'crossOver': StructureAwareCrossOver(max_spline_knots_size=50,
                                        max_attempts=1,
                                        randomizer_seed=0),
-  'atheris_runs': 10,
+  'atheris_runs': 20,
   'max_seed_length': 1e+6, # 1 MB
 }
 
