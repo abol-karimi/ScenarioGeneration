@@ -65,7 +65,7 @@ def geometry_atoms(network, intersection_uid):
             f'isOnRightOf({right}, {left})' for left in lefts for right in rights]
     
     # Patching Scenic's geometry model
-    if intersection_uid == 'intersection1930':
+    if intersection_uid in {'intersection1930', 'intersection396'}:
         for lane in intersection.incomingLanes:
             geometry.append(f'hasStopSign({lane.uid})')
             

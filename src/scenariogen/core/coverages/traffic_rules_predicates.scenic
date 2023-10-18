@@ -52,6 +52,7 @@ monitor CoverageMonitor(coverageOut):
 
   for step in range(config['steps']):
     wait
+
   coverageOut.update(to_coverage(events))
   print('Coverage monitor last statement!')
   wait
