@@ -11,15 +11,25 @@ from scenariogen.simulators.carla.utils import signal_to_vehicleLightState, mane
 import scenariogen.simulators.carla.visualization as visualization
 
 
-behavior AutopilotRouteBehavior(maneuver_types):
-	# Use turn signals when turning:
-	simulation().tm.update_vehicle_lights(self.carlaActor, True)
-	# Follow traffic rules:
-	simulation().tm.ignore_signs_percentage(self.carlaActor, 0)
-	# No lane changes as we are interested in behavior at intersections:
-	simulation().tm.random_left_lanechange_percentage(self.carlaActor, 0)
-	simulation().tm.random_right_lanechange_percentage(self.carlaActor, 0)
-	simulation().tm.auto_lane_change(self.carlaActor, False)
+behavior AutopilotRouteBehavior(maneuver_types, config_override={}):
+	defaults = {
+		'auto_lane_change': Uniform(True, False),
+		'distance_to_leading_vehicle': Range(1, 10), # i.e. minimum moving distance
+		'ignore_lights_percentage': Range(0, 100),
+		'ignore_signs_percentage': Range(0, 100),
+		'random_left_lanechange_percentage': Range(0, 100),
+		'random_right_lanechange_percentage': Range(0, 100),
+		'update_vehicle_lights': Uniform(True, False),
+	}
+	config = {**defaults, **config_override}
+
+	simulation().tm.auto_lane_change(self.carlaActor, config['auto_lane_change'])
+	simulation().tm.distance_to_leading_vehicle(self.carlaActor, config['distance_to_leading_vehicle'])
+	simulation().tm.ignore_lights_percentage(self.carlaActor, config['ignore_lights_percentage'])
+	simulation().tm.ignore_signs_percentage(self.carlaActor, config['ignore_signs_percentage'])
+	simulation().tm.random_left_lanechange_percentage(self.carlaActor, config['random_left_lanechange_percentage'])
+	simulation().tm.random_right_lanechange_percentage(self.carlaActor, config['random_right_lanechange_percentage'])
+	simulation().tm.update_vehicle_lights(self.carlaActor, config['update_vehicle_lights'])
 
 	turns = [maneuverType_to_Autopilot_turn(m) for m in maneuver_types]
 	simulation().tm.set_route(self.carlaActor, turns)

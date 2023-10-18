@@ -24,6 +24,7 @@ from scenariogen.core.utils import extend_lane_backward, extend_lane_forward
 import random
 from scenariogen.simulators.carla.behaviors import AutopilotRouteBehavior
 from scenariogen.simulators.carla.utils import maneuverType_to_Autopilot_turn
+from experiments.agents.configs import VUT_config
 
 with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f:
   blueprint2dims = jsonpickle.decode(f.read())
@@ -77,7 +78,7 @@ scenario SeedScenario():
       with name 'ego',
       with physics True,
       with allowCollisions False,
-      with behavior AutopilotRouteBehavior(turns_from_route(lanes)),
+      with behavior AutopilotRouteBehavior(turns_from_route(lanes), config_override=VUT_config),
       with blueprint blueprint,
       with length blueprint2dims[blueprint]['length'],
       with width blueprint2dims[blueprint]['width'],
@@ -88,10 +89,16 @@ scenario SeedScenario():
     config['ego_route'] = route
     config['ego_init_progress_ratio'] = x0 / transform.axis.length
 
+    nonego_config = {
+      'auto_lane_change': False,
+      'random_left_lanechange_percentage': 0,
+      'random_right_lanechange_percentage': 0,
+    }
+
     for i in range(DiscreteRange(1, max_nonegos)):
       blueprint = Uniform(*blueprints)
       init_lane = Uniform(*intersection.incomingLanes, *intersection.outgoingLanes)
-      x0 = Uniform(1, init_lane.centerline.length-2)
+      x0 = Uniform(1, init_lane.centerline.length-3)
       ext = extend_lane_forward(init_lane, min_route_length - init_lane.centerline.length + x0, random)
       lanes = (init_lane,) + tuple(ext)
       turns = turns_from_route(lanes)
@@ -108,7 +115,7 @@ scenario SeedScenario():
         with name name,
         with physics True,
         with allowCollisions False,
-        with behavior AutopilotRouteBehavior(turns),
+        with behavior AutopilotRouteBehavior(turns, config_override=nonego_config),
         with blueprint blueprint,
         with length blueprint2dims[blueprint]['length'],
         with width blueprint2dims[blueprint]['width'],

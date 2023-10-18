@@ -47,7 +47,7 @@ class StructureAwareMutator():
                      self.remove_vehicle,
                      self.speedup,
                      self.slowdown,
-                    # self.change_ego_route,                 
+                    # self.change_ego_route,
                     ]
     with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f:
       self.blueprint2dims = jsonpickle.decode(f.read())
