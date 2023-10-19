@@ -4,6 +4,7 @@ Generates random seeds using simulation.
 2. A random number of non-egos with random routes through the intersection are chosen.
 3. All the vehicles (VUT and non-egos) are driven using the VUT's algorithm.
 """
+import pathlib
 import random
 import jsonpickle
 import scenic
@@ -33,6 +34,8 @@ def run(config):
         settings = simulator.world.get_settings()
         settings.no_rendering_mode = True
         simulator.world.apply_settings(settings)
+    
+    pathlib.Path(config['output_folder']).mkdir(parents=True, exist_ok=True)
         
     while seed_id < config['seeds_num']:
         try:

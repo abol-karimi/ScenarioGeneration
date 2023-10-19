@@ -6,16 +6,17 @@ matplotlib.use('TkAgg')
 
 from scenariogen.core.seed_generators import random as random_seed_generator
 
-config = {'scenario_path': 'experiments/seed_definitions/Town05_intersection396_Autopilot_random',
-          'output_folder': 'experiments/seeds_random',
+file_stem = '4way-stop_random'
+config = {'scenario_path': f'experiments/seed_definitions/{file_stem}',
+          'output_folder': f'experiments/seeds_{file_stem}',
           'render_ego': False,
-          'render_spectator': True,
+          'render_spectator': False,
           'PRNG_seed': 0,
           'spline_degree': 3,
           'spline_knots_size': 50,
           'scene_maxIterations': 50,
           'simulate_maxIterations': 1,
-          'seeds_num': 5,
+          'seeds_num': 10,
           }
 
 random_seed_generator.run(config)
