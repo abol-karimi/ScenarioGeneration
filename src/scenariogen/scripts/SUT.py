@@ -5,6 +5,7 @@ import jsonpickle
 # This project
 from scenariogen.core.scenario import Scenario
 from scenariogen.core.errors import EgoCollisionError, NonegoCollisionError
+from scenariogen.predicates.utils import predicates_of_logic_program
 
 
 parser = argparse.ArgumentParser(
@@ -25,6 +26,9 @@ parser.add_argument('--ego_module', default='experiments.agents.autopilot_route'
                     help='the scenic file containing the ego scenario')
 parser.add_argument('--coverage_module', default='scenariogen.core.coverages.traffic_rules_predicates',
                     help='the scenic file containing coverage monitor')
+parser.add_argument('--predicates_file',
+                    default='4way-stopOnAll.lp',
+                    help='the logic program whose predicates define the predicate-coverage space')
 parser.add_argument('--simulator', choices=['newtonian', 'carla'],
                     help='The simulator')
 duration = parser.add_mutually_exclusive_group()
@@ -83,3 +87,10 @@ except EgoCollisionError as err:
 else:
     coverage = sim_result.records['coverage']
     coverage.print()
+
+    with open(f"src/scenariogen/predicates/{args.predicates_file}", 'r') as f:
+        logic_program = f.read()
+
+    coverage_gap = coverage.predicate_gap(predicates_of_logic_program(logic_program))
+    print(f'\nPredicate coverage gap:')
+    coverage_gap.print()

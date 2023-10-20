@@ -10,13 +10,14 @@ from scenariogen.core.utils import classify_intersection
 from scenariogen.predicates.predicates import TemporalOrder, geometry_atoms
 from scenariogen.predicates.events import *
 from scenariogen.simulators.carla.utils import vehicleLightState_to_signal # TODO bring signal to driving domain
-from scenariogen.core.coverages.coverage import PredicateCoverage as Coverage
+from scenariogen.core.coverages.coverage import PredicateCoverage, PredicateSetCoverage
+Coverage = PredicateSetCoverage
 
 traffic_rules_file = classify_intersection(network, config['intersection']) + '.lp'
 with open(f"src/scenariogen/predicates/{traffic_rules_file}", 'r') as f:
   encoding = f.read()
 
-def to_coverage(events):
+def to_predicateCoverage(events):
   print('Computing predicate coverage...')
   atoms = []
   atoms += geometry_atoms(network,
@@ -28,7 +29,7 @@ def to_coverage(events):
   ctl.add("base", [], instance+encoding)
   ctl.ground([("base", [])], context=TemporalOrder())
   ctl.configuration.solve.models = "1"
-  coverage = Coverage([])
+  coverage = PredicateCoverage([])
   with ctl.solve(yield_=True) as handle:
     for model in handle:
       for atom in model.symbols(atoms=True):
@@ -53,7 +54,7 @@ monitor CoverageMonitor(coverageOut):
   for step in range(config['steps']):
     wait
 
-  coverageOut.update(to_coverage(events))
+  coverageOut.add(to_predicateCoverage(events))
   print('Coverage monitor last statement!')
   wait
   print('Should not reach here!')
