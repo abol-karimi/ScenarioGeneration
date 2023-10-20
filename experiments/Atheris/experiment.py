@@ -6,7 +6,7 @@ from scenariogen.core.crossovers import StructureAwareCrossOver
 from scenariogen.core.fuzzers.atheris import AtherisFuzzer
 
 SUT_config = {
-  'render_spectator': False,
+  'render_spectator': True,
   'render_ego': False,
   'weather': 'CloudySunset',
   'arrival_distance': 4,
@@ -28,7 +28,7 @@ fuzzer_config = {
   'crossOver': StructureAwareCrossOver(max_spline_knots_size=50,
                                        max_attempts=1,
                                        randomizer_seed=0),
-  'atheris_runs': 20,
+  'atheris_runs': 5,
   'max_seed_length': 1e+6, # 1 MB
 }
 

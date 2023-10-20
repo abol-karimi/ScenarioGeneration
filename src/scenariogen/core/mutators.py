@@ -2,14 +2,11 @@ from random import Random
 import jsonpickle
 import geomdl
 from geomdl import BSpline
-import numpy as np
 import shapely
-from scenic.domains.driving.roads import LinearElement, Network
-from scenic.core.regions import PolygonalRegion, PolylineRegion
-from scenic.core.vectors import Vector
+from scenic.domains.driving.roads import Network
 
 # This project
-import src.scenariogen.core.utils as utils
+from scenariogen.core.utils import extend_lane_backward, extend_lane_forward
 from src.scenariogen.core.signals import SignalType
 from scenariogen.core.fuzz_input import FuzzInput, Spline
 
@@ -38,19 +35,24 @@ class StructureAwareMutator():
     self.randomizer_seed = randomizer_seed
 
     self.random = Random(randomizer_seed)
-    self.mutators = [self.copy_forward,
-                     self.copy_backward,
-                     self.move_forward,
-                     self.move_backward,
-                     self.change_route,
-                     self.copy_to_route,
-                     self.remove_vehicle,
-                     self.speedup,
-                     self.slowdown,
-                    # self.change_ego_route,
-                    ]
+    self.mutators = [
+      self.copy_forward,
+      self.copy_backward,
+      self.move_forward,
+      self.move_backward,
+      self.change_route,
+      self.copy_to_route,
+      self.remove_vehicle,
+      self.speedup,
+      self.slowdown,
+      self.mutate_ego_route,
+    ]
     with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f:
       self.blueprint2dims = jsonpickle.decode(f.read())
+    
+    self.min_ego_distance_to_intersection = 20
+    self.min_route_length = 200
+
   @classmethod
   def get_network(cls, fuzz_input):
     carla_map = fuzz_input.config['carla_map']
@@ -381,9 +383,36 @@ class StructureAwareMutator():
     return mutant
   
   def mutate_ego_route(self, fuzz_input):
-    """Used for closed-loop fuzzing."""
-    return fuzz_input
- 
+    """Change VUT's initial state or expected route."""
+    # Choose a random maneuver through the intersection
+    network = self.get_network(fuzz_input)
+    intersection = network.elements[fuzz_input.config['intersection']]
+    lanes = [self.random.choice(intersection.incomingLanes)]
+    if lanes[0].centerline.length < self.min_ego_distance_to_intersection:
+      print('Incoming lane is too short, need to extend it backwards...')
+      lanes = extend_lane_backward(lanes[0], self.min_ego_distance_to_intersection - lanes[0].centerline.length, self.random)\
+              + lanes
+    route_length = sum(l.centerline.length for l in lanes)
+    x0 = self.random.uniform(1, route_length - self.min_ego_distance_to_intersection)
+    if route_length - x0 < self.min_route_length:
+      lanes.extend(extend_lane_forward(lanes[-1], self.min_route_length-route_length+x0, self.random))
+    route = tuple(l.uid for l in lanes)
+    init_progress_ratio = x0 / sum(l.centerline.length for l in lanes)
+    
+    mutant = FuzzInput(config={**fuzz_input.config,
+                               'ego_route': route,
+                               'ego_init_progress_ratio': init_progress_ratio
+                              },
+                       blueprints=fuzz_input.blueprints,
+                       routes=fuzz_input.routes,
+                       footprints=fuzz_input.footprints,
+                       timings=fuzz_input.timings,
+                       signals=fuzz_input.signals
+                       )
+
+    print(f'Mutation: Ego route is now {route} with initial progress ratio {init_progress_ratio}.')
+
+    return mutant 
 
   def mutate(self, fuzz_input):
     mutant = fuzz_input
