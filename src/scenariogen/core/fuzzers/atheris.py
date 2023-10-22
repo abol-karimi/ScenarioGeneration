@@ -116,32 +116,13 @@ class CrossOverCallback:
 
 #-----------------------------------------------------------
 #---------- SUT wrapper to make an Atheris target ----------
-#-----------------------------------------------------------
+#----------------------------------------------------------- 
 class SUTCallback:
-  def __init__(self, config, comm):
-    self.config = config
-    self.comm = comm
-    self.SUT_config = config['SUT_config']
-    self.ego_collisions_folder = f"{config['output_folder']}/ego-collisions"
-    self.predicate_coverage_folder = f"{config['output_folder']}/predicate-coverage"
-    self.coverage_sum = None
-    self.initial_iteration = 0
-    self.current_iteration = 0
+  def __init__(self, config):
+    self.config = config # SUT parameters (not inputs)
   
-  def get_state(self):
-    return {'coverage_sum': self.coverage_sum,
-            'iteration': self.current_iteration}
-  
-  def set_state(self, state):
-    self.coverage_sum = state['coverage_sum']
-    self.initial_iteration = state['iteration']
-    self.current_iteration = self.initial_iteration
-
   @atheris.instrument_func
   def __call__(self, *args: Any, **kwds: Any) -> Any:
-    self.current_iteration += 1
-    print(f'--------------Iteration: {self.current_iteration}--------------')
-
     input_bytes = args[0]
 
     if len(input_bytes) == 0:
@@ -152,49 +133,10 @@ class SUTCallback:
     input_str = fdp.ConsumeUnicode(sys.maxsize)
     input_str = '{' + input_str
 
-    # Skip mutant if structurally invalid.
-    try:
-      fuzz_input = jsonpickle.decode(input_str)
-    except Exception as e:
-      print(f'{e} ...in decoding the fuzz_input: ')
-      print(input_str)
-      exit(1)
+    fuzz_input = jsonpickle.decode(input_str)
+    Scenario(fuzz_input).run(self.config)
+    print(f'Simulation of SUT finished.')
 
-    try:
-      validate_input(fuzz_input)
-    except InvalidFuzzInputError as err:
-      print(err.msg)
-      exit(1)
-    
-    try:
-      sim_result = Scenario(fuzz_input).run(self.SUT_config)
-      coverage = sim_result.records['coverage']
-    except NonegoCollisionError as err:
-      print(f'Collision between nonegos {err.nonego} and {err.other}! We skip predicate-coverage computation.')
-    except EgoCollisionError as err:
-      print(f'Ego collided with {err.other}. We save the fuzz input to the ego-collisions corpus.')
-      with open(f'{self.ego_collisions_folder}/{self.current_iteration}.json', 'w') as f:
-        f.write(jsonpickle.encode(fuzz_input, indent=1))
-    except Exception as e:
-      print(e)
-    else:
-      if self.coverage_sum is None:
-        self.coverage_sum = type(coverage)([])
-
-      new_coverage = coverage - self.coverage_sum
-
-      if len(new_coverage) > 0:
-        print('Found a fuzz-input with new coverage:')
-        new_coverage.print()
-        print('Adding the fuzz-input to the predicate-coverage corpus...')
-        with open(f'{self.predicate_coverage_folder}/{self.current_iteration}.json', 'w') as f:
-          f.write(jsonpickle.encode(fuzz_input))
-        self.coverage_sum.update(coverage)
-      else:
-        print('Input did not yield new coverage.')
-    
-    if self.current_iteration == self.initial_iteration + self.config['atheris_runs']:
-      self.comm.put(self.get_state())
 
 #------------------------------------
 #---------- Atheris wrapper ---------
@@ -209,11 +151,10 @@ class AtherisFuzzer:
     self.libfuzzer_config = [f"-atheris_runs={config['atheris_runs']}",
                              f"-max_len={config['max_seed_length']}",
                              f"-rss_limit_mb=4096",
-                             (self.output_path/'code-coverage').as_posix(),
+                             (self.output_path/'fuzz-inputs').as_posix(),
                              config['seeds_folder'],
                             ]
-    self.comm = Queue(maxsize=1)
-    self.SUT = SUTCallback(self.config, self.comm)
+    self.SUT = SUTCallback(self.config['SUT_config'])
 
   def run(self):
     state_file = self.output_path/'fuzzer_state.json'
@@ -222,9 +163,8 @@ class AtherisFuzzer:
         fuzzer_state = jsonpickle.decode(f.read())
         self.load_state(fuzzer_state)
     else: # start
-      (self.output_path/'code-coverage').mkdir(parents=True, exist_ok=True)
-      (self.output_path/'predicate-coverage').mkdir(parents=True, exist_ok=True)
-      (self.output_path/'ego-collisions').mkdir(parents=True, exist_ok=True)
+      (self.output_path/'fuzz-inputs').mkdir(parents=True, exist_ok=True)
+      (self.output_path/'bugs').mkdir(parents=True, exist_ok=True)
 
     def _run():
       atheris.Setup(sys.argv + self.libfuzzer_config,
@@ -237,17 +177,14 @@ class AtherisFuzzer:
     p = Process(target=_run, args=())
     p.start()
     p.join()
-    self.SUT.set_state(self.comm.get())
   
   def save_state(self):
     with open(self.output_path/'fuzzer_state.json', 'w') as f:
       f.write(jsonpickle.encode({
-        'SUT_state': self.SUT.get_state(),
         'mutator_state': self.mutator.get_state(),
         'crossOver_state': self.crossOver.get_state()
       }))
    
   def load_state(self, state):
-    self.SUT.set_state(state['SUT_state'])
     self.mutator.set_state(state['mutator_state'])
     self.crossOver.set_state(state['crossOver_state'])

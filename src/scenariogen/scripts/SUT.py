@@ -24,7 +24,7 @@ parser.add_argument('--openLoop', action='store_true',
                     help='simulate a VUT')
 parser.add_argument('--ego_module', default='experiments.agents.autopilot_route',
                     help='the scenic file containing the ego scenario')
-parser.add_argument('--coverage_module', default='scenariogen.core.coverages.traffic_rules_predicates',
+parser.add_argument('--coverage_module',
                     help='the scenic file containing coverage monitor')
 parser.add_argument('--predicates_file',
                     default='4way-stopOnAll.lp',
@@ -76,7 +76,6 @@ config['ego_module'] = args.ego_module
 config['coverage_module'] = args.coverage_module
 config['render_spectator'] = args.render_spectator
 config['render_ego'] = args.render_ego
-config['seed_path'] = args.seed_path
 
 try:
     sim_result = Scenario(seed).run(config)
@@ -85,12 +84,13 @@ except NonegoCollisionError as err:
 except EgoCollisionError as err:
     print(f'Ego collided with {err.other}.')
 else:
-    coverage = sim_result.records['coverage']
-    coverage.print()
+    if args.coverage_module:
+        coverage = sim_result.records['coverage']
+        coverage.print()
 
-    with open(f"src/scenariogen/predicates/{args.predicates_file}", 'r') as f:
-        logic_program = f.read()
+        with open(f"src/scenariogen/predicates/{args.predicates_file}", 'r') as f:
+            logic_program = f.read()
 
-    coverage_gap = coverage.predicate_gap(predicates_of_logic_program(logic_program))
-    print(f'\nPredicate coverage gap:')
-    coverage_gap.print()
+        coverage_gap = coverage.predicate_gap(predicates_of_logic_program(logic_program))
+        print(f'\nPredicate coverage gap:')
+        coverage_gap.print()

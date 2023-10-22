@@ -120,7 +120,9 @@ def seed_from_sim(sim_result, timestep, degree=3, knots_size=20, plot_splines=Fa
             signals_states[j].append((i*timestep, s))
     signals_events = []
     for signal_states in signals_states:
-        signal_events = (signal_states[0],) if signal_states[0][1] == signal_states[1][1] else ()
+        s0 = signal_states[0][1]
+        s1 = signal_states[1][1]
+        signal_events = (signal_states[0],) if s0 == s1 else () # fake signal event at the beginning
         signal_events = signal_events + tuple((tii,sii) for (ti,si),(tii,sii) in pairwise(signal_states) if sii != si)
         signals_events.append(signal_events)
     

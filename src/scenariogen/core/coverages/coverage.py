@@ -80,8 +80,8 @@ class StatementCoverage:
   Coverage of statements, i.e. considering predicates together with their argument values.
   """
 
-  def __init__(self) -> None:
-    self.pred2args = {}
+  def __init__(self, pred2args) -> None:
+    self.pred2args = {pred:args for pred,args in pred2args}
   
   def add(self, pred, args):
     if pred in self.pred2args:

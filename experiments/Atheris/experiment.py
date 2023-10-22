@@ -15,12 +15,12 @@ SUT_config = {
   'closedLoop': True,
   'ego_module': 'experiments.agents.autopilot_route',
   'simulator': 'carla',
-  'coverage_module': 'scenariogen.core.coverages.traffic_rules_predicates',
+  'coverage_module': None,
 }
 
 fuzzer_config = {
   'SUT_config': SUT_config,
-  'seeds_folder': f'experiments/seeds_random',
+  'seeds_folder': f'experiments/seeds_manual',
   'output_folder': f'experiments/Atheris/output',
   'mutator': StructureAwareMutator(max_spline_knots_size=50,
                                    max_mutations_per_iteration=1,

@@ -25,8 +25,9 @@ if config['closedLoop']:
 
 nonegos_scenario = NonegosScenario(config)
 
-coverage_module = importlib.import_module(config['coverage_module'])
-coverage = coverage_module.Coverage([])
+if config['coverage_module']:
+  coverage_module = importlib.import_module(config['coverage_module'])
+  coverage = coverage_module.Coverage([])
 
 scenario Main():
   setup:
@@ -34,14 +35,14 @@ scenario Main():
       p = intersection.polygon.centroid
       ego = new Debris at p.x@p.y
 
-    require monitor coverage_module.CoverageMonitor(coverage)
+    if config['coverage_module']:
+      require monitor coverage_module.CoverageMonitor(coverage)
+      record final coverage as coverage
 
     if config['simulator'] == 'carla':
       require monitor ForbidEgoCollisionsMonitor(config)
       if config['render_spectator']:
         require monitor ShowIntersectionMonitor(config['intersection'], label_lanes=True)
-
-    record final coverage as coverage
 
   compose:
     if config['simulator'] == 'carla':
