@@ -1,5 +1,9 @@
 #!/usr/bin/env python3.8
 
+import jsonpickle
+import time
+from pathlib import Path
+
 # This project
 from scenariogen.core.mutators import StructureAwareMutator
 from scenariogen.core.crossovers import StructureAwareCrossOver
@@ -33,8 +37,26 @@ fuzzer_config = {
 }
 
 atheris_fuzzer = AtherisFuzzer(fuzzer_config)
-atheris_fuzzer.run()
-atheris_fuzzer.save_state()
+
+report_file = Path(fuzzer_config['output_folder'])/'report.json'
+if report_file.is_file():
+  with open(report_file, 'r') as f:
+    report = jsonpickle.decode(f.read())
+    atheris_state = report[-1][1]
+else:
+  report = []
+  atheris_state = None
+
+for i in range(2):
+  start = time.time()
+  atheris_state = atheris_fuzzer.run(atheris_state=atheris_state)
+  exe_time = time.time() - start
+  
+  report.append((exe_time, atheris_state))
+
+  with open(f"{fuzzer_config['output_folder']}/report.json", 'w') as f:
+    f.write(jsonpickle.encode(report))
+
 
 
 

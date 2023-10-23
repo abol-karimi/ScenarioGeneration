@@ -118,8 +118,9 @@ class CrossOverCallback:
 #---------- SUT wrapper to make an Atheris target ----------
 #----------------------------------------------------------- 
 class SUTCallback:
-  def __init__(self, config):
+  def __init__(self, config, crashesOut):
     self.config = config # SUT parameters (not inputs)
+    self.crashesOut = crashesOut # report crash-causing fuzz inputs
   
   @atheris.instrument_func
   def __call__(self, *args: Any, **kwds: Any) -> Any:
@@ -134,8 +135,10 @@ class SUTCallback:
     input_str = '{' + input_str
 
     fuzz_input = jsonpickle.decode(input_str)
-    Scenario(fuzz_input).run(self.config)
-    print(f'Simulation of SUT finished.')
+    try:
+      Scenario(fuzz_input).run(self.config)
+    except Exception as e:
+      self.crashesOut.put((fuzz_input, e))
 
 
 #------------------------------------
@@ -147,44 +150,56 @@ class AtherisFuzzer:
     self.output_path = Path(config['output_folder'])
     self.mutator = MutatorCallback(config['mutator'])
     self.crossOver = CrossOverCallback(config['crossOver'])
-
+    self.SUT_crashes = Queue()
     self.libfuzzer_config = [f"-atheris_runs={config['atheris_runs']}",
+                             f"-artifact_prefix={self.output_path/'bugs'}/",
                              f"-max_len={config['max_seed_length']}",
+                             f"-timeout=120", # scenarios taking more than 2 minutes are considered as bugs
+                             f"-report_slow_units=60", # scenarios taking more than a minute are considered slow
                              f"-rss_limit_mb=4096",
                              (self.output_path/'fuzz-inputs').as_posix(),
                              config['seeds_folder'],
                             ]
-    self.SUT = SUTCallback(self.config['SUT_config'])
+    self.SUT = SUTCallback(self.config['SUT_config'], self.SUT_crashes)
 
-  def run(self):
-    state_file = self.output_path/'fuzzer_state.json'
-    if state_file.is_file(): #resume
-      with open(state_file, 'r') as f:
-        fuzzer_state = jsonpickle.decode(f.read())
-        self.load_state(fuzzer_state)
+  def run(self, atheris_state=None):
+    if atheris_state: # resume
+      self.set_state(atheris_state)
     else: # start
       (self.output_path/'fuzz-inputs').mkdir(parents=True, exist_ok=True)
-      (self.output_path/'bugs').mkdir(parents=True, exist_ok=True)
+      for path in (self.output_path/'fuzz-inputs').glob('*'):
+        path.unlink()
 
-    def _run():
+      (self.output_path/'bugs').mkdir(parents=True, exist_ok=True)
+      for path in (self.output_path/'bugs').glob('*'):
+        path.unlink()
+
+    def target():
       atheris.Setup(sys.argv + self.libfuzzer_config,
-                    self.SUT,
-                    custom_mutator=self.mutator,
-                    custom_crossover=self.crossOver
-                    )
+                self.SUT,
+                custom_mutator=self.mutator,
+                custom_crossover=self.crossOver
+                )
       atheris.Fuzz()
 
-    p = Process(target=_run, args=())
+    p = Process(target=target, args=())
     p.start()
     p.join()
+
+    return self.get_state()
   
-  def save_state(self):
-    with open(self.output_path/'fuzzer_state.json', 'w') as f:
-      f.write(jsonpickle.encode({
-        'mutator_state': self.mutator.get_state(),
-        'crossOver_state': self.crossOver.get_state()
-      }))
+  def get_state(self):
+    SUT_crashes = []
+    while not self.SUT_crashes.empty():
+      SUT_crashes.append(self.SUT_crashes.get())
+
+    state = {
+      'SUT_crashes': tuple(SUT_crashes),
+      'mutator_state': self.mutator.get_state(),
+      'crossOver_state': self.crossOver.get_state()
+      }
+    return state
    
-  def load_state(self, state):
+  def set_state(self, state):
     self.mutator.set_state(state['mutator_state'])
     self.crossOver.set_state(state['crossOver_state'])
