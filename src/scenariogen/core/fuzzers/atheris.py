@@ -7,7 +7,7 @@ from multiprocessing import Process, Queue
 
 # This project
 from src.scenariogen.core.scenario import Scenario
-from scenariogen.core.errors import EgoCollisionError, NonegoCollisionError, InvalidFuzzInputError
+from scenariogen.core.errors import InvalidFuzzInputError
 from scenariogen.core.scenario import Scenario
 from scenariogen.core.fuzz_input import validate_input
 
@@ -33,27 +33,9 @@ class MutatorCallback:
     input_str = fdp.ConsumeUnicode(sys.maxsize)
     input_str = '{' + input_str
 
-    # Skip mutant if structurally invalid.
-    try:
-      decoded = jsonpickle.decode(input_str)
-    except Exception as e:
-      print(f'{e} ...in decoding the fuzz_input:')
-      print(input_str)
-      return
-
-    try:
-      validate_input(decoded)
-    except InvalidFuzzInputError as err:
-      print(f'Invalid input to mutator: {err}')
-      raise err
+    decoded = jsonpickle.decode(input_str)
 
     mutant = self.mutator.mutate(decoded) # valid in, valid out
-
-    try:
-      validate_input(mutant)
-    except InvalidFuzzInputError as err:
-      print(f'Invalid mutant: {err}')
-      raise err
 
     return bytes(jsonpickle.encode(mutant), encoding='utf-8')
 
@@ -77,40 +59,14 @@ class CrossOverCallback:
     fdp1 = atheris.FuzzedDataProvider(data1)
     input_str1 = fdp1.ConsumeUnicode(sys.maxsize)
     input_str1 = '{' + input_str1
-
-    # Skip seed if structurally invalid.
-    try:
-      decoded1 = jsonpickle.decode(input_str1)
-      validate_input(decoded1)
-    except InvalidFuzzInputError as err:
-      print(f'Invalid input to crossover: {err}')
-      raise err
-    except Exception as e:
-      print(f'{e} ...in decoding the seed:')
-      print(input_str1)
-      return
+    decoded1 = jsonpickle.decode(input_str1)
 
     fdp2 = atheris.FuzzedDataProvider(data2)
     input_str2 = fdp2.ConsumeUnicode(sys.maxsize)
     input_str2 = '{' + input_str2
-    try:
-      decoded2 = jsonpickle.decode(input_str2)
-      validate_input(decoded2)
-    except InvalidFuzzInputError as err:
-      print(f'Invalid input to crossover: {err}')
-      raise err
-    except Exception as e:
-      print(f'{e} ...in decoding the seed:')
-      print(input_str2)
-      return
+    decoded2 = jsonpickle.decode(input_str2)
 
     crossover = self.crossOver.cross_over(decoded1, decoded2) # valid in, valid out
-
-    try:
-      validate_input(crossover)
-    except InvalidFuzzInputError as err:
-      print(f'Invalid crossover: {err}')
-      raise err
 
     return bytes(jsonpickle.encode(crossover), encoding='utf-8')
 
