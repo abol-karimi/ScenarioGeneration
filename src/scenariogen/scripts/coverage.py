@@ -20,7 +20,7 @@ args = parser.parse_args()
 
 config = {
   'ego_module': args.ego_module,
-  'coverage_module': 'scenariogen.core.coverages.traffic_rules_predicateSets',
+  'coverage_module': 'scenariogen.core.coverages.traffic_rules_predicates',
   'arrival_distance': args.arrival_distance,
   'stopping_speed': args.stopping_speed,
   'moving_speed': args.moving_speed,

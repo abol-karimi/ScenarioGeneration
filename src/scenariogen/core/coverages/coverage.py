@@ -5,6 +5,7 @@ import jsonpickle
 
 from scenariogen.core.scenario import Scenario
 from scenariogen.core.errors import EgoCollisionError, NonegoCollisionError
+from scenic.core.simulators import SimulationCreationError
 
 class PredicateCoverage:
   """
@@ -119,7 +120,7 @@ class StatementCoverage:
 
 def from_corpus(corpus_folder, config):
   coverage_sum = None
-  pathlist = list(Path(corpus_folder).glob('*.json'))
+  pathlist = list(Path(corpus_folder).glob('*'))
   pathlist_sorted = sorted(pathlist, key=os.path.getctime)
 
   for path in pathlist_sorted:
@@ -137,6 +138,8 @@ def from_corpus(corpus_folder, config):
       print(f'Collision between {err.nonego} and {err.other}.')
     except EgoCollisionError as err:
       print(f'Ego collided with {err.other}.')
+    except SimulationCreationError as e:
+      print(e)
     else:
       if not sim_result:
         print(f'Simulation rejected!')

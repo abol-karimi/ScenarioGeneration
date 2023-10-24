@@ -77,8 +77,7 @@ class SUTCallback:
   def __init__(self, config, crashesOut):
     self.config = config # SUT parameters (not inputs)
     self.crashesOut = crashesOut # report crash-causing fuzz inputs
-  
-  @atheris.instrument_func
+
   def __call__(self, *args: Any, **kwds: Any) -> Any:
     input_bytes = args[0]
 
@@ -112,7 +111,7 @@ class AtherisFuzzer:
                              f"-max_len={config['max_seed_length']}",
                              f"-timeout=120", # scenarios taking more than 2 minutes are considered as bugs
                              f"-report_slow_units=60", # scenarios taking more than a minute are considered slow
-                             f"-rss_limit_mb=4096",
+                             f"-rss_limit_mb=16384",
                              (self.output_path/'fuzz-inputs').as_posix(),
                              config['seeds_folder'],
                             ]
@@ -131,6 +130,7 @@ class AtherisFuzzer:
         path.unlink()
 
     def target():
+      atheris.instrument_all()
       atheris.Setup(sys.argv + self.libfuzzer_config,
                 self.SUT,
                 custom_mutator=self.mutator,
