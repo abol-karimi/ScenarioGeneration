@@ -1,3 +1,4 @@
+import copy
 from random import Random
 import jsonpickle
 import geomdl
@@ -281,13 +282,12 @@ class StructureAwareMutator():
 
     return mutant
 
-
   def speedup_with_params(self, fuzz_input, nonego_idx, interval, factor):
     timing = fuzz_input.timings[nonego_idx]
 
     spline = BSpline.Curve(normalize_kv = False)
     spline.degree = timing.degree
-    spline.ctrlpts = timing.ctrlpts
+    spline.ctrlpts = copy.deepcopy(timing.ctrlpts) # fuzz_input should not be mutated
     spline.knotvector = timing.knotvector
 
     # Move the corresponding controlpoints vertically up
@@ -381,6 +381,36 @@ class StructureAwareMutator():
     print(f'Slowed down nonego {nonego_idx} over interval {(a, b)} by a factor of {factor}.')
 
     return mutant
+  
+  def add_signal(self, fuzz_input):
+    # Choose random paramters
+    nonego_idx = self.random.randrange(len(fuzz_input.routes))
+    timing = fuzz_input.timings[nonego_idx]
+    t = self.random.uniform(0, timing.ctrlpts[-1][0])
+    signal = self.random.choice(tuple(SignalType))
+    
+    # Mutate
+    mutant = self.add_signal_with_params(fuzz_input, nonego_idx, t, signal)
+
+    print(f'Nonego {nonego_idx} signals {signal} at time {t}.')
+
+    return mutant
+  
+  def add_signal_with_params(self, fuzz_input, nonego_idx, event_time, new_signal):
+    # signal = fuzz_input.signals[nonego_idx]
+    # t2s = {t:s for t,s in signal}
+    # if event_time in t2s:
+    #   t2s[event_time] = new_signal
+    #   signal = tuple(t2s)
+    # else:
+
+    return
+  
+  def remove_signal(self, fuzz_input):
+    return
+  
+  def remove_signal(self, fuzz_input, nonego_idx, event_time):
+    return
   
   def mutate_ego_route(self, fuzz_input):
     """Change VUT's initial state or expected route."""

@@ -36,10 +36,7 @@ class PredicateCoverage:
   
   def __hash__(self):
     return hash(repr(self.predicates))
-  
-  def predicate_gap(self, predicate_universe):
-    return predicate_universe - self
-  
+
   def print(self):
     for pred in self.predicates:
       print(f'\t{pred}')
@@ -68,8 +65,8 @@ class PredicateSetCoverage:
   def __len__(self):
     return len(self.predicateCoverages)
   
-  def predicate_gap(self, predicate_universe):
-    return predicate_universe - reduce(lambda x,y: x+y, self.predicateCoverages)
+  def to_predicateCoverage(self):
+    return reduce(lambda x,y: x+y, self.predicateCoverages)
 
   def print(self):
     for cov in self.predicateCoverages:
@@ -108,8 +105,11 @@ class StatementCoverage:
   def __len__(self):
     return sum(len(args) for args in self.pred2args.values())
 
-  def predicate_gap(self, predicate_universe):
-    return predicate_universe - PredicateCoverage(self.pred2args.keys())
+  def to_predicateCoverage(self):
+    return PredicateCoverage(self.pred2args.keys())
+  
+  def to_predicateSetCoverage(self):
+    return PredicateSetCoverage((self.to_predicateCoverage(),))
     
   def print(self):
     for pred_name in self.pred2args:
@@ -119,11 +119,9 @@ class StatementCoverage:
 
 
 def from_corpus(corpus_folder, config):
-  coverage_sum = None
-  pathlist = list(Path(corpus_folder).glob('*'))
-  pathlist_sorted = sorted(pathlist, key=os.path.getctime)
+  input2coverage = {}
 
-  for path in pathlist_sorted:
+  for path in Path(corpus_folder).glob('*'):
     with open(path, 'r') as f:
       fuzz_input = jsonpickle.decode(f.read())
     try:
@@ -145,10 +143,7 @@ def from_corpus(corpus_folder, config):
         print(f'Simulation rejected!')
       elif sim_result.records['coverage'] is None:
         print(f'Simulation failed to report coverage!')
-      elif coverage_sum is None:
-        coverage_sum = type(sim_result.records['coverage'])([])
-        coverage_sum.update(sim_result.records['coverage'])
       else:
-        coverage_sum.update(sim_result.records['coverage'])
+        input2coverage[path] = sim_result.records['coverage']
 
-  return coverage_sum
+  return input2coverage

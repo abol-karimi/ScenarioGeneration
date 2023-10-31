@@ -115,19 +115,11 @@ class AtherisFuzzer:
                              (self.output_path/'fuzz-inputs').as_posix(),
                              config['seeds_folder'],
                             ]
-    self.SUT = SUTCallback(self.config['SUT_config'], self.SUT_crashes)
+    self.SUT = SUTCallback(config['SUT_config'], self.SUT_crashes)
 
   def run(self, atheris_state=None):
     if atheris_state: # resume
       self.set_state(atheris_state)
-    else: # start
-      (self.output_path/'fuzz-inputs').mkdir(parents=True, exist_ok=True)
-      for path in (self.output_path/'fuzz-inputs').glob('*'):
-        path.unlink()
-
-      (self.output_path/'bugs').mkdir(parents=True, exist_ok=True)
-      for path in (self.output_path/'bugs').glob('*'):
-        path.unlink()
 
     def target():
       atheris.instrument_all()
