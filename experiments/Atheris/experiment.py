@@ -33,36 +33,37 @@ atheris_fuzzer = AtherisFuzzer(fuzzer_config)
 
 output_path = Path(fuzzer_config['output_folder'])
 fuzz_inputs_path = output_path/'fuzz-inputs'
-fuzz_inputs_path.mkdir(parents=True, exist_ok=True)
 bugs_path = output_path/'bugs'
-bugs_path.mkdir(parents=True, exist_ok=True)
 
 # Decide to resume or start
 results_file = output_path/'results.json'
-fuzz_inputs = set((output_path/'fuzz-inputs').glob('*'))
 if results_file.is_file():
+  fuzz_inputs = set((output_path/'fuzz-inputs').glob('*'))
   with open(results_file, 'r') as f:
     results = jsonpickle.decode(f.read())
-    merged_results = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements'],
-                                           'atheris_state': r2['atheris_state']
-                                          },
-                            results)
-    new_fuzz_inputs = [m[1] for m in merged_results['measurements']]
-    results_fuzz_inputs = reduce(lambda i1,i2: i1.union(i2),
-                           new_fuzz_inputs)
-    print(results_fuzz_inputs)
-    print(fuzz_inputs)
-    if results_fuzz_inputs != fuzz_inputs:
-      print('Cannot resume Atheris: the fuzz-inputs in the folder do not match the fuzz-inputs of results.json.')
-      exit(1)
-    atheris_state = results[-1]['atheris_state']
+  merged_results = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements'],
+                                          'atheris_state': r2['atheris_state']
+                                        },
+                          results)
+  new_fuzz_inputs = [m[1] for m in merged_results['measurements']]
+  results_fuzz_inputs = reduce(lambda i1,i2: i1.union(i2),
+                          new_fuzz_inputs)
+  print(results_fuzz_inputs)
+  print(fuzz_inputs)
+  if results_fuzz_inputs != fuzz_inputs:
+    print('Cannot resume Atheris: the fuzz-inputs in the folder do not match the fuzz-inputs of results.json.')
+    exit(1)
+  atheris_state = results[-1]['atheris_state']
 else:
-  results = []
-  atheris_state = None
+  fuzz_inputs_path.mkdir(parents=True, exist_ok=True)
+  bugs_path.mkdir(parents=True, exist_ok=True)
   for path in fuzz_inputs_path.glob('*'):
     path.unlink()
   for path in bugs_path.glob('*'):
     path.unlink()
+  fuzz_inputs = set()
+  results = []
+  atheris_state = None
 
 # Set up a measurement loop
 measurements = []
@@ -80,7 +81,7 @@ try:
 except Exception as e:
   print(f'Exception of type {type(e)} in atheris fuzzer: {e}.')
 
-time.sleep(period)
+time.sleep(period*2)
 tl.stop()
 results.append({'measurements': measurements,
                 'atheris_state': atheris_state
