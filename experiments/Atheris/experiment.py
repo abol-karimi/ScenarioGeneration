@@ -48,8 +48,6 @@ if results_file.is_file():
   new_fuzz_inputs = [m[1] for m in merged_results['measurements']]
   results_fuzz_inputs = reduce(lambda i1,i2: i1.union(i2),
                           new_fuzz_inputs)
-  print(results_fuzz_inputs)
-  print(fuzz_inputs)
   if results_fuzz_inputs != fuzz_inputs:
     print('Cannot resume Atheris: the fuzz-inputs in the folder do not match the fuzz-inputs of results.json.')
     exit(1)
@@ -73,7 +71,9 @@ period = 60 # seconds
 def measure_progress():
   new_fuzz_inputs = set((output_path/'fuzz-inputs').glob('*')) - fuzz_inputs
   fuzz_inputs.update(new_fuzz_inputs)
-  measurements.append((period, new_fuzz_inputs))
+  measurements.append({'exe_time': period,
+                       'new_fuzz_inputs': new_fuzz_inputs,
+                      })
 
 try:
   tl.start(block=False)
@@ -81,7 +81,7 @@ try:
 except Exception as e:
   print(f'Exception of type {type(e)} in atheris fuzzer: {e}.')
 
-time.sleep(period*2)
+time.sleep(period)
 tl.stop()
 results.append({'measurements': measurements,
                 'atheris_state': atheris_state

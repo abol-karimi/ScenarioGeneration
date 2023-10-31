@@ -20,23 +20,31 @@ config = {
   **coverage_config,
 }
 
+with open(output_path/'coverage_report.json', 'r') as f:
+  cov_statements = f.read(jsonpickle.decode(f.read()))
 input2statementCoverage = from_corpus(output_path/'fuzz-inputs', config)
+input2predicateSetCoverage = {i: c.to_predicateSetCoverage() for i,c in input2statementCoverage.items()}
+input2predicateCoverage = {i: c.to_predicateCoverage() for i,c in input2statementCoverage.items()}
 
 with open(output_path/'report.json', 'r') as f:
   report = jsonpickle.decode(f.read())
 
-for exe_time, _, new_fuzz_inputs in report[1:]:
+ts = [report[0][0]]
+for exe_time, _, _ in report[1:]:
   ts.append(ts[-1] + exe_time)
 
-cov_statements = [report[0][2]]
+cov_statement = [report[0][2]]
 for _, _, new_fuzz_inputs in report[1:]:
-  cov = cov_statements[-1]
+  cov = cov_statement[-1]
   for path in new_fuzz_inputs:
     cov = cov + input2statementCoverage[path]
-  cov_statements.append(cov)
+  cov_statement.append(cov)
 
-with open(output_path/'coverage_report.json', 'w') as f:
-  f.write(jsonpickle.encode(cov_statements))
+plt.plot(ts, tuple(len(c) for c in cov_statement))
+plt.plot(ts, tuple(len(c.to_predicateSetCoverage()) for c in cov_statement))
+plt.plot(ts, tuple(len(c.to_predicateCoverage()) for c in cov_statement))
+plt.show()
+
 
 # predicates_file = '4way-stopOnAll.lp'
 # with open(f"src/scenariogen/predicates/{predicates_file}", 'r') as f:
