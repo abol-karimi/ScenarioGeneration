@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from experiments.agents.configs import VUT_config
 from experiments.configs import SUT_config, coverage_config
 from scenariogen.core.coverages.coverage import from_corpus
-
+from scenariogen.predicates.utils import predicates_of_logic_program
 
 output_folder = 'experiments/Atheris/output'
 output_path = Path(output_folder)
@@ -55,17 +55,11 @@ axs[1].plot(exe_times_acc, tuple(len(c) for c in predicateSet_coverages_acc), 'r
 axs[2].set_title('Predicate Coverage')
 axs[2].plot(exe_times_acc, tuple(len(c) for c in predicate_coverages_acc), 'go')
 axs[2].plot(exe_times_acc, tuple(len(c) for c in predicate_coverages_acc), 'r-')
+
+predicates_file = '4way-stopOnAll.lp'
+with open(f"src/scenariogen/predicates/{predicates_file}", 'r') as f:
+  logic_program = f.read()
+predicate_coverage_space = predicates_of_logic_program(logic_program)
+axs[2].plot(exe_times_acc, tuple(len(predicate_coverage_space) for c in range(len(exe_times_acc))), 'b--')
+
 plt.show()
-
-for i,c in enumerate(predicateSet_coverages_acc):
-  print(i)
-  for pc in c.predicateCoverages:
-    print(pc.predicates)
-
-# predicates_file = '4way-stopOnAll.lp'
-# with open(f"src/scenariogen/predicates/{predicates_file}", 'r') as f:
-#   logic_program = f.read()
-
-# coverage_gap = coverage.predicate_gap(predicates_of_logic_program(logic_program))
-# print(f'\nCoverage gap:')
-# coverage_gap.print()

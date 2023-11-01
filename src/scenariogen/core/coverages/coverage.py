@@ -34,6 +34,9 @@ class PredicateCoverage:
   def __len__(self):
     return len(self.predicates)
   
+  def __eq__(self, other):
+    return self.predicates == other.predicates
+
   def __hash__(self):
     return hash(repr(self.predicates))
 
