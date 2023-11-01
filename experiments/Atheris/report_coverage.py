@@ -33,7 +33,7 @@ merged_results = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['me
 
 for result in results:
   for measurement in result['measurements']:
-    coverages = tuple(input2statementCoverage[p] for p in measurement['new_fuzz_inputs'])
+    coverages = tuple(input2statementCoverage[p] for p in measurement['new_fuzz_inputs'] if p in input2statementCoverage)
     measurement['statement_coverage'] = reduce(lambda c1,c2: c1+c2,
                                                 coverages,
                                                 StatementCoverage([]))

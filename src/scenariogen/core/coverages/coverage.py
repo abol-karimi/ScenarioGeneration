@@ -86,7 +86,17 @@ class StatementCoverage:
       self.pred2args[pred].add(args)
     else:
       self.pred2args[pred] = {args}
-   
+  
+  def __add__(self, other):
+    pred2args = {}
+    for pred, args in other.pred2args.items():
+      if pred in self.pred2args:
+        pred2args[pred] = self.pred2args[pred].union(args)
+      else:
+        pred2args[pred] = args
+    
+    return StatementCoverage(pred2args.items())
+
   def __iadd__(self, other):
     for pred in other.pred2args:
       if pred in self.pred2args:
