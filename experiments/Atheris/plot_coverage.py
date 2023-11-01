@@ -41,11 +41,26 @@ for i in range(1, len(measurements)):
   predicateSet_coverages_acc.append(predicateSet_coverages_acc[-1] + predicateSet_coverages[i])
   predicate_coverages_acc.append(predicate_coverages_acc[-1] + predicate_coverages[i])  
 
-plt.plot(exe_times_acc, tuple(len(c) for c in statement_coverages_acc))
-plt.plot(exe_times_acc, tuple(len(c) for c in predicateSet_coverages_acc))
-plt.plot(exe_times_acc, tuple(len(c) for c in predicate_coverages_acc))
+fig, axs = plt.subplots(3)
+fig.suptitle('Coverage progress.')
+
+axs[0].set_title('Statement Coverage')
+axs[0].plot(exe_times_acc, tuple(len(c) for c in statement_coverages_acc), 'go')
+axs[0].plot(exe_times_acc, tuple(len(c) for c in statement_coverages_acc), 'r-')
+
+axs[1].set_title('Predicate-Set Coverage')
+axs[1].plot(exe_times_acc, tuple(len(c) for c in predicateSet_coverages_acc), 'go')
+axs[1].plot(exe_times_acc, tuple(len(c) for c in predicateSet_coverages_acc), 'r-')
+
+axs[2].set_title('Predicate Coverage')
+axs[2].plot(exe_times_acc, tuple(len(c) for c in predicate_coverages_acc), 'go')
+axs[2].plot(exe_times_acc, tuple(len(c) for c in predicate_coverages_acc), 'r-')
 plt.show()
 
+for i,c in enumerate(predicateSet_coverages_acc):
+  print(i)
+  for pc in c.predicateCoverages:
+    print(pc.predicates)
 
 # predicates_file = '4way-stopOnAll.lp'
 # with open(f"src/scenariogen/predicates/{predicates_file}", 'r') as f:
