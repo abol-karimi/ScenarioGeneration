@@ -52,6 +52,9 @@ class PredicateSetCoverage:
   
   def add(self, predCov):
     self.predicateCoverages.add(predCov)
+  
+  def __add__(self, other):
+    return PredicateSetCoverage(self.predicateCoverages.union(other.predicateCoverages))
 
   def __iadd__(self, other):
     self.predicateCoverages.update(other.predicateCoverages)
