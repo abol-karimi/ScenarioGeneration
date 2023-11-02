@@ -1,7 +1,10 @@
 import scenic
 scenic.setDebuggingOptions(verbosity=0, fullBacktrace=True)
+from scenic.simulators.carla.simulator import CarlaSimulator
+from scenic.simulators.newtonian.simulator import NewtonianSimulator
 
 class Scenario:
+  simulator = None
   # Choose a blueprint of an appropriate size for each non-ego
   def __init__(self, fuzz_input):
     self.fuzz_input = fuzz_input
@@ -34,13 +37,27 @@ class Scenario:
                                 }
                         )
     scene, _ = scenic_scenario.generate(maxIterations=1)
-    simulator = scenic_scenario.getSimulator()
-    if config['simulator'] == 'carla' and not config['render_spectator']:
-        settings = simulator.world.get_settings()
-        settings.no_rendering_mode = True
-        simulator.world.apply_settings(settings)
+
+    simulator2class = {'newtonian': NewtonianSimulator,
+                       'carla': CarlaSimulator
+                      }    
+    if Scenario.simulator is None:
+      if config['simulator'] == 'carla':
+        Scenario.simulator = CarlaSimulator(
+                                carla_map=config['carla_map'],
+                                map_path=config['map'],
+                                timestep=config['timestep'],
+                                render=config['render_ego']
+                                )
+        if not config['render_spectator']:
+          settings = Scenario.simulator.world.get_settings()
+          settings.no_rendering_mode = True
+          Scenario.simulator.world.apply_settings(settings)
+      elif config['simulator'] == 'newtonian':
+        Scenario.simulator = NewtonianSimulator(render=config['render_spectator'])
+
     print(f'Simulating the scenario...')
-    sim_result = simulator.simulate(
+    sim_result = Scenario.simulator.simulate(
                     scene,
                     maxSteps=config['steps'],
                     maxIterations=1,

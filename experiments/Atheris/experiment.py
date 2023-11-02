@@ -17,7 +17,7 @@ from experiments.configs import SUT_config, coverage_config
 
 fuzzer_config = {
   'SUT_config': SUT_config,
-  'seeds_folder': f'experiments/seeds_manual',
+  'seeds_folder': f'experiments/seeds_4way-stop_random',
   'output_folder': f'experiments/Atheris/output',
   'mutator': StructureAwareMutator(max_spline_knots_size=50,
                                    max_mutations_per_iteration=1,
@@ -25,7 +25,7 @@ fuzzer_config = {
   'crossOver': StructureAwareCrossOver(max_spline_knots_size=50,
                                        max_attempts=1,
                                        randomizer_seed=0),
-  'atheris_runs': 10,
+  'atheris_runs': 20,
   'max_seed_length': 1e+6, # 1 MB
 }
 
@@ -81,6 +81,7 @@ try:
 except Exception as e:
   print(f'Exception of type {type(e)} in atheris fuzzer: {e}.')
 
+print(f'Measurement thread will stop in {period} seconds...')
 time.sleep(period)
 tl.stop()
 results.append({'measurements': measurements,
