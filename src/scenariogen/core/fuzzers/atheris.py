@@ -93,7 +93,8 @@ class SUTCallback:
     try:
       Scenario(fuzz_input).run(self.config)
     except Exception as e:
-      self.crashesOut.put((fuzz_input, e))
+      print(e)
+      # self.crashesOut.put((fuzz_input, e))
 
 
 #------------------------------------
@@ -105,7 +106,7 @@ class AtherisFuzzer:
     self.output_path = Path(config['output_folder'])
     self.mutator = MutatorCallback(config['mutator'])
     self.crossOver = CrossOverCallback(config['crossOver'])
-    self.SUT_crashes = Queue()
+    self.SUT_crashes = None #Queue()
     self.libfuzzer_config = [f"-atheris_runs={config['atheris_runs']}",
                              f"-artifact_prefix={self.output_path/'bugs'}/",
                              f"-max_len={config['max_seed_length']}",
@@ -130,7 +131,7 @@ class AtherisFuzzer:
                 )
       atheris.Fuzz()
 
-    p = Process(target=target, args=())
+    p = Process(target=target, name='Atheris', args=())
     p.start()
     p.join()
 
@@ -138,8 +139,8 @@ class AtherisFuzzer:
   
   def get_state(self):
     SUT_crashes = []
-    while not self.SUT_crashes.empty():
-      SUT_crashes.append(self.SUT_crashes.get())
+    # while not self.SUT_crashes.empty():
+    #   SUT_crashes.append(self.SUT_crashes.get())
 
     state = {
       'SUT_crashes': tuple(SUT_crashes),
