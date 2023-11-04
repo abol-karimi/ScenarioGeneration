@@ -6,14 +6,12 @@ from functools import reduce
 from timeloop import Timeloop
 from datetime import timedelta
 import time
-import carla
 
 # This project
 from scenariogen.core.mutators import StructureAwareMutator
 from scenariogen.core.crossovers import StructureAwareCrossOver
 from scenariogen.core.fuzzers.atheris import AtherisFuzzer
-from experiments.agents.configs import VUT_config
-from experiments.configs import SUT_config, coverage_config
+from experiments.configs import SUT_config
 
 if __name__ == '__main__':
 
@@ -68,7 +66,7 @@ if __name__ == '__main__':
   # Set up a measurement loop
   measurements = []
   tl = Timeloop()
-  period = 60 # seconds
+  period = 30 # seconds
   @tl.job(interval=timedelta(seconds=period))
   def measure_progress():
     new_fuzz_inputs = set((output_path/'fuzz-inputs').glob('*')) - fuzz_inputs

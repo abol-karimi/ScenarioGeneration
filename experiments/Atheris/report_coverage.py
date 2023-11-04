@@ -5,9 +5,7 @@
 from pathlib import Path
 import jsonpickle
 from functools import reduce
-import matplotlib.pyplot as plt
 
-from experiments.agents.configs import VUT_config
 from experiments.configs import SUT_config, coverage_config
 from scenariogen.core.coverages.coverage import from_corpus, StatementCoverage
 
@@ -21,15 +19,15 @@ config = {
   **coverage_config,
 }
 
-input2statementCoverage = from_corpus(output_path/'fuzz-inputs', config)
+seed2statementCoverage = from_corpus('experiments/seeds_4way-stop_random', config)
+fuzzInput2statementCoverage = from_corpus(output_path/'fuzz-inputs', config)
+input2statementCoverage = {**seed2statementCoverage, **fuzzInput2statementCoverage}
 
 with open(results_file, 'r') as f:
   results = jsonpickle.decode(f.read())
-
-merged_results = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements'],
-                                        'atheris_state': r2['atheris_state']
-                                      },
-                        results)
+results[0]['measurements'].insert(0, {'exe_time': 0,
+                                      'new_fuzz_inputs': Path('experiments/seeds_4way-stop_random').glob('*'),
+                                      })
 
 for result in results:
   for measurement in result['measurements']:

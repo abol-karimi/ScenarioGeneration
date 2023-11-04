@@ -1,4 +1,5 @@
 import os
+import copy
 from functools import reduce
 from pathlib import Path
 import jsonpickle
@@ -94,7 +95,7 @@ class StatementCoverage:
       self.pred2args[pred] = {args}
   
   def __add__(self, other):
-    pred2args = {}
+    pred2args = copy.copy(self.pred2args)
     for pred, args in other.pred2args.items():
       if pred in self.pred2args:
         pred2args[pred] = self.pred2args[pred].union(args)

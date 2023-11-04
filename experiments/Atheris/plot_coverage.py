@@ -62,4 +62,7 @@ with open(f"src/scenariogen/predicates/{predicates_file}", 'r') as f:
 predicate_coverage_space = predicates_of_logic_program(logic_program)
 axs[2].plot(exe_times_acc, tuple(len(predicate_coverage_space) for c in range(len(exe_times_acc))), 'b--')
 
+print('Predicate coverage surplus:')
+(predicate_coverages_acc[-1] - predicate_coverage_space).print()
+
 plt.show()
