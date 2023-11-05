@@ -155,6 +155,8 @@ def from_corpus(corpus_folder, config):
       print(f'Ego collided with {err.other}.')
     except SimulationCreationError as e:
       print(e)
+    except Exception as e:
+      print(e)
     else:
       if not sim_result:
         print(f'Simulation rejected!')
