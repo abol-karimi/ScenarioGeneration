@@ -46,23 +46,19 @@ fig.suptitle('Coverage progress.')
 
 axs[0].set_title('Statement Coverage')
 axs[0].plot(exe_times_acc, tuple(len(c) for c in statement_coverages_acc), 'go')
-axs[0].plot(exe_times_acc, tuple(len(c) for c in statement_coverages_acc), 'r-')
+axs[0].plot(exe_times_acc, tuple(len(c) for c in statement_coverages_acc), 'b-')
 
 axs[1].set_title('Predicate-Set Coverage')
 axs[1].plot(exe_times_acc, tuple(len(c) for c in predicateSet_coverages_acc), 'go')
-axs[1].plot(exe_times_acc, tuple(len(c) for c in predicateSet_coverages_acc), 'r-')
+axs[1].plot(exe_times_acc, tuple(len(c) for c in predicateSet_coverages_acc), 'b-')
 
 axs[2].set_title('Predicate Coverage')
-axs[2].plot(exe_times_acc, tuple(len(c) for c in predicate_coverages_acc), 'go')
-axs[2].plot(exe_times_acc, tuple(len(c) for c in predicate_coverages_acc), 'r-')
-
 predicates_file = '4way-stopOnAll.lp'
 with open(f"src/scenariogen/predicates/{predicates_file}", 'r') as f:
   logic_program = f.read()
 predicate_coverage_space = predicates_of_logic_program(logic_program)
-axs[2].plot(exe_times_acc, tuple(len(predicate_coverage_space) for c in range(len(exe_times_acc))), 'b--')
-
-print('Predicate coverage surplus:')
-(predicate_coverages_acc[-1] - predicate_coverage_space).print()
-
+plt.sca(axs[2])
+plt.yticks(range(len(predicate_coverage_space)+1))
+axs[2].plot(exe_times_acc, tuple(len(predicate_coverage_space) for c in range(len(exe_times_acc))), 'r--')
+axs[2].plot(exe_times_acc, tuple(len(c & predicate_coverage_space) for c in predicate_coverages_acc), '-o', c='blue', mfc='green', mec='green')
 plt.show()

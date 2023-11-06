@@ -30,7 +30,10 @@ class PredicateCoverage:
     return PredicateCoverage(self.predicates.union(other.predicates))
     
   def __sub__(self, other):
-    return PredicateCoverage(self.predicates-other.predicates)
+    return PredicateCoverage(self.predicates - other.predicates)
+  
+  def __and__(self, other):
+    return PredicateCoverage(self.predicates & other.predicates)
 
   def __len__(self):
     return len(self.predicates)
