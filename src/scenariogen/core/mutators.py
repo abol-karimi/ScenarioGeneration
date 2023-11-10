@@ -47,6 +47,8 @@ class StructureAwareMutator():
       self.speedup,
       self.slowdown,
       self.mutate_ego_route,
+      self.add_signal,
+      self.remove_signal
     ]
     with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f:
       self.blueprint2dims = jsonpickle.decode(f.read())
@@ -90,7 +92,7 @@ class StructureAwareMutator():
 
     # Mutate
     mutant = self.copy_forward_with_params(fuzz_input, nonego_idx, offset)
-    mutant = self.remove_vehicle(mutant)
+    mutant = self.remove_vehicle_with_params(mutant, nonego_idx)
 
     print(f'Mutation: Moved nonego {nonego_idx} forward along its route by {offset} meters.')
 
@@ -383,7 +385,7 @@ class StructureAwareMutator():
     return mutant
   
   def add_signal(self, fuzz_input):
-    # Choose random paramters
+    # Choose random parameters
     nonego_idx = self.random.randrange(len(fuzz_input.routes))
     timing = fuzz_input.timings[nonego_idx]
     t = self.random.uniform(0, timing.ctrlpts[-1][0])
@@ -397,20 +399,48 @@ class StructureAwareMutator():
     return mutant
   
   def add_signal_with_params(self, fuzz_input, nonego_idx, event_time, new_signal):
-    # signal = fuzz_input.signals[nonego_idx]
-    # t2s = {t:s for t,s in signal}
-    # if event_time in t2s:
-    #   t2s[event_time] = new_signal
-    #   signal = tuple(t2s)
-    # else:
+    signal = fuzz_input.signals[nonego_idx]
+    t2s = {t:s for t,s in signal}
+    t2s[event_time] = new_signal    
+    signal = list(t2s.items()).sort(key=lambda p: p[0])
 
-    return
+    mutant = FuzzInput(config=fuzz_input.config,
+                  blueprints=fuzz_input.blueprints+(fuzz_input.blueprints[nonego_idx],),
+                  routes=fuzz_input.routes+(fuzz_input.routes[nonego_idx],),
+                  footprints=fuzz_input.footprints+(fuzz_input.footprints[nonego_idx],),
+                  timings=fuzz_input.timings+(fuzz_input.timings[nonego_idx],),
+                  signals=fuzz_input.signals+(tuple(signal),)
+                  )
+    mutant = self.remove_vehicle_with_params(mutant, nonego_idx)
+
+    return mutant
   
   def remove_signal(self, fuzz_input):
-    return
+    # Choose random parameters
+    nonego_idx = self.random.randrange(len(fuzz_input.routes))
+    signal = fuzz_input.signals[nonego_idx]
+
+    if len(signal) == 1:
+      raise MutationError("Cannot remove a nonegos's initial signal!")   
+
+    event_index = self.random.randrange(1, len(signal))
+
+    mutant = self.remove_signal_with_params(fuzz_input, nonego_idx, event_index)
+
+    return mutant
   
-  def remove_signal(self, fuzz_input, nonego_idx, event_time):
-    return
+  def remove_signal_with_params(self, fuzz_input, nonego_idx, event_index):
+    signal = fuzz_input.signals[nonego_idx]
+    mutant = FuzzInput(config=fuzz_input.config,
+                  blueprints=fuzz_input.blueprints + (fuzz_input.blueprints[nonego_idx],),
+                  routes=fuzz_input.routes + (fuzz_input.routes[nonego_idx],),
+                  footprints=fuzz_input.footprints + (fuzz_input.footprints[nonego_idx],),
+                  timings=fuzz_input.timings + (fuzz_input.timings[nonego_idx],),
+                  signals=fuzz_input.signals + (signal[:event_index] + signal[event_index+1:],)
+                  )
+    mutant = self.remove_vehicle_with_params(mutant, nonego_idx)
+
+    return mutant
   
   def mutate_ego_route(self, fuzz_input):
     """Change VUT's initial state or expected route."""

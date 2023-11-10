@@ -31,7 +31,7 @@ def classify_intersection(network, intersection_uid):
     # TODO classify based on network geometry and semantics
     return None
 
-def seed_from_sim(sim_result, timestep, degree=3, knots_size=20, plot_splines=False):
+def seed_from_sim(sim_result, timestep, degree=3, knots_size=20, plot_splines=False): # TODO remove knots_size
     cars_num = len(sim_result.records['routes'])
     sim_trajs = [[] for k in range(cars_num)]
     for i, footprints in sim_result.records['footprints']:

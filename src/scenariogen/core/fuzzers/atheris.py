@@ -4,10 +4,11 @@ from pathlib import Path
 import atheris
 from typing import Any
 from multiprocessing import Process, Queue
+from scenic.core.simulators import SimulationCreationError
 
 # This project
 from src.scenariogen.core.scenario import Scenario
-from scenariogen.core.errors import InvalidFuzzInputError
+from scenariogen.core.errors import InvalidFuzzInputError, EgoCollisionError
 from scenariogen.core.scenario import Scenario
 from scenariogen.core.fuzz_input import validate_input
 
@@ -92,7 +93,7 @@ class SUTCallback:
     fuzz_input = jsonpickle.decode(input_str)
     try:
       Scenario(fuzz_input).run(self.config)
-    except Exception as e:
+    except (SimulationCreationError, EgoCollisionError) as e:
       print(e)
       # self.crashesOut.put((fuzz_input, e))
 
