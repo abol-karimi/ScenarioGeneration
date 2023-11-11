@@ -475,15 +475,17 @@ class StructureAwareMutator():
     return mutant 
 
   def mutate(self, fuzz_input):
-    mutant = fuzz_input
-    mutations = self.random.randint(1, self.max_mutations_per_iteration)
-    for i in range(mutations):
-      mutator = self.random.choice(self.mutators)
-      try:
-        mutant = mutator(mutant)
-      except MutationError as err:
-        print('Mutation error: ' + err.msg)
-    return mutant
+    mutator = self.random.choice(self.mutators)
+    try:
+      mutant = mutator(fuzz_input)
+    except MutationError as err:
+      print('Mutation failed: ' + err.msg)
+      return fuzz_input
+    except Exception as e:
+      print(f'Error in the mutator: {e}')
+      exit(1)
+    else:
+      return mutant
   
   def _extend_lanes_forward(self, lanes, length):
     maneuver = self.random.choice(lanes[-1].maneuvers)
