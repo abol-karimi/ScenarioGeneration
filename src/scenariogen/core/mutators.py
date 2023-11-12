@@ -388,13 +388,12 @@ class StructureAwareMutator():
     # Choose random parameters
     nonego_idx = self.random.randrange(len(fuzz_input.routes))
     timing = fuzz_input.timings[nonego_idx]
-    t = self.random.uniform(0, timing.ctrlpts[-1][0])
+    t = self.random.uniform(0, timing.knotvector[-1])
     signal = self.random.choice(tuple(SignalType))
     
     # Mutate
-    mutant = self.add_signal_with_params(fuzz_input, nonego_idx, t, signal)
-
     print(f'Nonego {nonego_idx} signals {signal} at time {t}.')
+    mutant = self.add_signal_with_params(fuzz_input, nonego_idx, t, signal)
 
     return mutant
   
@@ -402,7 +401,7 @@ class StructureAwareMutator():
     signal = fuzz_input.signals[nonego_idx]
     t2s = {t:s for t,s in signal}
     t2s[event_time] = new_signal    
-    signal = list(t2s.items()).sort(key=lambda p: p[0])
+    signal = sorted(t2s.items(), key=lambda p: p[0])
 
     mutant = FuzzInput(config=fuzz_input.config,
                   blueprints=fuzz_input.blueprints+(fuzz_input.blueprints[nonego_idx],),
@@ -425,6 +424,7 @@ class StructureAwareMutator():
 
     event_index = self.random.randrange(1, len(signal))
 
+    print(f'Nonego {nonego_idx} will not signal at time {signal[event_index][0]}.')
     mutant = self.remove_signal_with_params(fuzz_input, nonego_idx, event_index)
 
     return mutant
@@ -483,7 +483,9 @@ class StructureAwareMutator():
       return fuzz_input
     except Exception as e:
       print(f'Error in the mutator: {e}')
-      exit(1)
+      with open('mutator_bug.json', 'w') as f:
+        f.write(jsonpickle.encode(fuzz_input))
+      raise e
     else:
       return mutant
   
