@@ -26,7 +26,7 @@ RUN apt-get update ; \
   # for compiling python from source
   zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev \
   # since didn't install precompiled python binaries
-  libbz2-dev
+  libbz2-dev liblzma-dev
 # For python wrappers for sqlite
 RUN apt-get install -y libsqlite3-dev
 
@@ -35,11 +35,11 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=US/NewYork
 RUN apt-get install -y tk-dev
 
-# Install Python 3.8.17
+# Install Python 3.8.18
 WORKDIR /home/carla/python-setup
-RUN wget https://www.python.org/ftp/python/3.8.17/Python-3.8.17.tgz ; \
-  tar -xvf Python-3.8.17.tgz ; \
-  cd Python-3.8.17 ; \
+RUN wget https://www.python.org/ftp/python/3.8.18/Python-3.8.18.tgz ; \
+  tar -xvf Python-3.8.18.tgz ; \
+  cd Python-3.8.18 ; \
   ./configure --enable-loadable-sqlite-extensions \
               --enable-optimizations \
               --with-tcltk-includes='-I/usr/include' \
