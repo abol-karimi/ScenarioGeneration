@@ -16,7 +16,10 @@ from experiments.configs import SUT_config
 if __name__ == '__main__':
 
   fuzzer_config = {
-    'SUT_config': SUT_config,
+    'SUT_config': {**SUT_config,
+                  'closedLoop': True,
+                  'ego_module': 'experiments.agents.autopilot_route',
+                  },
     'seeds_folder': f'experiments/seeds_4way-stop_random',
     'output_folder': f'experiments/Atheris/output',
     'mutator': StructureAwareMutator(max_spline_knots_size=50,

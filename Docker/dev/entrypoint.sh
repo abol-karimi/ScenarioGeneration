@@ -28,4 +28,6 @@ export force_color_prompt=yes
 pip install -e /home/carla/Scenic
 pip install -r /home/carla/ScenarioGeneration/requirements.txt
 
+cd ScenarioGeneration
+
 /bin/bash "$@"
