@@ -58,12 +58,15 @@ behavior AutopilotPathBehavior(path):
 	take SetAutopilotAction(True)
 
 
-behavior BehaviorAgentReachDestination(dest, aggressiveness='normal'):
-	agent = BehaviorAgent(self.carlaActor, behavior=aggressiveness)
-	agent.set_destination(scenicToCarlaLocation(dest, world=simulation().world))
-
+behavior BehaviorAgentReachDestination(dest, aggressiveness='normal', debug=debug):
+	agent = BehaviorAgent(self.carlaActor,
+												behavior=aggressiveness,
+												map_inst=simulation().map)
+	agent.set_destination(scenicToCarlaLocation(dest, world=simulation().world),
+												start_location=scenicToCarlaLocation(self.position, world=simulation().world))
 	while not agent.done():
-		self.carlaActor.apply_control(agent.run_step())
+		control = agent.run_step(debug=debug)
+		self.carlaActor.apply_control(control)
 		wait
 
 	print(f'Car {self.name} reached its destination.')
