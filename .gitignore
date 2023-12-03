@@ -9,6 +9,7 @@ __pycache__
 *.xodr
 
 Docker/*/z3-4.8.10-x64-ubuntu-18.04
+Docker/*/dist
 
 experiments/*/output_*
 experiments/seeds*
