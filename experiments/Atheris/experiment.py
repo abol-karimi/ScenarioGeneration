@@ -15,7 +15,7 @@ from experiments.configs import SUT_config
 
 if __name__ == '__main__':
 
-  fuzzing_ego = 'BehaviorAgent'
+  fuzzing_ego = None
 
   fuzzer_config = {
     'SUT_config': {**SUT_config,
