@@ -12,6 +12,7 @@ from scenariogen.predicates.utils import predicates_of_logic_program
 
 fuzzing_ego = 'BehaviorAgent'
 coverage_ego = 'BehaviorAgent'
+coverage = 'traffic_rules'
 
 output_folder = f'experiments/Atheris/output_{fuzzing_ego}'
 output_path = Path(output_folder)
@@ -20,6 +21,7 @@ coverage_file = output_path/f"coverage_{coverage_ego if coverage_ego else 'openL
 config = {
   **SUT_config,
   **coverage_config,
+  'coverage_module': f'scenariogen.core.coverages.{coverage}',
 }
 
 with open(coverage_file, 'r') as f:
