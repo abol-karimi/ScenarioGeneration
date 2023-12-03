@@ -15,13 +15,14 @@ from experiments.configs import SUT_config
 
 if __name__ == '__main__':
 
+  fuzzing_ego = 'BehaviorAgent'
+
   fuzzer_config = {
     'SUT_config': {**SUT_config,
-                  'closedLoop': True,
-                  'ego_module': 'experiments.agents.autopilot_route',
+                  'ego_module': f'experiments.agents.{fuzzing_ego}' if fuzzing_ego else None,
                   },
     'seeds_folder': f'experiments/seeds_4way-stop_random',
-    'output_folder': f'experiments/Atheris/output',
+    'output_folder': f"experiments/Atheris/output_{fuzzing_ego if fuzzing_ego else 'openLoop'}",
     'mutator': StructureAwareMutator(max_spline_knots_size=50,
                                     max_mutations_per_iteration=1,
                                     randomizer_seed=0),
@@ -39,7 +40,7 @@ if __name__ == '__main__':
   bugs_path = output_path/'bugs'
 
   # Decide to resume or start
-  results_file = output_path/'results.json'
+  results_file = output_path/'results_Atheris.json'
   if results_file.is_file():
     fuzz_inputs = set((output_path/'fuzz-inputs').glob('*'))
     with open(results_file, 'r') as f:
@@ -92,5 +93,5 @@ if __name__ == '__main__':
                   'atheris_state': atheris_state
                   })
 
-  with open(f"{fuzzer_config['output_folder']}/results.json", 'w') as f:
+  with open(results_file, 'w') as f:
     f.write(jsonpickle.encode(results))

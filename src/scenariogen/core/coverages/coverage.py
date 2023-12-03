@@ -148,7 +148,6 @@ def from_corpus(corpus_folder, config):
       print(f'Running {path.name}')
       sim_result = Scenario(fuzz_input).run({'render_spectator': False,
                                              'render_ego': False,
-                                             'closedLoop': True,
                                              **config,
                                              }
                                             )

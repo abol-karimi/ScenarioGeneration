@@ -7,21 +7,22 @@ import jsonpickle
 from functools import reduce
 import matplotlib.pyplot as plt
 
-from experiments.agents.configs import VUT_config
 from experiments.configs import SUT_config, coverage_config
-from scenariogen.core.coverages.coverage import from_corpus
 from scenariogen.predicates.utils import predicates_of_logic_program
 
-output_folder = 'experiments/Atheris/output'
+fuzzing_ego = 'BehaviorAgent'
+coverage_ego = 'BehaviorAgent'
+
+output_folder = f'experiments/Atheris/output_{fuzzing_ego}'
 output_path = Path(output_folder)
-results_file = output_path/'results.json'
+coverage_file = output_path/f"coverage_{coverage_ego if coverage_ego else 'openLoop'}.json"
 
 config = {
   **SUT_config,
   **coverage_config,
 }
 
-with open(results_file, 'r') as f:
+with open(coverage_file, 'r') as f:
   results = jsonpickle.decode(f.read())
 
 measurements = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements']},

@@ -20,9 +20,7 @@ parser.add_argument('--render_spectator', action='store_true',
                     help='render a spectator above the intersection')
 parser.add_argument('--render_ego', action='store_true',
                     help='render ego viewpoint (only in the Carla simulator)')
-parser.add_argument('--openLoop', action='store_true',
-                    help='simulate a VUT')
-parser.add_argument('--ego_module', default='experiments.agents.autopilot_route',
+parser.add_argument('--ego_module',
                     help='the scenic file containing the ego scenario')
 parser.add_argument('--coverage_module',
                     help='the scenic file containing coverage monitor')
@@ -71,7 +69,6 @@ config['fuzz_input'] = seed
 config['arrival_distance'] = 4
 config['stopping_speed'] = 0.5  # meters/seconds
 config['moving_speed'] = 0.6
-config['closedLoop'] = not args.openLoop
 config['ego_module'] = args.ego_module
 config['coverage_module'] = args.coverage_module
 config['render_spectator'] = args.render_spectator

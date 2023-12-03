@@ -2,8 +2,7 @@ SUT_config = {
   'render_spectator': False,
   'render_ego': False,
   'weather': 'CloudySunset',
-  'closedLoop': True,
-  'ego_module': 'experiments.agents.autopilot_route',
+  'ego_module': None,
   'simulator': 'carla',
   'coverage_module': None,
 }

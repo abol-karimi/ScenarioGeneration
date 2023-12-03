@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument('SUT_inputs_path',
                     help='relative path of the corpus folder')
 parser.add_argument('--ego_module',
-                    default='experiments.agents.autopilot_route',
+                    default='experiments.agents.autopilot',
                     help='the scenic file containing the ego scenario')
 parser.add_argument('--predicates_file',
                     default='4way-stopOnAll.lp',

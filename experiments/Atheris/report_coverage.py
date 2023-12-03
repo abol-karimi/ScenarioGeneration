@@ -9,14 +9,17 @@ from functools import reduce
 from experiments.configs import SUT_config, coverage_config
 from scenariogen.core.coverages.coverage import from_corpus, StatementCoverage
 
+fuzzing_ego = 'BehaviorAgent'
+coverage_ego = 'BehaviorAgent'
 
-output_folder = 'experiments/Atheris/output'
+output_folder = f"experiments/Atheris/output_{fuzzing_ego if fuzzing_ego else 'openLoop'}"
 output_path = Path(output_folder)
-results_file = output_path/'results.json'
+results_file = output_path/'results_Atheris.json'
 
 config = {
   **SUT_config,
   **coverage_config,
+  'ego_module': f'experiments.agents.{coverage_ego}',
 }
 
 seed2statementCoverage = from_corpus('experiments/seeds_4way-stop_random', config)
@@ -36,5 +39,5 @@ for result in results:
                                                 coverages,
                                                 StatementCoverage([]))
 
-with open(output_path/'results.json', 'w') as f:
+with open(output_path/f"coverage_{coverage_ego}.json", 'w') as f:
   f.write(jsonpickle.encode(results))

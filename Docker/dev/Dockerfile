@@ -74,9 +74,6 @@ RUN . .venv/bin/activate ; \
   cmake --build /home/carla/clingo-build ; \
   cmake --build /home/carla/clingo-build --target install
 
-# Carla RSS python module
-COPY --chown=carla:carla PythonAPI /home/carla/PythonAPI
-
 RUN . .venv/bin/activate ; \
   # modules needed for installing Scenic
   pip install cpython ; \
@@ -97,6 +94,9 @@ RUN add-apt-repository ppa:openscad/releases ; \
   apt-get install -y openscad
 RUN apt-get install -y blender
 USER carla
+
+# Carla RSS python module
+COPY --chown=carla:carla PythonAPI /home/carla/PythonAPI
 
 # Entrypoint script
 COPY --chown=carla:carla entrypoint.sh /home/carla/entrypoint.sh

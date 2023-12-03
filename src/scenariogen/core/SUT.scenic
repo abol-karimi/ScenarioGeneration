@@ -19,7 +19,7 @@ else:
   model scenic.domains.driving.model
 
 intersection = network.elements[config['intersection']]
-if config['closedLoop']:
+if config['ego_module']:
   ego_module = importlib.import_module(config['ego_module'])
   ego_scenario = ego_module.EgoScenario(config)
 
@@ -49,7 +49,7 @@ scenario Main():
       # Deterministic traffic manager with a common seed across all simulations so that autopilot's behavior is reproducible
       simulation().tm.set_random_device_seed(0)
    
-    if config['closedLoop']:
+    if config['ego_module']:
       do ego_scenario, \
           nonegos_scenario
     else:

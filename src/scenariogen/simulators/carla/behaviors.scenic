@@ -5,7 +5,7 @@ model scenic.simulators.carla.model
 import carla
 # from examples.rss.rss_sensor import RssSensor
 from agents.navigation.behavior_agent import BehaviorAgent
-from scenic.simulators.carla.utils.utils import scenicToCarlaLocation
+from scenic.simulators.carla.utils.utils import scenicToCarlaLocation, carlaToScenicPosition
 from scenariogen.simulators.carla.rss_sensor import RssSensor # TODO replace with carla module above
 from scenariogen.simulators.carla.utils import signal_to_vehicleLightState, maneuverType_to_Autopilot_turn
 import scenariogen.simulators.carla.visualization as visualization
@@ -58,12 +58,22 @@ behavior AutopilotPathBehavior(path):
 	take SetAutopilotAction(True)
 
 
-behavior BehaviorAgentReachDestination(dest, aggressiveness='normal', debug=debug):
+behavior BehaviorAgentReachDestination(dest, aggressiveness='normal', debug=False):
 	agent = BehaviorAgent(self.carlaActor,
 												behavior=aggressiveness,
 												map_inst=simulation().map)
 	agent.set_destination(scenicToCarlaLocation(dest, world=simulation().world),
-												start_location=scenicToCarlaLocation(self.position, world=simulation().world))
+												scenicToCarlaLocation(self.position, world=simulation().world))
+	
+	if debug:
+		for wp, _ in agent._local_planner._waypoints_queue:
+			visualization.draw_point(simulation().world,
+																carlaToScenicPosition(wp.transform.location),
+																None,
+																size=0.2,
+																color=carla.Color(255, 0, 0),
+																lifetime=60)
+			
 	while not agent.done():
 		control = agent.run_step(debug=debug)
 		self.carlaActor.apply_control(control)
