@@ -276,14 +276,14 @@ class LocalPlanner(object):
 
             :param steps: number of steps to get the incoming waypoint.
         """
-        if len(self._waypoints_queue) > steps:
-            return self._waypoints_queue[steps]
-        else:
-            try:
+        try:
+            if 0 <= steps and steps < len(self._waypoints_queue):
+                return self._waypoints_queue[steps]
+            else:
                 wpt, direction = self._waypoints_queue[-1]
                 return wpt, direction
-            except IndexError as i:
-                return None, RoadOption.VOID
+        except IndexError as i:
+            return None, RoadOption.VOID
 
     def get_plan(self):
         """Returns the current plan of the local planner"""
