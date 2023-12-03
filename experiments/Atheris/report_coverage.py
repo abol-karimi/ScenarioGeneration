@@ -45,12 +45,12 @@ def report(fuzzing_ego, coverage_ego, coverage):
 
 if __name__ == '__main__':
   reports_config = (
-    ('autopilot', 'autopilot', 'traffic_rules'),
-    ('autopilot', 'BehaviorAgent', 'traffic_rules'),
+    # ('autopilot', 'autopilot', 'traffic_rules'),
+    # ('autopilot', 'BehaviorAgent', 'traffic_rules'),
     # ('BehaviorAgent', 'autopilot', 'traffic_rules'),
     # ('BehaviorAgent', 'BehaviorAgent', 'traffic_rules'),
-    # (None, 'autopilot', 'traffic_rules'),
-    # (None, 'BehaviorAgent', 'traffic_rules'),
+    (None, 'autopilot', 'traffic_rules'),
+    (None, 'BehaviorAgent', 'traffic_rules'),
   )
   for fuzzing_ego, coverage_ego, coverage in reports_config:
     report(fuzzing_ego, coverage_ego, coverage)

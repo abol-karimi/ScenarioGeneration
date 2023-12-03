@@ -15,12 +15,6 @@ def plot(fuzzing_ego, coverage_ego, coverage):
   output_path = Path(output_folder)
   coverage_file = output_path/f"coverage_{coverage_ego}.json"
 
-  config = {
-    **SUT_config,
-    **coverage_config,
-    'coverage_module': f'scenariogen.core.coverages.{coverage}',
-  }
-
   with open(coverage_file, 'r') as f:
     results = jsonpickle.decode(f.read())
 
@@ -41,26 +35,38 @@ def plot(fuzzing_ego, coverage_ego, coverage):
     predicateSet_coverages_acc.append(predicateSet_coverages_acc[-1] + predicateSet_coverages[i])
     predicate_coverages_acc.append(predicate_coverages_acc[-1] + predicate_coverages[i])  
 
-  fig, axs = plt.subplots(3)
+  fig = plt.figure()
   fig.suptitle(f'Fuzzing ego: {fuzzing_ego},\n Coverage ego: {coverage_ego},\n Coverage module: {coverage}')
 
-  axs[0].set_title('Statement Coverage')
-  axs[0].plot(exe_times_acc, tuple(len(c) for c in statement_coverages_acc), 'go')
-  axs[0].plot(exe_times_acc, tuple(len(c) for c in statement_coverages_acc), 'b-')
+  ax = fig.add_subplot(111)    # The big subplot
+  # Turn off axis lines and ticks of the big subplot
+  ax.spines['top'].set_color('none')
+  ax.spines['bottom'].set_color('none')
+  ax.spines['left'].set_color('none')
+  ax.spines['right'].set_color('none')
+  ax.tick_params(labelcolor='w', top=False, bottom=False, left=False, right=False)
+  # Set common labels
+  ax.set_xlabel('Atheris iterations')
 
-  axs[1].set_title('Predicate-Set Coverage')
-  axs[1].plot(exe_times_acc, tuple(len(c) for c in predicateSet_coverages_acc), 'go')
-  axs[1].plot(exe_times_acc, tuple(len(c) for c in predicateSet_coverages_acc), 'b-')
+  ax1 = fig.add_subplot(311)
+  ax2 = fig.add_subplot(312)
+  ax3 = fig.add_subplot(313)
 
-  axs[2].set_title('Predicate Coverage')
+  ax1.set_ylabel('Statements')
+  ax1.plot(exe_times_acc, tuple(len(c) for c in statement_coverages_acc), 'b-')
+
+  ax2.set_ylabel('Predicate-Sets')
+  ax2.plot(exe_times_acc, tuple(len(c) for c in predicateSet_coverages_acc), 'b-')
+
+  ax3.set_ylabel('Predicates')
   predicates_file = '4way-stopOnAll.lp'
   with open(f"src/scenariogen/predicates/{predicates_file}", 'r') as f:
     logic_program = f.read()
   predicate_coverage_space = predicates_of_logic_program(logic_program)
-  plt.sca(axs[2])
+  plt.sca(ax3)
   plt.yticks(range(len(predicate_coverage_space)+1))
-  axs[2].plot(exe_times_acc, tuple(len(predicate_coverage_space) for c in range(len(exe_times_acc))), 'r--')
-  axs[2].plot(exe_times_acc, tuple(len(c & predicate_coverage_space) for c in predicate_coverages_acc), '-o', c='blue', mfc='green', mec='green')
+  ax3.plot(exe_times_acc, tuple(len(predicate_coverage_space) for c in range(len(exe_times_acc))), 'r--')
+  ax3.plot(exe_times_acc, tuple(len(c & predicate_coverage_space) for c in predicate_coverages_acc), 'b-')
 
   plt.tight_layout()
   plt.savefig(output_path/f'coverage_{coverage_ego}_{coverage}.png')
