@@ -8,13 +8,7 @@ __pycache__
 *.pickle
 *.xodr
 
-Docker/dev*/PythonAPI
-Docker/prod*/PythonAPI
 Docker/*/z3-4.8.10-x64-ubuntu-18.04
 
-.coverage
-htmlcov
-crash-*
-slow-unit-*
-experiments/*/output
+experiments/*/output_*
 experiments/seeds*
