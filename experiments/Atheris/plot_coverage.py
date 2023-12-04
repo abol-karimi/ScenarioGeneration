@@ -46,7 +46,7 @@ def plot(fuzzing_ego, coverage_ego, coverage):
   ax.spines['right'].set_color('none')
   ax.tick_params(labelcolor='w', top=False, bottom=False, left=False, right=False)
   # Set common labels
-  ax.set_xlabel('Atheris iterations')
+  ax.set_xlabel('Wall clock time (seconds)')
 
   ax1 = fig.add_subplot(311)
   ax2 = fig.add_subplot(312)
