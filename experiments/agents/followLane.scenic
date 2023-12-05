@@ -1,5 +1,5 @@
 # Scenic parameters
-model scenic.domains.driving.model
+model scenic.simulators.newtonian.driving_model
 
 scenario EgoScenario(config):
   setup:

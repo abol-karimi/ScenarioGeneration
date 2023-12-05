@@ -22,9 +22,9 @@ with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f
 behavior AnimateBehavior(traj, signal_actions):
   for pose, signal in zip(traj, signal_actions):
     if signal:
-      take SetTransformAction(pose[0]@pose[1], toOrientation(pose[2])), SetVehicleLightStateAction(signal_to_vehicleLightState(signal))
+      take SetPoseAction(pose[0]@pose[1], pose[2]), SetVehicleLightStateAction(signal_to_vehicleLightState(signal))
     else:
-      take SetTransformAction(pose[0]@pose[1], toOrientation(pose[2]))
+      take SetPoseAction(pose[0]@pose[1], pose[2])
 
 scenario NonegosScenario(config):
   setup:
