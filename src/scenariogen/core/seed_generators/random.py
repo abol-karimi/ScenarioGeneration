@@ -19,7 +19,7 @@ def run(config):
     seed_id = 0
 
     scenario = scenic.scenarioFromFile(
-                    'src/scenariogen/core/create.scenic',
+                    f"src/scenariogen/simulator/{config['simulator']}/create.scenic",
                     mode2D=True,
                     params={'render': config['render_ego'],
                             'scenario_path': config['scenario_path'],

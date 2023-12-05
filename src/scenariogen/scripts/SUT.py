@@ -27,7 +27,7 @@ parser.add_argument('--coverage_module',
 parser.add_argument('--predicates_file',
                     default='4way-stopOnAll.lp',
                     help='the logic program whose predicates define the predicate-coverage space')
-parser.add_argument('--simulator', choices=['newtonian', 'carla'],
+parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='carla',
                     help='The simulator')
 duration = parser.add_mutually_exclusive_group()
 duration.add_argument('--steps', type=int, 
@@ -60,8 +60,7 @@ if args.weather:
 
 # Scenario config
 config = {**seed.config}
-if args.simulator:
-    config['simulator'] = args.simulator
+config['simulator'] = args.simulator
 config['steps'] = steps
 config['timestep'] = timestep
 config['weather'] = weather

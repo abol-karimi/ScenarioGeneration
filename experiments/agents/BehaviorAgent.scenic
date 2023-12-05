@@ -12,6 +12,9 @@ with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f
 
 scenario EgoScenario(config):
   setup:
+    if config['simulator'] != 'carla':
+      raise ValueError(f"BehaviorAgent is not compatible with the {config['simulator']} simulator!")
+    
     ego_lanes = [network.elements[l] for l in config['ego_route']]
     ego_centerline = PolylineRegion.unionAll([l.centerline for l in ego_lanes])
     ego_init_pos = ego_centerline.pointAlongBy(config['ego_init_progress_ratio']*ego_centerline.length)

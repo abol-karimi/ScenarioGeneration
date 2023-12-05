@@ -14,6 +14,9 @@ with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f
 
 scenario EgoScenario(config):
   setup:
+    if config['simulator'] != 'carla':
+      raise ValueError(f"autopilot is not compatible with the {config['simulator']} simulator!")
+
     lanes = [network.elements[l] for l in config['ego_route']]
     centerline = PolylineRegion.unionAll([l.centerline for l in lanes])
     init_pos = centerline.pointAlongBy(config['ego_init_progress_ratio']*centerline.length)

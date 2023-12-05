@@ -9,6 +9,7 @@ from scenariogen.core.seed_generators import random as random_seed_generator
 file_stem = '4way-stop_random'
 config = {'scenario_path': f'experiments/seed_definitions/{file_stem}',
           'output_folder': f'experiments/seeds_{file_stem}',
+          'simulator': 'carla',
           'render_ego': False,
           'render_spectator': False,
           'PRNG_seed': 0,

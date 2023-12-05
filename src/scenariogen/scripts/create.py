@@ -32,16 +32,11 @@ parser.add_argument('--spline_degree', default = 3, type=int)
 parser.add_argument('--spline_knots_size', default = 50, type=int)
 args = parser.parse_args()
 
-simulator2model = {'newtonian': 'scenic.simulators.newtonian.driving_model',
-                    'carla': 'scenic.simulators.carla.model'
-                    }
 # Run the scenario
 scenic_scenario = scenic.scenarioFromFile(
-                    'src/scenariogen/core/create.scenic',
+                    f'src/scenariogen/simulators/{args.simulator}/create.scenic',
                     mode2D=True,
-                    model=simulator2model[args.simulator],
                     params = {'caller_config':{'scenario_path': args.scenario_path,
-                                               'simulator_name': args.simulator,
                                                'render_spectator': args.render_spectator,
                                                'render_ego': args.render_ego,
                                                }

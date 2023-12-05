@@ -37,7 +37,6 @@ config = {'description': description,
           'weather': globalParameters.weather,
           'timestep': globalParameters.timestep,
           'steps': globalParameters.steps,
-          'compatible_simulators': ('carla',),
           'intersection': intersection_uid,
           }
 

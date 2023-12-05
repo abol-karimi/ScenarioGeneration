@@ -37,9 +37,9 @@ RUN apt-get install -y tk-dev
 
 # Install Python 3.8.18
 WORKDIR /home/carla/python-setup
-RUN wget https://www.python.org/ftp/python/3.8.18/Python-3.8.18.tgz ; \
-  tar -xvf Python-3.8.18.tgz ; \
-  cd Python-3.8.18 ; \
+RUN wget https://www.python.org/ftp/python/3.8.17/Python-3.8.17.tgz ; \
+  tar -xvf Python-3.8.17.tgz ; \
+  cd Python-3.8.17 ; \
   ./configure --enable-loadable-sqlite-extensions \
               --enable-optimizations \
               --with-tcltk-includes='-I/usr/include' \
