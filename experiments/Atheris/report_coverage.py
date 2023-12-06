@@ -49,8 +49,10 @@ if __name__ == '__main__':
     # ('autopilot', 'BehaviorAgent', 'traffic_rules'),
     # ('BehaviorAgent', 'autopilot', 'traffic_rules'),
     # ('BehaviorAgent', 'BehaviorAgent', 'traffic_rules'),
-    (None, 'autopilot', 'traffic_rules'),
-    (None, 'BehaviorAgent', 'traffic_rules'),
+    ('intersectionAgent', 'autopilot', 'traffic_rules'),
+    ('intersectionAgent', 'BehaviorAgent', 'traffic_rules'),
+    # (None, 'autopilot', 'traffic_rules'),
+    # (None, 'BehaviorAgent', 'traffic_rules'),
   )
   for fuzzing_ego, coverage_ego, coverage in reports_config:
     report(fuzzing_ego, coverage_ego, coverage)

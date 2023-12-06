@@ -15,11 +15,13 @@ from experiments.configs import SUT_config
 
 if __name__ == '__main__':
 
-  fuzzing_ego = None
+  fuzzing_ego = 'intersectionAgent'
+  simulator = 'newtonian'
 
   fuzzer_config = {
     'SUT_config': {**SUT_config,
                   'ego_module': f'experiments.agents.{fuzzing_ego}' if fuzzing_ego else None,
+                  'simulator': simulator,
                   },
     'seeds_folder': f'experiments/seeds_4way-stop_random',
     'output_folder': f"experiments/Atheris/output_{fuzzing_ego if fuzzing_ego else 'openLoop'}",

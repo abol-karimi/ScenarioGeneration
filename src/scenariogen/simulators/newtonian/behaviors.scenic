@@ -33,7 +33,7 @@ behavior StopBehavior():
   while True:
     wait
 
-behavior FourWayStopBehavior(route_lanes, target_speed=6, arrival_distance=5):
+behavior IntersectionBehavior(route_lanes, target_speed=6, arrival_distance=5):
   do FollowRouteAvoidCollisionsBehavior(route_lanes, target_speed)\
       until (distance from (front of self) to intersection) <= arrival_distance
   do StopBehavior() until self.speed <= 0.1

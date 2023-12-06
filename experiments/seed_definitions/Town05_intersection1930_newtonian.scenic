@@ -23,7 +23,7 @@ import importlib
 from scenic.domains.driving.roads import ManeuverType
 from scenariogen.core.signals import SignalType
 from scenariogen.core.utils import route_from_turns
-from scenariogen.simulators.newtonian.behaviors import FourWayStopBehavior
+from scenariogen.simulators.newtonian.behaviors import IntersectionBehavior
 
 ego_init_lane = 'road9_lane1'
 ego_turns = (ManeuverType.LEFT_TURN,)
@@ -88,7 +88,7 @@ scenario SeedScenario():
       with route major_route,
       with physics True,
       with allowCollisions False,
-      with behavior FourWayStopBehavior(major_lanes, target_speed=6, arrival_distance=5),
+      with behavior IntersectionBehavior(major_lanes, target_speed=6, arrival_distance=5),
       with length blueprint2dims[major_blueprint]['length'],
       with width blueprint2dims[major_blueprint]['width']
 
@@ -98,7 +98,7 @@ scenario SeedScenario():
       with route minor_route,
       with physics True,
       with allowCollisions False,
-      with behavior FourWayStopBehavior(minor_lanes, target_speed=6, arrival_distance=5),
+      with behavior IntersectionBehavior(minor_lanes, target_speed=6, arrival_distance=5),
       with length blueprint2dims[minor_blueprint]['length'],
       with width blueprint2dims[minor_blueprint]['width']
   

@@ -20,11 +20,8 @@ with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f
   blueprint2dims = jsonpickle.decode(f.read())
 
 behavior AnimateBehavior(traj, signal_actions):
-  for pose, signal in zip(traj, signal_actions):
-    if signal:
-      take SetPoseAction(pose[0]@pose[1], pose[2]), SetVehicleLightStateAction(signal_to_vehicleLightState(signal))
-    else:
-      take SetPoseAction(pose[0]@pose[1], pose[2])
+  for pose in traj:
+    take SetPoseAction(pose[0]@pose[1], pose[2])
 
 scenario NonegosScenario(config):
   setup:

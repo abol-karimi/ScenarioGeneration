@@ -15,6 +15,7 @@ monitor VehicleSignalMonitor(config, eventsOut):
   while True:
     time_seconds = simulation().currentTime * config['timestep']
     for car in cars:
+      print(car.name)
       signal_curr = vehicleLightState_to_signal(car.carlaActor.get_light_state())
       if signal[car] != signal_curr:
         signal[car] = signal_curr
