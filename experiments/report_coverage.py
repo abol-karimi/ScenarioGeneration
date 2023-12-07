@@ -9,10 +9,10 @@ from functools import reduce
 from experiments.configs import SUT_config, coverage_config
 from scenariogen.core.coverages.coverage import from_corpus, StatementCoverage
 
-def report(fuzzing_ego, coverage_ego, coverage):
-  output_folder = f"experiments/Atheris/output_{fuzzing_ego if fuzzing_ego else 'openLoop'}"
+def report(experiment_type, experiment_name, coverage_ego, coverage):
+  output_folder = f"experiments/{experiment_type}/output_{experiment_name}"
   output_path = Path(output_folder)
-  results_file = output_path/'results_Atheris.json'
+  results_file = output_path/'results.json'
 
   config = {
     **SUT_config,
@@ -45,14 +45,17 @@ def report(fuzzing_ego, coverage_ego, coverage):
 
 if __name__ == '__main__':
   reports_config = (
-    # ('autopilot', 'autopilot', 'traffic_rules'),
-    # ('autopilot', 'BehaviorAgent', 'traffic_rules'),
-    # ('BehaviorAgent', 'autopilot', 'traffic_rules'),
-    # ('BehaviorAgent', 'BehaviorAgent', 'traffic_rules'),
-    ('intersectionAgent', 'autopilot', 'traffic_rules'),
-    ('intersectionAgent', 'BehaviorAgent', 'traffic_rules'),
-    # (None, 'autopilot', 'traffic_rules'),
-    # (None, 'BehaviorAgent', 'traffic_rules'),
+    # ('Atheris', 'autopilot', 'autopilot', 'traffic_rules'),
+    # ('Atheris', 'autopilot', 'BehaviorAgent', 'traffic_rules'),
+    # ('Atheris', 'BehaviorAgent', 'autopilot', 'traffic_rules'),
+    # ('Atheris', 'BehaviorAgent', 'BehaviorAgent', 'traffic_rules'),
+    # ('Atheris', 'intersectionAgent', 'autopilot', 'traffic_rules'),
+    # ('Atheris', 'intersectionAgent', 'BehaviorAgent', 'traffic_rules'),
+    # ('Atheris', 'openLoop', 'autopilot', 'traffic_rules'),
+    # ('Atheris', 'openLoop', 'BehaviorAgent', 'traffic_rules'),
+    ('random_search', '4way-stop_random', 'autopilot', 'traffic_rules'),
+    ('random_search', '4way-stop_random', 'BehaviorAgent', 'traffic_rules'),
   )
-  for fuzzing_ego, coverage_ego, coverage in reports_config:
-    report(fuzzing_ego, coverage_ego, coverage)
+
+  for experiment_type, experiment_name, coverage_ego, coverage in reports_config:
+    report(experiment_type, experiment_name, coverage_ego, coverage)

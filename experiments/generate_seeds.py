@@ -1,9 +1,6 @@
 #!/usr/bin/env python3.8
 import jsonpickle
 
-import matplotlib
-matplotlib.use('TkAgg')
-
 from scenariogen.core.seed_generators import random as random_seed_generator
 
 file_stem = '4way-stop_random'

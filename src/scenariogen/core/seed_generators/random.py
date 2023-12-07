@@ -19,7 +19,7 @@ def run(config):
     seed_id = 0
 
     scenario = scenic.scenarioFromFile(
-                    f"src/scenariogen/simulator/{config['simulator']}/create.scenic",
+                    f"src/scenariogen/simulators/{config['simulator']}/create.scenic",
                     mode2D=True,
                     params={'render': config['render_ego'],
                             'scenario_path': config['scenario_path'],
@@ -34,9 +34,7 @@ def run(config):
         settings = simulator.world.get_settings()
         settings.no_rendering_mode = True
         simulator.world.apply_settings(settings)
-    
-    pathlib.Path(config['output_folder']).mkdir(parents=True, exist_ok=True)
-        
+       
     while seed_id < config['seeds_num']:
         try:
             scene, iterations = scenario.generate(maxIterations=config['scene_maxIterations'])
@@ -75,7 +73,7 @@ def run(config):
 
         seed_id += 1
         print(f'Saving seed {seed_id} ...')
-        with open(f"{config['output_folder']}/{seed_id}.json", 'w') as f:
+        with open(f"{config['output_folder']}/fuzz-inputs/{seed_id}.json", 'w') as f:
             f.write(jsonpickle.encode(seed, indent=1))
 
 

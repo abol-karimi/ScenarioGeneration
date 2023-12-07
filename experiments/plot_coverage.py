@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 from experiments.configs import SUT_config, coverage_config
 from scenariogen.predicates.utils import predicates_of_logic_program
 
-def plot(fuzzing_ego, coverage_ego, coverage):
-  output_folder = f"experiments/Atheris/output_{fuzzing_ego if fuzzing_ego else 'openLoop'}"
+def plot(experiment_type, experiment_name, coverage_ego, coverage):
+  output_folder = f"experiments/{experiment_type}/output_{experiment_name}"
   output_path = Path(output_folder)
   coverage_file = output_path/f"coverage_{coverage_ego}.json"
 
@@ -36,7 +36,7 @@ def plot(fuzzing_ego, coverage_ego, coverage):
     predicate_coverages_acc.append(predicate_coverages_acc[-1] + predicate_coverages[i])  
 
   fig = plt.figure()
-  fig.suptitle(f'Fuzzing ego: {fuzzing_ego},\n Coverage ego: {coverage_ego},\n Coverage module: {coverage}')
+  fig.suptitle(f'Experiment: {experiment_name},\n Coverage ego: {coverage_ego},\n Coverage module: {coverage}')
 
   ax = fig.add_subplot(111)    # The big subplot
   # Turn off axis lines and ticks of the big subplot
@@ -73,12 +73,17 @@ def plot(fuzzing_ego, coverage_ego, coverage):
 
 if __name__ == '__main__':
   reports_config = (
-    ('autopilot', 'autopilot', 'traffic_rules'),
-    ('autopilot', 'BehaviorAgent', 'traffic_rules'),
-    ('BehaviorAgent', 'autopilot', 'traffic_rules'),
-    ('BehaviorAgent', 'BehaviorAgent', 'traffic_rules'),
-    (None, 'autopilot', 'traffic_rules'),
-    (None, 'BehaviorAgent', 'traffic_rules'),
+    # ('Atheris', 'autopilot', 'autopilot', 'traffic_rules'),
+    # ('Atheris', 'autopilot', 'BehaviorAgent', 'traffic_rules'),
+    # ('Atheris', 'BehaviorAgent', 'autopilot', 'traffic_rules'),
+    # ('Atheris', 'BehaviorAgent', 'BehaviorAgent', 'traffic_rules'),
+    # ('Atheris', 'intersectionAgent', 'autopilot', 'traffic_rules'),
+    # ('Atheris', 'intersectionAgent', 'BehaviorAgent', 'traffic_rules'),
+    # ('Atheris', 'openLoop', 'autopilot', 'traffic_rules'),
+    # ('Atheris', 'openLoop', 'BehaviorAgent', 'traffic_rules'),
+    ('random_search', '4way-stop_random', 'autopilot', 'traffic_rules'),
+    ('random_search', '4way-stop_random', 'BehaviorAgent', 'traffic_rules'),
   )
-  for fuzzing_ego, coverage_ego, coverage in reports_config:
-    plot(fuzzing_ego, coverage_ego, coverage)
+
+  for experiment_type, experiment_name, coverage_ego, coverage in reports_config:
+    plot(experiment_type, experiment_name, coverage_ego, coverage)
