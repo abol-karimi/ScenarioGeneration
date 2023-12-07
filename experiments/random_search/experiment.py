@@ -30,7 +30,7 @@ if __name__ == '__main__':
             'spline_knots_size': 50,
             'scene_maxIterations': 50,
             'simulate_maxIterations': 1,
-            'seeds_num': 10,
+            'max_total_time': 5400, # seconds
             }
   
   output_path = Path(config['output_folder'])

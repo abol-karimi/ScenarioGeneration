@@ -4,7 +4,7 @@ Generates random seeds using simulation.
 2. A random number of non-egos with random routes through the intersection are chosen.
 3. All the vehicles (VUT and non-egos) are driven using the VUT's algorithm.
 """
-import pathlib
+import time
 import random
 import jsonpickle
 import scenic
@@ -15,6 +15,7 @@ from scenariogen.core.errors import EgoCollisionError, SplineApproximationError
 from scenariogen.core.utils import seed_from_sim
 
 def run(config):
+    start_time = time.time()
     random.seed(config['PRNG_seed'])
     seed_id = 0
 
@@ -34,8 +35,10 @@ def run(config):
         settings = simulator.world.get_settings()
         settings.no_rendering_mode = True
         simulator.world.apply_settings(settings)
+    
+    print(config['max_total_time'])
        
-    while seed_id < config['seeds_num']:
+    while time.time()-start_time < config['max_total_time']:
         try:
             scene, iterations = scenario.generate(maxIterations=config['scene_maxIterations'])
             print(f"Initial scene generated in {iterations} iteration{'(s)' if iterations > 1 else ''}.")
