@@ -5,11 +5,6 @@
   "carla_map": "Town05",
   "map": "/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/Town05.xodr",
   "weather": "CloudySunset",
-  "compatible_simulators": {
-   "py/tuple": [
-    "carla"
-   ]
-  },
   "timestep": 0.1,
   "steps": 200,
   "intersection": "intersection396",
@@ -19,7 +14,7 @@
    "road455_lane0",
    "road45_lane1"
   ],
-  "ego_init_progress_ratio": 0.1
+  "ego_init_progress_ratio": 0.3
  },
  "blueprints": {
   "py/tuple": [

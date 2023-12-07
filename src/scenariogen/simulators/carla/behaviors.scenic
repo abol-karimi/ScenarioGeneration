@@ -82,18 +82,21 @@ behavior BehaviorAgentReachDestination(dest, aggressiveness='normal', debug=Fals
 	print(f'Car {self.name} reached its destination.')
 
 
-behavior BehaviorAgentRSSReachDestination(dest, aggressiveness='normal'):
-	agent = BehaviorAgent(self.carlaActor, behavior=aggressiveness)
-	agent.set_destination(scenicToCarlaLocation(dest, world=simulation().world))
+behavior BehaviorAgentRSSReachDestination(dest, aggressiveness='normal', debug=False):
+	agent = BehaviorAgent(self.carlaActor,
+												behavior=aggressiveness,
+												map_inst=simulation().map)
+	agent.set_destination(scenicToCarlaLocation(dest, world=simulation().world),
+												scenicToCarlaLocation(self.position, world=simulation().world))
 
-	transforms = [pair[0].transform for pair in agent._local_planner._waypoints_queue]
-	rss_sensor = RssSensor(self.carlaActor, carla_world, 
+	transforms = [wp.transform for wp, _ in agent._local_planner._waypoints_queue]
+	rss_sensor = RssSensor(self.carlaActor, simulation().world,
 													None, None, None,
 													routing_targets=transforms)
 	restrictor = carla.RssRestrictor()
 	vehicle_physics = self.carlaActor.get_physics_control()
 	while not agent.done():
-		control = agent.run_step()
+		control = agent.run_step(debug=debug)
 		rss_proper_response = rss_sensor.proper_response if rss_sensor.response_valid else None
 		if rss_proper_response:
 			control = restrictor.restrict_vehicle_control(

@@ -19,7 +19,7 @@ from scenariogen.core.signals import SignalType
 ego_blueprint = 'vehicle.tesla.model3'
 ego_init_lane = 'road9_lane2'
 ego_turns = (ManeuverType.LEFT_TURN,)
-ego_init_progress_ratio = .1
+ego_init_progress_ratio = .3
 
 left_blueprint = 'vehicle.ford.crown'
 left_init_lane = 'road44_lane1'
