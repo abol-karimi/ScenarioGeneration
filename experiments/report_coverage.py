@@ -5,6 +5,7 @@
 from pathlib import Path
 import jsonpickle
 from functools import reduce
+from tqdm import tqdm
 
 from experiments.configs import SUT_config, coverage_config
 from scenariogen.core.coverages.coverage import from_corpus, StatementCoverage
@@ -32,7 +33,7 @@ def report(experiment_type, experiment_name, coverage_ego, coverage):
                                         })
 
   for result in results:
-    for measurement in result['measurements']:
+    for measurement in tqdm(result['measurements']):
       coverages = tuple(input2statementCoverage[p] for p in measurement['new_fuzz_inputs'] if p in input2statementCoverage)
       measurement['statement_coverage'] = reduce(lambda c1,c2: c1+c2,
                                                   coverages,
@@ -47,14 +48,17 @@ if __name__ == '__main__':
   reports_config = (
     # ('Atheris', 'autopilot', 'autopilot', 'traffic_rules'),
     # ('Atheris', 'autopilot', 'BehaviorAgent', 'traffic_rules'),
+    ('Atheris', 'autopilot', 'BehaviorAgentRSS', 'traffic_rules'),
     # ('Atheris', 'BehaviorAgent', 'autopilot', 'traffic_rules'),
     # ('Atheris', 'BehaviorAgent', 'BehaviorAgent', 'traffic_rules'),
+    ('Atheris', 'BehaviorAgent', 'BehaviorAgentRSS', 'traffic_rules'),
     # ('Atheris', 'intersectionAgent', 'autopilot', 'traffic_rules'),
     # ('Atheris', 'intersectionAgent', 'BehaviorAgent', 'traffic_rules'),
     # ('Atheris', 'openLoop', 'autopilot', 'traffic_rules'),
     # ('Atheris', 'openLoop', 'BehaviorAgent', 'traffic_rules'),
-    ('random_search', '4way-stop_random', 'autopilot', 'traffic_rules'),
-    ('random_search', '4way-stop_random', 'BehaviorAgent', 'traffic_rules'),
+    ('Atheris', 'openLoop', 'BehaviorAgentRSS', 'traffic_rules'),
+    # ('random_search', '4way-stop_random', 'autopilot', 'traffic_rules'),
+    # ('random_search', '4way-stop_random', 'BehaviorAgent', 'traffic_rules'),
   )
 
   for experiment_type, experiment_name, coverage_ego, coverage in reports_config:

@@ -15,7 +15,8 @@ from experiments.configs import SUT_config
 
 if __name__ == '__main__':
 
-  fuzzing_ego = 'autopilot'
+  fuzzing_ego = 'BehaviorAgentRSS'
+  seeds = 'random'
   simulator = 'carla'
 
   fuzzer_config = {
@@ -23,7 +24,7 @@ if __name__ == '__main__':
                   'ego_module': f'experiments.agents.{fuzzing_ego}' if fuzzing_ego else None,
                   'simulator': simulator,
                   },
-    'seeds_folder': f'experiments/seeds_4way-stop_random',
+    'seeds_folder': f'experiments/seeds/{seeds}/seeds',
     'output_folder': f"experiments/Atheris/output_{fuzzing_ego if fuzzing_ego else 'openLoop'}",
     'mutator': StructureAwareMutator(max_spline_knots_size=50,
                                     max_mutations_per_iteration=1,
@@ -31,7 +32,7 @@ if __name__ == '__main__':
     'crossOver': StructureAwareCrossOver(max_spline_knots_size=50,
                                         max_attempts=1,
                                         randomizer_seed=0),
-    'atheris_runs': 2000,
+    'atheris_runs': 1000,
     'max_seed_length': 1e+6, # 1 MB
   }
 

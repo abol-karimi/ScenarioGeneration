@@ -17,12 +17,12 @@ from scenariogen.core.seed_generators import random as random_seed_generator
 
 if __name__ == '__main__':
 
-  experiment_type = 'random_search'
-  experiment_name = '4way-stop_random'
+  experiment_name = '4way-stop_autopilot'
+  simulator = 'carla'
 
-  config = {'scenario_path': f'experiments/seed_definitions/{experiment_name}',
-            'output_folder': f'experiments/{experiment_type}/output_{experiment_name}',
-            'simulator': 'carla',
+  config = {'scenario_path': f'experiments/seeds/random/definitions/{experiment_name}',
+            'output_folder': f'experiments/random_search/output_{experiment_name}',
+            'simulator': simulator,
             'render_ego': False,
             'render_spectator': False,
             'PRNG_seed': 0,

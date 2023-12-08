@@ -111,8 +111,8 @@ class AtherisFuzzer:
     self.libfuzzer_config = [f"-atheris_runs={config['atheris_runs']}",
                              f"-artifact_prefix={self.output_path/'bugs'}/",
                              f"-max_len={config['max_seed_length']}",
-                             f"-timeout=120", # scenarios taking more than 2 minutes are considered as bugs
-                             f"-report_slow_units=60", # scenarios taking more than a minute are considered slow
+                             f"-timeout=300", # scenarios taking more than 5 minutes are considered as bugs
+                             f"-report_slow_units=120", # scenarios taking more than 2 minutes are considered slow
                              f"-rss_limit_mb=16384",
                              (self.output_path/'fuzz-inputs').as_posix(),
                              config['seeds_folder'],

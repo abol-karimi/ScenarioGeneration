@@ -9,4 +9,5 @@ sudo docker run --rm -it --privileged \
 --mount type=bind,source=$HOME/Scenic_10-03-2023,target=/home/carla/Scenic \
 --mount type=bind,source=$HOME/leaderboard,target=/home/carla/leaderboard \
 --mount type=bind,source=$HOME/scenario_runner,target=/home/carla/scenario_runner \
+--mount type=bind,source=$HOME/ScenarioComplexity,target=/home/carla/ScenarioComplexity \
 scenariogen:dev

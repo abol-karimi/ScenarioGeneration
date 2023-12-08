@@ -81,11 +81,6 @@ RUN . .venv/bin/activate ; \
   # modules needed for development
   pip install pyinstrument coverage
 
-# Z3 theorem prover
-COPY --chown=carla:carla z3-4.8.10-x64-ubuntu-18.04 /home/carla/z3-4.8.10-x64-ubuntu-18.04
-RUN . .venv/bin/activate ; \
-  pip install pysmt
-
 # Apps needed for 3D geometry operations
 USER root
 RUN apt-get install -y software-properties-common
@@ -94,6 +89,11 @@ RUN add-apt-repository ppa:openscad/releases ; \
   apt-get install -y openscad
 RUN apt-get install -y blender
 USER carla
+
+# Z3 theorem prover
+COPY --chown=carla:carla z3-4.8.10-x64-ubuntu-18.04 /home/carla/z3-4.8.10-x64-ubuntu-18.04
+RUN . .venv/bin/activate ; \
+  pip install PySMT==0.9.6.dev53
 
 # Carla RSS python module
 COPY --chown=carla:carla PythonAPI /home/carla/PythonAPI

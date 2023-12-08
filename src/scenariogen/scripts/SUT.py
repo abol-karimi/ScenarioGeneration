@@ -90,6 +90,6 @@ else:
         with open(f"src/scenariogen/predicates/{predicates_file}", 'r') as f:
             logic_program = f.read()
         predicate_coverage_space = predicates_of_logic_program(logic_program)
-        coverage_gap = predicate_coverage_space - coverage
+        coverage_gap = predicate_coverage_space - coverage.to_predicateCoverage()
         print(f'\nPredicate coverage gap:')
         coverage_gap.print()

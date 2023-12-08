@@ -73,7 +73,7 @@ monitor StoppingMonitor(config, eventsOut):
 
 monitor RegionOverlapMonitor(config, eventsOut):
   """
-  1. At the initial step, cars are assumed to enter the regions that they occupy upon spawn, i.e. the entrance event is generated.
+  Note: At the initial step, cars are assumed to enter the regions that they occupy upon spawn, i.e. the entrance event is generated.
   """
   cars = simulation().agents
   occupiedRegions = {car: set(region.uid for region in config['regions'] if region.intersects(PolygonalRegion(polygon=car._boundingPolygon))) 
@@ -90,3 +90,11 @@ monitor RegionOverlapMonitor(config, eventsOut):
         eventsOut.append(LeftRegionEvent(car, region, time_seconds))
         occupiedRegions[car].remove(region.uid)
     wait
+
+
+monitor OcclusionMonitor(config, eventsOut):
+  cars = simulation().agents
+  while True:
+    # TODO
+    wait
+

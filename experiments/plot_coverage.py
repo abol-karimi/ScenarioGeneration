@@ -81,7 +81,7 @@ if __name__ == '__main__':
     # ('Atheris', 'intersectionAgent', 'BehaviorAgent', 'traffic_rules'),
     # ('Atheris', 'openLoop', 'autopilot', 'traffic_rules'),
     # ('Atheris', 'openLoop', 'BehaviorAgent', 'traffic_rules'),
-    ('random_search', '4way-stop_random', 'autopilot', 'traffic_rules'),
+    # ('random_search', '4way-stop_random', 'autopilot', 'traffic_rules'),
     ('random_search', '4way-stop_random', 'BehaviorAgent', 'traffic_rules'),
   )
 
