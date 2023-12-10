@@ -1,5 +1,4 @@
-
-from itertools import product
+from itertools import product, permutations
 from scenic.core.regions import UnionRegion
 from scenic.domains.driving.roads import Lane, Intersection
 
@@ -93,8 +92,42 @@ monitor RegionOverlapMonitor(config, eventsOut):
 
 
 monitor OcclusionMonitor(config, eventsOut):
+  """
+  appearedToAtTime(V1, V2, T)
+  disappearedFromAtTime(V1, V2, T)
+  """
+  cars = simulation().agents
+  could_see = {(c1, c2):False for c1, c2 in permutations(cars, 2)}
+  while True:
+    time_seconds = simulation().currentTime * config['timestep']
+    for c1, c2 in permutations(cars, 2):
+      if (c1 can see c2) and not could_see[c1, c2]:
+        could_see[c1, c2] = True
+        eventsOut.append(AppearedToOtherEvent(c2, c1, time_seconds))
+      elif (not c1 can see c2) and could_see[c1, c2]:
+        could_see[c1, c2] = False
+        eventsOut.append(DisappearedFromOtherEvent(c2, c1, time_seconds))
+    wait
+
+
+monitor TailgateMonitor(config, eventsOut):
+  """
+  startedTailgatingAtTime(V1, V2, T)
+  stoppedTailgatingAtTime(V1, V2, T)
+  """
   cars = simulation().agents
   while True:
     # TODO
     wait
 
+
+monitor ManeuveredWithWrongSignal(config, eventsOut):
+  """
+  maneuveredWithWrongSignalAtTime(V, M, S, T)
+  """
+  cars = simulation().agents
+  while True:
+    # TODO
+    wait
+
+#RollingStop

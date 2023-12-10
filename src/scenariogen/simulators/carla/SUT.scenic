@@ -8,6 +8,7 @@ config = globalParameters.config
 model scenic.simulators.carla.model
 from scenariogen.simulators.carla.monitors import ForbidEgoCollisionsMonitor, ShowIntersectionMonitor, LabelCarsMonitor
 from scenariogen.simulators.carla.scenarios import NonegosScenario
+from scenariogen.core.coverages.coverage import PredicateCoverage
 
 nonegos_scenario = NonegosScenario(config)
 
@@ -21,6 +22,7 @@ if config['ego_module']:
 if config['coverage_module']:
   coverage_module = importlib.import_module(config['coverage_module'])
   coverage = coverage_module.Coverage([])
+  predicate_coverage_space = PredicateCoverage([])
 
 scenario Main():
   setup:
@@ -29,8 +31,9 @@ scenario Main():
       ego = new Debris at p.x@p.y
 
     if config['coverage_module']:
-      require monitor coverage_module.CoverageMonitor(coverage)
+      require monitor coverage_module.CoverageMonitor(coverage, predicate_coverage_space)
       record final coverage as coverage
+      record final predicate_coverage_space as predicate_coverage_space
 
     require monitor ForbidEgoCollisionsMonitor(config)
     if config['render_spectator']:

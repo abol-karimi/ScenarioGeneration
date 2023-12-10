@@ -24,9 +24,6 @@ parser.add_argument('--ego_module',
                     help='the scenic file containing the ego scenario')
 parser.add_argument('--coverage_module',
                     help='the scenic file containing coverage monitor')
-parser.add_argument('--predicates_file',
-                    default='4way-stopOnAll.lp',
-                    help='the logic program whose predicates define the predicate-coverage space')
 parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='carla',
                     help='The simulator')
 duration = parser.add_mutually_exclusive_group()
@@ -84,12 +81,7 @@ else:
         coverage = sim_result.records['coverage']
         coverage.print()
 
-        with open(f"src/scenariogen/predicates/{args.predicates_file}", 'r') as f:
-            logic_program = f.read()
-        predicates_file = '4way-stopOnAll.lp'
-        with open(f"src/scenariogen/predicates/{predicates_file}", 'r') as f:
-            logic_program = f.read()
-        predicate_coverage_space = predicates_of_logic_program(logic_program)
+        predicate_coverage_space = sim_result.records['predicate_coverage_space']
         coverage_gap = predicate_coverage_space - coverage.to_predicateCoverage()
         print(f'\nPredicate coverage gap:')
         coverage_gap.print()

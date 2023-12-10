@@ -9,12 +9,11 @@ from scenic.domains.driving.roads import Network
 from scenariogen.core.utils import classify_intersection
 from scenariogen.predicates.predicates import TemporalOrder, geometry_atoms
 from scenariogen.predicates.events import *
-from scenariogen.predicates.utils import predicates_of_logic_program
 from scenariogen.simulators.carla.utils import vehicleLightState_to_signal # TODO bring signal to driving domain
 from scenariogen.core.coverages.coverage import StatementCoverage as Coverage
+from scenariogen.core.coverages.coverage import PredicateCoverage
 
-traffic_rules_file = classify_intersection(network, config['intersection']) + '.lp'
-with open(f"src/scenariogen/predicates/{traffic_rules_file}", 'r') as f:
+with open(f"src/scenariogen/predicates/traffic.lp", 'r') as f:
   encoding = f.read()
 
 def to_coverage(events):
@@ -37,26 +36,27 @@ def to_coverage(events):
   return coverage
 
 
-from scenariogen.predicates.monitors import (ArrivingAtIntersectionMonitor,
-                                             VehicleSignalMonitor,
-                                             StoppingMonitor,
-                                             RegionOverlapMonitor)
+from scenariogen.predicates.monitors import (OcclusionMonitor)#,
+                                            #  ArrivingAtIntersectionMonitor,
+                                            #  VehicleSignalMonitor,
+                                            #  StoppingMonitor,
+                                            #  RegionOverlapMonitor)
 
 events = []
 trigger_regions = [intersection] + [m.connectingLane for m in intersection.maneuvers]
 
 monitor CoverageMonitor(coverageOut, predicate_coverage_spaceOut):
-  require monitor VehicleSignalMonitor(config, events)
-  require monitor ArrivingAtIntersectionMonitor({**config, 'network': network}, events)
-  require monitor StoppingMonitor(config, events)
-  require monitor RegionOverlapMonitor({**config, 'regions': trigger_regions}, events)
+  require monitor OcclusionMonitor(config, events)
+  # require monitor VehicleSignalMonitor(config, events)
+  # require monitor ArrivingAtIntersectionMonitor({**config, 'network': network}, events)
+  # require monitor StoppingMonitor(config, events)
+  # require monitor RegionOverlapMonitor({**config, 'regions': trigger_regions}, events)
 
   for step in range(config['steps']):
     wait
   coverageOut.update(to_coverage(events))
-  predicate_coverage_spaceOut.update(predicates_of_logic_program(encoding))
-
+  predicate_coverage_spaceOut.update(PredicateCoverage(('appearedToAtTime',
+                                                        'disappearedFromAtTime')))
   print('Coverage monitor last statement!')
   wait
-
   print('Should not reach here!')

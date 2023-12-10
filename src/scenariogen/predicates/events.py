@@ -80,3 +80,27 @@ class LeftRegionEvent:
             predicate = 'leftIntersectionAtTime'
 
         return f'{predicate}({self.vehicle.name}, {self.region.uid}, {time_to_term(self.seconds)})'
+
+
+class AppearedToOtherEvent:
+    """Becoming visible to another agent."""
+
+    def __init__(self, vehicle, other, seconds):
+        self.vehicle = vehicle
+        self.other = other
+        self.seconds = seconds
+
+    def __str__(self):
+        return f'appearedToAtTime({self.vehicle.name}, {self.other.name}, {time_to_term(self.seconds)})'
+
+
+class DisappearedFromOtherEvent:
+    """Becoming invisible to another agent."""
+
+    def __init__(self, vehicle, other, seconds):
+        self.vehicle = vehicle
+        self.other = other
+        self.seconds = seconds
+
+    def __str__(self):
+        return f'disappearedFromAtTime({self.vehicle.name}, {self.other.name}, {time_to_term(self.seconds)})'
