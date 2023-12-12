@@ -5,12 +5,9 @@ intersection = network.elements[config['intersection']]
 
 # python imports
 import clingo
-from scenic.domains.driving.roads import Network
 from scenariogen.core.utils import classify_intersection
 from scenariogen.predicates.predicates import TemporalOrder, geometry_atoms
 from scenariogen.predicates.events import *
-from scenariogen.predicates.utils import predicates_of_logic_program
-from scenariogen.simulators.carla.utils import vehicleLightState_to_signal # TODO bring signal to driving domain
 from scenariogen.core.coverages.coverage import StatementCoverage as Coverage
 
 traffic_rules_file = classify_intersection(network, config['intersection']) + '.lp'
@@ -45,7 +42,7 @@ from scenariogen.predicates.monitors import (ArrivingAtIntersectionMonitor,
 events = []
 trigger_regions = [intersection] + [m.connectingLane for m in intersection.maneuvers]
 
-monitor CoverageMonitor(coverageOut, predicate_coverage_spaceOut):
+monitor CoverageMonitor(coverageOut):
   require monitor VehicleSignalMonitor(config, events)
   require monitor ArrivingAtIntersectionMonitor({**config, 'network': network}, events)
   require monitor StoppingMonitor(config, events)
@@ -54,7 +51,6 @@ monitor CoverageMonitor(coverageOut, predicate_coverage_spaceOut):
   for step in range(config['steps']):
     wait
   coverageOut.update(to_coverage(events))
-  predicate_coverage_spaceOut.update(predicates_of_logic_program(encoding))
 
   print('Coverage monitor last statement!')
   wait

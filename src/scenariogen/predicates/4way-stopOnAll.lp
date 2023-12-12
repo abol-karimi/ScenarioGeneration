@@ -30,7 +30,7 @@ eventTime(T):-
   movedAtTime(_, T).
 
 eventTime(T):-
-  enteredIntersectionAtTime(_, _, T).
+  enteredFromLaneAtTime(_, _, T).
 
 eventTime(T):-
   enteredLaneAtTime(_, _, T).
@@ -39,10 +39,10 @@ eventTime(T):-
   leftLaneAtTime(_, _, T).
 
 eventTime(T):-
-  leftIntersectionAtTime(_, _, T).
+  leftToLaneAtTime(_, _, T).
 
-arrivedFromLane(Vehicle, Lane):-
-  arrivedFromLaneAtTime(Vehicle, Lane, _).
+arrivedFromLane(V, L):-
+  arrivedFromLaneAtTime(V, L, _).
 
 arrivedAtTime(V, T):-
   arrivedFromLaneAtTime(V, _, T).
@@ -77,8 +77,8 @@ arrivedFromRightOf(V1, V2):-
   arrivedFromLane(V2, L2),
   isOnRightOf(L1, L2).
 
-enteredIntersectionAfter(V, I, T):-
-  enteredIntersectionAtTime(V, I, Te),
+enteredAfter(V, T):-
+  enteredAtTime(V, Te),
   eventTime(T),
   1 = @lessThan(T, Te).
 
@@ -101,7 +101,7 @@ requestedLane(V, L):-
 violatesRightOfForRule(V1, V2, yieldToInside):-
   V1 != V2,
   arrivedFromLaneAtTime(V1, La, Ta),
-  enteredIntersectionAtTime(V2, I, Te),
+  enteredAtTime(V2, Te),
   1 = @lessThan(Te, Ta),
   arrivedFromDifferentHighways(V1, V2),
   requestedLane(V1, L1),
@@ -119,8 +119,8 @@ violatesRightOfForRule(V1, V2, yieldToInside):-
 %  to the vehicle on his or her immediate right.
 violatesRightOfForRule(V1, V2, yieldToRight):-
   V1 != V2,
-  enteredIntersectionAtTime(V1, I, Te1),
-  enteredIntersectionAtTime(V2, I, Te2),
+  enteredAtTime(V1, Te1),
+  enteredAtTime(V2, Te2),
   1 = @equal(Te1, Te2),
   arrivedFromRightOf(V2, V1),
   requestedLane(V1, L1),
@@ -163,22 +163,22 @@ stoppedAfterArrivalFromLane(V, L):-
   arrivedFromLaneAtTime(V, L, Ta),
   stoppedAtTime(V, Ts),
   1 = @lessThan(Ta, Ts),
-  incomingLaneOf(L, I),
-  enteredIntersectionAtTime(V, I, Te),
+  incomingLane(L),
+  enteredAtTime(V, Te),
   1 = @lessThan(Ts, Te).
 
 stoppedAfterArrivalFromLane(V, L):-
   arrivedFromLaneAtTime(V, L, Ta),
   stoppedAtTime(V, Ts),
   1 = @lessThan(Ta, Ts),
-  incomingLaneOf(L, I),
-  not enteredIntersectionAfter(V, I, Ts).
+  incomingLane(L),
+  not enteredAfter(V, Ts).
 
 violatesRule(V, stopAtSign):-
   arrivedFromLaneAtTime(V, L, Ta),
   hasStopSign(L),
-  incomingLaneOf(L, I),  
-  enteredIntersectionAtTime(V, I, Te),
+  incomingLane(L),  
+  enteredAtTime(V, Te),
   not stoppedAfterArrivalFromLane(V, L).
 
 % 22526 (a) (Signalized intersection?)

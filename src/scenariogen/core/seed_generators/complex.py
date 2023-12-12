@@ -231,9 +231,9 @@ def logical_solution(scenario, config, sim_events):
     #  based on the status of traffic rules violations:
     for car in new_nonegos+['ego', 'illegal']:
         atoms += [f'#count {{0:stoppedAtForkAtTime({car}, F, @time({car}, stop, T1, T2)); 1:lessThan(T1, @time({car}, stop, T1, T2)); 2:lessThan(@time({car}, stop, T1, T2),  T2) }} = 3 :-'
-                  f'arrivedAtForkAtTime({car}, F, T1),'
+                  f'arrivedFromLaneAtTime({car}, F, T1),'
                   f'hasStopSign(F),'
-                  f'enteredForkAtTime({car}, F, T2),'
+                  f'enteredFromLaneAtTime({car}, F, T2),'
                   f'not violatesRule({car}, stopAtSign)']
 
     program = ""

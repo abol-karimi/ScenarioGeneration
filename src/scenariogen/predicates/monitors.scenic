@@ -83,10 +83,10 @@ monitor RegionOverlapMonitor(config, eventsOut):
       wasOnRegion = region.uid in occupiedRegions[car]
       isOnRegion = region.intersects(PolygonalRegion(polygon=car._boundingPolygon))
       if isOnRegion and not wasOnRegion:
-        eventsOut.append(EnteredRegionEvent(car, region, time_seconds))
+        eventsOut.append(EnteredRegionEvent(car, region, car.lane, time_seconds))
         occupiedRegions[car].add(region.uid)
       elif wasOnRegion and not isOnRegion:
-        eventsOut.append(LeftRegionEvent(car, region, time_seconds))
+        eventsOut.append(LeftRegionEvent(car, region, car.lane, time_seconds))
         occupiedRegions[car].remove(region.uid)
     wait
 
@@ -110,24 +110,21 @@ monitor OcclusionMonitor(config, eventsOut):
     wait
 
 
-monitor TailgateMonitor(config, eventsOut):
-  """
-  startedTailgatingAtTime(V1, V2, T)
-  stoppedTailgatingAtTime(V1, V2, T)
-  """
-  cars = simulation().agents
-  while True:
-    # TODO
-    wait
+# monitor ActorsMonitor(config, eventsOut):
+#   """Assuming conservation of actors in the scene throughout the simulation,
+#   we only need to check once."""
+#   eventsOut.extend(ActorSpawnedEvent(a, 0) for a in simulation().agents)
+#   wait
+
+# monitor TailgateMonitor(config, eventsOut):
+#   """
+#   startedTailgatingAtTime(V1, V2, T)
+#   stoppedTailgatingAtTime(V1, V2, T)
+#   """
+#   cars = simulation().agents
+#   while True:
+#     # TODO
+#     wait
 
 
-monitor ManeuveredWithWrongSignal(config, eventsOut):
-  """
-  maneuveredWithWrongSignalAtTime(V, M, S, T)
-  """
-  cars = simulation().agents
-  while True:
-    # TODO
-    wait
-
-#RollingStop
+# monitor RollingStopMonitor()

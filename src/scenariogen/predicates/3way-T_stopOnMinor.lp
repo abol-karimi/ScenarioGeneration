@@ -21,13 +21,13 @@ forkOnOppositeDirection(F1, F2):-
 %---Auxiliary predicates for traffic events---
 %---------------------------------------------
 arrivedAtFork(Vehicle, Fork):-
-  arrivedAtForkAtTime(Vehicle, Fork, _).
+  arrivedFromLaneAtTime(Vehicle, Fork, _).
 
 arrivedAtTime(V, T):-
-  arrivedAtForkAtTime(V, _, T).
+  arrivedFromLaneAtTime(V, _, T).
 
 enteredAtTime(V, T):-
-  enteredForkAtTime(V, _, T).
+  enteredFromLaneAtTime(V, _, T).
 
 signaledAtFork(V, S, F):-
   signaledAtForkAtTime(V, S, F, _).

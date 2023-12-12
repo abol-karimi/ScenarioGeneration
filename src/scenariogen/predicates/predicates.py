@@ -17,10 +17,9 @@ def geometry_atoms(network, intersection_uid):
     intersection = network.elements[intersection_uid]
     maneuvers = intersection.maneuvers
     geometry = []
-    geometry.append(f'intersection({intersection.uid})')
-    geometry.extend(f'incomingLaneOf({lane.uid}, {intersection.uid})' for lane in intersection.incomingLanes)
-    geometry.extend(f'connectingLaneOf({m.connectingLane.uid}, {intersection.uid})' for m in maneuvers)
-    geometry.extend(f'outgoingLaneOf({lane.uid}, {intersection.uid})' for lane in intersection.outgoingLanes)
+    geometry.extend(f'incomingLane({lane.uid})' for lane in intersection.incomingLanes)
+    geometry.extend(f'connectingLane({m.connectingLane.uid})' for m in maneuvers)
+    geometry.extend(f'outgoingLane({lane.uid})' for lane in intersection.outgoingLanes)
 
     for m in intersection.maneuvers:
         geometry.append(f'lanePrecedes({m.startLane.uid}, {m.connectingLane.uid})')

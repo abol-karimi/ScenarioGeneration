@@ -30,7 +30,7 @@ eventTime(T):-
   movedAtTime(_, T).
 
 eventTime(T):-
-  enteredIntersectionAtTime(_, _, T).
+  enteredAtTime(_, _, T).
 
 eventTime(T):-
   enteredLaneAtTime(_, _, T).
@@ -39,7 +39,7 @@ eventTime(T):-
   leftLaneAtTime(_, _, T).
 
 eventTime(T):-
-  leftIntersectionAtTime(_, _, T).
+  leftAtTime(_, _, T).
 
 arrivedFromLane(Vehicle, Lane):-
   arrivedFromLaneAtTime(Vehicle, Lane, _).
@@ -95,7 +95,7 @@ requestedLane(V, L):-
 violatesRightOfForRule(V1, V2, yieldToInside):-
   V1 != V2,
   arrivedFromLaneAtTime(V1, La, Ta),
-  enteredIntersectionAtTime(V2, I, Te),
+  enteredAtTime(V2, I, Te),
   1 = @lessThan(Te, Ta),
   arrivedFromDifferentHighways(V1, V2),
   requestedLane(V1, L1),
@@ -112,8 +112,8 @@ violatesRightOfForRule(V1, V2, yieldToInside):-
 %  to the vehicle on his or her immediate right.
 violatesRightOfForRule(V1, V2, yieldToRight):-
   V1 != V2,
-  enteredIntersectionAtTime(V1, I, Te1),
-  enteredIntersectionAtTime(V2, I, Te2),
+  enteredAtTime(V1, I, Te1),
+  enteredAtTime(V2, I, Te2),
   1 = @equal(Te1, Te2),
   arrivedFromRightOf(V2, V1),
   requestedLane(V1, L1),

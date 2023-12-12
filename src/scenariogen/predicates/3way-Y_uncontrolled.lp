@@ -14,10 +14,10 @@ branchOf(Lane, Fork):-
 %---Auxiliary predicates for traffic events---
 %---------------------------------------------
 arrivedAtFork(Vehicle, Fork):-
-  arrivedAtForkAtTime(Vehicle, Fork, _).
+  arrivedFromLaneAtTime(Vehicle, Fork, _).
 
 arrivedAtTime(V, T):-
-  arrivedAtForkAtTime(V, _, T).
+  arrivedFromLaneAtTime(V, _, T).
 
 signaledAtFork(V, S, F):-
   signaledAtForkAtTime(V, S, F, _).
@@ -41,8 +41,8 @@ requestedLane(Vehicle, Lane):-
 %  to any vehicle which has entered the intersection from a different highway.
 violatesRightOfForRule(V1, V2, yieldToInside):-
   V1 != V2,
-  enteredForkAtTime(V1, F1, Te1),
-  enteredForkAtTime(V2, F2, Te2),
+  enteredFromLaneAtTime(V1, F1, Te1),
+  enteredFromLaneAtTime(V2, F2, Te2),
   onDifferentHighways(F1, F2),
   requestedLane(V1, L1),
   requestedLane(V2, L2),
@@ -56,8 +56,8 @@ violatesRightOfForRule(V1, V2, yieldToInside):-
 % then their entrance times are relevant to the right-of-way.
 #count {0:equal(Te1, Te2); 1:lessThan(Te1, Te2); 2:lessThan(Te2, Te1) } = 1 :- 
   V1 != V2,
-  enteredForkAtTime(V1, F1, Te1),
-  enteredForkAtTime(V2, F2, Te2),
+  enteredFromLaneAtTime(V1, F1, Te1),
+  enteredFromLaneAtTime(V2, F2, Te2),
   onDifferentHighways(F1, F2),
   requestedLane(V1, L1),
   requestedLane(V2, L2),
@@ -70,8 +70,8 @@ violatesRightOfForRule(V1, V2, yieldToInside):-
 % are relevant to the right of way.
 #count {0:equal(T1, T2); 1:lessThan(T1, T2); 2:lessThan(T2, T1) } = 1 :-
   V1 != V2,
-  enteredForkAtTime(V1, F1, Te1),
-  enteredForkAtTime(V2, F2, Te2),
+  enteredFromLaneAtTime(V1, F1, Te1),
+  enteredFromLaneAtTime(V2, F2, Te2),
   onDifferentHighways(F1, F2),
   requestedLane(V1, L1),
   requestedLane(V2, L2),
@@ -87,8 +87,8 @@ violatesRightOfForRule(V1, V2, yieldToInside):-
 %  to the vehicle on his or her immediate right.
 violatesRightOfForRule(V1, V2, yieldToRight):-
   V1 != V2,
-  enteredForkAtTime(V1, F1, Te1),
-  enteredForkAtTime(V2, F2, Te2),
+  enteredFromLaneAtTime(V1, F1, Te1),
+  enteredFromLaneAtTime(V2, F2, Te2),
   isOnRightOf(F2, F1),
   requestedLane(V1, L1),
   requestedLane(V2, L2),
@@ -103,8 +103,8 @@ violatesRightOfForRule(V1, V2, yieldToRight):-
 % then their entrance times are relevant to the right of way.
 #count {0:equal(Te1, Te2); 1:lessThan(Te1, Te2); 2:lessThan(Te2, Te1) } = 1 :- 
   V1 != V2,
-  enteredForkAtTime(V1, F1, Te1),
-  enteredForkAtTime(V2, F2, Te2),
+  enteredFromLaneAtTime(V1, F1, Te1),
+  enteredFromLaneAtTime(V2, F2, Te2),
   isOnRightOf(F2, F1),
   requestedLane(V1, L1),
   requestedLane(V2, L2),
@@ -117,8 +117,8 @@ violatesRightOfForRule(V1, V2, yieldToRight):-
 % are relevant to the right of way.
 #count {0:equal(T1, T2); 1:lessThan(T1, T2); 2:lessThan(T2, T1) } = 1 :- 
   V1 != V2,
-  enteredForkAtTime(V1, F1, Te1),
-  enteredForkAtTime(V2, F2, Te2),
+  enteredFromLaneAtTime(V1, F1, Te1),
+  enteredFromLaneAtTime(V2, F2, Te2),
   isOnRightOf(F2, F1),
   requestedLane(V1, L1),
   requestedLane(V2, L2),

@@ -51,35 +51,33 @@ class MovedEvent:
 class EnteredRegionEvent:
     """When part of a vehicle enters the region."""
 
-    def __init__(self, vehicle, region, seconds):
+    def __init__(self, vehicle, region, lane, seconds):
         self.vehicle = vehicle
         self.region = region
+        self.lane = lane
         self.seconds = seconds
 
     def __str__(self):
         if isinstance(self.region, Lane):
-            predicate = 'enteredLaneAtTime'
+            return f'enteredLaneAtTime({self.vehicle.name}, {self.region.uid}, {time_to_term(self.seconds)})'
         elif isinstance(self.region, Intersection):
-            predicate = 'enteredIntersectionAtTime'
-
-        return f'{predicate}({self.vehicle.name}, {self.region.uid}, {time_to_term(self.seconds)})'
+            return f'enteredFromLaneAtTime({self.vehicle.name}, {self.lane.uid}, {time_to_term(self.seconds)})'
 
 
 class LeftRegionEvent:
     """When the last part of a vehicle exits the region."""
 
-    def __init__(self, vehicle, region, seconds):
+    def __init__(self, vehicle, region, lane, seconds):
         self.vehicle = vehicle
         self.region = region
+        self.lane = lane
         self.seconds = seconds
 
     def __str__(self):
         if isinstance(self.region, Lane):
-            predicate = 'leftLaneAtTime'
+            return f'leftLaneAtTime({self.vehicle.name}, {self.region.uid}, {time_to_term(self.seconds)})'
         elif isinstance(self.region, Intersection):
-            predicate = 'leftIntersectionAtTime'
-
-        return f'{predicate}({self.vehicle.name}, {self.region.uid}, {time_to_term(self.seconds)})'
+            return f'leftToLaneAtTime({self.vehicle.name}, {self.lane.uid}, {time_to_term(self.seconds)})'       
 
 
 class AppearedToOtherEvent:
@@ -104,3 +102,31 @@ class DisappearedFromOtherEvent:
 
     def __str__(self):
         return f'disappearedFromAtTime({self.vehicle.name}, {self.other.name}, {time_to_term(self.seconds)})'
+
+
+class ActorSpawnedEvent:
+    """Reporting the actors present in the scenario.
+    Assuming conservation of actors throught the scenario,
+    the list is static, so no time parameter needed.
+    """
+
+    def __init__(self, vehicle, seconds):
+        self.vehicle = vehicle
+        self.seconds = seconds
+    
+    def __str__(self):
+        return f'actorSpawnedAtTime({self.vehicle.name}, {time_to_term(self.seconds)})'
+
+
+class ActorDestroyedEvent:
+    """Reporting the actors present in the scenario.
+    Assuming conservation of actors throught the scenario,
+    the list is static, so no time parameter needed.
+    """
+
+    def __init__(self, vehicle, seconds):
+        self.vehicle = vehicle
+        self.seconds = seconds
+    
+    def __str__(self):
+        return f'actorDestroyedEvent({self.vehicle.name}, {time_to_term(self.seconds)})'
