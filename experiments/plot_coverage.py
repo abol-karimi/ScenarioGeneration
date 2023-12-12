@@ -79,14 +79,19 @@ if __name__ == '__main__':
   reports_config = (
     ('Atheris', 'autopilot', 'autopilot', 'traffic'),
     ('Atheris', 'autopilot', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'autopilot', 'BehaviorAgentRSS', 'traffic'),
     ('Atheris', 'BehaviorAgent', 'autopilot', 'traffic'),
     ('Atheris', 'BehaviorAgent', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'BehaviorAgent', 'BehaviorAgentRSS', 'traffic'),
     ('Atheris', 'intersectionAgent', 'autopilot', 'traffic'),
     ('Atheris', 'intersectionAgent', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'intersectionAgent', 'BehaviorAgentRSS', 'traffic'),
     ('Atheris', 'openLoop', 'autopilot', 'traffic'),
     ('Atheris', 'openLoop', 'BehaviorAgent', 'traffic'),
-    ('random_search', '4way-stop_autopilot', 'autopilot', 'traffic'),
-    ('random_search', '4way-stop_autopilot', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'openLoop', 'BehaviorAgentRSS', 'traffic'),
+    # ('random_search', '4way-stop_autopilot', 'autopilot', 'traffic'),
+    # ('random_search', '4way-stop_autopilot', 'BehaviorAgent', 'traffic'),
+    # ('random_search', '4way-stop_autopilot', 'BehaviorAgentRSS', 'traffic'),
   )
 
   for experiment_type, experiment_name, coverage_ego, coverage in reports_config:

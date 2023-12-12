@@ -22,10 +22,9 @@ def report(experiment_type, experiment_name, coverage_ego, coverage):
     'coverage_module': f'scenariogen.core.coverages.{coverage}',
   }
 
-  coverage_results = from_corpus('experiments/seeds_4way-stop_random', config)
-  seed2statementCoverage = coverage_results[0]
-  fuzzInput2statementCoverage = from_corpus(output_path/'fuzz-inputs', config)
-  input2statementCoverage = {**seed2statementCoverage, **fuzzInput2statementCoverage}
+  seed_coverage_results = from_corpus('experiments/seeds_4way-stop_random', config)
+  experiment_coverage_results = from_corpus(output_path/'fuzz-inputs', config)
+  input2statementCoverage = {**seed_coverage_results[0], **experiment_coverage_results[0]}
 
   with open(results_file, 'r') as f:
     results = jsonpickle.decode(f.read())
@@ -36,11 +35,11 @@ def report(experiment_type, experiment_name, coverage_ego, coverage):
   for result in results:
     for measurement in tqdm(result['measurements']):
       measurement['new_valid_inputs'] = set(p for p in measurement['new_fuzz_inputs'] if p in input2statementCoverage)
-      measurement['new_nonego_collisions'] = coverage_results[1]
-      measurement['new_ego_collisions'] = coverage_results[2]
-      measurement['new_simulation_creation_errors'] = coverage_results[3]
-      measurement['new_simulation_rejections'] = coverage_results[4]
-      measurement['new_none_coverages'] = coverage_results[5]
+      measurement['new_nonego_collisions'] = seed_coverage_results[1].union(experiment_coverage_results[1])
+      measurement['new_ego_collisions'] = seed_coverage_results[2].union(experiment_coverage_results[2])
+      measurement['new_simulation_creation_errors'] = seed_coverage_results.union( + experiment_coverage_results[3])
+      measurement['new_simulation_rejections'] = seed_coverage_results[4].union(experiment_coverage_results[4])
+      measurement['new_none_coverages'] = seed_coverage_results[5].union(experiment_coverage_results[5])
       coverages = tuple(input2statementCoverage[p] for p in measurement['new_valid_inputs'])
       measurement['statement_coverage'] = reduce(lambda c1,c2: c1+c2,
                                                   coverages,
@@ -55,18 +54,21 @@ if __name__ == '__main__':
   reports_config = (
     ('Atheris', 'autopilot', 'autopilot', 'traffic'),
     ('Atheris', 'autopilot', 'BehaviorAgent', 'traffic'),
-    ('Atheris', 'autopilot', 'BehaviorAgentRSS', 'traffic'),
+    # ('Atheris', 'autopilot', 'BehaviorAgentRSS', 'traffic'),
     ('Atheris', 'BehaviorAgent', 'autopilot', 'traffic'),
     ('Atheris', 'BehaviorAgent', 'BehaviorAgent', 'traffic'),
-    ('Atheris', 'BehaviorAgent', 'BehaviorAgentRSS', 'traffic'),
+    # ('Atheris', 'BehaviorAgent', 'BehaviorAgentRSS', 'traffic'),
     ('Atheris', 'intersectionAgent', 'autopilot', 'traffic'),
     ('Atheris', 'intersectionAgent', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'intersectionAgent', 'BehaviorAgentRSS', 'traffic'),
     ('Atheris', 'openLoop', 'autopilot', 'traffic'),
     ('Atheris', 'openLoop', 'BehaviorAgent', 'traffic'),
-    ('Atheris', 'openLoop', 'BehaviorAgentRSS', 'traffic'),
-    # ('random_search', '4way-stop_random', 'autopilot', 'traffic'),
-    # ('random_search', '4way-stop_random', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'openLoop', 'BehaviorAgentRSS', 'traffic'),
+    # ('random_search', '4way-stop_autopilot', 'autopilot', 'traffic'),
+    # ('random_search', '4way-stop_autopilot', 'BehaviorAgent', 'traffic'),
+    # ('random_search', '4way-stop_autopilot', 'BehaviorAgentRSS', 'traffic'),
   )
 
   for experiment_type, experiment_name, coverage_ego, coverage in reports_config:
+    print(f'Now running report: {experiment_type, experiment_name, coverage_ego, coverage}')
     report(experiment_type, experiment_name, coverage_ego, coverage)

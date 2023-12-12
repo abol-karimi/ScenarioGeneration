@@ -2,8 +2,8 @@
 arrivedFromLane(V, L):-
   arrivedFromLaneAtTime(V, L, _).
 
-signaled(V):-
-  signaledAtTime(V, _).
+signaled(V, S):-
+  signaledAtTime(V, S, _).
 
 stopped(V):-
   stoppedAtTime(V, _).
