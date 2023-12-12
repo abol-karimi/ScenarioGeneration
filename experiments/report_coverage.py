@@ -22,7 +22,8 @@ def report(experiment_type, experiment_name, coverage_ego, coverage):
     'coverage_module': f'scenariogen.core.coverages.{coverage}',
   }
 
-  seed2statementCoverage = from_corpus('experiments/seeds_4way-stop_random', config)
+  coverage_results = from_corpus('experiments/seeds_4way-stop_random', config)
+  seed2statementCoverage = coverage_results[0]
   fuzzInput2statementCoverage = from_corpus(output_path/'fuzz-inputs', config)
   input2statementCoverage = {**seed2statementCoverage, **fuzzInput2statementCoverage}
 
@@ -34,7 +35,13 @@ def report(experiment_type, experiment_name, coverage_ego, coverage):
 
   for result in results:
     for measurement in tqdm(result['measurements']):
-      coverages = tuple(input2statementCoverage[p] for p in measurement['new_fuzz_inputs'] if p in input2statementCoverage)
+      measurement['new_valid_inputs'] = set(p for p in measurement['new_fuzz_inputs'] if p in input2statementCoverage)
+      measurement['new_nonego_collisions'] = coverage_results[1]
+      measurement['new_ego_collisions'] = coverage_results[2]
+      measurement['new_simulation_creation_errors'] = coverage_results[3]
+      measurement['new_simulation_rejections'] = coverage_results[4]
+      measurement['new_none_coverages'] = coverage_results[5]
+      coverages = tuple(input2statementCoverage[p] for p in measurement['new_valid_inputs'])
       measurement['statement_coverage'] = reduce(lambda c1,c2: c1+c2,
                                                   coverages,
                                                   StatementCoverage([]))

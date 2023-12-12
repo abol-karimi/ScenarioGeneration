@@ -20,7 +20,14 @@ config = {
   'ego_module': args.ego_module,
   'coverage_module': 'scenariogen.core.coverages.traffic',
 }
-seed2statementCoverage = from_corpus(args.SUT_inputs_path, config)
+results = from_corpus(args.SUT_inputs_path, config)
+seed2statementCoverage = results[0]
+nonego_collisions = results[1]
+ego_collisions = results[2]
+simulation_creation_errors = results[3]
+simulation_rejections = results[4]
+none_coverages = results[5]
+
 coverage = reduce(lambda c1,c2: c1+c2,
                             list(seed2statementCoverage.values()),
                             StatementCoverage([]))
@@ -39,3 +46,9 @@ predicate_coverage_space = predicates_of_logic_program(encoding)
 coverage_gap = predicate_coverage_space - coverage.to_predicateCoverage()
 print(f'\nPredicate coverage gap:')
 coverage_gap.print()
+
+print(f'\nnonego_collisions: {nonego_collisions}')
+print(f'\nego_collisions: {ego_collisions}')
+print(f'\nsimulation_creation_errors: {simulation_creation_errors}')
+print(f'\nsimulation_rejections: {simulation_rejections}')
+print(f'\nnone_coverages: {none_coverages}')

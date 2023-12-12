@@ -140,6 +140,11 @@ class StatementCoverage:
 
 def from_corpus(corpus_folder, config):
   input2coverage = {}
+  nonego_collisions = set()
+  ego_collisions = set()
+  simulation_creation_errors = set()
+  simulation_rejections = set()
+  none_coverages = set()
 
   for path in Path(corpus_folder).glob('*'):
     with open(path, 'r') as f:
@@ -152,19 +157,30 @@ def from_corpus(corpus_folder, config):
                                              }
                                             )
     except NonegoCollisionError as err:
+      nonego_collisions.add(path)
       print(f'Collision between {err.nonego} and {err.other}.')
     except EgoCollisionError as err:
+      ego_collisions.add(path)
       print(f'Ego collided with {err.other}.')
     except SimulationCreationError as e:
+      simulation_creation_errors.add(path)
       print(e)
     except Exception as e:
       print(e)
     else:
       if not sim_result:
+        simulation_rejections.add(path)
         print(f'Simulation rejected!')
       elif sim_result.records['coverage'] is None:
+        none_coverages.add(path)
         print(f'Simulation failed to report coverage!')
       else:
         input2coverage[path] = sim_result.records['coverage']
 
-  return input2coverage
+  return (input2coverage,
+          nonego_collisions,
+          ego_collisions,
+          simulation_creation_errors,
+          simulation_rejections,
+          none_coverages)
+
