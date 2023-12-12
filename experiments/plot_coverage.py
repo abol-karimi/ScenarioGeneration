@@ -22,6 +22,10 @@ def plot(experiment_type, experiment_name, coverage_ego, coverage):
                           results)['measurements']
   exe_times = tuple(m['exe_time'] for m in measurements)
   statement_coverages = tuple(m['statement_coverage'] for m in measurements)
+  for m in measurements:
+    m['statement_coverage'].pred2args = {pred:args for pred,args in m['statement_coverage'].pred2args.items()
+                                         if not (pred.endswith('AtTime') or pred == 'changedSignalBetween')}
+
   predicateSet_coverages = tuple(c.to_predicateSetCoverage() for c in statement_coverages)
   predicate_coverages = tuple(c.to_predicateCoverage() for c in statement_coverages)
 
@@ -73,16 +77,16 @@ def plot(experiment_type, experiment_name, coverage_ego, coverage):
 
 if __name__ == '__main__':
   reports_config = (
-    # ('Atheris', 'autopilot', 'autopilot', 'traffic_rules'),
-    # ('Atheris', 'autopilot', 'BehaviorAgent', 'traffic_rules'),
-    # ('Atheris', 'BehaviorAgent', 'autopilot', 'traffic_rules'),
-    # ('Atheris', 'BehaviorAgent', 'BehaviorAgent', 'traffic_rules'),
-    # ('Atheris', 'intersectionAgent', 'autopilot', 'traffic_rules'),
-    # ('Atheris', 'intersectionAgent', 'BehaviorAgent', 'traffic_rules'),
-    # ('Atheris', 'openLoop', 'autopilot', 'traffic_rules'),
-    # ('Atheris', 'openLoop', 'BehaviorAgent', 'traffic_rules'),
-    # ('random_search', '4way-stop_random', 'autopilot', 'traffic_rules'),
-    ('random_search', '4way-stop_random', 'BehaviorAgent', 'traffic_rules'),
+    ('Atheris', 'autopilot', 'autopilot', 'traffic'),
+    ('Atheris', 'autopilot', 'BehaviorAgent', 'traffic'),
+    ('Atheris', 'BehaviorAgent', 'autopilot', 'traffic'),
+    ('Atheris', 'BehaviorAgent', 'BehaviorAgent', 'traffic'),
+    ('Atheris', 'intersectionAgent', 'autopilot', 'traffic'),
+    ('Atheris', 'intersectionAgent', 'BehaviorAgent', 'traffic'),
+    ('Atheris', 'openLoop', 'autopilot', 'traffic'),
+    ('Atheris', 'openLoop', 'BehaviorAgent', 'traffic'),
+    ('random_search', '4way-stop_autopilot', 'autopilot', 'traffic'),
+    ('random_search', '4way-stop_autopilot', 'BehaviorAgent', 'traffic'),
   )
 
   for experiment_type, experiment_name, coverage_ego, coverage in reports_config:

@@ -34,6 +34,9 @@ def to_coverage(events):
   with ctl.solve(yield_=True) as handle:
     for model in handle:
       for atom in model.symbols(atoms=True):
+        if atom.name.endswith('AtTime') or \
+            atom.name == 'changedSignalBetween':
+          continue
         coverage.add(atom.name, tuple(str(arg) for arg in atom.arguments))
 
   return coverage

@@ -46,19 +46,19 @@ def report(experiment_type, experiment_name, coverage_ego, coverage):
 
 if __name__ == '__main__':
   reports_config = (
-    # ('Atheris', 'autopilot', 'autopilot', 'traffic_rules'),
-    # ('Atheris', 'autopilot', 'BehaviorAgent', 'traffic_rules'),
-    ('Atheris', 'autopilot', 'BehaviorAgentRSS', 'traffic_rules'),
-    # ('Atheris', 'BehaviorAgent', 'autopilot', 'traffic_rules'),
-    # ('Atheris', 'BehaviorAgent', 'BehaviorAgent', 'traffic_rules'),
-    ('Atheris', 'BehaviorAgent', 'BehaviorAgentRSS', 'traffic_rules'),
-    # ('Atheris', 'intersectionAgent', 'autopilot', 'traffic_rules'),
-    # ('Atheris', 'intersectionAgent', 'BehaviorAgent', 'traffic_rules'),
-    # ('Atheris', 'openLoop', 'autopilot', 'traffic_rules'),
-    # ('Atheris', 'openLoop', 'BehaviorAgent', 'traffic_rules'),
-    ('Atheris', 'openLoop', 'BehaviorAgentRSS', 'traffic_rules'),
-    # ('random_search', '4way-stop_random', 'autopilot', 'traffic_rules'),
-    # ('random_search', '4way-stop_random', 'BehaviorAgent', 'traffic_rules'),
+    ('Atheris', 'autopilot', 'autopilot', 'traffic'),
+    ('Atheris', 'autopilot', 'BehaviorAgent', 'traffic'),
+    ('Atheris', 'autopilot', 'BehaviorAgentRSS', 'traffic'),
+    ('Atheris', 'BehaviorAgent', 'autopilot', 'traffic'),
+    ('Atheris', 'BehaviorAgent', 'BehaviorAgent', 'traffic'),
+    ('Atheris', 'BehaviorAgent', 'BehaviorAgentRSS', 'traffic'),
+    ('Atheris', 'intersectionAgent', 'autopilot', 'traffic'),
+    ('Atheris', 'intersectionAgent', 'BehaviorAgent', 'traffic'),
+    ('Atheris', 'openLoop', 'autopilot', 'traffic'),
+    ('Atheris', 'openLoop', 'BehaviorAgent', 'traffic'),
+    ('Atheris', 'openLoop', 'BehaviorAgentRSS', 'traffic'),
+    # ('random_search', '4way-stop_random', 'autopilot', 'traffic'),
+    # ('random_search', '4way-stop_random', 'BehaviorAgent', 'traffic'),
   )
 
   for experiment_type, experiment_name, coverage_ego, coverage in reports_config:

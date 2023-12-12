@@ -1,27 +1,48 @@
+% timeless abstraction of all event predicates:
+arrivedFromLane(V, L):-
+  arrivedFromLaneAtTime(V, L, _).
 
-appearedTo(V1, V2):-
-  appearedToAtTime(V1, V2, T).
+signaled(V):-
+  signaledAtTime(V, _).
 
-disappearedFrom(V1, V2):-
-  disappearedFromAtTime(V1, V2, T).
+stopped(V):-
+  stoppedAtTime(V, _).
+
+moved(V):-
+  movedAtTime(V, _).
+
+enteredLane(V, L):-
+  enteredLaneAtTime(V, L, _).
 
 enteredFromLane(V, L):-
   enteredFromLaneAtTime(V, L, _).
 
-enteredAtTime(V, T):-
-  enteredFromLaneAtTime(V, _, T).
+leftLane(V, L):-
+  leftLaneAtTime(V, L, _).
 
 leftToLane(V, L):-
   leftToLaneAtTime(V, L, _).
 
+appearedTo(V1, V2):-
+  appearedToAtTime(V1, V2, _).
+
+disappearedFrom(V1, V2):-
+  disappearedFromAtTime(V1, V2, _).
+
+% Other abstractions:
+enteredAtTime(V, T):-
+  enteredFromLaneAtTime(V, _, T).
+
 leftAtTime(V, T):-
   leftToLaneAtTime(V, _, T).
 
+%--- Traffic predicates ---
 leftAfter(V2, V1):-
   leftAtTime(V1, T1),
   leftAtTime(V2, T2),
   1 = @lessThan(T1, T2).
 
+% leader following
 follows(V2, V1):-
   enteredFromLaneAtTime(V1, L, T1),
   enteredFromLaneAtTime(V2, L, T2),

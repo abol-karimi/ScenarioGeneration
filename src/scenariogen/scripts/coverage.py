@@ -12,9 +12,6 @@ parser.add_argument('SUT_inputs_path',
 parser.add_argument('--ego_module',
                     default='experiments.agents.autopilot',
                     help='the scenic file containing the ego scenario')
-parser.add_argument('--arrival_distance', default=4, type=float)
-parser.add_argument('--stopping_speed', default=0.5, type=float)
-parser.add_argument('--moving_speed', default=0.6, type=float)
 args = parser.parse_args()
 
 config = {
