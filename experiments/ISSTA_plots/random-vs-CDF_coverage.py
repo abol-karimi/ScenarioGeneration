@@ -16,6 +16,7 @@ def plot(experiment_type, experiment_name, coverage_ego):
 
   measurements = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements']},
                           coverage)['measurements']
+  measurements = [m for m in measurements if 'statement_coverage' in m]
   exe_times = tuple(m['exe_time'] for m in measurements)
   statement_coverages = tuple(m['statement_coverage'] for m in measurements)
   for m in measurements:
@@ -44,7 +45,7 @@ def plot(experiment_type, experiment_name, coverage_ego):
 if __name__ == '__main__':
   reports_config = (
     ('Atheris', 'autopilot', 'autopilot'),
-    ('random_search', '4way-stop_autopilot', 'autopilot'),
+    ('random_search', 'autopilot', 'autopilot'),
   )
   fig_coverage = plt.figure()
   fig_coverage.suptitle(f'Random vs Coverage-Guided Fuzzing')

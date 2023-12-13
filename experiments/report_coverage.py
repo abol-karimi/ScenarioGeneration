@@ -94,6 +94,9 @@ def report(experiment_type, seeds, experiment, coverage_ego, coverage):
             sys.exit(1)
         else:
           measurement.update(output)
+  
+  with open(coverage_path, 'w') as f:
+    f.write(jsonpickle.encode(results))
 
 if __name__ == '__main__':
   reports_config = (
