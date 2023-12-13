@@ -3,16 +3,62 @@
 """ Generate the coverage reports """
 
 from pathlib import Path
+import sys
 import jsonpickle
 from functools import reduce
-from tqdm import tqdm
 
 from experiments.configs import SUT_config, coverage_config
 from scenariogen.core.coverages.coverage import from_corpus, StatementCoverage
+from scenariogen.core.scenario import Scenario
+from scenariogen.core.errors import EgoCollisionError, NonegoCollisionError
+from scenic.core.simulators import SimulationCreationError
 
-def report(experiment_type, experiment_name, coverage_ego, coverage):
-  output_folder = f"experiments/{experiment_type}/output_{experiment_name}"
-  output_path = Path(output_folder)
+def process_measurment(measurement, config):
+  output = {}
+  output['nonego_collisions'] = set()
+  output['ego_collisions'] = set()
+  output['simulation_creation_errors'] = set()
+  output['simulation_rejections'] = set()
+  output['none_coverages'] = set()
+  output['valid_inputs'] = set()
+  output['statement_coverage'] = StatementCoverage([])
+
+  for path in measurement['new_fuzz_inputs']:
+    with open(path, 'r') as f:
+      fuzz_input = jsonpickle.decode(f.read())
+    try:
+      print(f'Running {path.name}')
+      sim_result = Scenario(fuzz_input).run({'render_spectator': False,
+                                             'render_ego': False,
+                                             **config,
+                                             }
+                                            )
+    except NonegoCollisionError as err:
+      output['nonego_collisions'].add(path)
+      print(f'Collision between {err.nonego} and {err.other}.')
+    except EgoCollisionError as err:
+      output['ego_collisions'].add(path)
+      print(f'Ego collided with {err.other}.')
+    except SimulationCreationError as e:
+      output['simulation_creation_errors'].add(path)
+      print(e)
+    except Exception as e:
+      print(e)
+    else:
+      if not sim_result:
+        print(f'Simulation rejected!')
+        output['simulation_rejections'].add(path)
+      elif sim_result.records['coverage'] is None:
+        print(f'Simulation failed to report coverage!')
+        output['none_coverages'].add(path)
+      else:
+        output['statement_coverage'].update(sim_result.records['coverage'])
+    
+  return output
+
+
+def report(experiment_type, seeds, experiment, coverage_ego, coverage):
+  output_path = Path(f'experiments/{experiment_type}/output_{experiment}')
   results_file = output_path/'results.json'
 
   config = {
@@ -22,53 +68,47 @@ def report(experiment_type, experiment_name, coverage_ego, coverage):
     'coverage_module': f'scenariogen.core.coverages.{coverage}',
   }
 
-  seed_coverage_results = from_corpus('experiments/seeds_4way-stop_random', config)
-  experiment_coverage_results = from_corpus(output_path/'fuzz-inputs', config)
-  input2statementCoverage = {**seed_coverage_results[0], **experiment_coverage_results[0]}
+  coverage_path = output_path/f'coverage_{coverage_ego}.json'
+  if coverage_path.is_file():
+    # Resume
+    with open(coverage_path, 'r') as f:
+      results = jsonpickle.decode(f.read())
+  else:
+    # Start
+    with open(results_file, 'r') as f:
+      results = jsonpickle.decode(f.read())   
 
-  with open(results_file, 'r') as f:
-    results = jsonpickle.decode(f.read())
-  results[0]['measurements'].insert(0, {'exe_time': 0,
-                                        'new_fuzz_inputs': Path('experiments/seeds_4way-stop_random').glob('*'),
-                                        })
-
+    results[0]['measurements'].insert(0,
+                                      {'exe_time': 0,
+                                       'new_fuzz_inputs': Path(f'experiments/seeds/{seeds}/seeds').glob('*') if seeds else set(),
+                                      })
+  
   for result in results:
-    for measurement in tqdm(result['measurements']):
-      measurement['new_valid_inputs'] = set(p for p in measurement['new_fuzz_inputs'] if p in input2statementCoverage)
-      measurement['new_nonego_collisions'] = seed_coverage_results[1].union(experiment_coverage_results[1])
-      measurement['new_ego_collisions'] = seed_coverage_results[2].union(experiment_coverage_results[2])
-      measurement['new_simulation_creation_errors'] = seed_coverage_results.union( + experiment_coverage_results[3])
-      measurement['new_simulation_rejections'] = seed_coverage_results[4].union(experiment_coverage_results[4])
-      measurement['new_none_coverages'] = seed_coverage_results[5].union(experiment_coverage_results[5])
-      coverages = tuple(input2statementCoverage[p] for p in measurement['new_valid_inputs'])
-      measurement['statement_coverage'] = reduce(lambda c1,c2: c1+c2,
-                                                  coverages,
-                                                  StatementCoverage([]))
-
-  with open(output_path/f"coverage_{coverage_ego}.json", 'w') as f:
-    f.write(jsonpickle.encode(results))
-
-
+    for measurement in result['measurements']:
+      if not 'statement_coverage' in measurement:
+        try:
+          output = process_measurment(measurement, config)
+        except KeyboardInterrupt:
+          with open(coverage_path, 'w') as f:
+            f.write(jsonpickle.encode(results))
+            sys.exit(1)
+        else:
+          measurement.update(output)
 
 if __name__ == '__main__':
   reports_config = (
-    ('Atheris', 'autopilot', 'autopilot', 'traffic'),
-    ('Atheris', 'autopilot', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'autopilot', 'BehaviorAgentRSS', 'traffic'),
-    ('Atheris', 'BehaviorAgent', 'autopilot', 'traffic'),
-    ('Atheris', 'BehaviorAgent', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'BehaviorAgent', 'BehaviorAgentRSS', 'traffic'),
-    ('Atheris', 'intersectionAgent', 'autopilot', 'traffic'),
-    ('Atheris', 'intersectionAgent', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'intersectionAgent', 'BehaviorAgentRSS', 'traffic'),
-    ('Atheris', 'openLoop', 'autopilot', 'traffic'),
-    ('Atheris', 'openLoop', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'openLoop', 'BehaviorAgentRSS', 'traffic'),
-    # ('random_search', '4way-stop_autopilot', 'autopilot', 'traffic'),
-    # ('random_search', '4way-stop_autopilot', 'BehaviorAgent', 'traffic'),
-    # ('random_search', '4way-stop_autopilot', 'BehaviorAgentRSS', 'traffic'),
+    # ('Atheris', 'random', 'autopilot', 'autopilot', 'traffic'),
+    # ('Atheris', 'random', 'autopilot', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'random', 'BehaviorAgent', 'autopilot', 'traffic'),
+    # ('Atheris', 'random', 'BehaviorAgent', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'random', 'intersectionAgent', 'autopilot', 'traffic'),
+    # ('Atheris', 'random', 'intersectionAgent', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'random', 'openLoop', 'autopilot', 'traffic'),
+    # ('Atheris', 'random', 'openLoop', 'BehaviorAgent', 'traffic'),
+    ('random_search', None, 'autopilot', 'autopilot', 'traffic'),
+    # ('random_search', None, 'autopilot', 'BehaviorAgent', 'traffic'),
   )
 
-  for experiment_type, experiment_name, coverage_ego, coverage in reports_config:
-    print(f'Now running report: {experiment_type, experiment_name, coverage_ego, coverage}')
-    report(experiment_type, experiment_name, coverage_ego, coverage)
+  for experiment_type, seeds, experiment, coverage_ego, coverage in reports_config:
+    print(f'Now running report: {experiment_type, seeds, experiment, coverage_ego, coverage}')
+    report(experiment_type, seeds, experiment, coverage_ego, coverage)

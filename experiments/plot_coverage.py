@@ -7,7 +7,6 @@ import jsonpickle
 from functools import reduce
 import matplotlib.pyplot as plt
 
-from experiments.configs import SUT_config, coverage_config
 from scenariogen.predicates.utils import predicates_of_logic_program
 
 def plot(experiment_type, experiment_name, coverage_ego, coverage):
@@ -20,6 +19,7 @@ def plot(experiment_type, experiment_name, coverage_ego, coverage):
 
   measurements = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements']},
                           results)['measurements']
+  measurements = [m for m in measurements if 'statement_coverage' in m]
   exe_times = tuple(m['exe_time'] for m in measurements)
   statement_coverages = tuple(m['statement_coverage'] for m in measurements)
   for m in measurements:
@@ -40,7 +40,7 @@ def plot(experiment_type, experiment_name, coverage_ego, coverage):
     predicate_coverages_acc.append(predicate_coverages_acc[-1] + predicate_coverages[i])  
 
   fig = plt.figure()
-  fig.suptitle(f'Experiment: {experiment_name},\n Coverage ego: {coverage_ego},\n Coverage module: {coverage}')
+  fig.suptitle(f'Experiment type: {experiment_type},\n Experiment ego: {experiment_name},\n Coverage ego: {coverage_ego}')
 
   ax = fig.add_subplot(111)    # The big subplot
   # Turn off axis lines and ticks of the big subplot
@@ -50,7 +50,7 @@ def plot(experiment_type, experiment_name, coverage_ego, coverage):
   ax.spines['right'].set_color('none')
   ax.tick_params(labelcolor='w', top=False, bottom=False, left=False, right=False)
   # Set common labels
-  ax.set_xlabel('Wall clock time (seconds)')
+  ax.set_xlabel('Wall-clock time (seconds)')
 
   ax1 = fig.add_subplot(311)
   ax2 = fig.add_subplot(312)
@@ -68,7 +68,6 @@ def plot(experiment_type, experiment_name, coverage_ego, coverage):
     logic_program = f.read()
   predicate_coverage_space = predicates_of_logic_program(logic_program)
   plt.sca(ax3)
-  plt.yticks(range(len(predicate_coverage_space)+1))
   ax3.plot(exe_times_acc, tuple(len(predicate_coverage_space) for c in range(len(exe_times_acc))), 'r--')
   ax3.plot(exe_times_acc, tuple(len(c & predicate_coverage_space) for c in predicate_coverages_acc), 'b-')
 
@@ -77,21 +76,16 @@ def plot(experiment_type, experiment_name, coverage_ego, coverage):
 
 if __name__ == '__main__':
   reports_config = (
-    ('Atheris', 'autopilot', 'autopilot', 'traffic'),
-    ('Atheris', 'autopilot', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'autopilot', 'BehaviorAgentRSS', 'traffic'),
-    ('Atheris', 'BehaviorAgent', 'autopilot', 'traffic'),
-    ('Atheris', 'BehaviorAgent', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'BehaviorAgent', 'BehaviorAgentRSS', 'traffic'),
-    ('Atheris', 'intersectionAgent', 'autopilot', 'traffic'),
-    ('Atheris', 'intersectionAgent', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'intersectionAgent', 'BehaviorAgentRSS', 'traffic'),
-    ('Atheris', 'openLoop', 'autopilot', 'traffic'),
-    ('Atheris', 'openLoop', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'openLoop', 'BehaviorAgentRSS', 'traffic'),
-    # ('random_search', '4way-stop_autopilot', 'autopilot', 'traffic'),
+    # ('Atheris', 'autopilot', 'autopilot', 'traffic'),
+    # ('Atheris', 'autopilot', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'BehaviorAgent', 'autopilot', 'traffic'),
+    # ('Atheris', 'BehaviorAgent', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'intersectionAgent', 'autopilot', 'traffic'),
+    # ('Atheris', 'intersectionAgent', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'openLoop', 'autopilot', 'traffic'),
+    # ('Atheris', 'openLoop', 'BehaviorAgent', 'traffic'),
+    ('random_search', 'autopilot', 'autopilot', 'traffic'),
     # ('random_search', '4way-stop_autopilot', 'BehaviorAgent', 'traffic'),
-    # ('random_search', '4way-stop_autopilot', 'BehaviorAgentRSS', 'traffic'),
   )
 
   for experiment_type, experiment_name, coverage_ego, coverage in reports_config:
