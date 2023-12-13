@@ -1,0 +1,263 @@
+{
+ "py/object": "scenariogen.core.fuzz_input.FuzzInput",
+ "config": {
+  "description": "\n  Several cars randomly pass through a 3way-stop intersection.\n  ",
+  "carla_map": "Town05",
+  "map": "/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/Town05.xodr",
+  "weather": "CloudySunset",
+  "timestep": 0.1,
+  "steps": 200,
+  "intersection": "intersection396",
+  "ego_blueprint": "vehicle.audi.tt",
+  "ego_route": {
+   "py/tuple": [
+    "road9_lane3",
+    "road476_lane0",
+    "road44_lane3",
+    "road935_lane0",
+    "road3_lane0"
+   ]
+  },
+  "ego_init_progress_ratio": 0.14671664238658688
+ },
+ "blueprints": {
+  "py/tuple": [
+   "vehicle.carlamotors.firetruck"
+  ]
+ },
+ "routes": {
+  "py/tuple": [
+   {
+    "py/tuple": [
+     "road45_lane2",
+     "road553_lane0",
+     "road44_lane2",
+     "road911_lane0",
+     "road2_lane2",
+     "road1114_lane0",
+     "road49_lane2",
+     "road5_lane2"
+    ]
+   }
+  ]
+ },
+ "footprints": {
+  "py/tuple": [
+   {
+    "py/object": "scenariogen.core.fuzz_input.Spline",
+    "degree": 3,
+    "ctrlpts": {
+     "py/tuple": [
+      {
+       "py/tuple": [
+        69.18585952900904,
+        0.0007494237382402366
+       ]
+      },
+      {
+       "py/tuple": [
+        82.64737347734443,
+        -0.008355448692141677
+       ]
+      },
+      {
+       "py/tuple": [
+        108.14493628306003,
+        0.020140178478328812
+       ]
+      },
+      {
+       "py/tuple": [
+        141.33286898209744,
+        -0.012520493491499729
+       ]
+      },
+      {
+       "py/tuple": [
+        161.060495600999,
+        -0.03542216440927105
+       ]
+      },
+      {
+       "py/tuple": [
+        168.76549870047748,
+        0.08788766248783539
+       ]
+      }
+     ]
+    },
+    "knotvector": {
+     "py/tuple": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      40.38507562438138,
+      76.4938222659858,
+      99.56293328993267,
+      99.56293328993267,
+      99.56293328993267,
+      99.56293328993267
+     ]
+    }
+   }
+  ]
+ },
+ "timings": {
+  "py/tuple": [
+   {
+    "py/object": "scenariogen.core.fuzz_input.Spline",
+    "degree": 3,
+    "ctrlpts": {
+     "py/tuple": [
+      {
+       "py/tuple": [
+        2.71529758164657e-16,
+        0.006822005022228451
+       ]
+      },
+      {
+       "py/tuple": [
+        0.8333333333333329,
+        -0.01900797729868927
+       ]
+      },
+      {
+       "py/tuple": [
+        2.100000000000003,
+        0.022856402442020703
+       ]
+      },
+      {
+       "py/tuple": [
+        3.7666666666666635,
+        -0.0010060349786962853
+       ]
+      },
+      {
+       "py/tuple": [
+        5.0333333333333385,
+        -0.18392807478850937
+       ]
+      },
+      {
+       "py/tuple": [
+        6.266666666666661,
+        5.79284987059849
+       ]
+      },
+      {
+       "py/tuple": [
+        7.9333333333333345,
+        15.0640482306612
+       ]
+      },
+      {
+       "py/tuple": [
+        9.99999999999999,
+        31.3309796286132
+       ]
+      },
+      {
+       "py/tuple": [
+        12.100000000000014,
+        48.56337299893516
+       ]
+      },
+      {
+       "py/tuple": [
+        13.766666666666657,
+        61.95769634941794
+       ]
+      },
+      {
+       "py/tuple": [
+        15.033333333333346,
+        72.43629398882588
+       ]
+      },
+      {
+       "py/tuple": [
+        16.26666666666668,
+        81.40827808466805
+       ]
+      },
+      {
+       "py/tuple": [
+        17.5333333333333,
+        88.50521749887336
+       ]
+      },
+      {
+       "py/tuple": [
+        18.766666666666673,
+        94.15693799131321
+       ]
+      },
+      {
+       "py/tuple": [
+        19.60000000000001,
+        97.79742777815164
+       ]
+      },
+      {
+       "py/tuple": [
+        20.000000000000004,
+        99.50697180440955
+       ]
+      }
+     ]
+    },
+    "knotvector": {
+     "py/tuple": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      2.5,
+      3.8000000000000003,
+      5.0,
+      6.300000000000001,
+      7.5,
+      10.0,
+      12.5,
+      13.8,
+      15.0,
+      16.3,
+      17.5,
+      18.8,
+      20.0,
+      20.0,
+      20.0,
+      20.0
+     ]
+    }
+   }
+  ]
+ },
+ "signals": {
+  "py/tuple": [
+   {
+    "py/tuple": [
+     {
+      "py/tuple": [
+       0.0,
+       {
+        "py/reduce": [
+         {
+          "py/type": "scenariogen.core.signals.SignalType"
+         },
+         {
+          "py/tuple": [
+           2
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ }
+}

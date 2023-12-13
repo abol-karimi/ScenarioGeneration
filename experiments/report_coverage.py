@@ -100,7 +100,7 @@ def report(experiment_type, seeds, experiment, coverage_ego, coverage):
 
 if __name__ == '__main__':
   reports_config = (
-    # ('Atheris', 'random', 'autopilot', 'autopilot', 'traffic'),
+    ('Atheris', 'random', 'autopilot', 'autopilot', 'traffic'),
     # ('Atheris', 'random', 'autopilot', 'BehaviorAgent', 'traffic'),
     # ('Atheris', 'random', 'BehaviorAgent', 'autopilot', 'traffic'),
     # ('Atheris', 'random', 'BehaviorAgent', 'BehaviorAgent', 'traffic'),
@@ -108,7 +108,7 @@ if __name__ == '__main__':
     # ('Atheris', 'random', 'intersectionAgent', 'BehaviorAgent', 'traffic'),
     # ('Atheris', 'random', 'openLoop', 'autopilot', 'traffic'),
     # ('Atheris', 'random', 'openLoop', 'BehaviorAgent', 'traffic'),
-    ('random_search', None, 'autopilot', 'autopilot', 'traffic'),
+    # ('random_search', None, 'autopilot', 'autopilot', 'traffic'),
     # ('random_search', None, 'autopilot', 'BehaviorAgent', 'traffic'),
   )
 

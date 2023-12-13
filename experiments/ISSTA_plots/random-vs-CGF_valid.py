@@ -16,17 +16,18 @@ def plot(experiment_type, experiment_name, coverage_ego):
 
   measurements = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements']},
                           coverage)['measurements']
+  measurements = [m for m in measurements if 'statement_coverage' in m]
   exe_times = tuple(m['exe_time'] for m in measurements)
   new_fuzz_inputs = tuple(m['new_fuzz_inputs'] for m in measurements)
-  new_valid_inputs = tuple(m['new_valid_inputs'] for m in measurements)
+  new_valid_inputs = tuple(m['valid_inputs'] for m in measurements)
 
   exe_times_acc = [exe_times[0]]
   new_fuzz_inputs_acc = [new_fuzz_inputs[0]]
   new_valid_inputs_acc = [new_valid_inputs[0]]
   for i in range(1, len(measurements)):
     exe_times_acc.append(exe_times_acc[-1] + exe_times[i])
-    new_fuzz_inputs_acc.append(new_fuzz_inputs_acc[-1] + new_fuzz_inputs[i])
-    new_valid_inputs_acc.append(new_valid_inputs_acc[-1] + new_valid_inputs[i])
+    new_fuzz_inputs_acc.append(new_fuzz_inputs_acc[-1].union(new_fuzz_inputs[i]))
+    new_valid_inputs_acc.append(new_valid_inputs_acc[-1].union(new_valid_inputs[i]))
 
   ax1.plot(exe_times_acc, tuple(len(c) for c in new_fuzz_inputs_acc), 'b-')
   ax1.plot(exe_times_acc, tuple(len(c) for c in new_valid_inputs_acc), 'b-')
@@ -34,9 +35,8 @@ def plot(experiment_type, experiment_name, coverage_ego):
 
 if __name__ == '__main__':
   reports_config = (
+    ('random_search', 'autopilot', 'autopilot'),
     ('Atheris', 'autopilot', 'autopilot'),
-    ('Atheris', 'BehaviorAgent', 'BehaviorAgent'),
-    # ('random_search', '4way-stop_autopilot', 'autopilot'),
   )
   fig_coverage = plt.figure()
   fig_coverage.suptitle(f'Random vs Coverage-Guided Fuzzing')
@@ -55,6 +55,7 @@ if __name__ == '__main__':
   ax1.set_ylabel('Count')
 
   for experiment_type, experiment_name, coverage_ego in reports_config:
+    print(experiment_type, experiment_name, coverage_ego)
     plot(experiment_type, experiment_name, coverage_ego)
 
   plt.tight_layout()
