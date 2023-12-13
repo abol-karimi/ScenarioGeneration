@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 from scenariogen.predicates.utils import predicates_of_logic_program
 
-def plot(experiment_type, experiment_name, coverage_ego):
+def plot(experiment_type, experiment_name, coverage_ego, plot_label, plot_color, draw_predicate_coverage_space=False):
   coverage_file = f'experiments/{experiment_type}/output_{experiment_name}/coverage_{coverage_ego}.json'
   with open(coverage_file, 'r') as f:
     coverage = jsonpickle.decode(f.read())
@@ -36,19 +36,20 @@ def plot(experiment_type, experiment_name, coverage_ego):
     predicateSet_coverages_acc.append(predicateSet_coverages_acc[-1] + predicateSet_coverages[i])
     predicate_coverages_acc.append(predicate_coverages_acc[-1] + predicate_coverages[i])  
 
-  ax1.plot(exe_times_acc, tuple(len(c) for c in statement_coverages_acc), 'b-')
-  ax2.plot(exe_times_acc, tuple(len(c) for c in predicateSet_coverages_acc), 'b-')
-  ax3.plot(exe_times_acc, tuple(len(c & predicate_coverage_space) for c in predicate_coverages_acc), 'b-')
-  ax3.plot(exe_times_acc, tuple(len(predicate_coverage_space) for c in range(len(exe_times_acc))), 'r--')
+  ax1.plot(exe_times_acc, tuple(len(c) for c in statement_coverages_acc), f'{plot_color}-', label=plot_label)
+  ax2.plot(exe_times_acc, tuple(len(c) for c in predicateSet_coverages_acc), f'{plot_color}-', label=plot_label)
+  ax3.plot(exe_times_acc, tuple(len(c & predicate_coverage_space) for c in predicate_coverages_acc), f'{plot_color}-', label=plot_label)
+  if draw_predicate_coverage_space:
+    ax3.plot(exe_times_acc, tuple(len(predicate_coverage_space) for c in range(len(exe_times_acc))), 'r--', label='Predicate-Coverage Space')
 
 
 if __name__ == '__main__':
   reports_config = (
-    ('Atheris', 'autopilot', 'autopilot'),
-    ('random_search', 'autopilot', 'autopilot'),
+    ('random_search', 'autopilot', 'autopilot', 'Random search', 'b', False),
+    ('Atheris', 'autopilot', 'autopilot', 'Fuzzing', 'g', True),
   )
   fig_coverage = plt.figure()
-  fig_coverage.suptitle(f'Random vs Coverage-Guided Fuzzing')
+  fig_coverage.suptitle(f'Random vs. Coverage-Guided Fuzzing')
 
   ax = fig_coverage.add_subplot(111)    # The big subplot
   # Turn off axis lines and ticks of the big subplot
@@ -77,8 +78,11 @@ if __name__ == '__main__':
           encoding += f.read()
   predicate_coverage_space = predicates_of_logic_program(encoding)
 
-  for experiment_type, experiment_name, coverage_ego in reports_config:
-    plot(experiment_type, experiment_name, coverage_ego)
+  for experiment_type, experiment_name, coverage_ego, plot_label, plot_color, draw_predicate_coverage_space in reports_config:
+    plot(experiment_type, experiment_name, coverage_ego, plot_label, plot_color, draw_predicate_coverage_space)
 
+  # ax1.legend()
+  # ax2.legend()
+  ax3.legend()
   plt.tight_layout()
-  plt.savefig('experiments/ISSTA_plots/random-vs-CDF_coverage.png')
+  plt.savefig('experiments/ISSTA_plots/random-vs-CGF_coverage.png')
