@@ -24,6 +24,8 @@ def process_measurment(measurement, config):
   output['statement_coverage'] = StatementCoverage([])
 
   for path in measurement['new_fuzz_inputs']:
+    if not path.is_file():
+      continue
     with open(path, 'r') as f:
       fuzz_input = jsonpickle.decode(f.read())
     try:
@@ -68,7 +70,7 @@ def report(experiment_type, seeds, experiment, coverage_ego, coverage):
     'coverage_module': f'scenariogen.core.coverages.{coverage}',
   }
 
-  coverage_path = output_path/f'coverage_{coverage_ego}.json'
+  coverage_path = output_path/f'coverage_{coverage_ego}_{coverage}.json'
   if coverage_path.is_file():
     # Resume
     with open(coverage_path, 'r') as f:
@@ -100,14 +102,24 @@ def report(experiment_type, seeds, experiment, coverage_ego, coverage):
 
 if __name__ == '__main__':
   reports_config = (
+    ('Atheris', 'random', 'autopilot', 'autopilot', 'traffic_rules'),
+    ('Atheris', 'random', 'autopilot', 'BehaviorAgent', 'traffic_rules'),
+    ('Atheris', 'random', 'BehaviorAgent', 'autopilot', 'traffic_rules'),
+    ('Atheris', 'random', 'BehaviorAgent', 'BehaviorAgent', 'traffic_rules'),
+    ('Atheris', 'random', 'intersectionAgent', 'autopilot', 'traffic_rules'),
+    ('Atheris', 'random', 'intersectionAgent', 'BehaviorAgent', 'traffic_rules'),
+    ('Atheris', 'random', 'openLoop', 'autopilot', 'traffic_rules'),
+    ('Atheris', 'random', 'openLoop', 'BehaviorAgent', 'traffic_rules'),
+    # ('random_search', None, 'autopilot', 'autopilot', 'traffic_rules'),
+    # ('random_search', None, 'autopilot', 'BehaviorAgent', 'traffic_rules'),
     ('Atheris', 'random', 'autopilot', 'autopilot', 'traffic'),
-    # ('Atheris', 'random', 'autopilot', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'random', 'BehaviorAgent', 'autopilot', 'traffic'),
-    # ('Atheris', 'random', 'BehaviorAgent', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'random', 'intersectionAgent', 'autopilot', 'traffic'),
-    # ('Atheris', 'random', 'intersectionAgent', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'random', 'openLoop', 'autopilot', 'traffic'),
-    # ('Atheris', 'random', 'openLoop', 'BehaviorAgent', 'traffic'),
+    ('Atheris', 'random', 'autopilot', 'BehaviorAgent', 'traffic'),
+    ('Atheris', 'random', 'BehaviorAgent', 'autopilot', 'traffic'),
+    ('Atheris', 'random', 'BehaviorAgent', 'BehaviorAgent', 'traffic'),
+    ('Atheris', 'random', 'intersectionAgent', 'autopilot', 'traffic'),
+    ('Atheris', 'random', 'intersectionAgent', 'BehaviorAgent', 'traffic'),
+    ('Atheris', 'random', 'openLoop', 'autopilot', 'traffic'),
+    ('Atheris', 'random', 'openLoop', 'BehaviorAgent', 'traffic'),
     # ('random_search', None, 'autopilot', 'autopilot', 'traffic'),
     # ('random_search', None, 'autopilot', 'BehaviorAgent', 'traffic'),
   )

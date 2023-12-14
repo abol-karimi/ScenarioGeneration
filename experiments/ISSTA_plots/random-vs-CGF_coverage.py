@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 
 from scenariogen.predicates.utils import predicates_of_logic_program
 
-def plot(experiment_type, experiment_name, coverage_ego, plot_label, plot_color, draw_predicate_coverage_space=False):
-  coverage_file = f'experiments/{experiment_type}/output_{experiment_name}/coverage_{coverage_ego}.json'
+def plot(experiment_type, experiment_name, coverage_ego, coverage_module, plot_label, plot_color, draw_predicate_coverage_space=False):
+  coverage_file = f'experiments/{experiment_type}/output_{experiment_name}/coverage_{coverage_ego}_{coverage_module}.json'
   with open(coverage_file, 'r') as f:
     coverage = jsonpickle.decode(f.read())
 
@@ -44,9 +44,10 @@ def plot(experiment_type, experiment_name, coverage_ego, plot_label, plot_color,
 
 
 if __name__ == '__main__':
+  coverage_module = 'traffic_rules'
   reports_config = (
-    ('random_search', 'autopilot', 'autopilot', 'Random search', 'b', False),
-    ('Atheris', 'autopilot', 'autopilot', 'Fuzzing', 'g', True),
+    ('random_search', 'autopilot', 'autopilot', coverage_module, 'Random search', 'b', False),
+    ('Atheris', 'autopilot', 'autopilot', coverage_module, 'Fuzzing', 'g', True),
   )
   fig_coverage = plt.figure()
   fig_coverage.suptitle(f'Random vs. Coverage-Guided Fuzzing')
@@ -69,20 +70,22 @@ if __name__ == '__main__':
   ax3.set_ylabel('Predicates')
 
   traffic_rules_file = '4way-stopOnAll.lp'
-  predicate_files = (f'src/scenariogen/predicates/{traffic_rules_file}',
-                      'src/scenariogen/predicates/traffic.lp',
-                    )
+  if coverage_module == 'traffic':
+    predicate_files = (f'src/scenariogen/predicates/{traffic_rules_file}',
+                        'src/scenariogen/predicates/traffic.lp',
+                      )
+  else:
+    predicate_files = (f'src/scenariogen/predicates/{traffic_rules_file}',
+                      )
   encoding = ''
   for file_path in predicate_files:
       with open(file_path, 'r') as f:
           encoding += f.read()
   predicate_coverage_space = predicates_of_logic_program(encoding)
 
-  for experiment_type, experiment_name, coverage_ego, plot_label, plot_color, draw_predicate_coverage_space in reports_config:
-    plot(experiment_type, experiment_name, coverage_ego, plot_label, plot_color, draw_predicate_coverage_space)
+  for experiment_type, experiment_name, coverage_ego, coverage_module, plot_label, plot_color, draw_predicate_coverage_space in reports_config:
+    plot(experiment_type, experiment_name, coverage_ego, coverage_module, plot_label, plot_color, draw_predicate_coverage_space)
 
-  # ax1.legend()
-  # ax2.legend()
   ax3.legend()
   plt.tight_layout()
-  plt.savefig('experiments/ISSTA_plots/random-vs-CGF_coverage.png')
+  plt.savefig(f'experiments/ISSTA_plots/random-vs-CGF_coverage_{coverage_module}.png')
