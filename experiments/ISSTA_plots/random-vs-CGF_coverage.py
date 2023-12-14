@@ -50,7 +50,7 @@ if __name__ == '__main__':
     ('Atheris', 'autopilot', 'autopilot', coverage_module, 'Fuzzing', 'g', True),
   )
   fig_coverage = plt.figure()
-  fig_coverage.suptitle(f'Random vs. Coverage-Guided Fuzzing')
+  # fig_coverage.suptitle(f'Random vs. Coverage-Guided Fuzzing')
 
   ax = fig_coverage.add_subplot(111)    # The big subplot
   # Turn off axis lines and ticks of the big subplot

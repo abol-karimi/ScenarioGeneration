@@ -1,3 +1,5 @@
+#include "src/scenariogen/predicates/abstractions.lp".
+
 %--------------------------------------------
 %------ Auxiliary geometric predicates ------
 %--------------------------------------------
@@ -40,12 +42,6 @@ eventTime(T):-
 
 eventTime(T):-
   leftToLaneAtTime(_, _, T).
-
-arrivedFromLane(V, L):-
-  arrivedFromLaneAtTime(V, L, _).
-
-arrivedAtTime(V, T):-
-  arrivedFromLaneAtTime(V, _, T).
 
 changedSignalBetween(V, T1, T2):-
   signaledAtTime(V, _, Tm),

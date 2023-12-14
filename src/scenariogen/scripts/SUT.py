@@ -84,9 +84,13 @@ else:
 
         # TODO refactor: coverage module should compute this
         traffic_rules_file = '4way-stopOnAll.lp'
-        predicate_files = (f'src/scenariogen/predicates/{traffic_rules_file}',
-                            'src/scenariogen/predicates/traffic.lp',
-                        )
+        if args.coverage_module == 'traffic':
+            predicate_files = (f'src/scenariogen/predicates/{traffic_rules_file}',
+                                'src/scenariogen/predicates/traffic.lp',
+                            )
+        else:
+            predicate_files = (f'src/scenariogen/predicates/{traffic_rules_file}',
+                            )
         encoding = ''
         for file_path in predicate_files:
             with open(file_path, 'r') as f:

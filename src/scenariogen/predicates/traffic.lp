@@ -1,48 +1,13 @@
-% timeless abstraction of all event predicates:
-arrivedFromLane(V, L):-
-  arrivedFromLaneAtTime(V, L, _).
 
-signaled(V, S):-
-  signaledAtTime(V, S, _).
+#include "src/scenariogen/predicates/abstractions.lp".
 
-stopped(V):-
-  stoppedAtTime(V, _).
-
-moved(V):-
-  movedAtTime(V, _).
-
-enteredLane(V, L):-
-  enteredLaneAtTime(V, L, _).
-
-enteredFromLane(V, L):-
-  enteredFromLaneAtTime(V, L, _).
-
-leftLane(V, L):-
-  leftLaneAtTime(V, L, _).
-
-leftToLane(V, L):-
-  leftToLaneAtTime(V, L, _).
-
-appearedTo(V1, V2):-
-  appearedToAtTime(V1, V2, _).
-
-disappearedFrom(V1, V2):-
-  disappearedFromAtTime(V1, V2, _).
-
-% Other abstractions:
-enteredAtTime(V, T):-
-  enteredFromLaneAtTime(V, _, T).
-
-leftAtTime(V, T):-
-  leftToLaneAtTime(V, _, T).
-
-%--- Traffic predicates ---
+%--- Auxiliary predicates ---
 leftAfter(V2, V1):-
   leftAtTime(V1, T1),
   leftAtTime(V2, T2),
   1 = @lessThan(T1, T2).
 
-% leader following
+%---------- leader following ----------
 follows(V2, V1):-
   enteredFromLaneAtTime(V1, L, T1),
   enteredFromLaneAtTime(V2, L, T2),
@@ -50,7 +15,7 @@ follows(V2, V1):-
   leftToLane(V1, L),
   leftToLane(V2, L).
 
-% Merging
+%---------- Merging ----------
 mergedWithToLane(V2, V1, L):-
   enteredFromLane(V1, L1),
   enteredFromLane(V2, L2),
@@ -67,7 +32,7 @@ mergedBetweenToLane(V2, V3, V1, L):-
 mergedBetweenToLane(V2, V1, V3, L):-
   mergedBetweenToLane(V2, V3, V1, L).
 
-% Diverging
+%---------- Diverging ----------
 diveregedToLanes(V1, V2, L1, L2):-
   enteredFromLane(V1, L),
   enteredFromLane(V2, L),
