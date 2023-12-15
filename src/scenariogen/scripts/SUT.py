@@ -1,12 +1,12 @@
 #!/usr/bin/env python3.8
 import argparse
 import jsonpickle
+import importlib
 
 # This project
 from scenariogen.core.scenario import Scenario
 from scenariogen.core.errors import EgoCollisionError, NonegoCollisionError
-from scenariogen.predicates.utils import predicates_of_logic_program
-from scenariogen.core.utils import classify_intersection
+from scenariogen.core.coverages.coverage import PredicateCoverage
 
 
 parser = argparse.ArgumentParser(
@@ -82,20 +82,8 @@ else:
         coverage = sim_result.records['coverage']
         coverage.print()
 
-        # TODO refactor: coverage module should compute this
-        traffic_rules_file = '4way-stopOnAll.lp'
-        if args.coverage_module == 'traffic':
-            predicate_files = (f'src/scenariogen/predicates/{traffic_rules_file}',
-                                'src/scenariogen/predicates/traffic.lp',
-                            )
-        else:
-            predicate_files = (f'src/scenariogen/predicates/{traffic_rules_file}',
-                            )
-        encoding = ''
-        for file_path in predicate_files:
-            with open(file_path, 'r') as f:
-                encoding += f.read()
-        predicate_coverage_space = predicates_of_logic_program(encoding)
+        coverage_module = importlib.import_module(f'scenariogen.core.coverages.{args.coverage_module}')
+        predicate_coverage_space = coverage_module.coverage_space(config)
         coverage_gap = predicate_coverage_space - coverage.to_predicateCoverage()
         print(f'\nPredicate coverage gap:')
         coverage_gap.print()

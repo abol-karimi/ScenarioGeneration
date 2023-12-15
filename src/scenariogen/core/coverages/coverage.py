@@ -4,9 +4,10 @@ from functools import reduce
 from pathlib import Path
 import jsonpickle
 
+from scenic.core.simulators import SimulationCreationError
+
 from scenariogen.core.scenario import Scenario
 from scenariogen.core.errors import EgoCollisionError, NonegoCollisionError
-from scenic.core.simulators import SimulationCreationError
 
 class PredicateCoverage:
   """

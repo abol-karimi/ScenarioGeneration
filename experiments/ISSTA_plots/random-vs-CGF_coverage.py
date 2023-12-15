@@ -6,11 +6,22 @@ from pathlib import Path
 import jsonpickle
 from functools import reduce
 import matplotlib.pyplot as plt
+import importlib
 
-from scenariogen.predicates.utils import predicates_of_logic_program
+from scenariogen.core.coverages.coverage import PredicateCoverage
 
-def plot(experiment_type, experiment_name, coverage_ego, coverage_module, plot_label, plot_color, draw_predicate_coverage_space=False):
-  coverage_file = f'experiments/{experiment_type}/output_{experiment_name}/coverage_{coverage_ego}_{coverage_module}.json'
+def plot(experiment_type, experiment_name, coverage_ego, coverage_module_name, plot_label, plot_color, draw_predicate_coverage_space=False):
+  output_path = Path(f"experiments/{experiment_type}/output_{experiment_name}")
+  with open(tuple((output_path/'fuzz-inputs').glob('*'))[0], 'r') as f:
+    seed = jsonpickle.decode(f.read())
+  
+  config = {**seed.config,
+            'coverage_module': coverage_module_name
+            }
+  coverage_module = importlib.import_module(f'scenariogen.core.coverages.{coverage_module_name}')
+  predicate_coverage_space = coverage_module.coverage_space(config)
+
+  coverage_file = output_path/f'coverage_{coverage_ego}_{coverage_module_name}.json'
   with open(coverage_file, 'r') as f:
     coverage = jsonpickle.decode(f.read())
 
@@ -44,10 +55,10 @@ def plot(experiment_type, experiment_name, coverage_ego, coverage_module, plot_l
 
 
 if __name__ == '__main__':
-  coverage_module = 'traffic_rules'
+  coverage_module_name = 'traffic'
   reports_config = (
-    ('random_search', 'autopilot', 'autopilot', coverage_module, 'Random search', 'b', False),
-    ('Atheris', 'autopilot', 'autopilot', coverage_module, 'Fuzzing', 'g', True),
+    ('random_search', 'autopilot', 'autopilot', coverage_module_name, 'Random search', 'b', False),
+    ('Atheris', 'autopilot', 'autopilot', coverage_module_name, 'Fuzzing', 'g', True),
   )
   fig_coverage = plt.figure()
   # fig_coverage.suptitle(f'Random vs. Coverage-Guided Fuzzing')
@@ -69,23 +80,9 @@ if __name__ == '__main__':
   ax2.set_ylabel('Predicate-Sets')
   ax3.set_ylabel('Predicates')
 
-  traffic_rules_file = '4way-stopOnAll.lp'
-  if coverage_module == 'traffic':
-    predicate_files = (f'src/scenariogen/predicates/{traffic_rules_file}',
-                        'src/scenariogen/predicates/traffic.lp',
-                      )
-  else:
-    predicate_files = (f'src/scenariogen/predicates/{traffic_rules_file}',
-                      )
-  encoding = ''
-  for file_path in predicate_files:
-      with open(file_path, 'r') as f:
-          encoding += f.read()
-  predicate_coverage_space = predicates_of_logic_program(encoding)
-
-  for experiment_type, experiment_name, coverage_ego, coverage_module, plot_label, plot_color, draw_predicate_coverage_space in reports_config:
-    plot(experiment_type, experiment_name, coverage_ego, coverage_module, plot_label, plot_color, draw_predicate_coverage_space)
+  for experiment_type, experiment_name, coverage_ego, coverage_module_name, plot_label, plot_color, draw_predicate_coverage_space in reports_config:
+    plot(experiment_type, experiment_name, coverage_ego, coverage_module_name, plot_label, plot_color, draw_predicate_coverage_space)
 
   ax3.legend()
   plt.tight_layout()
-  plt.savefig(f'experiments/ISSTA_plots/random-vs-CGF_coverage_{coverage_module}.png')
+  plt.savefig(f'experiments/ISSTA_plots/random-vs-CGF_coverage_{coverage_module_name}.png')

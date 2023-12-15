@@ -1,4 +1,3 @@
-#include "src/scenariogen/predicates/abstractions.lp".
 
 %--------------------------------------------
 %------ Auxiliary geometric predicates ------

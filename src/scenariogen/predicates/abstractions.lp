@@ -1,3 +1,4 @@
+
 % timeless abstraction of all event predicates:
 arrivedFromLane(V, L):-
   arrivedFromLaneAtTime(V, L, _).

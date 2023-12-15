@@ -6,12 +6,22 @@ from pathlib import Path
 import jsonpickle
 from functools import reduce
 import matplotlib.pyplot as plt
+import importlib
 
-from scenariogen.predicates.utils import predicates_of_logic_program
 
-def plot(experiment_type, experiment_name, coverage_ego, coverage_module):
+def plot(experiment_type, experiment_name, coverage_ego, coverage_module_name):
   output_path = Path(f"experiments/{experiment_type}/output_{experiment_name}")
-  coverage_file = output_path/f"coverage_{coverage_ego}_{coverage_module}.json"
+
+  with open(tuple((output_path/'fuzz-inputs').glob('*'))[0], 'r') as f:
+    seed = jsonpickle.decode(f.read())
+  
+  config = {**seed.config,
+            'coverage_module': coverage_module_name
+            }
+  coverage_module = importlib.import_module(f'scenariogen.core.coverages.{coverage_module_name}')
+  predicate_coverage_space = coverage_module.coverage_space(config)
+
+  coverage_file = output_path/f"coverage_{coverage_ego}_{coverage_module_name}.json"
 
   with open(coverage_file, 'r') as f:
     results = jsonpickle.decode(f.read())
@@ -62,49 +72,36 @@ def plot(experiment_type, experiment_name, coverage_ego, coverage_module):
   ax2.plot(exe_times_acc, tuple(len(c) for c in predicateSet_coverages_acc), 'b-')
 
   ax3.set_ylabel('Predicates')
-  traffic_rules_file = '4way-stopOnAll.lp'
-  if coverage_module == 'traffic':
-    predicate_files = (f'src/scenariogen/predicates/{traffic_rules_file}',
-                        'src/scenariogen/predicates/traffic.lp',
-                      )
-  else:
-    predicate_files = (f'src/scenariogen/predicates/{traffic_rules_file}',
-                      )
-  encoding = ''
-  for file_path in predicate_files:
-      with open(file_path, 'r') as f:
-          encoding += f.read()
-  predicate_coverage_space = predicates_of_logic_program(encoding)
 
   ax3.plot(exe_times_acc, tuple(len(c & predicate_coverage_space) for c in predicate_coverages_acc), 'b-')
   ax3.plot(exe_times_acc, tuple(len(predicate_coverage_space) for c in range(len(exe_times_acc))), 'r--')
 
   plt.tight_layout()
-  plt.savefig(output_path/f'coverage_{coverage_ego}_{coverage_module}.png')
+  plt.savefig(output_path/f'coverage_{coverage_ego}_{coverage_module_name}.png')
 
 if __name__ == '__main__':
   reports_config = (
     ('Atheris', 'autopilot', 'autopilot', 'traffic_rules'),
-    ('Atheris', 'autopilot', 'BehaviorAgent', 'traffic_rules'),
-    ('Atheris', 'BehaviorAgent', 'autopilot', 'traffic_rules'),
-    ('Atheris', 'BehaviorAgent', 'BehaviorAgent', 'traffic_rules'),
-    ('Atheris', 'intersectionAgent', 'autopilot', 'traffic_rules'),
-    ('Atheris', 'intersectionAgent', 'BehaviorAgent', 'traffic_rules'),
-    ('Atheris', 'openLoop', 'autopilot', 'traffic_rules'),
-    ('Atheris', 'openLoop', 'BehaviorAgent', 'traffic_rules'),
-    ('random_search', 'autopilot', 'autopilot', 'traffic_rules'),
-    ('random_search', '4way-stop_autopilot', 'BehaviorAgent', 'traffic_rules'),
-    ('Atheris', 'autopilot', 'autopilot', 'traffic'),
-    ('Atheris', 'autopilot', 'BehaviorAgent', 'traffic'),
-    ('Atheris', 'BehaviorAgent', 'autopilot', 'traffic'),
-    ('Atheris', 'BehaviorAgent', 'BehaviorAgent', 'traffic'),
-    ('Atheris', 'intersectionAgent', 'autopilot', 'traffic'),
-    ('Atheris', 'intersectionAgent', 'BehaviorAgent', 'traffic'),
-    ('Atheris', 'openLoop', 'autopilot', 'traffic'),
-    ('Atheris', 'openLoop', 'BehaviorAgent', 'traffic'),
-    ('random_search', 'autopilot', 'autopilot', 'traffic'),
-    ('random_search', '4way-stop_autopilot', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'autopilot', 'BehaviorAgent', 'traffic_rules'),
+    # ('Atheris', 'BehaviorAgent', 'autopilot', 'traffic_rules'),
+    # ('Atheris', 'BehaviorAgent', 'BehaviorAgent', 'traffic_rules'),
+    # ('Atheris', 'intersectionAgent', 'autopilot', 'traffic_rules'),
+    # ('Atheris', 'intersectionAgent', 'BehaviorAgent', 'traffic_rules'),
+    # ('Atheris', 'openLoop', 'autopilot', 'traffic_rules'),
+    # ('Atheris', 'openLoop', 'BehaviorAgent', 'traffic_rules'),
+    # ('random_search', 'autopilot', 'autopilot', 'traffic_rules'),
+    # ('random_search', '4way-stop_autopilot', 'BehaviorAgent', 'traffic_rules'),
+    # ('Atheris', 'autopilot', 'autopilot', 'traffic'),
+    # ('Atheris', 'autopilot', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'BehaviorAgent', 'autopilot', 'traffic'),
+    # ('Atheris', 'BehaviorAgent', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'intersectionAgent', 'autopilot', 'traffic'),
+    # ('Atheris', 'intersectionAgent', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'openLoop', 'autopilot', 'traffic'),
+    # ('Atheris', 'openLoop', 'BehaviorAgent', 'traffic'),
+    # ('random_search', 'autopilot', 'autopilot', 'traffic'),
+    # ('random_search', '4way-stop_autopilot', 'BehaviorAgent', 'traffic'),
   )
 
-  for experiment_type, experiment_name, coverage_ego, coverage_module in reports_config:
-    plot(experiment_type, experiment_name, coverage_ego, coverage_module)
+  for experiment_type, experiment_name, coverage_ego, coverage_module_name in reports_config:
+    plot(experiment_type, experiment_name, coverage_ego, coverage_module_name)

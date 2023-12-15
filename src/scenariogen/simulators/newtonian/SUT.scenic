@@ -18,7 +18,7 @@ if config['ego_module']:
   ego_scenario = ego_module.EgoScenario(config)
 
 if config['coverage_module']:
-  coverage_module = importlib.import_module(config['coverage_module'])
+  coverage_module = importlib.import_module(f"scenariogen.core.coverages.{config['coverage_module']}")
   coverage = coverage_module.Coverage([])
 
 scenario Main():

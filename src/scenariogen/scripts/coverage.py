@@ -1,8 +1,8 @@
 #!/usr/bin/env python3.8
 import argparse
 from functools import reduce
+import importlib
 from scenariogen.core.coverages.coverage import from_corpus, StatementCoverage
-from scenariogen.predicates.utils import predicates_of_logic_program
 from experiments.configs import SUT_config, coverage_config
 
 parser = argparse.ArgumentParser(
@@ -18,7 +18,7 @@ config = {
   **SUT_config,
   **coverage_config,
   'ego_module': args.ego_module,
-  'coverage_module': 'scenariogen.core.coverages.traffic',
+  'coverage_module': 'traffic',
 }
 results = from_corpus(args.SUT_inputs_path, config)
 seed2statementCoverage = results[0]
@@ -34,15 +34,8 @@ coverage = reduce(lambda c1,c2: c1+c2,
 print(f'\nCoverage:')
 coverage.print()
 
-traffic_rules_file = '4way-stopOnAll.lp'
-predicate_files = (f'src/scenariogen/predicates/{traffic_rules_file}',
-                    'src/scenariogen/predicates/traffic.lp',
-                )
-encoding = ''
-for file_path in predicate_files:
-    with open(file_path, 'r') as f:
-        encoding += f.read()
-predicate_coverage_space = predicates_of_logic_program(encoding)
+coverage_module = importlib.import_module(f"scenariogen.core.coverage.{config['coverage_module']}.predicate_space")
+predicate_coverage_space = importlib.import_module().coverage_space(config)
 coverage_gap = predicate_coverage_space - coverage.to_predicateCoverage()
 print(f'\nPredicate coverage gap:')
 coverage_gap.print()

@@ -1,6 +1,4 @@
 
-#include "src/scenariogen/predicates/abstractions.lp".
-
 %--- Auxiliary predicates ---
 leftAfter(V2, V1):-
   leftAtTime(V1, T1),
