@@ -5,7 +5,6 @@ config = globalParameters.config
 
 # imports
 import jsonpickle
-from scenariogen.core.signals import SignalType
 from scenariogen.simulators.newtonian.behaviors import IntersectionBehavior
 
 with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f:

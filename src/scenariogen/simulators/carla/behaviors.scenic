@@ -2,13 +2,20 @@
 model scenic.simulators.carla.model
 
 # imports
+from collections import namedtuple
 import carla
+from leaderboard.envs.sensor_interface import SensorReceivedNoData
+
 # from examples.rss.rss_sensor import RssSensor
 from agents.navigation.behavior_agent import BehaviorAgent
 from scenic.simulators.carla.utils.utils import scenicToCarlaLocation, carlaToScenicPosition
 from scenariogen.simulators.carla.rss_sensor import RssSensor # TODO replace with carla module above
-from scenariogen.simulators.carla.utils import signal_to_vehicleLightState, maneuverType_to_Autopilot_turn
+from scenariogen.simulators.carla.utils import (signal_to_vehicleLightState, 
+																								maneuverType_to_Autopilot_turn,
+																								interpolate_trajectory
+																								)
 import scenariogen.simulators.carla.visualization as visualization
+from scenariogen.interfaces.leaderboard.interface import LeaderboardAgent
 
 
 behavior AutopilotRouteBehavior(maneuver_types, config_override={}):
@@ -127,3 +134,43 @@ behavior BehaviorAgentRSSFollowWaypoints(waypoints, aggressiveness):
 
 	# TODO
 
+
+behavior LeaderboardAgentBehavior(agent_path, agent_config, track, keypoints, debug=False):
+	Args = namedtuple('Args',
+										['host',
+										 'port',
+										 'client',
+										 'world',
+										 'carla_actor',
+										 'agent',
+										 'agent_config',
+										 'track',
+										 'route',
+										 'gps_route',
+										 'debug'
+										]
+									 )
+	keypoints_carla = tuple(scenicToCarlaLocation(kp, world=simulation().world) for kp in keypoints)
+	gps_route, route = interpolate_trajectory(simulation().map, keypoints_carla)
+	args = Args(host='127.0.0.1',
+							port='2000',
+							client=simulation().client,
+							world=simulation().world,
+							carla_actor=self.carlaActor,
+							agent=agent_path,
+							agent_config=agent_config,
+							track=track,
+							route=route,
+							gps_route=gps_route,
+							debug=debug
+							)
+	agent = LeaderboardAgent(args)
+
+	while True:
+		try:
+			control = agent.run_step()
+			self.carlaActor.apply_control(control)
+		except SensorReceivedNoData:
+			print(f'No sensor data at frame {simulation().currentTime}')
+		
+		wait	

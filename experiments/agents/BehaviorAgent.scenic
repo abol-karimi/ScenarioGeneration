@@ -3,7 +3,6 @@ model scenic.simulators.carla.model
 
 # imports
 import jsonpickle
-from scenariogen.core.signals import SignalType
 from scenariogen.simulators.carla.behaviors import BehaviorAgentReachDestination
 
 

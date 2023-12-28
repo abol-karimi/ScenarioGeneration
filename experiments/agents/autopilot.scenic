@@ -3,7 +3,6 @@ model scenic.simulators.carla.model
 
 # imports
 import jsonpickle
-from scenariogen.core.signals import SignalType
 from scenariogen.core.utils import turns_from_route
 from scenariogen.simulators.carla.behaviors import AutopilotRouteBehavior
 from experiments.agents.configs import VUT_config

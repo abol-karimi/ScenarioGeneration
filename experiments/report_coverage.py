@@ -78,7 +78,7 @@ def report(experiment_type, seeds, experiment, coverage_ego, coverage):
   else:
     # Start
     with open(results_file, 'r') as f:
-      results = jsonpickle.decode(f.read())   
+      results = jsonpickle.decode(f.read())
 
     results[0]['measurements'].insert(0,
                                       {'exe_time': 0,
