@@ -17,9 +17,9 @@ from src.scenariogen.core.signals import SignalType
 from src.scenariogen.core.utils import route_length
 
 parser = argparse.ArgumentParser(description='Make new seeds by fuzzing the given seed corpus.')
-parser.add_argument('in_corpus', 
+parser.add_argument('in-corpus', 
                     help='the seed corpus to fuzz')
-parser.add_argument('out_corpus', 
+parser.add_argument('out-corpus', 
                     help='the output corpus file')
 parser.add_argument('--iterations', default=1, type=int,
                     help='number of fuzzing iterations')
@@ -30,15 +30,15 @@ duration.add_argument('--maxSteps', type=int,
                       help='maximum allowed scenario duration in steps. Note that each scenario can have a different duration.')
 duration.add_argument('--maxSeconds', type=float, 
                       help='maximum allowed scenario duration in seconds. Note that each scenario can have a different duration.')
-parser.add_argument('--max_nonegos', type=int, default=5,
+parser.add_argument('--max-nonegos', type=int, default=5,
                       help='maximum number of non-egos allowed')
 parser.add_argument('--ego', action='store_true',
                     help='simulate the given ego together with the nonegos')
 parser.add_argument('--weather', default = 'CloudySunset')
-parser.add_argument('--spline_degree', default=3, type=int)
-parser.add_argument('--max_spline_knots_size', default=50, type=int)
-parser.add_argument('--max_mutations_per_iteration', default=4, type=int)
-parser.add_argument('--arrival_distance', default=4., type=float)
+parser.add_argument('--spline-degree', default=3, type=int)
+parser.add_argument('--max-spline-knots-size', default=50, type=int)
+parser.add_argument('--max-mutations-per-iteration', default=4, type=int)
+parser.add_argument('--arrival-distance', default=4., type=float)
 args = parser.parse_args()
 
 # Default maximum:

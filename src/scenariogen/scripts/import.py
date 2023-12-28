@@ -22,14 +22,14 @@ parser.add_argument('complexgen_scenario_path',
                     help='Path of the ComplexGen scenario file (in json format)')
 parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='carla',
                     help='The simulator')
-parser.add_argument('--render_spectator', action='store_true',
+parser.add_argument('--render-spectator', action='store_true',
                     help='render a spectator above the intersection')
-parser.add_argument('--render_ego', action='store_true',
+parser.add_argument('--render-ego', action='store_true',
                     help='render ego viewpoint (only in the Carla simulator)')
 parser.add_argument('--out_path',
                     help='Path where the generated seed will be stored')
-parser.add_argument('--spline_degree', default = 3, type=int)
-parser.add_argument('--spline_knots_size', default = 50, type=int)
+parser.add_argument('--spline-degree', default = 3, type=int)
+parser.add_argument('--spline-knots-size', default = 50, type=int)
 args = parser.parse_args()
 
 # Run the scenario

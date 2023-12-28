@@ -17,13 +17,13 @@ parser.add_argument('--timestep', type=float,
                     help='length of each simulation step')
 parser.add_argument('--weather', type=str,
                     help='weather in the simulation')
-parser.add_argument('--render_spectator', action='store_true',
+parser.add_argument('--render-spectator', action='store_true',
                     help='render a spectator above the intersection')
-parser.add_argument('--render_ego', action='store_true',
+parser.add_argument('--render-ego', action='store_true',
                     help='render ego viewpoint (only in the Carla simulator)')
-parser.add_argument('--ego_module',
+parser.add_argument('--ego-module',
                     help='the scenic file containing the ego scenario')
-parser.add_argument('--coverage_module',
+parser.add_argument('--coverage-module',
                     help='the scenic file containing coverage monitor')
 parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='carla',
                     help='The simulator')

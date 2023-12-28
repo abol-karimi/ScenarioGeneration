@@ -9,9 +9,13 @@ parser = argparse.ArgumentParser(
     description='Compute the predicate coverage of a corpus of SUT inputs.')
 parser.add_argument('SUT_inputs_path',
                     help='relative path of the corpus folder')
-parser.add_argument('--ego_module',
+parser.add_argument('--ego-module',
                     default='experiments.agents.autopilot',
                     help='the scenic file containing the ego scenario')
+parser.add_argument('--render-spectator', action='store_true',
+                    help='render a spectator above the intersection')
+parser.add_argument('--render-ego', action='store_true',
+                    help='render ego viewpoint (only in the Carla simulator)')
 args = parser.parse_args()
 
 config = {
@@ -19,6 +23,8 @@ config = {
   **coverage_config,
   'ego_module': args.ego_module,
   'coverage_module': 'traffic',
+  'render_spectator': args.render_spectator,
+  'render_ego': args.render_ego
 }
 results = from_corpus(args.SUT_inputs_path, config)
 seed2statementCoverage = results[0]
