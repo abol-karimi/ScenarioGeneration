@@ -20,6 +20,7 @@ scenario EgoScenario(config):
     ego_blueprint = config['ego_blueprint']
     ego = new Car at ego_init_pos,
       with name 'ego',
+      with rolename 'hero',
       with color Color(0, 1, 0),
       with blueprint config['ego_blueprint'],
       with width blueprint2dims[ego_blueprint]['width'],

@@ -9,7 +9,8 @@ from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
 from srunner.scenariomanager.timer import GameTime
 
 from leaderboard.autoagents.agent_wrapper import AgentWrapperFactory, validate_sensor_configuration
-from leaderboard.utils.route_manipulation import interpolate_trajectory
+
+from scenariogen.interfaces.leaderboard.utils import draw_waypoints
 
 sensors_to_icons = {
     'sensor.camera.rgb':        'carla_camera',
@@ -34,6 +35,13 @@ class LeaderboardAgent(object):
         """
         self.client = args.client
         self.world = args.world
+
+        draw_waypoints(args.world,
+                       args.scenario_config['steps']*args.scenario_config['timestep'],
+                       args.route,
+                       vertical_shift=0.1,
+                       size=0.1,
+                       downsample=10)
 
         # Load agent
         module_name = os.path.basename(args.agent).split('.')[0]
@@ -62,12 +70,9 @@ class LeaderboardAgent(object):
 
         self.world.on_tick(self.on_scenic_tick)
 
-    def _cleanup(self):
-        """
-        Remove and destroy all actors
-        """
-        CarlaDataProvider.cleanup()
-
+    def cleanup(self):
+        self._agent_wrapper.cleanup()
+        # CarlaDataProvider.cleanup()
         try:
             if self.agent_instance:
                 self.agent_instance.destroy()
@@ -75,17 +80,6 @@ class LeaderboardAgent(object):
         except Exception as e:
             print("\n\033[91mFailed to stop the agent:")
             print(f"\n{traceback.format_exc()}\033[0m")
-
-        if self.route_scenario:
-            self.route_scenario.remove_all_actors()
-            self.route_scenario = None
-
-        # Make sure no sensors are left streaming
-        alive_sensors = self.world.get_actors().filter('*sensor*')
-        for sensor in alive_sensors:
-            sensor.stop()
-            sensor.destroy()
-
 
     def run_step(self):
         vehicle_control = self._agent_wrapper()

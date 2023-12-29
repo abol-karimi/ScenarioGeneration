@@ -52,8 +52,7 @@ scenario SeedScenario():
     min_route_length = 200
     min_distance_to_intersection = 20
 
-    blueprints = tuple(blueprint2dims.keys())
-    blueprint = Uniform(*blueprints)
+    blueprint = 'vehicle.tesla.model3'
 
     lanes = [Uniform(*intersection.incomingLanes)]
     if lanes[0].centerline.length < min_distance_to_intersection:
@@ -94,6 +93,7 @@ scenario SeedScenario():
       'random_right_lanechange_percentage': 0,
     }
 
+    blueprints = tuple(blueprint2dims.keys())
     for i in range(DiscreteRange(1, max_nonegos)):
       blueprint = Uniform(*blueprints)
       init_lane = Uniform(*intersection.incomingLanes, *intersection.outgoingLanes)

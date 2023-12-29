@@ -26,7 +26,7 @@ scenario Main():
   setup:
     if config['render_spectator'] or config['render_ego']:
       p = intersection.polygon.centroid
-      ego = new Debris at p.x@p.y
+      ego = new Debris at (p.x, p.y, -10)
 
     if config['coverage_module']:
       require monitor coverage_module.CoverageMonitor(coverage)

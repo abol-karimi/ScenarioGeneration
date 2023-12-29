@@ -7,6 +7,7 @@ Generates random seeds using simulation.
 import time
 import random
 import jsonpickle
+from pathlib import Path
 import scenic
 scenic.setDebuggingOptions(verbosity=1, fullBacktrace=True)
 from scenic.core.simulators import SimulationCreationError
@@ -37,6 +38,8 @@ def run(config):
         simulator.world.apply_settings(settings)
     
     print(config['max_total_time'])
+    output_path = Path(config['output_folder'])
+    output_path.mkdir(parents=True, exist_ok=True)
        
     while time.time()-start_time < config['max_total_time']:
         try:
@@ -50,7 +53,7 @@ def run(config):
                                 raiseGuardViolations=True
                                 )
         except EgoCollisionError as err:
-            print(f'Ego collided with {err.other}, discarding the simulation.')
+            print(f'Ego collided with {err.other}, discarding the seed.')
             continue
         except SimulationCreationError as e:
             print(f'Failed to create simulation: {e}')
@@ -76,7 +79,7 @@ def run(config):
 
         seed_id += 1
         print(f'Saving seed {seed_id} ...')
-        with open(f"{config['output_folder']}/fuzz-inputs/{seed_id}.json", 'w') as f:
+        with open(output_path/f'{seed_id}.json', 'w') as f:
             f.write(jsonpickle.encode(seed, indent=1))
 
 

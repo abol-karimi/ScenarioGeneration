@@ -1,6 +1,9 @@
 # Scenic parameters
 model scenic.simulators.carla.model
 
+param config = None
+config = globalParameters.config
+
 # imports
 from collections import namedtuple
 import carla
@@ -15,7 +18,7 @@ from scenariogen.simulators.carla.utils import (signal_to_vehicleLightState,
 																								interpolate_trajectory
 																								)
 import scenariogen.simulators.carla.visualization as visualization
-from scenariogen.interfaces.leaderboard.interface import LeaderboardAgent
+from scenariogen.interfaces.leaderboard.agent import LeaderboardAgent
 
 
 behavior AutopilotRouteBehavior(maneuver_types, config_override={}):
@@ -147,7 +150,8 @@ behavior LeaderboardAgentBehavior(agent_path, agent_config, track, keypoints, de
 										 'track',
 										 'route',
 										 'gps_route',
-										 'debug'
+										 'debug',
+										 'scenario_config'
 										]
 									 )
 	keypoints_carla = tuple(scenicToCarlaLocation(kp, world=simulation().world) for kp in keypoints)
@@ -162,15 +166,18 @@ behavior LeaderboardAgentBehavior(agent_path, agent_config, track, keypoints, de
 							track=track,
 							route=route,
 							gps_route=gps_route,
-							debug=debug
+							debug=debug,
+							scenario_config=config
 							)
 	agent = LeaderboardAgent(args)
-
-	while True:
+	
+	for step in range(config['steps']-1):
 		try:
 			control = agent.run_step()
 			self.carlaActor.apply_control(control)
 		except SensorReceivedNoData:
-			print(f'No sensor data at frame {simulation().currentTime}')
-		
-		wait	
+			print(f'Leaderboard agent received no sensor data at frame {simulation().currentTime}')
+		wait
+
+	print(f'Clean up Leaderboard agent...')
+	agent.cleanup()
