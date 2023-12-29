@@ -8,15 +8,17 @@ config = globalParameters.config
 model scenic.simulators.carla.model
 from scenariogen.simulators.carla.monitors import ForbidEgoCollisionsMonitor, ShowIntersectionMonitor, LabelCarsMonitor
 from scenariogen.simulators.carla.scenarios import NonegosScenario
+from scenariogen.core.errors import EgoCollisionError
 
 nonegos_scenario = NonegosScenario(config)
 
 # Plug-in Scenic modules
+import jsonpickle
 import importlib
 intersection = network.elements[config['intersection']]
 if config['ego_module']:
   ego_module = importlib.import_module(config['ego_module'])
-  ego_scenario = ego_module.EgoScenario(config)
+  ego_behavior = ego_module.ego_behavior
 
 if config['coverage_module']:
   coverage_module = importlib.import_module(f"scenariogen.core.coverages.{config['coverage_module']}.monitor")
@@ -24,7 +26,25 @@ if config['coverage_module']:
 
 scenario Main():
   setup:
-    if config['render_spectator'] or config['render_ego']:
+    if config['ego_module']:
+      with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f:
+        blueprint2dims = jsonpickle.decode(f.read())
+      lanes = [network.elements[l] for l in config['ego_route']]
+      centerline = PolylineRegion.unionAll([l.centerline for l in lanes])
+      init_pos = centerline.pointAlongBy(config['ego_init_progress_ratio']*centerline.length)
+      blueprint = config['ego_blueprint']
+      ego = new Car at init_pos,
+        with name 'ego',
+        with rolename 'hero',
+        with color Color(0, 1, 0),
+        with blueprint blueprint,
+        with width blueprint2dims[blueprint]['width'],
+        with length blueprint2dims[blueprint]['length'],
+        with behavior ego_behavior,
+        with physics True,
+        with allowCollisions False
+
+    elif config['render_spectator'] or config['render_ego']:
       p = intersection.polygon.centroid
       ego = new Debris at (p.x, p.y, -10)
 
@@ -32,17 +52,12 @@ scenario Main():
       require monitor coverage_module.CoverageMonitor(coverage)
       record final coverage as coverage
 
-    require monitor ForbidEgoCollisionsMonitor(config)
     if config['render_spectator']:
       require monitor ShowIntersectionMonitor(config['intersection'], label_lanes=True)
 
   compose:
     # Deterministic traffic manager with a common seed across all simulations so that autopilot's behavior is reproducible
     simulation().tm.set_random_device_seed(0)
-   
-    if config['ego_module']:
-      do ego_scenario, \
-          nonegos_scenario
-    else:
-      do nonegos_scenario
+
+    do nonegos_scenario
 
