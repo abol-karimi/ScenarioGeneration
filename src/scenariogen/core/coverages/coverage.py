@@ -147,7 +147,9 @@ def from_corpus(corpus_folder, config):
   simulation_rejections = set()
   none_coverages = set()
 
-  for path in Path(corpus_folder).glob('*'):
+  paths = list(Path(corpus_folder).glob('*'))
+  paths.sort(key=lambda x: os.path.getmtime(x))
+  for path in paths:
     with open(path, 'r') as f:
       fuzz_input = jsonpickle.decode(f.read())
     try:
