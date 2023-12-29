@@ -8,14 +8,20 @@ import queue
 import scenariogen.simulators.carla.visualization as visualization
 from scenariogen.core.errors import EgoCollisionError, NonegoCollisionError
 
-monitor ShowIntersectionMonitor(intersection_uid, show_lanes=False, label_lanes=False, show_carla_axes=False):
+monitor ShowIntersectionMonitor(intersection_uid,
+                                show_lanes=False,
+                                label_lanes=False,
+                                show_carla_axes=False,
+                                life_time=-1
+                                ):
   intersection = network.elements[intersection_uid]
   carla_world = simulation().world
   visualization.draw_intersection(carla_world,
                                   intersection, 
                                   draw_lanes=show_lanes,
                                   label_lanes=label_lanes, 
-                                  draw_carla_axes=show_carla_axes)
+                                  draw_carla_axes=show_carla_axes,
+                                  life_time=life_time)
   visualization.set_camera(carla_world, intersection, height=100)
   wait
 

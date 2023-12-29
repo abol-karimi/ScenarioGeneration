@@ -40,8 +40,8 @@ coverage = reduce(lambda c1,c2: c1+c2,
 print(f'\nCoverage:')
 coverage.print()
 
-coverage_module = importlib.import_module(f"scenariogen.core.coverages.{config['coverage_module']}.predicate_space")
-predicate_coverage_space = importlib.import_module().coverage_space(config)
+coverage_module = importlib.import_module(f"scenariogen.core.coverages.{config['coverage_module']}")
+predicate_coverage_space = coverage_module.coverage_space(config)
 coverage_gap = predicate_coverage_space - coverage.to_predicateCoverage()
 print(f'\nPredicate coverage gap:')
 coverage_gap.print()

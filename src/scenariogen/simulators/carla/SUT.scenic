@@ -53,7 +53,10 @@ scenario Main():
       record final coverage as coverage
 
     if config['render_spectator']:
-      require monitor ShowIntersectionMonitor(config['intersection'], label_lanes=True)
+      require monitor ShowIntersectionMonitor(config['intersection'],
+                                              label_lanes=True,
+                                              life_time=config['timestep']*config['steps']
+                                             )
 
   compose:
     # Deterministic traffic manager with a common seed across all simulations so that autopilot's behavior is reproducible
