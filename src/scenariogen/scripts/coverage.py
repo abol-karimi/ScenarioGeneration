@@ -23,6 +23,8 @@ config = {
   **coverage_config,
   'ego_module': args.ego_module,
   'coverage_module': 'traffic',
+  'map': '/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/Town05.xodr',
+  'intersection': 'intersection396',
   'render_spectator': args.render_spectator,
   'render_ego': args.render_ego
 }

@@ -11,8 +11,8 @@ carla_map = globalParameters.carla_map
 param map = f'/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/{carla_map}.xodr'
 model scenic.simulators.newtonian.driving_model
 param weather = 'CloudySunset'
-param timestep = 0.1
-param steps = 200
+param timestep = 0.05
+param steps = 400
 intersection_uid = 'intersection1930'
 traffic_rules = '3way-T_stopOnAll.lp'
 arrival_distance = 4

@@ -57,7 +57,10 @@ scenario Main():
     require monitor ForbidEgoCollisionsMonitor(seed_config)
     require monitor ForbidNonegoCollisionsMonitor(seed_config)
     if caller_config['render_spectator']:
-      require monitor ShowIntersectionMonitor(seed_config['intersection'], label_lanes=True)
+      require monitor ShowIntersectionMonitor(seed_config['intersection'],
+                                              label_lanes=True,
+                                              life_time=seed_config['timestep']*seed_config['steps']
+                                             )
       require monitor LabelCarsMonitor()
 
     record final seed_config as config

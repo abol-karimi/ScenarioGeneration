@@ -7,8 +7,8 @@ carla_map = globalParameters.carla_map
 param map = f'/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/{carla_map}.xodr'
 model scenic.simulators.carla.model
 param weather = 'CloudySunset'
-param timestep = 0.1
-param steps = 200
+param timestep = 0.05
+param steps = 400
 intersection_uid = 'intersection396'
 max_nonegos = 10
 

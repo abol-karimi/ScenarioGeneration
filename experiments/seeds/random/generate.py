@@ -7,7 +7,7 @@ file_stem = '4way-stop_autopilot'
 config = {'scenario_path': f'experiments/seeds/random/definitions/{file_stem}',
           'output_folder': f'experiments/seeds/random/seeds/{file_stem}',
           'simulator': 'carla',
-          'render_spectator': True,
+          'render_spectator': False,
           'render_ego': False,
           'PRNG_seed': 0,
           'spline_degree': 3,
