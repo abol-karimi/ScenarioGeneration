@@ -8,7 +8,7 @@ import jsonpickle
 from functools import reduce
 
 from experiments.configs import SUT_config, coverage_config
-from scenariogen.core.coverages.coverage import from_corpus, StatementCoverage
+from scenariogen.core.coverages.coverage import StatementCoverage
 from scenariogen.core.scenario import Scenario
 from scenariogen.core.errors import EgoCollisionError, NonegoCollisionError
 from scenic.core.simulators import SimulationCreationError
@@ -67,7 +67,7 @@ def report(experiment_type, seeds, experiment, coverage_ego, coverage):
     **SUT_config,
     **coverage_config,
     'ego_module': f'experiments.agents.{coverage_ego}',
-    'coverage_module': f'scenariogen.core.coverages.{coverage}',
+    'coverage_module': coverage,
   }
 
   coverage_path = output_path/f'coverage_{coverage_ego}_{coverage}.json'
@@ -102,24 +102,17 @@ def report(experiment_type, seeds, experiment, coverage_ego, coverage):
 
 if __name__ == '__main__':
   reports_config = (
-    ('Atheris', 'random', 'autopilot', 'autopilot', 'traffic_rules'),
-    ('Atheris', 'random', 'autopilot', 'BehaviorAgent', 'traffic_rules'),
-    ('Atheris', 'random', 'BehaviorAgent', 'autopilot', 'traffic_rules'),
-    ('Atheris', 'random', 'BehaviorAgent', 'BehaviorAgent', 'traffic_rules'),
-    ('Atheris', 'random', 'intersectionAgent', 'autopilot', 'traffic_rules'),
-    ('Atheris', 'random', 'intersectionAgent', 'BehaviorAgent', 'traffic_rules'),
-    ('Atheris', 'random', 'openLoop', 'autopilot', 'traffic_rules'),
-    ('Atheris', 'random', 'openLoop', 'BehaviorAgent', 'traffic_rules'),
-    # ('random_search', None, 'autopilot', 'autopilot', 'traffic_rules'),
-    # ('random_search', None, 'autopilot', 'BehaviorAgent', 'traffic_rules'),
-    ('Atheris', 'random', 'autopilot', 'autopilot', 'traffic'),
-    ('Atheris', 'random', 'autopilot', 'BehaviorAgent', 'traffic'),
-    ('Atheris', 'random', 'BehaviorAgent', 'autopilot', 'traffic'),
-    ('Atheris', 'random', 'BehaviorAgent', 'BehaviorAgent', 'traffic'),
-    ('Atheris', 'random', 'intersectionAgent', 'autopilot', 'traffic'),
-    ('Atheris', 'random', 'intersectionAgent', 'BehaviorAgent', 'traffic'),
-    ('Atheris', 'random', 'openLoop', 'autopilot', 'traffic'),
-    ('Atheris', 'random', 'openLoop', 'BehaviorAgent', 'traffic'),
+    ('Atheris', 'random', 'TFPP', 'TFPP', 'traffic'),
+    # ('Atheris', 'random', 'TFPP', 'autopilot', 'traffic'),
+    # ('Atheris', 'random', 'TFPP', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'random', 'autopilot', 'autopilot', 'traffic'),
+    # ('Atheris', 'random', 'autopilot', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'random', 'BehaviorAgent', 'autopilot', 'traffic'),
+    # ('Atheris', 'random', 'BehaviorAgent', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'random', 'intersectionAgent', 'autopilot', 'traffic'),
+    # ('Atheris', 'random', 'intersectionAgent', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'random', 'openLoop', 'autopilot', 'traffic'),
+    # ('Atheris', 'random', 'openLoop', 'BehaviorAgent', 'traffic'),
     # ('random_search', None, 'autopilot', 'autopilot', 'traffic'),
     # ('random_search', None, 'autopilot', 'BehaviorAgent', 'traffic'),
   )

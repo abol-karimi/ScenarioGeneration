@@ -5,72 +5,109 @@ Research question:
 
 #!/usr/bin/env python3.8
 
-# Scenic modules
-from scenic.domains.driving.roads import Network
+import jsonpickle
+from pathlib import Path
+from functools import reduce
+from timeloop import Timeloop
+from datetime import timedelta
+import time
 
-# My modules
-import scenariogen.core.fuzz_input as seed
-import src.scenariogen.core.mutators as mutators
-import src.scenariogen.core.fuzzers.fuzzers as fuzzers
-import src.scenariogen.core.schedulers as schedulers
-import scenariogen.core.coverages as coverages
-from src.scenariogen.core.signals import SignalType
-from src.scenariogen.core.utils import route_length
+# This project
+from scenariogen.core.mutators import StructureAwareMutator
+from scenariogen.core.crossovers import StructureAwareCrossOver
+from scenariogen.core.schedulers import PriorityScheduler
+from scenariogen.core.coverages import PredicateSetCoverage
+from scenariogen.core.fuzzers.modular import ModularFuzzer
+from experiments.configs import SUT_config
 
-in_corpus_path = '../seeds_manual/3way-stop.json'
-in_corpus = seed.SeedCorpus([])
-in_corpus.load(in_corpus_path)
 
-# Fuzzer configs
-config = {}
-config['carla_map'] = in_corpus.config['carla_map']
-config['map'] = in_corpus.config['map']
-config['intersection'] = in_corpus.config['intersection']
-config['traffic_rules'] = in_corpus.config['traffic_rules']
-config['maxSeconds'] = 20 # maximum duration of a scenario, in seconds
-config['timestep'] = 0.05 # simulation timestep
-config['weather'] = 'CloudySunset'
-config['arrival_distance'] = 4 # meters
-config['spline_degree'] = 3 # cubic B-splines
-config['max_spline_knots_size'] = 50 # maximum number of knots or control points, per spline
-config['max_mutations_per_iteration'] = 4 # maximum number of times a seed can be mutated to generate a new seed
-config['max_nonegos'] = 5 # maximum number of nonegos in a seed
-config['iterations'] = 2 # the number of fuzzing iterations
+if __name__ == '__main__':
 
-#--------------------------------
-#--- The open-loop experiment ---
-#--------------------------------
-config['ego'] = False
+  fuzzing_ego = 'TFPP'
+  seeds = 'random'
+  simulator = 'carla'
 
-mutator = mutators.StructureAwareMutator(config)
-coverage = coverages.PredicateNameCoverage(config=config)
-scheduler = schedulers.PriorityScheduler(config=config)
-fuzzer = fuzzers.ModularFuzzer(corpus=in_corpus,
-                               config=config,
-                               coverage=coverage,
-                               mutator=mutator,
-                               scheduler=scheduler)
-fuzzer.run()
-fuzzer.save(f'{in_corpus_path}_open.json')
+  fuzzer_config = {
+    'SUT_config': {**SUT_config,
+                  'ego_module': f'experiments.agents.{fuzzing_ego}' if fuzzing_ego else None,
+                  'simulator': simulator,
+                  },
+    'seeds_folder': f'experiments/seeds/{seeds}/seeds',
+    'output_folder': f"experiments/Atheris/output_{fuzzing_ego if fuzzing_ego else 'openLoop'}",
+    'mutator': StructureAwareMutator(max_spline_knots_size=50,
+                                    max_mutations_per_iteration=1,
+                                    randomizer_seed=0),
+    'crossOver': StructureAwareCrossOver(max_spline_knots_size=50,
+                                        max_attempts=1,
+                                        randomizer_seed=0),
+    'scheduler': PriorityScheduler(),
+    'coverage': PredicateSetCoverage(),
+    'max_total_time': 60*90,
+    'max_seed_length': 1e+6, # 1 MB
+  }
 
-#----------------------------------
-#--- The closed-loop experiment ---
-#----------------------------------
-# config['ego'] = True
+  fuzzer = ModularFuzzer(fuzzer_config)
 
-# mutator = mutators.StructureAwareMutator(config)
-# coverage = coverages.PredicateNameCoverage(config=config)
-# scheduler = schedulers.PriorityScheduler(config=config)
-# fuzzer = fuzzers.ModularFuzzer(corpus=in_corpus,
-#                                config=config,
-#                                coverage=coverage,
-#                                mutator=mutator,
-#                                scheduler=scheduler)
-# fuzzer.run()
-# fuzzer.save(f'{in_corpus_path}_closed.json')
+  output_path = Path(fuzzer_config['output_folder'])
+  fuzz_inputs_path = output_path/'fuzz-inputs'
+  bugs_path = output_path/'bugs'
 
-# Present the results
+  # Decide to resume or start
+  results_file = output_path/'results.json'
+  if results_file.is_file():
+    fuzz_inputs = set((output_path/'fuzz-inputs').glob('*'))
+    with open(results_file, 'r') as f:
+      results = jsonpickle.decode(f.read())
+    merged_results = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements'],
+                                            'fuzzer_state': r2['fuzzer_state']
+                                          },
+                            results)
+    new_fuzz_inputs = [m[1] for m in merged_results['measurements']]
+    results_fuzz_inputs = reduce(lambda i1,i2: i1.union(i2),
+                            new_fuzz_inputs)
+    if results_fuzz_inputs != fuzz_inputs:
+      print('Cannot resume Atheris: the fuzz-inputs in the folder do not match the fuzz-inputs of results.json.')
+      exit(1)
+    fuzzer_state = results[-1]['fuzzer_state']
+  else:
+    fuzz_inputs_path.mkdir(parents=True, exist_ok=True)
+    bugs_path.mkdir(parents=True, exist_ok=True)
+    for path in fuzz_inputs_path.glob('*'):
+      path.unlink()
+    for path in bugs_path.glob('*'):
+      path.unlink()
+    fuzz_inputs = set()
+    results = []
+    fuzzer_state = None
 
+  # Set up a measurement loop
+  measurements = []
+  tl = Timeloop()
+  period = 30 # seconds
+  @tl.job(interval=timedelta(seconds=period))
+  def measure_progress():
+    new_fuzz_inputs = set((output_path/'fuzz-inputs').glob('*')) - fuzz_inputs
+    fuzz_inputs.update(new_fuzz_inputs)
+    measurements.append({'exe_time': period,
+                        'new_fuzz_inputs': new_fuzz_inputs,
+                        })
+    print(f'\nMeasurement recorded!\n')
+
+  try:
+    tl.start(block=False)
+    fuzzer_state = fuzzer.run(fuzzer_state=fuzzer_state)
+  except Exception as e:
+    print(f'Exception of type {type(e)} in atheris fuzzer: {e}.')
+
+  print(f'Measurement thread will stop in {period} seconds...')
+  time.sleep(period)
+  tl.stop()
+  results.append({'measurements': measurements,
+                  'fuzzer_state': fuzzer_state
+                  })
+
+  with open(results_file, 'w') as f:
+    f.write(jsonpickle.encode(results))
 
 
 
