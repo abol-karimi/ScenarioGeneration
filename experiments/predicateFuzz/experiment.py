@@ -112,7 +112,7 @@ if __name__ == '__main__':
                   })
 
   with open(results_file, 'w') as f:
-    f.write(jsonpickle.encode(results))
+    f.write(jsonpickle.encode(results, indent=1))
 
 
 

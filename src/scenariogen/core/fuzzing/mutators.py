@@ -484,7 +484,7 @@ class StructureAwareMutator():
     except Exception as e:
       print(f'Error in the mutator: {e}')
       with open('mutator_bug.json', 'w') as f:
-        f.write(jsonpickle.encode(fuzz_input))
+        f.write(jsonpickle.encode(fuzz_input, indent=1))
       raise e
     else:
       return mutant

@@ -15,7 +15,7 @@ scenic.setDebuggingOptions(verbosity=1, fullBacktrace=True)
 from scenic.core.simulators import SimulationCreationError
 
 from scenariogen.core.errors import EgoCollisionError, SplineApproximationError
-from scenariogen.core.utils import seed_from_sim
+from scenariogen.core.utils import seed_from_sim, ordinal
 
 def run(config):
     start_time = time.time()
@@ -73,16 +73,19 @@ def run(config):
                                  degree=config['spline_degree'],
                                  knots_size=config['spline_knots_size']
                                 )
+            seed_json_bytes = jsonpickle.encode(seed, indent=1).encode('utf-8')
+            seed_hash = hashlib.sha1(seed_json_bytes).hexdigest()
+            with open(output_path/f'fuzz-inputs/{seed_hash}', 'wb') as f:
+                f.write(seed_json_bytes)
+            with open(output_path/f'coverages/{seed_hash}', 'w') as f:
+                f.write(jsonpickle.encode(sim_result.records['coverage'], indent=1))
+            seed_id += 1
+            print(f'Saved the {ordinal(seed_id)} seed as {seed_hash}.')
         except SplineApproximationError as e:
             print(e)
             continue
 
-        seed_id += 1
-        seed_json_bytes = jsonpickle.encode(seed, indent=1).encode('utf-8')
-        seed_hash = hashlib.sha1(seed_json_bytes).hexdigest()
-        print(f'Saving the {seed_id}th seed as {seed_hash}...')
-        with open(output_path/f'{seed_hash}', 'wb') as f:
-            f.write(seed_json_bytes)
+
 
 
         

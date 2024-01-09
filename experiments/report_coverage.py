@@ -40,7 +40,7 @@ def process_measurment1(measurement):
   return output
 
 
-def report1(experiment_type, seeds, ego, coverage):
+def report1(experiment_type, ego, coverage):
   output_path = Path(f'experiments/{experiment_type}/output_{ego}_{coverage}')
   results_file = output_path/'results.json'
 
@@ -65,13 +65,13 @@ def report1(experiment_type, seeds, ego, coverage):
           output = process_measurment1(measurement)
         except KeyboardInterrupt:
           with open(coverage_path, 'w') as f:
-            f.write(jsonpickle.encode(results))
+            f.write(jsonpickle.encode(results, indent=1))
             sys.exit(1)
         else:
           measurement.update(output)
   
   with open(coverage_path, 'w') as f:
-    f.write(jsonpickle.encode(results))
+    f.write(jsonpickle.encode(results, indent=1))
 
 
 def process_measurment2(measurement, config):
@@ -153,17 +153,17 @@ def report2(experiment_type, seeds, gen_ego, gen_coverage, test_ego, test_covera
           output = process_measurment2(measurement, config)
         except KeyboardInterrupt:
           with open(coverage_path, 'w') as f:
-            f.write(jsonpickle.encode(results))
+            f.write(jsonpickle.encode(results, indent=1))
             sys.exit(1)
         else:
           measurement.update(output)
   
   with open(coverage_path, 'w') as f:
-    f.write(jsonpickle.encode(results))
+    f.write(jsonpickle.encode(results, indent=1))
 
 if __name__ == '__main__':
   reports_config = (
-    # ('Atheris', 'random', 'TFPP', 'traffic', 'TFPP', 'traffic'),
+    ('Atheris', 'random', 'TFPP', 'traffic', 'TFPP', 'traffic'),
     # ('Atheris', 'random', 'TFPP', 'traffic', 'autopilot', 'traffic'),
     # ('Atheris', 'random', 'TFPP', 'traffic', 'BehaviorAgent', 'traffic'),
     # ('Atheris', 'random', 'autopilot', 'traffic', 'autopilot', 'traffic'),
@@ -177,12 +177,12 @@ if __name__ == '__main__':
     # ('Atheris', 'random', 'intersectionAgent', 'traffic', 'BehaviorAgent', 'traffic'),
     # ('Atheris', 'random', 'openLoop', 'traffic', 'autopilot', 'traffic'),
     # ('Atheris', 'random', 'openLoop', 'traffic', 'BehaviorAgent', 'traffic'),
-    # ('random_search', None, 'autopilot', 'traffic', 'BehaviorAgent', 'traffic'),
+    ('random_search', None, 'TFPP', 'traffic', 'TFPP', 'traffic'),
   )
 
   for experiment_type, seeds, gen_ego, gen_coverage, test_ego, test_coverage in reports_config:
     print(f'Now running report: {experiment_type, seeds, gen_ego, gen_coverage, test_ego, test_coverage}')
     if (gen_ego == test_ego) and (gen_coverage == test_coverage):
-      report1(experiment_type, seeds, gen_ego, gen_coverage)
+      report1(experiment_type, gen_ego, gen_coverage)
     else:
       report2(experiment_type, seeds, gen_ego, gen_coverage, test_ego, test_coverage)

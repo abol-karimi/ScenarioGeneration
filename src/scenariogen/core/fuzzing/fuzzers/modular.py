@@ -91,9 +91,9 @@ class ModularFuzzer:
           # Save results to disk
           sha1 = hashlib.sha1(pickle.dumps(fuzz_input)).hexdigest()
           with open(Path(self.config['output_folder'])/f'fuzz-inputs/{sha1}.json', 'w') as f:
-            f.write(jsonpickle.encode(fuzz_input))
+            f.write(jsonpickle.encode(fuzz_input, indent=1))
           with open(Path(self.config['output_folder'])/f'coverages/{sha1}.json', 'w') as f:
-            f.write(jsonpickle.encode(coverage_statements))
+            f.write(jsonpickle.encode(coverage_statements, indent=1))
     
     # TODO return fuzzer state
     return None

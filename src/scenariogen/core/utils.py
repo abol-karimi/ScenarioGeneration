@@ -266,6 +266,7 @@ def extend_lane_backward(lane, length, random):
     ext.reverse()
     return ext
 
+
 def signal_from_lanes(lanes):
     signal = []
     for i in range(len(lanes)-2):
@@ -275,3 +276,11 @@ def signal_from_lanes(lanes):
         signal.append((dist, sig))
 
     return tuple(signal)
+
+
+def ordinal(n):
+    if 11 <= (n % 100) <= 13:
+        suffix = 'th'
+    else:
+        suffix = ['th', 'st', 'nd', 'rd', 'th'][min(n % 10, 4)]
+    return str(n) + suffix

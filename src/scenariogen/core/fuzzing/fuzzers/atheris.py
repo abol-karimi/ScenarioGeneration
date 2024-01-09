@@ -40,7 +40,7 @@ class MutatorCallback:
 
     mutant = self.mutator.mutate(decoded) # valid in, valid out
 
-    return bytes(jsonpickle.encode(mutant), encoding='utf-8')
+    return bytes(jsonpickle.encode(mutant, indent=1), encoding='utf-8')
 
 #------------------------------------------
 #---------- cross-over's wrapper ----------
@@ -71,7 +71,7 @@ class CrossOverCallback:
 
     crossover = self.crossOver.cross_over(decoded1, decoded2) # valid in, valid out
 
-    return bytes(jsonpickle.encode(crossover), encoding='utf-8')
+    return bytes(jsonpickle.encode(crossover, indent=1), encoding='utf-8')
 
 #-----------------------------------------------------------
 #---------- SUT wrapper to make an Atheris target ----------
@@ -98,7 +98,7 @@ class SUTCallback:
     # Save coverage results to disk
     sha1 = hashlib.sha1(input_bytes).hexdigest()
     with open(Path(self.config['output_folder'])/f'coverages/{sha1}', 'w') as f:
-      f.write(jsonpickle.encode(coverage))
+      f.write(jsonpickle.encode(coverage, indent=1))
 
 
 
