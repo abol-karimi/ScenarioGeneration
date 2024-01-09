@@ -18,24 +18,13 @@ def process_measurment1(measurement):
   output = {}
   output['nonego_collisions'] = set()
   output['ego_collisions'] = set()
-  output['simulation_creation_errors'] = set()
-  output['simulation_rejections'] = set()
-  output['none_coverages'] = set()
-  output['valid_inputs'] = set()
   output['statement_coverage'] = StatementCoverage([])
 
   for path in measurement['new_coverages']:
-    if not path.is_file():
-      continue
-    coverage_path = path.parents[1]/f'coverages/{path.name}'
-    with open(coverage_path, 'r') as f:
+    with open(path, 'r') as f:
       statement_coverage = jsonpickle.decode(f.read())
 
-    if statement_coverage is None:
-      print(f'Fuzz input {path.name} failed to report coverage!')
-      output['none_coverages'].add(path)
-    else:
-      output['statement_coverage'].update(statement_coverage)
+    output['statement_coverage'].update(statement_coverage)
 
   return output
 
@@ -61,14 +50,8 @@ def report1(experiment_type, ego, coverage):
   for result in results:
     for measurement in result['measurements']:
       if not 'statement_coverage' in measurement:
-        try:
-          output = process_measurment1(measurement)
-        except KeyboardInterrupt:
-          with open(coverage_path, 'w') as f:
-            f.write(jsonpickle.encode(results, indent=1))
-            sys.exit(1)
-        else:
-          measurement.update(output)
+        output = process_measurment1(measurement)
+        measurement.update(output)
   
   with open(coverage_path, 'w') as f:
     f.write(jsonpickle.encode(results, indent=1))
@@ -164,6 +147,7 @@ def report2(experiment_type, seeds, gen_ego, gen_coverage, test_ego, test_covera
 if __name__ == '__main__':
   reports_config = (
     ('Atheris', 'random', 'TFPP', 'traffic', 'TFPP', 'traffic'),
+    ('random_search', None, 'TFPP', 'traffic', 'TFPP', 'traffic'),
     # ('Atheris', 'random', 'TFPP', 'traffic', 'autopilot', 'traffic'),
     # ('Atheris', 'random', 'TFPP', 'traffic', 'BehaviorAgent', 'traffic'),
     # ('Atheris', 'random', 'autopilot', 'traffic', 'autopilot', 'traffic'),
@@ -177,7 +161,6 @@ if __name__ == '__main__':
     # ('Atheris', 'random', 'intersectionAgent', 'traffic', 'BehaviorAgent', 'traffic'),
     # ('Atheris', 'random', 'openLoop', 'traffic', 'autopilot', 'traffic'),
     # ('Atheris', 'random', 'openLoop', 'traffic', 'BehaviorAgent', 'traffic'),
-    ('random_search', None, 'TFPP', 'traffic', 'TFPP', 'traffic'),
   )
 
   for experiment_type, seeds, gen_ego, gen_coverage, test_ego, test_coverage in reports_config:

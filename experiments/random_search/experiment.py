@@ -55,7 +55,7 @@ if __name__ == '__main__':
       path.unlink()
     for path in coverages_path.glob('*'):
       path.unlink()
-    fuzz_inputs = set()
+    coverages = set()
     results = []
     generator_state = None
 
@@ -65,18 +65,18 @@ if __name__ == '__main__':
   period = 60 # seconds
   @tl.job(interval=timedelta(seconds=period))
   def measure_progress():
-    new_fuzz_inputs = set((output_path/'fuzz-inputs').glob('*')) - fuzz_inputs
-    fuzz_inputs.update(new_fuzz_inputs)
+    new_coverages = set((output_path/'coverages').glob('*')) - coverages
+    coverages.update(new_coverages)
     measurements.append({'exe_time': period,
-                        'new_fuzz_inputs': new_fuzz_inputs,
+                        'new_coverages': new_coverages,
                         })
     print(f'\nMeasurement recorded!\n')
 
-  # try:
-  tl.start(block=False)
-  generator_state = random_seed_generator.run(config)
-  # except Exception as e:
-  #   print(f'Exception of type {type(e)} in random_search: {e}.')
+  try:
+    tl.start(block=False)
+    generator_state = random_seed_generator.run(config)
+  except Exception as e:
+    print(f'Exception of type {type(e)} in random_search: {e}.')
 
   print(f'Measurement thread will stop in {period} seconds...')
   time.sleep(period)
