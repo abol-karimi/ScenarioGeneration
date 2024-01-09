@@ -7,7 +7,9 @@ Generates random seeds using simulation.
 import time
 import random
 import jsonpickle
+import hashlib
 from pathlib import Path
+
 import scenic
 scenic.setDebuggingOptions(verbosity=1, fullBacktrace=True)
 from scenic.core.simulators import SimulationCreationError
@@ -24,8 +26,7 @@ def run(config):
                     f"src/scenariogen/simulators/{config['simulator']}/create.scenic",
                     mode2D=True,
                     params={'render': config['render_ego'],
-                            'scenario_path': config['scenario_path'],
-                            'caller_config': config
+                            'config': config
                             },
                     )
     print('Scenario compiled successfully.')
@@ -37,7 +38,6 @@ def run(config):
         settings.no_rendering_mode = True
         simulator.world.apply_settings(settings)
     
-    print(config['max_total_time'])
     output_path = Path(config['output_folder'])
     output_path.mkdir(parents=True, exist_ok=True)
        
@@ -58,9 +58,9 @@ def run(config):
         except SimulationCreationError as e:
             print(f'Failed to create simulation: {e}')
             continue
-        except Exception as e:
-            print(f'Exception of type {type(e)}: {e}. Discarding the simulation...')
-            continue
+        # except Exception as e:
+        #     print(f'Exception of type {type(e)}: {e}. Discarding the simulation...')
+        #     continue
         else:
             if sim_result is None:
                 print(f'Simulation rejected!')
@@ -78,9 +78,11 @@ def run(config):
             continue
 
         seed_id += 1
-        print(f'Saving seed {seed_id} ...')
-        with open(output_path/f'{seed_id}.json', 'w') as f:
-            f.write(jsonpickle.encode(seed, indent=1))
+        seed_json_bytes = jsonpickle.encode(seed, indent=1).encode('utf-8')
+        seed_hash = hashlib.sha1(seed_json_bytes).hexdigest()
+        print(f'Saving the {seed_id}th seed as {seed_hash}...')
+        with open(output_path/f'{seed_hash}', 'wb') as f:
+            f.write(seed_json_bytes)
 
 
         

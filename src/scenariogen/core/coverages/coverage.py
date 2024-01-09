@@ -76,8 +76,11 @@ class PredicateSetCoverage:
   def __len__(self):
     return len(self.predicateCoverages)
   
-  def to_predicateCoverage(self):
-    return reduce(lambda x,y: x+y, self.predicateCoverages)
+  def cast_to(self, cls):
+    if cls is PredicateCoverage:
+      return reduce(lambda x,y: x+y, self.predicateCoverages)
+    elif cls is PredicateSetCoverage:
+      return self
 
   def print(self):
     for cov in self.predicateCoverages:
@@ -125,13 +128,15 @@ class StatementCoverage:
 
   def __len__(self):
     return sum(len(args) for args in self.pred2args.values())
+ 
+  def cast_to(self, cls):
+    if cls is PredicateCoverage:
+      return PredicateCoverage(self.pred2args.keys())
+    elif cls is PredicateSetCoverage:
+      return PredicateSetCoverage((self.cast_to(PredicateCoverage),))
+    elif cls is StatementCoverage:
+      return self
 
-  def to_predicateCoverage(self):
-    return PredicateCoverage(self.pred2args.keys())
-  
-  def to_predicateSetCoverage(self):
-    return PredicateSetCoverage((self.to_predicateCoverage(),))
-    
   def print(self):
     for pred_name in self.pred2args:
       print(f'{pred_name}:')

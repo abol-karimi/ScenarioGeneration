@@ -1,5 +1,5 @@
 """ System Under Test (SUT)
-Nonegos + optionally ego i.e. VUT (Vehicle Under Test)
+Nonegos + optionally ego i.e. VUT (Vehicle Under Test) + optionally a coverage monitor
 """
 
 param config = None

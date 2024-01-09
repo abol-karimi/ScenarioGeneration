@@ -1,4 +1,3 @@
-param config = None
 config = globalParameters.config
 
 if config['simulator'] != 'carla':
@@ -6,9 +5,6 @@ if config['simulator'] != 'carla':
 
 # Scenic parameters
 model scenic.simulators.carla.model
-
-param config = None
-config = globalParameters.config
 
 # imports
 from scenariogen.simulators.carla.behaviors import LeaderboardAgentBehavior

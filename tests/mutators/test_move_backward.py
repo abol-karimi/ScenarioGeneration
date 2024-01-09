@@ -6,7 +6,7 @@ import jsonpickle
 import carla
 
 # This project
-from src.scenariogen.core.mutators import StructureAwareMutator
+from scenariogen.core.fuzzing.mutators import StructureAwareMutator
 from scenariogen.core.fuzz_input import FuzzInput
 import scenariogen.simulators.carla.visualization as visualization
 from scenariogen.core.utils import sample_trajectories

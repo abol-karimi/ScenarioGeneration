@@ -13,7 +13,8 @@ from scenariogen.core.scenario import Scenario
 from scenariogen.core.errors import EgoCollisionError, NonegoCollisionError
 from scenic.core.simulators import SimulationCreationError
 
-def process_measurment(measurement, config):
+
+def process_measurment1(measurement):
   output = {}
   output['nonego_collisions'] = set()
   output['ego_collisions'] = set()
@@ -23,7 +24,67 @@ def process_measurment(measurement, config):
   output['valid_inputs'] = set()
   output['statement_coverage'] = StatementCoverage([])
 
-  for path in measurement['new_fuzz_inputs']:
+  for path in measurement['new_coverages']:
+    if not path.is_file():
+      continue
+    coverage_path = path.parents[1]/f'coverages/{path.name}'
+    with open(coverage_path, 'r') as f:
+      statement_coverage = jsonpickle.decode(f.read())
+
+    if statement_coverage is None:
+      print(f'Fuzz input {path.name} failed to report coverage!')
+      output['none_coverages'].add(path)
+    else:
+      output['statement_coverage'].update(statement_coverage)
+
+  return output
+
+
+def report1(experiment_type, seeds, ego, coverage):
+  output_path = Path(f'experiments/{experiment_type}/output_{ego}_{coverage}')
+  results_file = output_path/'results.json'
+
+  coverage_path = output_path/f'coverage_{ego}_{coverage}.json'
+  if coverage_path.is_file():
+    # Resume
+    with open(coverage_path, 'r') as f:
+      results = jsonpickle.decode(f.read())
+  else:
+    # Start
+    with open(results_file, 'r') as f:
+      results = jsonpickle.decode(f.read())
+    results[0]['measurements'].insert(0,
+                                      {'exe_time': 0,
+                                       'new_coverages': set(),
+                                      })
+  
+  for result in results:
+    for measurement in result['measurements']:
+      if not 'statement_coverage' in measurement:
+        try:
+          output = process_measurment1(measurement)
+        except KeyboardInterrupt:
+          with open(coverage_path, 'w') as f:
+            f.write(jsonpickle.encode(results))
+            sys.exit(1)
+        else:
+          measurement.update(output)
+  
+  with open(coverage_path, 'w') as f:
+    f.write(jsonpickle.encode(results))
+
+
+def process_measurment2(measurement, config):
+  output = {}
+  output['nonego_collisions'] = set()
+  output['ego_collisions'] = set()
+  output['simulation_creation_errors'] = set()
+  output['simulation_rejections'] = set()
+  output['none_coverages'] = set()
+  output['valid_inputs'] = set()
+  output['statement_coverage'] = StatementCoverage([])
+
+  for path in measurement['new_coverages']:
     if not path.is_file():
       continue
     with open(path, 'r') as f:
@@ -59,18 +120,18 @@ def process_measurment(measurement, config):
   return output
 
 
-def report(experiment_type, seeds, experiment, coverage_ego, coverage):
-  output_path = Path(f'experiments/{experiment_type}/output_{experiment}')
+def report2(experiment_type, seeds, gen_ego, gen_coverage, test_ego, test_coverage):
+  output_path = Path(f'experiments/{experiment_type}/output_{gen_ego}')
   results_file = output_path/'results.json'
 
   config = {
     **SUT_config,
     **coverage_config,
-    'ego_module': f'experiments.agents.{coverage_ego}',
-    'coverage_module': coverage,
+    'ego_module': f'experiments.agents.{test_ego}',
+    'coverage_module': test_coverage,
   }
 
-  coverage_path = output_path/f'coverage_{coverage_ego}_{coverage}.json'
+  coverage_path = output_path/f'coverage_{test_ego}_{test_coverage}.json'
   if coverage_path.is_file():
     # Resume
     with open(coverage_path, 'r') as f:
@@ -82,14 +143,14 @@ def report(experiment_type, seeds, experiment, coverage_ego, coverage):
 
     results[0]['measurements'].insert(0,
                                       {'exe_time': 0,
-                                       'new_fuzz_inputs': Path(f'experiments/seeds/{seeds}/seeds').glob('*') if seeds else set(),
+                                       'new_coverages': Path(f'experiments/seeds/{seeds}/seeds').glob('*') if seeds else set(),
                                       })
   
   for result in results:
     for measurement in result['measurements']:
       if not 'statement_coverage' in measurement:
         try:
-          output = process_measurment(measurement, config)
+          output = process_measurment2(measurement, config)
         except KeyboardInterrupt:
           with open(coverage_path, 'w') as f:
             f.write(jsonpickle.encode(results))
@@ -102,21 +163,26 @@ def report(experiment_type, seeds, experiment, coverage_ego, coverage):
 
 if __name__ == '__main__':
   reports_config = (
-    ('Atheris', 'random', 'TFPP', 'TFPP', 'traffic'),
-    # ('Atheris', 'random', 'TFPP', 'autopilot', 'traffic'),
-    # ('Atheris', 'random', 'TFPP', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'random', 'autopilot', 'autopilot', 'traffic'),
-    # ('Atheris', 'random', 'autopilot', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'random', 'BehaviorAgent', 'autopilot', 'traffic'),
-    # ('Atheris', 'random', 'BehaviorAgent', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'random', 'intersectionAgent', 'autopilot', 'traffic'),
-    # ('Atheris', 'random', 'intersectionAgent', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'random', 'openLoop', 'autopilot', 'traffic'),
-    # ('Atheris', 'random', 'openLoop', 'BehaviorAgent', 'traffic'),
-    # ('random_search', None, 'autopilot', 'autopilot', 'traffic'),
-    # ('random_search', None, 'autopilot', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'random', 'TFPP', 'traffic', 'TFPP', 'traffic'),
+    # ('Atheris', 'random', 'TFPP', 'traffic', 'autopilot', 'traffic'),
+    # ('Atheris', 'random', 'TFPP', 'traffic', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'random', 'autopilot', 'traffic', 'autopilot', 'traffic'),
+    # ('Atheris', 'random', 'autopilot', 'traffic', 'TFPP', 'traffic'),
+    # ('Atheris', 'random', 'autopilot', 'traffic', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'random', 'BehaviorAgent', 'traffic', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'random', 'BehaviorAgent', 'traffic', 'TFPP', 'traffic'),
+    # ('Atheris', 'random', 'BehaviorAgent', 'traffic', 'autopilot', 'traffic'),
+    # ('Atheris', 'random', 'intersectionAgent', 'traffic', 'intersectionAgent', 'traffic'),
+    # ('Atheris', 'random', 'intersectionAgent', 'traffic', 'autopilot', 'traffic'),
+    # ('Atheris', 'random', 'intersectionAgent', 'traffic', 'BehaviorAgent', 'traffic'),
+    # ('Atheris', 'random', 'openLoop', 'traffic', 'autopilot', 'traffic'),
+    # ('Atheris', 'random', 'openLoop', 'traffic', 'BehaviorAgent', 'traffic'),
+    # ('random_search', None, 'autopilot', 'traffic', 'BehaviorAgent', 'traffic'),
   )
 
-  for experiment_type, seeds, experiment, coverage_ego, coverage in reports_config:
-    print(f'Now running report: {experiment_type, seeds, experiment, coverage_ego, coverage}')
-    report(experiment_type, seeds, experiment, coverage_ego, coverage)
+  for experiment_type, seeds, gen_ego, gen_coverage, test_ego, test_coverage in reports_config:
+    print(f'Now running report: {experiment_type, seeds, gen_ego, gen_coverage, test_ego, test_coverage}')
+    if (gen_ego == test_ego) and (gen_coverage == test_coverage):
+      report1(experiment_type, seeds, gen_ego, gen_coverage)
+    else:
+      report2(experiment_type, seeds, gen_ego, gen_coverage, test_ego, test_coverage)

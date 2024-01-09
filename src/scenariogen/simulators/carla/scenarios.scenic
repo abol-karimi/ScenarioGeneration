@@ -38,7 +38,7 @@ scenario NonegosScenario(config):
                                                            signals_actions,
                                                            fuzz_input.blueprints):
       car = new Car at tj[0][0]@tj[0][1], facing tj[0][2],
-        with name f'{route[0]}_{int(10*timing.ctrlpts[0][1])}',
+        with name f'{route[0]}_{int(timing.ctrlpts[0][1])}',
         with blueprint blueprint,
         with length blueprint2dims[blueprint]['length'],
         with width blueprint2dims[blueprint]['width'],

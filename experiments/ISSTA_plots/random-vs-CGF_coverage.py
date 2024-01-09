@@ -34,8 +34,8 @@ def plot(experiment_type, experiment_name, coverage_ego, coverage_module_name, p
     m['statement_coverage'].pred2args = {pred:args for pred,args in m['statement_coverage'].pred2args.items()
                                          if not (pred.endswith('AtTime') or pred == 'changedSignalBetween')}
 
-  predicateSet_coverages = tuple(c.to_predicateSetCoverage() for c in statement_coverages)
-  predicate_coverages = tuple(c.to_predicateCoverage() for c in statement_coverages)
+  predicateSet_coverages = tuple(c.cast_to(PredicateSetCoverage) for c in statement_coverages)
+  predicate_coverages = tuple(c.cast_to(PredicateCoverage) for c in statement_coverages)
 
   exe_times_acc = [exe_times[0]]
   statement_coverages_acc = [statement_coverages[0]]

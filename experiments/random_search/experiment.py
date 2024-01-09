@@ -13,29 +13,32 @@ from datetime import timedelta
 import time
 
 from scenariogen.core.seed_generators import random as random_seed_generator
-
+from experiments.configs import coverage_config
 
 if __name__ == '__main__':
 
-  experiment_name = '4way-stop_autopilot'
-  simulator = 'carla'
+  gen_ego = 'TFPP'
+  coverage_module = 'traffic'
 
-  config = {'scenario_path': f'experiments/seeds/random/definitions/{experiment_name}',
-            'output_folder': f'experiments/random_search/output_{experiment_name}',
-            'simulator': simulator,
-            'render_ego': False,
+  config = {'scenario_path': f'experiments/seeds/random/definitions/4way-stop.scenic',
+            'output_folder': f'experiments/random_search/output_{gen_ego}_{coverage_module}',
+            **coverage_config,
+            'coverage_module': 'traffic',
+            'simulator': 'carla',
             'render_spectator': False,
+            'render_ego': False,
             'PRNG_seed': 0,
             'spline_degree': 3,
             'spline_knots_size': 50,
             'scene_maxIterations': 50,
             'simulate_maxIterations': 1,
-            'max_total_time': 5400, # seconds
+            'max_total_time': 274, # seconds
             }
   
   output_path = Path(config['output_folder'])
   fuzz_inputs_path = output_path/'fuzz-inputs'
   bugs_path = output_path/'bugs'
+  coverages_path = output_path/'coverages'
 
   # Decide to resume or start
   results_file = output_path/'results.json'
@@ -45,9 +48,12 @@ if __name__ == '__main__':
   else:
     fuzz_inputs_path.mkdir(parents=True, exist_ok=True)
     bugs_path.mkdir(parents=True, exist_ok=True)
+    coverages_path.mkdir(parents=True, exist_ok=True)
     for path in fuzz_inputs_path.glob('*'):
       path.unlink()
     for path in bugs_path.glob('*'):
+      path.unlink()
+    for path in coverages_path.glob('*'):
       path.unlink()
     fuzz_inputs = set()
     results = []
@@ -66,11 +72,11 @@ if __name__ == '__main__':
                         })
     print(f'\nMeasurement recorded!\n')
 
-  try:
-    tl.start(block=False)
-    generator_state = random_seed_generator.run(config)
-  except Exception as e:
-    print(f'Exception of type {type(e)} in random_search: {e}.')
+  # try:
+  tl.start(block=False)
+  generator_state = random_seed_generator.run(config)
+  # except Exception as e:
+  #   print(f'Exception of type {type(e)} in random_search: {e}.')
 
   print(f'Measurement thread will stop in {period} seconds...')
   time.sleep(period)

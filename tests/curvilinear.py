@@ -12,7 +12,7 @@ from scenic.domains.driving.roads import Network
 from scenic.core.regions import PolylineRegion
 
 # This project
-from src.scenariogen.core.mutators import StructureAwareMutator
+from scenariogen.core.fuzzing.mutators import StructureAwareMutator
 from scenariogen.core.fuzz_input import FuzzInput
 import scenariogen.simulators.carla.visualization as visualization
 

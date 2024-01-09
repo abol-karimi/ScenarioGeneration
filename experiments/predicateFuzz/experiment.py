@@ -1,9 +1,9 @@
+#!/usr/bin/env python3.8
 """
 Research question:
-  Does prioritizing seed based on their predicate-coverage improve the fuzzing performance?
+  Does prioritizing seeds based on their predicate-coverage improve the fuzzing performance?
 """
 
-#!/usr/bin/env python3.8
 
 import jsonpickle
 from pathlib import Path
@@ -13,18 +13,17 @@ from datetime import timedelta
 import time
 
 # This project
-from scenariogen.core.mutators import StructureAwareMutator
-from scenariogen.core.crossovers import StructureAwareCrossOver
-from scenariogen.core.schedulers import PriorityScheduler
-from scenariogen.core.coverages import PredicateSetCoverage
-from scenariogen.core.fuzzers.modular import ModularFuzzer
-from experiments.configs import SUT_config
+from scenariogen.core.fuzzing.mutators import StructureAwareMutator
+from scenariogen.core.fuzzing.crossovers import StructureAwareCrossOver
+from scenariogen.core.fuzzing.schedules import PowerSchedule
+from scenariogen.core.fuzzing.fuzzers.modular import ModularFuzzer
+from scenariogen.core.coverages.coverage import PredicateSetCoverage
+from experiments.configs import SUT_config, coverage_config
 
 
 if __name__ == '__main__':
 
-  fuzzing_ego = 'TFPP'
-  seeds = 'random'
+  fuzzing_ego = 'autopilot'
   simulator = 'carla'
 
   fuzzer_config = {
@@ -32,17 +31,19 @@ if __name__ == '__main__':
                   'ego_module': f'experiments.agents.{fuzzing_ego}' if fuzzing_ego else None,
                   'simulator': simulator,
                   },
-    'seeds_folder': f'experiments/seeds/{seeds}/seeds',
-    'output_folder': f"experiments/Atheris/output_{fuzzing_ego if fuzzing_ego else 'openLoop'}",
+    'coverage_config': {**coverage_config,
+                        'coverage_module': 'traffic'
+                        },
+    'seeds_folder': f'experiments/seeds/random/seeds/single',
+    'output_folder': f"experiments/predicateFuzz/output_{fuzzing_ego if fuzzing_ego else 'openLoop'}",
     'mutator': StructureAwareMutator(max_spline_knots_size=50,
                                     max_mutations_per_iteration=1,
                                     randomizer_seed=0),
     'crossOver': StructureAwareCrossOver(max_spline_knots_size=50,
                                         max_attempts=1,
                                         randomizer_seed=0),
-    'scheduler': PriorityScheduler(),
-    'coverage': PredicateSetCoverage(),
-    'max_total_time': 60*90,
+    'schedule': PowerSchedule(),
+    'max_total_time': 2*60, # seconds
     'max_seed_length': 1e+6, # 1 MB
   }
 
@@ -51,6 +52,7 @@ if __name__ == '__main__':
   output_path = Path(fuzzer_config['output_folder'])
   fuzz_inputs_path = output_path/'fuzz-inputs'
   bugs_path = output_path/'bugs'
+  coverages_path = output_path/'coverages'
 
   # Decide to resume or start
   results_file = output_path/'results.json'
@@ -66,15 +68,18 @@ if __name__ == '__main__':
     results_fuzz_inputs = reduce(lambda i1,i2: i1.union(i2),
                             new_fuzz_inputs)
     if results_fuzz_inputs != fuzz_inputs:
-      print('Cannot resume Atheris: the fuzz-inputs in the folder do not match the fuzz-inputs of results.json.')
+      print('Cannot resume fuzzer: the fuzz-inputs in the folder do not match the fuzz-inputs of results.json.')
       exit(1)
     fuzzer_state = results[-1]['fuzzer_state']
   else:
     fuzz_inputs_path.mkdir(parents=True, exist_ok=True)
     bugs_path.mkdir(parents=True, exist_ok=True)
+    coverages_path.mkdir(parents=True, exist_ok=True)
     for path in fuzz_inputs_path.glob('*'):
       path.unlink()
     for path in bugs_path.glob('*'):
+      path.unlink()
+    for path in coverages_path.glob('*'):
       path.unlink()
     fuzz_inputs = set()
     results = []
@@ -93,11 +98,11 @@ if __name__ == '__main__':
                         })
     print(f'\nMeasurement recorded!\n')
 
-  try:
-    tl.start(block=False)
-    fuzzer_state = fuzzer.run(fuzzer_state=fuzzer_state)
-  except Exception as e:
-    print(f'Exception of type {type(e)} in atheris fuzzer: {e}.')
+  # try:
+  tl.start(block=False)
+  fuzzer_state = fuzzer.run(fuzzer_state=fuzzer_state)
+  # except Exception as e:
+  #   print(f'Exception of type {type(e)} in modular fuzzer: {e}.')
 
   print(f'Measurement thread will stop in {period} seconds...')
   time.sleep(period)

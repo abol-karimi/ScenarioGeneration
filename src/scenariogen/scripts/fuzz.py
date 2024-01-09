@@ -9,9 +9,9 @@ from scenic.domains.driving.roads import Network
 
 # My modules
 import scenariogen.core.fuzz_input as seed
-import src.scenariogen.core.mutators as mutators
+import scenariogen.core.fuzzing.mutators as mutators
 import src.scenariogen.core.fuzzers.fuzzers as fuzzers
-import src.scenariogen.core.schedulers as schedulers
+import src.scenariogen.core.fuzzing.schedules as schedules
 import src.scenariogen.core.coverages as coverages
 from src.scenariogen.core.signals import SignalType
 from src.scenariogen.core.utils import route_length
@@ -69,7 +69,7 @@ config['ego'] = args.ego
 # Instantiate a fuzzer
 mutator = mutators.StructureAwareMutator(config)
 coverage = coverages.PredicateNameCoverage(config=config)
-scheduler = schedulers.PriorityScheduler(config=config)
+scheduler = schedules.PriorityScheduler(config=config)
 fuzzer = fuzzers.ModularFuzzer(corpus=in_corpus,
                                config=config,
                                coverage=coverage,
