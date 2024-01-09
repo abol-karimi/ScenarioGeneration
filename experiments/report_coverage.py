@@ -148,6 +148,7 @@ if __name__ == '__main__':
   reports_config = (
     ('Atheris', 'random', 'TFPP', 'traffic', 'TFPP', 'traffic'),
     ('random_search', None, 'TFPP', 'traffic', 'TFPP', 'traffic'),
+    ('predicateFuzz', 'random', 'TFPP', 'traffic', 'TFPP', 'traffic'),
     # ('Atheris', 'random', 'TFPP', 'traffic', 'autopilot', 'traffic'),
     # ('Atheris', 'random', 'TFPP', 'traffic', 'BehaviorAgent', 'traffic'),
     # ('Atheris', 'random', 'autopilot', 'traffic', 'autopilot', 'traffic'),

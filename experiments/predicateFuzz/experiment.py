@@ -23,19 +23,19 @@ from experiments.configs import SUT_config, coverage_config
 
 if __name__ == '__main__':
 
-  fuzzing_ego = 'autopilot'
-  simulator = 'carla'
+  fuzzing_ego = 'TFPP'
+  coverage_module = 'traffic'
 
   fuzzer_config = {
     'SUT_config': {**SUT_config,
                   'ego_module': f'experiments.agents.{fuzzing_ego}' if fuzzing_ego else None,
-                  'simulator': simulator,
+                  'simulator': 'carla',
                   },
     'coverage_config': {**coverage_config,
-                        'coverage_module': 'traffic'
+                        'coverage_module': coverage_module
                         },
-    'seeds_folder': f'experiments/seeds/random/seeds/single',
-    'output_folder': f"experiments/predicateFuzz/output_{fuzzing_ego if fuzzing_ego else 'openLoop'}",
+    'seeds_folder': f'experiments/seeds/random/seeds',
+    'output_folder': f"experiments/predicateFuzz/output_{fuzzing_ego if fuzzing_ego else 'openLoop'}_{coverage_module}",
     'mutator': StructureAwareMutator(max_spline_knots_size=50,
                                     max_mutations_per_iteration=1,
                                     randomizer_seed=0),
@@ -43,7 +43,7 @@ if __name__ == '__main__':
                                         max_attempts=1,
                                         randomizer_seed=0),
     'schedule': PowerSchedule(),
-    'max_total_time': 2*60, # seconds
+    'max_total_time': 274, # seconds
     'max_seed_length': 1e+6, # 1 MB
   }
 
@@ -81,7 +81,7 @@ if __name__ == '__main__':
       path.unlink()
     for path in coverages_path.glob('*'):
       path.unlink()
-    fuzz_inputs = set()
+    coverages = set()
     results = []
     fuzzer_state = None
 
@@ -91,10 +91,10 @@ if __name__ == '__main__':
   period = 60 # seconds
   @tl.job(interval=timedelta(seconds=period))
   def measure_progress():
-    new_fuzz_inputs = set((output_path/'fuzz-inputs').glob('*')) - fuzz_inputs
-    fuzz_inputs.update(new_fuzz_inputs)
+    new_coverages = set((output_path/'coverages').glob('*')) - coverages
+    coverages.update(new_coverages)
     measurements.append({'exe_time': period,
-                        'new_fuzz_inputs': new_fuzz_inputs,
+                        'new_coverages': new_coverages,
                         })
     print(f'\nMeasurement recorded!\n')
 

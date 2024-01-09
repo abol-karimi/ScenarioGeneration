@@ -1,0 +1,111 @@
+[
+ {
+  "measurements": [
+   {
+    "exe_time": 60,
+    "new_coverages": {
+     "py/set": []
+    }
+   },
+   {
+    "exe_time": 60,
+    "new_coverages": {
+     "py/set": [
+      {
+       "py/reduce": [
+        {
+         "py/type": "pathlib.PosixPath"
+        },
+        {
+         "py/tuple": [
+          "experiments",
+          "predicateFuzz",
+          "output_TFPP_traffic",
+          "coverages",
+          "166821038d418633f2e5333b02a49f6964a5a919.json"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   },
+   {
+    "exe_time": 60,
+    "new_coverages": {
+     "py/set": [
+      {
+       "py/reduce": [
+        {
+         "py/type": "pathlib.PosixPath"
+        },
+        {
+         "py/tuple": [
+          "experiments",
+          "predicateFuzz",
+          "output_TFPP_traffic",
+          "coverages",
+          "fe59118d2aaa4cb1da082a1125e1ae8fb993b558.json"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   },
+   {
+    "exe_time": 60,
+    "new_coverages": {
+     "py/set": []
+    }
+   },
+   {
+    "exe_time": 60,
+    "new_coverages": {
+     "py/set": [
+      {
+       "py/reduce": [
+        {
+         "py/type": "pathlib.PosixPath"
+        },
+        {
+         "py/tuple": [
+          "experiments",
+          "predicateFuzz",
+          "output_TFPP_traffic",
+          "coverages",
+          "526ff8f04e491b6394e450c5e140119d71678bb1.json"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   },
+   {
+    "exe_time": 60,
+    "new_coverages": {
+     "py/set": [
+      {
+       "py/reduce": [
+        {
+         "py/type": "pathlib.PosixPath"
+        },
+        {
+         "py/tuple": [
+          "experiments",
+          "predicateFuzz",
+          "output_TFPP_traffic",
+          "coverages",
+          "1cf3af3031e0d8efc221d90138b6a6d9d9a7c27c.json"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   }
+  ],
+  "fuzzer_state": null
+ }
+]

@@ -1,0 +1,120 @@
+[
+ {
+  "measurements": [
+   {
+    "exe_time": 60,
+    "new_coverages": {
+     "py/set": [
+      {
+       "py/reduce": [
+        {
+         "py/type": "pathlib.PosixPath"
+        },
+        {
+         "py/tuple": [
+          "experiments",
+          "predicateFuzz",
+          "output_autopilot_traffic",
+          "coverages",
+          "fe59118d2aaa4cb1da082a1125e1ae8fb993b558.json"
+         ]
+        }
+       ]
+      },
+      {
+       "py/reduce": [
+        {
+         "py/type": "pathlib.PosixPath"
+        },
+        {
+         "py/tuple": [
+          "experiments",
+          "predicateFuzz",
+          "output_autopilot_traffic",
+          "coverages",
+          "166821038d418633f2e5333b02a49f6964a5a919.json"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   },
+   {
+    "exe_time": 60,
+    "new_coverages": {
+     "py/set": []
+    }
+   },
+   {
+    "exe_time": 60,
+    "new_coverages": {
+     "py/set": [
+      {
+       "py/reduce": [
+        {
+         "py/type": "pathlib.PosixPath"
+        },
+        {
+         "py/tuple": [
+          "experiments",
+          "predicateFuzz",
+          "output_autopilot_traffic",
+          "coverages",
+          "add2b9b10f66ac24a650b5b9a2fb9f58be88c6d2.json"
+         ]
+        }
+       ]
+      },
+      {
+       "py/reduce": [
+        {
+         "py/type": "pathlib.PosixPath"
+        },
+        {
+         "py/tuple": [
+          "experiments",
+          "predicateFuzz",
+          "output_autopilot_traffic",
+          "coverages",
+          "c035b397638893bd4891a18384a98fc3e09806c5.json"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   },
+   {
+    "exe_time": 60,
+    "new_coverages": {
+     "py/set": []
+    }
+   },
+   {
+    "exe_time": 60,
+    "new_coverages": {
+     "py/set": [
+      {
+       "py/reduce": [
+        {
+         "py/type": "pathlib.PosixPath"
+        },
+        {
+         "py/tuple": [
+          "experiments",
+          "predicateFuzz",
+          "output_autopilot_traffic",
+          "coverages",
+          "dfd1d03c33a5831c1681890836d24215f6662b74.json"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   }
+  ],
+  "fuzzer_state": null
+ }
+]
