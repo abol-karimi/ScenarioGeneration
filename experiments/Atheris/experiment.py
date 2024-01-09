@@ -79,7 +79,7 @@ if __name__ == '__main__':
   # Set up a measurement loop
   measurements = []
   tl = Timeloop()
-  period = 30 # seconds
+  period = 60 # seconds
   @tl.job(interval=timedelta(seconds=period))
   def measure_progress():
     new_coverages = set((output_path/'coverages').glob('*')) - coverages

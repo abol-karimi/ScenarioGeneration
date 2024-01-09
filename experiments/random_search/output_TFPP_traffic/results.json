@@ -2,25 +2,13 @@
  {
   "measurements": [
    {
-    "exe_time": 30,
+    "exe_time": 60,
     "new_fuzz_inputs": {
      "py/set": []
     }
    },
    {
-    "exe_time": 30,
-    "new_fuzz_inputs": {
-     "py/set": []
-    }
-   },
-   {
-    "exe_time": 30,
-    "new_fuzz_inputs": {
-     "py/set": []
-    }
-   },
-   {
-    "exe_time": 30,
+    "exe_time": 60,
     "new_fuzz_inputs": {
      "py/set": [
       {
@@ -43,19 +31,13 @@
     }
    },
    {
-    "exe_time": 30,
+    "exe_time": 60,
     "new_fuzz_inputs": {
      "py/set": []
     }
    },
    {
-    "exe_time": 30,
-    "new_fuzz_inputs": {
-     "py/set": []
-    }
-   },
-   {
-    "exe_time": 30,
+    "exe_time": 60,
     "new_fuzz_inputs": {
      "py/set": [
       {
@@ -78,19 +60,7 @@
     }
    },
    {
-    "exe_time": 30,
-    "new_fuzz_inputs": {
-     "py/set": []
-    }
-   },
-   {
-    "exe_time": 30,
-    "new_fuzz_inputs": {
-     "py/set": []
-    }
-   },
-   {
-    "exe_time": 30,
+    "exe_time": 60,
     "new_fuzz_inputs": {
      "py/set": [
       {
@@ -105,6 +75,29 @@
           "output_TFPP_traffic",
           "fuzz-inputs",
           "b7a9ef08a9b8098590297d3b1bb9512d1d1e352a"
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   },
+   {
+    "exe_time": 60,
+    "new_fuzz_inputs": {
+     "py/set": [
+      {
+       "py/reduce": [
+        {
+         "py/type": "pathlib.PosixPath"
+        },
+        {
+         "py/tuple": [
+          "experiments",
+          "random_search",
+          "output_TFPP_traffic",
+          "fuzz-inputs",
+          "2309dfcc390c62420e6fb93adac70e665b831051"
          ]
         }
        ]
