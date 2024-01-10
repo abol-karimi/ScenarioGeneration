@@ -5,26 +5,14 @@
    "py/set": [
     {
      "py/tuple": [
-      "road9_lane3",
-      "road45_lane2"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road45_lane3",
+      "road45_lane2",
       "road8_lane0"
      ]
     },
     {
      "py/tuple": [
-      "road8_lane1",
-      "road44_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road45_lane3",
-      "road8_lane1"
+      "road9_lane2",
+      "road45_lane2"
      ]
     },
     {
@@ -35,8 +23,32 @@
     },
     {
      "py/tuple": [
-      "road9_lane2",
-      "road45_lane2"
+      "road44_lane1",
+      "road9_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1",
+      "road44_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3",
+      "road8_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane3",
+      "road45_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane2",
+      "road8_lane1"
      ]
     },
     {
@@ -59,26 +71,14 @@
     },
     {
      "py/tuple": [
-      "road8_lane1",
-      "road44_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road45_lane2",
-      "road8_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0",
-      "road44_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road45_lane2",
+      "road45_lane3",
       "road8_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1",
+      "road44_lane1"
      ]
     },
     {
@@ -89,14 +89,14 @@
     },
     {
      "py/tuple": [
-      "road9_lane3",
-      "road45_lane3"
+      "road8_lane0",
+      "road44_lane0"
      ]
     },
     {
      "py/tuple": [
-      "road44_lane1",
-      "road9_lane2"
+      "road9_lane3",
+      "road45_lane2"
      ]
     }
    ]
@@ -105,8 +105,8 @@
    "py/set": [
     {
      "py/tuple": [
-      "road45_lane2",
-      "road44_lane0"
+      "road9_lane3",
+      "road8_lane0"
      ]
     },
     {
@@ -117,74 +117,32 @@
     },
     {
      "py/tuple": [
-      "road8_lane0",
-      "road9_lane3"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road9_lane3",
-      "road8_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road45_lane3",
+      "road45_lane2",
       "road44_lane1"
      ]
     },
     {
      "py/tuple": [
-      "road9_lane3",
-      "road8_lane1"
+      "road9_lane2",
+      "road8_lane0"
      ]
     },
     {
      "py/tuple": [
-      "road44_lane0",
-      "road45_lane3"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane0",
-      "road45_lane2"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0",
+      "road8_lane1",
       "road9_lane2"
      ]
     },
     {
      "py/tuple": [
-      "road9_lane2",
-      "road8_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
       "road45_lane3",
-      "road44_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road9_lane2",
-      "road8_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road45_lane2",
       "road44_lane1"
      ]
     },
     {
      "py/tuple": [
-      "road44_lane1",
-      "road45_lane3"
+      "road9_lane3",
+      "road8_lane1"
      ]
     },
     {
@@ -195,7 +153,49 @@
     },
     {
      "py/tuple": [
-      "road8_lane1",
+      "road44_lane1",
+      "road45_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0",
+      "road9_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane2",
+      "road8_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0",
+      "road45_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane2",
+      "road44_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3",
+      "road44_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0",
+      "road45_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0",
       "road9_lane2"
      ]
     }
@@ -205,19 +205,61 @@
    "py/set": [
     {
      "py/tuple": [
-      "road8_lane0",
-      "road45_lane2"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road45_lane3",
+      "road44_lane0",
       "road8_lane1"
      ]
     },
     {
      "py/tuple": [
       "road9_lane2",
+      "road44_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane3",
+      "road44_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0",
+      "road9_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0",
+      "road44_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane3",
+      "road45_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane2",
+      "road45_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1",
+      "road44_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0",
+      "road45_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1",
       "road45_lane3"
      ]
     },
@@ -229,86 +271,26 @@
     },
     {
      "py/tuple": [
-      "road9_lane3",
-      "road44_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0",
-      "road44_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road9_lane3",
-      "road45_lane3"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane1",
-      "road45_lane2"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road45_lane3",
+      "road45_lane2",
       "road8_lane0"
      ]
     },
     {
      "py/tuple": [
-      "road9_lane2",
-      "road45_lane2"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane0",
-      "road9_lane3"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road45_lane3",
-      "road9_lane3"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane1",
-      "road44_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane0",
-      "road8_lane1"
+      "road44_lane1",
+      "road9_lane2"
      ]
     },
     {
      "py/tuple": [
       "road44_lane1",
-      "road9_lane3"
+      "road8_lane0"
      ]
     },
     {
      "py/tuple": [
-      "road9_lane2",
-      "road44_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road9_lane3",
-      "road45_lane2"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road45_lane3",
-      "road9_lane2"
+      "road45_lane2",
+      "road8_lane1"
      ]
     },
     {
@@ -325,14 +307,14 @@
     },
     {
      "py/tuple": [
-      "road8_lane0",
-      "road44_lane1"
+      "road9_lane2",
+      "road44_lane0"
      ]
     },
     {
      "py/tuple": [
-      "road44_lane0",
-      "road8_lane0"
+      "road8_lane1",
+      "road44_lane1"
      ]
     },
     {
@@ -343,13 +325,37 @@
     },
     {
      "py/tuple": [
-      "road45_lane2",
-      "road8_lane1"
+      "road44_lane1",
+      "road9_lane3"
      ]
     },
     {
      "py/tuple": [
-      "road44_lane1",
+      "road45_lane3",
+      "road9_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0",
+      "road44_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane2",
+      "road45_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane3",
+      "road45_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3",
       "road8_lane0"
      ]
     },
@@ -362,7 +368,7 @@
     {
      "py/tuple": [
       "road8_lane1",
-      "road44_lane1"
+      "road45_lane2"
      ]
     },
     {
@@ -373,26 +379,20 @@
     },
     {
      "py/tuple": [
-      "road45_lane2",
+      "road45_lane3",
+      "road8_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0",
       "road8_lane0"
      ]
     },
     {
      "py/tuple": [
-      "road9_lane2",
-      "road44_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane1",
-      "road45_lane3"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane1",
-      "road9_lane2"
+      "road45_lane3",
+      "road9_lane3"
      ]
     }
    ]
@@ -401,37 +401,7 @@
    "py/set": [
     {
      "py/tuple": [
-      "t8_25"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t15_700000000000001"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t4_3500000000000005"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t17_6"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t0_5"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t11_4"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t7_7"
+      "t7_550000000000001"
      ]
     },
     {
@@ -441,167 +411,7 @@
     },
     {
      "py/tuple": [
-      "t7_1000000000000005"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t3_1500000000000004"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t13_55"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t0_30000000000000004"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t7_550000000000001"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t11_8"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t12_55"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t13_100000000000001"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t15_0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t0_15000000000000002"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t4_75"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t0_6000000000000001"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t3_6"
-     ]
-    },
-    {
-     "py/tuple": [
       "t4_4"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t0_0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t0_55"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t8_8"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t4_05"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t11_75"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t6_9"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t9_4"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t13_25"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t9_05"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t0_75"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t9_8"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t8_700000000000001"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t5_550000000000001"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t17_650000000000002"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t5_15"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t9_15"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t11_25"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t8_05"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t12_600000000000001"
      ]
     },
     {
@@ -611,97 +421,7 @@
     },
     {
      "py/tuple": [
-      "t0_65"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t14_3"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t9_950000000000001"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t0_45"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t4_25"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t16_7"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t7_95"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t11_450000000000001"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t14_450000000000001"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t14_0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t8_450000000000001"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t10_65"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t13_75"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t1_1500000000000001"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t6_65"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t5_3500000000000005"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t19_900000000000002"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t7_4"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t11_15"
+      "t8_25"
      ]
     },
     {
@@ -711,37 +431,27 @@
     },
     {
      "py/tuple": [
-      "t9_55"
+      "t4_45"
      ]
     },
     {
      "py/tuple": [
-      "t15_950000000000001"
+      "t0_55"
      ]
     },
     {
      "py/tuple": [
-      "t4_0"
+      "t9_600000000000001"
      ]
     },
     {
      "py/tuple": [
-      "t11_9"
+      "t16_7"
      ]
     },
     {
      "py/tuple": [
-      "t4_7"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t6_8500000000000005"
-     ]
-    },
-    {
-     "py/tuple": [
-      "t5_6000000000000005"
+      "t14_200000000000001"
      ]
     },
     {
@@ -751,7 +461,317 @@
     },
     {
      "py/tuple": [
-      "t4_45"
+      "t12_450000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t15_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t6_65"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t15_600000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t5_3500000000000005"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t13_5"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t10_55"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t13_05"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t4_25"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t4_7"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t0_6000000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t5_550000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t15_9"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t11_75"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t8_05"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t19_900000000000002"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t8_15"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t3_1500000000000004"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t8_5"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t5_6000000000000005"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t0_15000000000000002"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t1_1500000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t11_4"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t8_65"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t4_05"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t4_75"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t12_600000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t0_65"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t9_4"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t7_7"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t9_15"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t14_9"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t0_5"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t11_15"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t11_700000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t11_9"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t8_35"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t4_3500000000000005"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t5_15"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t17_650000000000002"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t13_700000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t14_4"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t8_8"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t9_05"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t11_450000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t3_6"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t6_9"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t0_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t13_9"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t7_300000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t6_800000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t17_5"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t7_75"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t0_30000000000000004"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t4_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t0_45"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t7_1000000000000005"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t9_450000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t9_950000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t0_75"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t13_200000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t11_25"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t7_8500000000000005"
      ]
     }
    ]
@@ -767,16 +787,16 @@
     },
     {
      "py/tuple": [
-      "road8_lane0_1",
+      "ego",
       "left",
-      "road8_lane0"
+      "road9_lane2"
      ]
     },
     {
      "py/tuple": [
-      "ego",
+      "road8_lane0_1",
       "left",
-      "road9_lane2"
+      "road8_lane0"
      ]
     }
    ]
@@ -790,18 +810,24 @@
     },
     {
      "py/tuple": [
-      "road9_lane3_1"
+      "road8_lane0_1"
      ]
     },
     {
      "py/tuple": [
-      "road8_lane0_1"
+      "road9_lane3_1"
      ]
     }
    ]
   },
   "arrivedFromLane": {
    "py/set": [
+    {
+     "py/tuple": [
+      "road9_lane3_1",
+      "road9_lane3"
+     ]
+    },
     {
      "py/tuple": [
       "ego",
@@ -813,17 +839,23 @@
       "road8_lane0_1",
       "road8_lane0"
      ]
-    },
-    {
-     "py/tuple": [
-      "road9_lane3_1",
-      "road9_lane3"
-     ]
     }
    ]
   },
   "arrivedFromTheOppositeDirection": {
    "py/set": [
+    {
+     "py/tuple": [
+      "road9_lane3_1",
+      "road8_lane0_1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "road8_lane0_1"
+     ]
+    },
     {
      "py/tuple": [
       "road8_lane0_1",
@@ -835,18 +867,6 @@
       "road8_lane0_1",
       "road9_lane3_1"
      ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "road8_lane0_1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road9_lane3_1",
-      "road8_lane0_1"
-     ]
     }
    ]
   },
@@ -855,49 +875,25 @@
     {
      "py/tuple": [
       "road8_lane0_1",
-      "t0_15000000000000002"
+      "t3_1500000000000004"
      ]
     },
     {
      "py/tuple": [
       "road8_lane0_1",
-      "t0_30000000000000004"
+      "t5_6000000000000005"
      ]
     },
     {
      "py/tuple": [
       "road8_lane0_1",
-      "t0_6000000000000001"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "t4_4"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "t4_75"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
       "t1_1500000000000001"
      ]
     },
     {
      "py/tuple": [
       "road8_lane0_1",
-      "t0_55"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t9_55"
+      "t4_75"
      ]
     },
     {
@@ -908,98 +904,20 @@
     },
     {
      "py/tuple": [
-      "ego",
-      "t7_4"
-     ]
-    },
-    {
-     "py/tuple": [
       "road8_lane0_1",
-      "t0_0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "t0_75"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "t5_15"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t4_0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t4_7"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "t5_550000000000001"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t4_45"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t6_8500000000000005"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t3_6"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
       "t4_05"
      ]
     },
     {
      "py/tuple": [
       "ego",
-      "t5_6000000000000005"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t8_25"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t0_5"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t4_3500000000000005"
+      "t4_25"
      ]
     },
     {
      "py/tuple": [
       "road8_lane0_1",
-      "t1_5"
+      "t0_15000000000000002"
      ]
     },
     {
@@ -1010,62 +928,14 @@
     },
     {
      "py/tuple": [
-      "road8_lane0_1",
-      "t0_45"
+      "ego",
+      "t4_7"
      ]
     },
     {
      "py/tuple": [
       "ego",
-      "t6_45"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t7_1000000000000005"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "t4_25"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t7_550000000000001"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t7_7"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t3_1500000000000004"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t0_15000000000000002"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t0_30000000000000004"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t4_75"
+      "t5_3500000000000005"
      ]
     },
     {
@@ -1077,127 +947,31 @@
     {
      "py/tuple": [
       "ego",
-      "t4_4"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t0_0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "t5_3500000000000005"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t0_55"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t8_8"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t5_15"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "t1_1500000000000001"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t6_9"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t9_4"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t9_05"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t0_75"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t9_8"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t8_700000000000001"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "t4_0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "t4_7"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
       "t5_550000000000001"
      ]
     },
     {
      "py/tuple": [
       "road8_lane0_1",
-      "t4_05"
+      "t0_5"
      ]
     },
     {
      "py/tuple": [
       "road8_lane0_1",
-      "t5_6000000000000005"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t9_15"
+      "t5_15"
      ]
     },
     {
      "py/tuple": [
       "road8_lane0_1",
-      "t4_45"
+      "t4_3500000000000005"
      ]
     },
     {
      "py/tuple": [
-      "road8_lane0_1",
-      "t3_6"
+      "road44_lane1_58",
+      "t0_0"
      ]
     },
     {
@@ -1209,19 +983,67 @@
     {
      "py/tuple": [
       "ego",
-      "t0_45"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "t4_3500000000000005"
+      "t8_15"
      ]
     },
     {
      "py/tuple": [
       "ego",
-      "t1_5"
+      "t3_1500000000000004"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t8_5"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "t3_6"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t1_1500000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t4_75"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t5_6000000000000005"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "t0_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t8_65"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t4_05"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t0_15000000000000002"
      ]
     },
     {
@@ -1232,8 +1054,188 @@
     },
     {
      "py/tuple": [
-      "road8_lane0_1",
+      "ego",
+      "t9_4"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t7_7"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t9_15"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
       "t0_5"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "t0_30000000000000004"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t5_15"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "t4_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t8_35"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t4_3500000000000005"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "t0_45"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "t0_75"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t8_8"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t9_05"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t3_6"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t6_9"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "t4_4"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t0_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "t1_5"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t6_800000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t7_300000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t7_75"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "t4_45"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "t5_550000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t0_30000000000000004"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t4_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "t0_55"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t0_45"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t7_1000000000000005"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t9_450000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t0_75"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t7_8500000000000005"
      ]
     },
     {
@@ -1245,43 +1247,79 @@
     {
      "py/tuple": [
       "ego",
-      "t4_25"
+      "t7_550000000000001"
      ]
     },
     {
      "py/tuple": [
       "ego",
-      "t7_95"
+      "t6_45"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t4_4"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t1_5"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t8_25"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "t4_25"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "t4_7"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t4_45"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "t5_3500000000000005"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "t0_6000000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t0_55"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t9_600000000000001"
      ]
     },
     {
      "py/tuple": [
       "road44_lane1_58",
       "t0_15000000000000002"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t8_450000000000001"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "t3_1500000000000004"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "t5_3500000000000005"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane1_58",
-      "t0_0"
      ]
     }
    ]
@@ -1290,20 +1328,20 @@
    "py/set": [
     {
      "py/tuple": [
-      "road444_lane0",
-      "right"
+      "road467_lane0",
+      "left"
      ]
     },
     {
      "py/tuple": [
-      "road489_lane0",
-      "right"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road416_lane1",
+      "road553_lane0",
       "off"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road499_lane0",
+      "right"
      ]
     },
     {
@@ -1314,19 +1352,31 @@
     },
     {
      "py/tuple": [
+      "road476_lane0",
+      "right"
+     ]
+    },
+    {
+     "py/tuple": [
       "road416_lane0",
       "off"
      ]
     },
     {
      "py/tuple": [
-      "road552_lane1",
-      "off"
+      "road489_lane0",
+      "right"
      ]
     },
     {
      "py/tuple": [
-      "road415_lane1",
+      "road455_lane0",
+      "left"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
       "off"
      ]
     },
@@ -1344,32 +1394,20 @@
     },
     {
      "py/tuple": [
-      "road415_lane0",
+      "road552_lane1",
       "off"
      ]
     },
     {
      "py/tuple": [
-      "road499_lane0",
-      "right"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road553_lane0",
+      "road415_lane1",
       "off"
      ]
     },
     {
      "py/tuple": [
-      "road476_lane0",
+      "road444_lane0",
       "right"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road455_lane0",
-      "left"
      ]
     },
     {
@@ -1380,8 +1418,8 @@
     },
     {
      "py/tuple": [
-      "road467_lane0",
-      "left"
+      "road416_lane1",
+      "off"
      ]
     }
    ]
@@ -1390,14 +1428,122 @@
    "py/set": [
     {
      "py/tuple": [
-      "road44_lane0",
-      "road552_lane0"
+      "road481_lane0",
+      "road8_lane2"
      ]
     },
     {
      "py/tuple": [
-      "road476_lane0",
+      "road455_lane0",
+      "road45_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3",
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0",
+      "road499_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road9_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane2",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road8_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road489_lane0",
+      "road45_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
+      "road9_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
       "road44_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0",
+      "road489_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road444_lane0",
+      "road9_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane1",
+      "road8_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane2",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road9_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane2",
+      "road481_lane0"
      ]
     },
     {
@@ -1414,8 +1560,8 @@
     },
     {
      "py/tuple": [
-      "road467_lane0",
-      "road9_lane1"
+      "road9_lane3",
+      "road416_lane1"
      ]
     },
     {
@@ -1426,128 +1572,8 @@
     },
     {
      "py/tuple": [
-      "road44_lane0",
-      "road499_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road553_lane1",
-      "road44_lane3"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane1",
-      "road507_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0",
-      "road489_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0",
-      "road415_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road553_lane0",
+      "road507_lane0",
       "road44_lane2"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane1",
-      "road415_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane0",
-      "road45_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road9_lane2",
-      "road455_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road45_lane3",
-      "road553_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road45_lane2",
-      "road481_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road455_lane0",
-      "road45_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road415_lane0",
-      "road9_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane1",
-      "road45_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road489_lane0",
-      "road45_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road416_lane0",
-      "road8_lane2"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road9_lane3",
-      "road476_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road45_lane2",
-      "road553_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road415_lane1",
-      "road9_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane1",
-      "road467_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road481_lane0",
-      "road8_lane2"
      ]
     },
     {
@@ -1558,26 +1584,38 @@
     },
     {
      "py/tuple": [
-      "road507_lane0",
+      "road552_lane1",
+      "road45_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road45_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
       "road44_lane2"
      ]
     },
     {
      "py/tuple": [
-      "road444_lane0",
-      "road9_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road416_lane1",
-      "road8_lane3"
-     ]
-    },
-    {
-     "py/tuple": [
       "road9_lane3",
-      "road416_lane1"
+      "road476_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road476_lane0",
+      "road44_lane3"
      ]
     }
    ]
@@ -1596,218 +1634,68 @@
    "py/set": [
     {
      "py/tuple": [
-      "road415_lane1",
-      "road553_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road415_lane1",
-      "road467_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane1",
-      "road552_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane0",
-      "road467_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road489_lane0",
-      "road489_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road416_lane1",
-      "road455_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
       "road476_lane0",
       "road553_lane1"
      ]
     },
     {
      "py/tuple": [
-      "road489_lane0",
-      "road415_lane0"
+      "road467_lane0",
+      "road552_lane1"
      ]
     },
     {
      "py/tuple": [
       "road553_lane1",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road507_lane0",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road481_lane0",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road481_lane0",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road507_lane0",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
       "road444_lane0"
      ]
     },
     {
      "py/tuple": [
-      "road552_lane1",
-      "road416_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road553_lane0",
-      "road415_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road553_lane1",
-      "road416_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road455_lane0",
-      "road552_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road455_lane0",
-      "road455_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road416_lane0",
-      "road415_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road507_lane0",
-      "road552_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road415_lane1",
-      "road552_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road416_lane0",
-      "road481_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road467_lane0",
-      "road416_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road415_lane1",
-      "road455_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road481_lane0",
-      "road552_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road481_lane0",
-      "road455_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road507_lane0",
-      "road416_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road416_lane0",
-      "road476_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road415_lane0",
-      "road481_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane0",
-      "road455_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road507_lane0",
-      "road507_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane1",
-      "road489_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road416_lane0",
-      "road553_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane1",
-      "road415_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane0",
-      "road415_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
       "road416_lane1",
-      "road552_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road455_lane0",
-      "road467_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road416_lane0",
-      "road467_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road467_lane0",
-      "road415_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road553_lane1",
-      "road476_lane0"
+      "road455_lane0"
      ]
     },
     {
@@ -1818,230 +1706,92 @@
     },
     {
      "py/tuple": [
-      "road415_lane0",
-      "road467_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road553_lane0",
-      "road507_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road455_lane0",
-      "road552_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road553_lane1",
-      "road553_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road415_lane1",
-      "road552_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road455_lane0",
-      "road416_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road444_lane0",
-      "road415_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road416_lane1",
-      "road552_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road481_lane0",
-      "road552_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road507_lane0",
-      "road416_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road467_lane0",
-      "road553_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
       "road552_lane0",
-      "road552_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road415_lane1",
-      "road416_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road553_lane1",
-      "road467_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road481_lane0",
-      "road416_lane0"
+      "road415_lane0"
      ]
     },
     {
      "py/tuple": [
       "road416_lane0",
-      "road455_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road444_lane0",
-      "road444_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane0",
-      "road416_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane1",
-      "road507_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road476_lane0",
-      "road416_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road467_lane0",
-      "road467_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road415_lane0",
-      "road415_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane0",
       "road552_lane0"
      ]
     },
     {
      "py/tuple": [
-      "road455_lane0",
-      "road415_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road553_lane0",
-      "road416_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road415_lane1",
-      "road489_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road415_lane1",
-      "road415_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
       "road553_lane1",
-      "road455_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road481_lane0",
-      "road415_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road507_lane0",
-      "road481_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane0",
-      "road489_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road553_lane1",
-      "road415_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane0",
-      "road415_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road415_lane0",
-      "road553_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road467_lane0",
-      "road455_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road416_lane0",
       "road553_lane1"
      ]
     },
     {
      "py/tuple": [
-      "road416_lane0",
+      "road481_lane0",
       "road552_lane1"
      ]
     },
     {
      "py/tuple": [
       "road552_lane1",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road507_lane0",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road499_lane0",
       "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane1",
+      "road476_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road553_lane0"
      ]
     },
     {
@@ -2052,38 +1802,8 @@
     },
     {
      "py/tuple": [
-      "road444_lane0",
-      "road481_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road415_lane0",
-      "road553_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road553_lane0",
+      "road415_lane1",
       "road415_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road416_lane0",
-      "road416_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road416_lane1",
-      "road507_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road553_lane0",
-      "road481_lane0"
      ]
     },
     {
@@ -2094,260 +1814,32 @@
     },
     {
      "py/tuple": [
-      "road507_lane0",
-      "road467_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road416_lane0",
-      "road552_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road499_lane0",
-      "road552_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road416_lane1",
-      "road476_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road553_lane1",
-      "road553_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road553_lane0",
-      "road553_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road415_lane1",
-      "road507_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road415_lane0",
-      "road552_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane1",
-      "road415_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road481_lane0",
-      "road507_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road415_lane0",
-      "road455_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
       "road467_lane0",
-      "road553_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road467_lane0",
-      "road552_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane1",
-      "road481_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane0",
-      "road507_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road553_lane0",
-      "road553_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road553_lane0",
-      "road467_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road467_lane0",
-      "road416_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road416_lane1",
-      "road416_lane1"
+      "road552_lane0"
      ]
     },
     {
      "py/tuple": [
       "road507_lane0",
-      "road415_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane1",
-      "road553_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road476_lane0",
-      "road476_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road467_lane0",
-      "road552_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road489_lane0",
-      "road552_lane0"
+      "road553_lane1"
      ]
     },
     {
      "py/tuple": [
       "road455_lane0",
-      "road416_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road481_lane0",
-      "road444_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road553_lane1",
-      "road415_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane1",
-      "road467_lane0"
+      "road415_lane1"
      ]
     },
     {
      "py/tuple": [
       "road553_lane0",
-      "road455_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road507_lane0",
-      "road553_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road481_lane0",
-      "road416_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road467_lane0",
-      "road415_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane0",
-      "road416_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road415_lane0",
-      "road552_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road476_lane0",
-      "road416_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road507_lane0",
       "road553_lane1"
      ]
     },
     {
      "py/tuple": [
       "road416_lane0",
-      "road507_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road416_lane1",
-      "road481_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road499_lane0",
-      "road499_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane1",
-      "road552_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road455_lane0",
-      "road415_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane1",
-      "road455_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road455_lane0",
-      "road481_lane0"
+      "road553_lane1"
      ]
     },
     {
@@ -2358,49 +1850,211 @@
     },
     {
      "py/tuple": [
-      "road415_lane1",
+      "road553_lane0",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road444_lane0",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road481_lane0",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
+      "road444_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road481_lane0",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road455_lane0",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
       "road415_lane1"
      ]
     },
     {
      "py/tuple": [
       "road416_lane1",
-      "road553_lane0"
+      "road507_lane0"
      ]
     },
     {
      "py/tuple": [
-      "road481_lane0",
-      "road415_lane1"
+      "road499_lane0",
+      "road552_lane0"
      ]
     },
     {
      "py/tuple": [
-      "road553_lane1",
+      "road455_lane0",
       "road416_lane0"
      ]
     },
     {
      "py/tuple": [
-      "road415_lane1",
-      "road481_lane0"
+      "road416_lane1",
+      "road416_lane1"
      ]
     },
     {
      "py/tuple": [
-      "road489_lane0",
+      "road455_lane0",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road444_lane0",
+      "road444_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane1",
       "road552_lane1"
      ]
     },
     {
      "py/tuple": [
+      "road507_lane0",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
       "road481_lane0",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road444_lane0",
       "road481_lane0"
      ]
     },
     {
      "py/tuple": [
       "road507_lane0",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
       "road552_lane0"
      ]
     },
@@ -2412,14 +2066,80 @@
     },
     {
      "py/tuple": [
-      "road553_lane1",
-      "road507_lane0"
+      "road416_lane1",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road481_lane0",
+      "road444_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road489_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane1",
+      "road552_lane0"
      ]
     },
     {
      "py/tuple": [
       "road455_lane0",
-      "road553_lane0"
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road507_lane0",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road416_lane0"
      ]
     },
     {
@@ -2430,20 +2150,80 @@
     },
     {
      "py/tuple": [
-      "road553_lane0",
-      "road552_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road552_lane0",
+      "road481_lane0",
       "road481_lane0"
      ]
     },
     {
      "py/tuple": [
       "road415_lane0",
-      "road415_lane0"
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road489_lane0",
+      "road489_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road489_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane1",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road455_lane0",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road489_lane0",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road481_lane0",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road476_lane0",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road476_lane0",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road455_lane0",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road455_lane0"
      ]
     },
     {
@@ -2454,8 +2234,92 @@
     },
     {
      "py/tuple": [
-      "road416_lane1",
+      "road455_lane0",
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road476_lane0",
+      "road476_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
       "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road489_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road481_lane0",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
+      "road552_lane0"
      ]
     },
     {
@@ -2467,7 +2331,79 @@
     {
      "py/tuple": [
       "road481_lane0",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road489_lane0",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road455_lane0",
       "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
+      "road476_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road507_lane0",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road507_lane0",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road507_lane0"
      ]
     },
     {
@@ -2478,8 +2414,20 @@
     },
     {
      "py/tuple": [
-      "road467_lane0",
-      "road507_lane0"
+      "road416_lane0",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road467_lane0"
      ]
     },
     {
@@ -2490,20 +2438,110 @@
     },
     {
      "py/tuple": [
-      "road499_lane0",
-      "road416_lane1"
+      "road507_lane0",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane1",
+      "road481_lane0"
      ]
     },
     {
      "py/tuple": [
       "road415_lane0",
-      "road444_lane0"
+      "road553_lane1"
      ]
     },
     {
      "py/tuple": [
       "road455_lane0",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road476_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
       "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road499_lane0",
+      "road499_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road489_lane0",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road455_lane0",
+      "road415_lane0"
      ]
     }
    ]
@@ -2512,12 +2550,7 @@
    "py/set": [
     {
      "py/tuple": [
-      "road45_lane3"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road45_lane2"
+      "road8_lane1"
      ]
     },
     {
@@ -2527,7 +2560,7 @@
     },
     {
      "py/tuple": [
-      "road8_lane0"
+      "road44_lane0"
      ]
     },
     {
@@ -2537,23 +2570,34 @@
     },
     {
      "py/tuple": [
-      "road8_lane1"
+      "road8_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3"
      ]
     },
     {
      "py/tuple": [
       "road44_lane1"
      ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane0"
-     ]
     }
    ]
   },
   "stoppedAfterArrivalFromLane": {
    "py/set": [
+    {
+     "py/tuple": [
+      "road9_lane3_1",
+      "road9_lane3"
+     ]
+    },
     {
      "py/tuple": [
       "ego",
@@ -2565,12 +2609,6 @@
       "road8_lane0_1",
       "road8_lane0"
      ]
-    },
-    {
-     "py/tuple": [
-      "road9_lane3_1",
-      "road9_lane3"
-     ]
     }
    ]
   },
@@ -2578,12 +2616,7 @@
    "py/set": [
     {
      "py/tuple": [
-      "road45_lane3"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road45_lane2"
+      "road8_lane1"
      ]
     },
     {
@@ -2593,7 +2626,7 @@
     },
     {
      "py/tuple": [
-      "road8_lane0"
+      "road44_lane0"
      ]
     },
     {
@@ -2603,17 +2636,22 @@
     },
     {
      "py/tuple": [
-      "road8_lane1"
+      "road8_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3"
      ]
     },
     {
      "py/tuple": [
       "road44_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane0"
      ]
     }
    ]
@@ -2623,67 +2661,61 @@
     {
      "py/tuple": [
       "ego",
+      "road45_lane0_1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "road45_lane0_1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1_58",
+      "road44_lane2_1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
       "road8_lane0_1"
      ]
     },
     {
      "py/tuple": [
       "ego",
-      "road44_lane1_58"
+      "road44_lane2_1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "road44_lane2_1"
      ]
     },
     {
      "py/tuple": [
       "road44_lane1_58",
-      "road44_lane2_1"
+      "road45_lane0_1"
      ]
     },
     {
      "py/tuple": [
-      "road44_lane1_58",
-      "road45_lane0_1"
+      "ego",
+      "road44_lane1_58"
      ]
     },
     {
      "py/tuple": [
       "road8_lane0_1",
       "road44_lane1_58"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "road44_lane2_1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "road45_lane0_1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "road45_lane0_1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "road44_lane2_1"
      ]
     }
    ]
   },
   "leftToLane": {
    "py/set": [
-    {
-     "py/tuple": [
-      "road45_lane0_1",
-      "road45_lane0"
-     ]
-    },
     {
      "py/tuple": [
       "road8_lane0_1",
@@ -2698,14 +2730,20 @@
     },
     {
      "py/tuple": [
-      "road44_lane1_58",
-      "road45_lane1"
+      "road44_lane2_1",
+      "road44_lane2"
      ]
     },
     {
      "py/tuple": [
-      "road44_lane2_1",
-      "road44_lane2"
+      "road45_lane0_1",
+      "road45_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1_58",
+      "road45_lane1"
      ]
     }
    ]
@@ -2720,14 +2758,14 @@
     },
     {
      "py/tuple": [
-      "road8_lane0_1",
-      "road8_lane0"
+      "road44_lane1_58",
+      "road44_lane1"
      ]
     },
     {
      "py/tuple": [
-      "road44_lane1_58",
-      "road44_lane1"
+      "road8_lane0_1",
+      "road8_lane0"
      ]
     }
    ]
@@ -2736,14 +2774,14 @@
    "py/set": [
     {
      "py/tuple": [
-      "road44_lane1_58",
-      "ego"
+      "road8_lane0_1",
+      "road44_lane1_58"
      ]
     },
     {
      "py/tuple": [
-      "ego",
-      "road44_lane1_58"
+      "road44_lane1_58",
+      "ego"
      ]
     },
     {
@@ -2754,7 +2792,7 @@
     },
     {
      "py/tuple": [
-      "road8_lane0_1",
+      "ego",
       "road44_lane1_58"
      ]
     }
@@ -2764,14 +2802,14 @@
    "py/set": [
     {
      "py/tuple": [
-      "road8_lane0_1",
-      "ego"
+      "ego",
+      "road8_lane0_1"
      ]
     },
     {
      "py/tuple": [
-      "ego",
-      "road8_lane0_1"
+      "road8_lane0_1",
+      "ego"
      ]
     }
    ]
@@ -2780,37 +2818,13 @@
    "py/set": [
     {
      "py/tuple": [
-      "ego",
+      "road44_lane2_1",
       "left"
      ]
     },
     {
      "py/tuple": [
       "road9_lane3_1",
-      "left"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road45_lane0_1",
-      "left"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "left"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane2_58",
-      "left"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane2_1",
       "left"
      ]
     },
@@ -2823,6 +2837,30 @@
     {
      "py/tuple": [
       "road44_lane1_58",
+      "left"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane2_58",
+      "left"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "left"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "left"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane0_1",
       "left"
      ]
     }
@@ -2832,7 +2870,7 @@
    "py/set": [
     {
      "py/tuple": [
-      "road9_lane3_1"
+      "ego"
      ]
     },
     {
@@ -2842,14 +2880,28 @@
     },
     {
      "py/tuple": [
+      "road44_lane2_1"
+     ]
+    },
+    {
+     "py/tuple": [
       "road8_lane2_29"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane3_1"
      ]
     },
     {
      "py/tuple": [
       "road45_lane0_1"
      ]
-    },
+    }
+   ]
+  },
+  "moved": {
+   "py/set": [
     {
      "py/tuple": [
       "ego"
@@ -2857,13 +2909,24 @@
     },
     {
      "py/tuple": [
+      "road8_lane0_1"
+     ]
+    },
+    {
+     "py/tuple": [
       "road44_lane2_1"
      ]
-    }
-   ]
-  },
-  "moved": {
-   "py/set": [
+    },
+    {
+     "py/tuple": [
+      "road8_lane2_29"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1_58"
+     ]
+    },
     {
      "py/tuple": [
       "road44_lane2_58"
@@ -2876,32 +2939,7 @@
     },
     {
      "py/tuple": [
-      "road44_lane1_58"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane2_29"
-     ]
-    },
-    {
-     "py/tuple": [
       "road45_lane0_1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane2_1"
      ]
     }
    ]
@@ -2911,25 +2949,7 @@
     {
      "py/tuple": [
       "ego",
-      "road553_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane1_58",
       "road507_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane1_58",
-      "road455_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "road552_lane0"
      ]
     },
     {
@@ -2941,13 +2961,37 @@
     {
      "py/tuple": [
       "ego",
-      "road467_lane0"
+      "road416_lane0"
      ]
     },
     {
      "py/tuple": [
       "road44_lane1_58",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
       "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "road415_lane0"
      ]
     },
     {
@@ -2959,49 +3003,31 @@
     {
      "py/tuple": [
       "ego",
-      "road552_lane1"
+      "road552_lane0"
      ]
     },
     {
      "py/tuple": [
       "road44_lane1_58",
-      "road415_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "road489_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "road415_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "road416_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "road507_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
       "road455_lane0"
      ]
     },
     {
      "py/tuple": [
-      "ego",
+      "road44_lane1_58",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
       "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1_58",
+      "road416_lane0"
      ]
     },
     {
@@ -3018,20 +3044,32 @@
     },
     {
      "py/tuple": [
+      "ego",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
       "road44_lane1_58",
       "road552_lane1"
      ]
     },
     {
      "py/tuple": [
-      "ego",
+      "road44_lane1_58",
       "road481_lane0"
      ]
     },
     {
      "py/tuple": [
-      "road44_lane1_58",
-      "road416_lane0"
+      "road8_lane0_1",
+      "road489_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "road455_lane0"
      ]
     }
    ]
@@ -3040,32 +3078,14 @@
    "py/set": [
     {
      "py/tuple": [
-      "road45_lane0_1",
-      "road552_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
+      "road44_lane2_1",
       "road553_lane0"
      ]
     },
     {
      "py/tuple": [
-      "road44_lane1_58",
+      "ego",
       "road507_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane1_58",
-      "road455_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "road552_lane0"
      ]
     },
     {
@@ -3076,50 +3096,8 @@
     },
     {
      "py/tuple": [
-      "road45_lane0_1",
-      "road489_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
       "ego",
-      "road467_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane1_58",
-      "road481_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "road553_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "road552_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane1_58",
-      "road415_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "road489_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "road415_lane0"
+      "road416_lane0"
      ]
     },
     {
@@ -3130,26 +3108,80 @@
     },
     {
      "py/tuple": [
-      "ego",
-      "road416_lane0"
+      "road44_lane1_58",
+      "road415_lane0"
      ]
     },
     {
      "py/tuple": [
       "ego",
-      "road507_lane0"
+      "road467_lane0"
      ]
     },
     {
      "py/tuple": [
       "ego",
-      "road455_lane0"
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane0_1",
+      "road552_lane0"
      ]
     },
     {
      "py/tuple": [
       "ego",
       "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1_58",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1_58",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1_58",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane0_1",
+      "road489_lane0"
      ]
     },
     {
@@ -3166,26 +3198,32 @@
     },
     {
      "py/tuple": [
-      "road44_lane1_58",
-      "road552_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
       "ego",
-      "road481_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane2_1",
       "road553_lane0"
      ]
     },
     {
      "py/tuple": [
       "road44_lane1_58",
-      "road416_lane0"
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1_58",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "road489_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "road455_lane0"
      ]
     }
    ]
@@ -3194,8 +3232,26 @@
    "py/set": [
     {
      "py/tuple": [
-      "road44_lane2_1",
-      "road8_lane0_1"
+      "road8_lane2_29",
+      "ego"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane0_1",
+      "road44_lane1_58"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1_58",
+      "ego"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "road45_lane0_1"
      ]
     },
     {
@@ -3206,55 +3262,13 @@
     },
     {
      "py/tuple": [
-      "road44_lane2_1",
+      "road8_lane2_29",
       "road44_lane1_58"
      ]
     },
     {
      "py/tuple": [
-      "road45_lane0_1",
-      "road8_lane2_29"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane2_29",
-      "road45_lane0_1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane2_1",
-      "ego"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "road8_lane0_1"
-     ]
-    },
-    {
-     "py/tuple": [
       "road8_lane0_1",
-      "road9_lane3_1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane1_58",
-      "road8_lane2_29"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane1_58",
-      "road45_lane0_1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane2_58",
       "ego"
      ]
     },
@@ -3262,54 +3276,6 @@
      "py/tuple": [
       "road9_lane3_1",
       "road8_lane0_1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road45_lane0_1",
-      "road8_lane0_1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road45_lane0_1",
-      "road44_lane1_58"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane2_29",
-      "road44_lane1_58"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane2_29",
-      "road8_lane0_1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane1_58",
-      "road8_lane0_1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "ego",
-      "road9_lane3_1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane2_29",
-      "ego"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane2_58",
-      "road44_lane2_1"
      ]
     },
     {
@@ -3320,26 +3286,10 @@
     },
     {
      "py/tuple": [
-      "road44_lane1_58",
-      "ego"
+      "road45_lane0_1",
+      "road8_lane0_1"
      ]
     },
-    {
-     "py/tuple": [
-      "ego",
-      "road45_lane0_1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "ego"
-     ]
-    }
-   ]
-  },
-  "disappearedFrom": {
-   "py/set": [
     {
      "py/tuple": [
       "road44_lane2_1",
@@ -3348,13 +3298,67 @@
     },
     {
      "py/tuple": [
-      "ego",
+      "road8_lane0_1",
+      "road9_lane3_1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane0_1",
+      "road8_lane2_29"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1_58",
       "road8_lane0_1"
      ]
     },
     {
      "py/tuple": [
-      "road9_lane3_1",
+      "road8_lane2_29",
+      "road8_lane0_1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane2_1",
+      "road44_lane1_58"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1_58",
+      "road8_lane2_29"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane2_29",
+      "road45_lane0_1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1_58",
+      "road45_lane0_1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "road9_lane3_1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane2_58",
+      "ego"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
       "road8_lane0_1"
      ]
     },
@@ -3366,20 +3370,30 @@
     },
     {
      "py/tuple": [
-      "road45_lane0_1",
-      "road8_lane0_1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "road9_lane3_1"
-     ]
-    },
-    {
-     "py/tuple": [
       "road44_lane2_1",
       "road8_lane0_1"
+     ]
+    }
+   ]
+  },
+  "disappearedFrom": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road8_lane2_29",
+      "ego"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1_58",
+      "ego"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane0_1",
+      "road44_lane1_58"
      ]
     },
     {
@@ -3390,20 +3404,50 @@
     },
     {
      "py/tuple": [
-      "road45_lane0_1",
+      "road8_lane2_29",
       "road44_lane1_58"
      ]
     },
     {
      "py/tuple": [
-      "road44_lane1_58",
-      "road45_lane0_1"
+      "road8_lane0_1",
+      "ego"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane3_1",
+      "road8_lane0_1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane0_1",
+      "road8_lane0_1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane2_1",
+      "ego"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_1",
+      "road9_lane3_1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane0_1",
+      "road8_lane2_29"
      ]
     },
     {
      "py/tuple": [
       "road44_lane1_58",
-      "ego"
+      "road8_lane0_1"
      ]
     },
     {
@@ -3415,31 +3459,37 @@
     {
      "py/tuple": [
       "road8_lane2_29",
-      "road44_lane1_58"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road45_lane0_1",
-      "road8_lane2_29"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road8_lane0_1",
-      "ego"
+      "road45_lane0_1"
      ]
     },
     {
      "py/tuple": [
       "road44_lane1_58",
+      "road45_lane0_1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "road9_lane3_1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
       "road8_lane0_1"
      ]
     },
     {
      "py/tuple": [
-      "road8_lane2_29",
-      "road45_lane0_1"
+      "road44_lane2_58",
+      "road44_lane2_1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane2_1",
+      "road8_lane0_1"
      ]
     }
    ]
@@ -3448,27 +3498,7 @@
    "py/set": [
     {
      "py/tuple": [
-      "road415_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road416_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
       "road416_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road467_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road499_lane0"
      ]
     },
     {
@@ -3478,12 +3508,12 @@
     },
     {
      "py/tuple": [
-      "road552_lane0"
+      "road499_lane0"
      ]
     },
     {
      "py/tuple": [
-      "road553_lane1"
+      "road415_lane1"
      ]
     },
     {
@@ -3493,12 +3523,17 @@
     },
     {
      "py/tuple": [
-      "road552_lane1"
+      "road553_lane1"
      ]
     },
     {
      "py/tuple": [
-      "road444_lane0"
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0"
      ]
     },
     {
@@ -3508,12 +3543,12 @@
     },
     {
      "py/tuple": [
-      "road476_lane0"
+      "road552_lane1"
      ]
     },
     {
      "py/tuple": [
-      "road507_lane0"
+      "road455_lane0"
      ]
     },
     {
@@ -3523,7 +3558,22 @@
     },
     {
      "py/tuple": [
-      "road455_lane0"
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road476_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road444_lane0"
      ]
     }
    ]
@@ -3532,17 +3582,7 @@
    "py/set": [
     {
      "py/tuple": [
-      "road45_lane1"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road45_lane0"
-     ]
-    },
-    {
-     "py/tuple": [
-      "road44_lane3"
+      "road8_lane2"
      ]
     },
     {
@@ -3557,7 +3597,7 @@
     },
     {
      "py/tuple": [
-      "road44_lane2"
+      "road44_lane3"
      ]
     },
     {
@@ -3567,7 +3607,17 @@
     },
     {
      "py/tuple": [
-      "road8_lane2"
+      "road45_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane0"
      ]
     }
    ]

@@ -24,7 +24,6 @@ def plot(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage):
   predicate_coverage_space = coverage_module.coverage_space(config)
 
   coverage_file = output_path/f"coverage_{test_ego}_{test_coverage}.json"
-
   with open(coverage_file, 'r') as f:
     results = jsonpickle.decode(f.read())
 
@@ -83,8 +82,8 @@ def plot(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage):
 
 if __name__ == '__main__':
   reports_config = (
-    ('Atheris', 'TFPP', 'traffic', 'TFPP', 'traffic'),
-    # ('random_search', 'TFPP', 'traffic', 'TFPP', 'traffic'),
+    # ('Atheris', 'TFPP', 'traffic', 'TFPP', 'traffic'),
+    ('random_search', 'TFPP', 'traffic', 'TFPP', 'traffic'),
     # ('predicateFuzz', 'TFPP', 'traffic', 'TFPP', 'traffic'),
     # ('Atheris', 'autopilot', 'traffic', 'autopilot', 'traffic'),
     # ('Atheris', 'autopilot', 'traffic', 'BehaviorAgent', 'traffic'),

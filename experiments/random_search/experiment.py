@@ -41,7 +41,7 @@ if __name__ == '__main__':
   coverages_path = Path(config['coverages_folder'])
 
   # Decide to resume or start
-  results_file = fuzz_inputs_path.parents[1]/'results.json'
+  results_file = fuzz_inputs_path.parents[0]/'results.json'
   if results_file.is_file():
     print('Resume option not implemented yet!')
     exit(1)

@@ -19,9 +19,9 @@ from scenariogen.core.utils import seed_from_sim, ordinal
 from scenariogen.core.coverages.coverage import StatementCoverage, PredicateSetCoverage, PredicateCoverage
 
 
-coverages_statements = StatementCoverage([])
-coverages_predicateSet = PredicateSetCoverage([])
-coverages_predicates = PredicateCoverage([])
+coverage_statements_seen = StatementCoverage([])
+coverage_predicateSet_seen = PredicateSetCoverage([])
+coverage_predicates_seen = PredicateCoverage([])
 
 
 def run(config):
@@ -49,8 +49,7 @@ def run(config):
     output_path.mkdir(parents=True, exist_ok=True)
 
     if config['coverage_module']:
-        coverages_path = Path(config['coverages_folder'])/'coverages'
-        coverages_path.mkdir(parents=True, exist_ok=True)
+        coverages_path = Path(config['coverages_folder'])
        
     while time.time()-start_time < config['max_total_time']:
         try:
@@ -98,22 +97,20 @@ def run(config):
             
             if config['coverage_module']:
                 coverage_statements = sim_result.records['coverage']
-                if coverage_statements is None:
-                    continue
+                with open(coverages_path/seed_hash, 'w') as f:
+                    f.write(jsonpickle.encode(coverage_statements, indent=1))
 
-                coverage_predicateSet = coverage_statements.cast_to(PredicateSetCoverage)
-                coverage_predicates = coverage_statements.cast_to(PredicateCoverage)
-                if len(coverage_statements - coverages_statements) > 0 \
-                    or len(coverage_predicates - coverages_predicates) > 0 \
-                    or len(coverage_predicateSet - coverages_predicateSet) > 0:
+                if coverage_statements:
+                    coverage_predicates = coverage_statements.cast_to(PredicateCoverage)
+                    coverage_predicateSet = coverage_statements.cast_to(PredicateSetCoverage)
+                    if len(coverage_statements - coverage_statements_seen) > 0 \
+                        or len(coverage_predicates - coverage_predicates_seen) > 0 \
+                        or len(coverage_predicateSet - coverage_predicateSet_seen) > 0:
 
-                    # Update total coverages seen
-                    coverages_statements.update(coverage_statements)
-                    coverages_predicateSet.update(coverage_predicateSet)
-                    coverages_predicates.update(coverage_predicates)
-
-                    with open(coverages_path/seed_hash, 'w') as f:
-                        f.write(jsonpickle.encode(coverage_statements, indent=1))
+                        # Update total coverages seen
+                        coverage_statements_seen.update(coverage_statements)
+                        coverage_predicates_seen.update(coverage_predicates)
+                        coverage_predicateSet_seen.update(coverage_predicateSet)
 
 
 
