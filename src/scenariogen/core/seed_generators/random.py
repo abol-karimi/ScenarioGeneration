@@ -47,6 +47,10 @@ def run(config):
     
     output_path = Path(config['output_folder'])
     output_path.mkdir(parents=True, exist_ok=True)
+
+    if config['coverage_module']:
+        coverages_path = Path(config['coverages_folder'])/'coverages'
+        coverages_path.mkdir(parents=True, exist_ok=True)
        
     while time.time()-start_time < config['max_total_time']:
         try:
@@ -84,30 +88,33 @@ def run(config):
             print(e)
             continue
         else:
-            coverage_statements = sim_result.records['coverage']
-            if coverage_statements is None:
-                continue
+            # Save the new seed
+            seed_json_bytes = jsonpickle.encode(seed, indent=1).encode('utf-8')
+            seed_hash = hashlib.sha1(seed_json_bytes).hexdigest()
+            with open(output_path/seed_hash, 'wb') as f:
+                f.write(seed_json_bytes)
+            seed_id += 1
+            print(f'Saved the {ordinal(seed_id)} seed as {seed_hash}.')
+            
+            if config['coverage_module']:
+                coverage_statements = sim_result.records['coverage']
+                if coverage_statements is None:
+                    continue
 
-            coverage_predicateSet = coverage_statements.cast_to(PredicateSetCoverage)
-            coverage_predicates = coverage_statements.cast_to(PredicateCoverage)
-            if len(coverage_statements - coverages_statements) > 0 \
-                or len(coverage_predicates - coverages_predicates) > 0 \
-                or len(coverage_predicateSet - coverages_predicateSet) > 0:
+                coverage_predicateSet = coverage_statements.cast_to(PredicateSetCoverage)
+                coverage_predicates = coverage_statements.cast_to(PredicateCoverage)
+                if len(coverage_statements - coverages_statements) > 0 \
+                    or len(coverage_predicates - coverages_predicates) > 0 \
+                    or len(coverage_predicateSet - coverages_predicateSet) > 0:
 
-                # Update total coverages seen
-                coverages_statements.update(coverage_statements)
-                coverages_predicateSet.update(coverage_predicateSet)
-                coverages_predicates.update(coverage_predicates)
+                    # Update total coverages seen
+                    coverages_statements.update(coverage_statements)
+                    coverages_predicateSet.update(coverage_predicateSet)
+                    coverages_predicates.update(coverage_predicates)
 
-                # Save the new seed and its coverage
-                seed_json_bytes = jsonpickle.encode(seed, indent=1).encode('utf-8')
-                seed_hash = hashlib.sha1(seed_json_bytes).hexdigest()
-                with open(output_path/f'fuzz-inputs/{seed_hash}', 'wb') as f:
-                    f.write(seed_json_bytes)
-                with open(output_path/f'coverages/{seed_hash}', 'w') as f:
-                    f.write(jsonpickle.encode(coverage_statements, indent=1))
-                seed_id += 1
-                print(f'Saved the {ordinal(seed_id)} seed as {seed_hash}.')
+                    with open(coverages_path/seed_hash, 'w') as f:
+                        f.write(jsonpickle.encode(coverage_statements, indent=1))
+
 
 
 

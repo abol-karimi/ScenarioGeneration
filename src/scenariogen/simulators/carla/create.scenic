@@ -61,8 +61,6 @@ scenario Main():
       ego = new Debris at p.x@p.y
   
     require monitor RecordSeedInfoMonitor()
-    # require monitor ForbidEgoCollisionsMonitor(seed_config)
-    # require monitor ForbidNonegoCollisionsMonitor(seed_config)
     if config['render_spectator']:
       require monitor ShowIntersectionMonitor(seed_config['intersection'],
                                               label_lanes=True,

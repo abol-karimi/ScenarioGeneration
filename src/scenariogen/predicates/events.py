@@ -130,3 +130,15 @@ class ActorDestroyedEvent:
     
     def __str__(self):
         return f'actorDestroyedEvent({self.vehicle.name}, {time_to_term(self.seconds)})'
+
+
+class CollisionEvent:
+    """Collision with other actors or props."""
+
+    def __init__(self, vehicle, other, seconds):
+        self.vehicle = vehicle
+        self.other = other
+        self.seconds = seconds
+
+    def __str__(self):
+        return f'collidedWithAtTime({self.vehicle.name}, {self.other.name}, {time_to_term(self.seconds)})'

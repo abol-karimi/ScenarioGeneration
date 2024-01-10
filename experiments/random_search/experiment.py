@@ -21,9 +21,10 @@ if __name__ == '__main__':
   coverage_module = 'traffic'
 
   config = {'scenario_path': f'experiments/seeds/random/definitions/4way-stop.scenic',
-            'output_folder': f'experiments/random_search/output_{gen_ego}_{coverage_module}',
+            'output_folder': f'experiments/random_search/output_{gen_ego}_{coverage_module}/fuzz-inputs',
             **coverage_config,
             'coverage_module': 'traffic',
+            'coverages_folder': f'experiments/random_search/output_{gen_ego}_{coverage_module}/coverages',
             'simulator': 'carla',
             'render_spectator': False,
             'render_ego': False,
@@ -35,13 +36,12 @@ if __name__ == '__main__':
             'max_total_time': 274, # seconds
             }
   
-  output_path = Path(config['output_folder'])
-  fuzz_inputs_path = output_path/'fuzz-inputs'
-  bugs_path = output_path/'bugs'
-  coverages_path = output_path/'coverages'
+  fuzz_inputs_path = Path(config['output_folder'])
+  bugs_path = fuzz_inputs_path.parents[1]/'bugs'
+  coverages_path = Path(config['coverages_folder'])/'coverages'
 
   # Decide to resume or start
-  results_file = output_path/'results.json'
+  results_file = fuzz_inputs_path.parents[1]/'results.json'
   if results_file.is_file():
     print('Resume option not implemented yet!')
     exit(1)
@@ -65,7 +65,7 @@ if __name__ == '__main__':
   period = 60 # seconds
   @tl.job(interval=timedelta(seconds=period))
   def measure_progress():
-    new_coverages = set((output_path/'coverages').glob('*')) - coverages
+    new_coverages = set(coverages_path.glob('*')) - coverages
     coverages.update(new_coverages)
     measurements.append({'exe_time': period,
                         'new_coverages': new_coverages,

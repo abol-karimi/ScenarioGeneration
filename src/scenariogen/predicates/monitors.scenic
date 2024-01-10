@@ -1,4 +1,6 @@
 from itertools import product, permutations
+import queue
+
 from scenic.core.regions import UnionRegion
 from scenic.domains.driving.roads import Lane, Intersection
 
@@ -108,6 +110,30 @@ monitor OcclusionMonitor(config, eventsOut):
         could_see[c1, c2] = False
         eventsOut.append(DisappearedFromOtherEvent(c2, c1, time_seconds))
     wait
+
+
+monitor CollisionMonitor(config, eventsOut):
+  event_queue = queue.Queue()
+  carla_world = simulation().world
+  bp = carla_world.get_blueprint_library().find('sensor.other.collision')
+  sensors = []
+  for agent in simulation().agents:
+    sensor = carla_world.spawn_actor(bp, carla.Transform(), attach_to=agent.carlaActor)
+    sensors.append(sensor)
+    sensor.listen(lambda e: on_collision(e, event_queue))
+
+  while (simulation().currentTime < config['steps']):
+    if not event_queue.empty():
+      event = event_queue.get()
+      eventsOut.append(CollisionEvent(event.actor, event.other_actor, time_seconds))
+    wait
+  
+  for sensor in sensors:
+    if sensor.is_listening():
+      sensor.stop()
+    sensor.destroy()
+
+  wait
 
 
 # monitor ActorsMonitor(config, eventsOut):
