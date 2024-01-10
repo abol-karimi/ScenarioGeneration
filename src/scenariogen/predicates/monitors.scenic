@@ -1,5 +1,6 @@
 from itertools import product, permutations
 import queue
+import carla
 
 from scenic.core.regions import UnionRegion
 from scenic.domains.driving.roads import Lane, Intersection
@@ -112,7 +113,11 @@ monitor OcclusionMonitor(config, eventsOut):
     wait
 
 
-monitor CollisionMonitor(config, eventsOut):
+def on_collision(event, q):
+  q.put(event)
+
+ 
+monitor CarlaCollisionMonitor(config, eventsOut):
   event_queue = queue.Queue()
   carla_world = simulation().world
   bp = carla_world.get_blueprint_library().find('sensor.other.collision')
@@ -123,7 +128,8 @@ monitor CollisionMonitor(config, eventsOut):
     sensor.listen(lambda e: on_collision(e, event_queue))
 
   while (simulation().currentTime < config['steps']):
-    if not event_queue.empty():
+    time_seconds = simulation().currentTime * config['timestep']
+    while not event_queue.empty():
       event = event_queue.get()
       eventsOut.append(CollisionEvent(event.actor, event.other_actor, time_seconds))
     wait
@@ -134,7 +140,6 @@ monitor CollisionMonitor(config, eventsOut):
     sensor.destroy()
 
   wait
-
 
 # monitor ActorsMonitor(config, eventsOut):
 #   """Assuming conservation of actors in the scene throughout the simulation,

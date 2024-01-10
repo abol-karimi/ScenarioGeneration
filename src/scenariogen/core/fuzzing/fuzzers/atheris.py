@@ -88,12 +88,16 @@ class SUTCallback:
       return
     
     fuzz_input = jsonpickle.decode(input_bytes.decode('utf-8'))
+    sim_result = None
     try:
       sim_result = Scenario(fuzz_input).run(self.config)
-      coverage = sim_result.records['coverage']
-    except (SimulationCreationError, EgoCollisionError) as e:
-      print(e)
-      coverage = None
+    except SimulationCreationError as e:
+      print(f'Exception in SUTCallback: {e}')
+    finally:
+      if sim_result:
+        coverage = sim_result.records['coverage']
+      else:
+        coverage = None
 
     # Save coverage results to disk
     sha1 = hashlib.sha1(input_bytes).hexdigest()

@@ -23,8 +23,9 @@ def process_measurment1(measurement):
   for path in measurement['new_coverages']:
     with open(path, 'r') as f:
       statement_coverage = jsonpickle.decode(f.read())
-
-    output['statement_coverage'].update(statement_coverage)
+    
+    if statement_coverage:
+      output['statement_coverage'].update(statement_coverage)
 
   return output
 
@@ -147,8 +148,8 @@ def report2(experiment_type, seeds, gen_ego, gen_coverage, test_ego, test_covera
 if __name__ == '__main__':
   reports_config = (
     ('Atheris', 'random', 'TFPP', 'traffic', 'TFPP', 'traffic'),
-    ('random_search', None, 'TFPP', 'traffic', 'TFPP', 'traffic'),
-    ('predicateFuzz', 'random', 'TFPP', 'traffic', 'TFPP', 'traffic'),
+    # ('random_search', None, 'TFPP', 'traffic', 'TFPP', 'traffic'),
+    # ('predicateFuzz', 'random', 'TFPP', 'traffic', 'TFPP', 'traffic'),
     # ('Atheris', 'random', 'TFPP', 'traffic', 'autopilot', 'traffic'),
     # ('Atheris', 'random', 'TFPP', 'traffic', 'BehaviorAgent', 'traffic'),
     # ('Atheris', 'random', 'autopilot', 'traffic', 'autopilot', 'traffic'),

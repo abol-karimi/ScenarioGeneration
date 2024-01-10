@@ -48,6 +48,7 @@ from scenariogen.predicates.monitors import (ArrivingAtIntersectionMonitor,
                                              StoppingMonitor,
                                              RegionOverlapMonitor,
                                              OcclusionMonitor,
+                                             CarlaCollisionMonitor
                                             )
 
 events = []
@@ -59,7 +60,7 @@ monitor CoverageMonitor(coverageOut):
   require monitor StoppingMonitor(config, events)
   require monitor RegionOverlapMonitor({**config, 'regions': trigger_regions}, events)
   require monitor OcclusionMonitor(config, events)
-  require monitor CollisionMonitor(config, events)
+  require monitor CarlaCollisionMonitor(config, events)
 
   for step in range(config['steps']):
     wait

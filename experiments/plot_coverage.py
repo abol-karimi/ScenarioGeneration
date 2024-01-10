@@ -84,8 +84,8 @@ def plot(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage):
 if __name__ == '__main__':
   reports_config = (
     ('Atheris', 'TFPP', 'traffic', 'TFPP', 'traffic'),
-    ('random_search', 'TFPP', 'traffic', 'TFPP', 'traffic'),
-    ('predicateFuzz', 'TFPP', 'traffic', 'TFPP', 'traffic'),
+    # ('random_search', 'TFPP', 'traffic', 'TFPP', 'traffic'),
+    # ('predicateFuzz', 'TFPP', 'traffic', 'TFPP', 'traffic'),
     # ('Atheris', 'autopilot', 'traffic', 'autopilot', 'traffic'),
     # ('Atheris', 'autopilot', 'traffic', 'BehaviorAgent', 'traffic'),
     # ('Atheris', 'BehaviorAgent', 'traffic', 'autopilot', 'traffic'),

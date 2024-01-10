@@ -33,12 +33,12 @@ if __name__ == '__main__':
             'spline_knots_size': 50,
             'scene_maxIterations': 50,
             'simulate_maxIterations': 1,
-            'max_total_time': 274, # seconds
+            'max_total_time': 60*60, # seconds
             }
   
   fuzz_inputs_path = Path(config['output_folder'])
   bugs_path = fuzz_inputs_path.parents[1]/'bugs'
-  coverages_path = Path(config['coverages_folder'])/'coverages'
+  coverages_path = Path(config['coverages_folder'])
 
   # Decide to resume or start
   results_file = fuzz_inputs_path.parents[1]/'results.json'

@@ -1,0 +1,3518 @@
+{
+ "py/object": "scenariogen.core.coverages.coverage.StatementCoverage",
+ "pred2args": {
+  "isOnRightOf": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road8_lane1",
+      "road44_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0",
+      "road44_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane2",
+      "road8_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane3",
+      "road45_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane2",
+      "road8_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0",
+      "road9_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane3",
+      "road45_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0",
+      "road44_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1",
+      "road44_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane2",
+      "road45_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1",
+      "road9_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3",
+      "road8_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0",
+      "road9_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3",
+      "road8_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane2",
+      "road45_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1",
+      "road9_lane3"
+     ]
+    }
+   ]
+  },
+  "opposingArrivalLanes": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road44_lane0",
+      "road45_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane3",
+      "road8_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0",
+      "road45_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1",
+      "road9_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3",
+      "road44_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1",
+      "road45_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0",
+      "road9_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane2",
+      "road44_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1",
+      "road45_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0",
+      "road9_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane2",
+      "road8_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3",
+      "road44_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1",
+      "road9_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane2",
+      "road8_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane2",
+      "road44_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane3",
+      "road8_lane0"
+     ]
+    }
+   ]
+  },
+  "lanesOnDifferentHighways": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road44_lane0",
+      "road9_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane2",
+      "road9_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1",
+      "road9_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane2",
+      "road45_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3",
+      "road8_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane2",
+      "road45_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0",
+      "road45_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0",
+      "road8_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane3",
+      "road44_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane2",
+      "road8_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0",
+      "road45_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1",
+      "road8_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1",
+      "road44_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane3",
+      "road44_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane2",
+      "road8_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0",
+      "road8_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1",
+      "road44_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1",
+      "road8_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3",
+      "road9_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane2",
+      "road44_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3",
+      "road9_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane2",
+      "road44_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0",
+      "road44_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane3",
+      "road45_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane3",
+      "road45_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0",
+      "road44_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1",
+      "road45_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane2",
+      "road9_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0",
+      "road9_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1",
+      "road45_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3",
+      "road8_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1",
+      "road9_lane3"
+     ]
+    }
+   ]
+  },
+  "eventTime": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "t15_15"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t7_8500000000000005"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t15_350000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t8_65"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t14_9"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t4_8500000000000005"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t5_7"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t15_950000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t8_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t8_85"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t5_4"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t9_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t17_85"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t0_55"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t16_6"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t10_100000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t11_600000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t15_5"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t7_25"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t11_350000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t17_05"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t13_15"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t6_95"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t19_1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t14_700000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t7_65"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t16_3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t13_4"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t15_75"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t14_4"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t0_05"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t7_2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t6_300000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t16_400000000000002"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t7_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t13_65"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t16_55"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t16_7"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t8_55"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t17_900000000000002"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t15_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t10_65"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t11_8"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t5_25"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t13_950000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t15_55"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t17_45"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t14_600000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t13_700000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t10_55"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t1_35"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t14_3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t12_3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t8_1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t14_15"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t17_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t10_9"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t16_85"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t4_95"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t9_4"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t7_1000000000000005"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t18_55"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t4_9"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t7_550000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t12_5"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t8_4"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t18_05"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t0_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "t5_65"
+     ]
+    }
+   ]
+  },
+  "signaledAtArrivalFromLane": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "ego",
+      "left",
+      "road44_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "left",
+      "road45_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "left",
+      "road8_lane1"
+     ]
+    }
+   ]
+  },
+  "signaledLeftAtArrival": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "ego"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0"
+     ]
+    }
+   ]
+  },
+  "arrivedFromLane": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "ego",
+      "road44_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road8_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "road45_lane3"
+     ]
+    }
+   ]
+  },
+  "arrivedFromTheOppositeDirection": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "ego"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "road45_lane3_0"
+     ]
+    }
+   ]
+  },
+  "arrivedFromDifferentHighways": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "ego",
+      "road8_lane1_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "road8_lane1_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "ego"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road45_lane3_0"
+     ]
+    }
+   ]
+  },
+  "arrivedFromRightOf": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "road8_lane1_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "ego"
+     ]
+    }
+   ]
+  },
+  "enteredAfter": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "t0_55"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t4_8500000000000005"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t5_4"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t4_8500000000000005"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "t0_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t8_85"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t5_4"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t9_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t8_85"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t9_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t0_55"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t11_350000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t10_100000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t11_600000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t11_350000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t7_65"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t7_2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "t5_25"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t7_2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "t1_35"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "t0_05"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t11_8"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t1_35"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t1_35"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t9_4"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t12_3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t10_9"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t9_4"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t10_9"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t8_4"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t7_550000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t5_65"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "t5_4"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t8_4"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t7_550000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t5_65"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t12_5"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t7_8500000000000005"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t7_8500000000000005"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t5_7"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t5_7"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "t0_55"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t7_65"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "t4_95"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "t4_9"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t10_55"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "t0_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "t5_65"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t10_55"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0_0",
+      "t0_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t4_95"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "t5_7"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t4_95"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t4_9"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t4_9"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t0_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t0_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0_0",
+      "t0_05"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t0_05"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t7_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t0_05"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t10_65"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t8_55"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t7_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t10_65"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t8_55"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t8_1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t8_1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "t1_35"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0_0",
+      "t0_55"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t8_65"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t8_65"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t8_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t8_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t0_55"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t10_100000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t11_600000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "t0_05"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t7_25"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t7_25"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t6_95"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t6_95"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t6_300000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t6_300000000000001"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t5_25"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t5_25"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "t4_8500000000000005"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "t7_1000000000000005"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "t7_1000000000000005"
+     ]
+    }
+   ]
+  },
+  "laneCorrectSignal": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road481_lane0",
+      "left"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "off"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road476_lane0",
+      "right"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "left"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "off"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
+      "off"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane1",
+      "off"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road455_lane0",
+      "left"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "off"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road444_lane0",
+      "right"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
+      "off"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road499_lane0",
+      "right"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road507_lane0",
+      "left"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "off"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
+      "off"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road489_lane0",
+      "right"
+     ]
+    }
+   ]
+  },
+  "lanePrecedes": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road444_lane0",
+      "road9_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane2",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3",
+      "road444_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0",
+      "road499_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road499_lane0",
+      "road8_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road455_lane0",
+      "road45_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
+      "road9_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
+      "road44_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road8_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane2",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road481_lane0",
+      "road8_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane1",
+      "road8_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road9_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road507_lane0",
+      "road44_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3",
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road45_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road45_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road476_lane0",
+      "road44_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road9_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane3",
+      "road476_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
+      "road44_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0",
+      "road489_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane2",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane2",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane3",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road489_lane0",
+      "road45_lane0"
+     ]
+    }
+   ]
+  },
+  "requestedLane": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road507_lane0"
+     ]
+    }
+   ]
+  },
+  "overlaps": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road415_lane0",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road507_lane0",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road481_lane0",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road476_lane0",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane1",
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road481_lane0",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road481_lane0",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road489_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road455_lane0",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road476_lane0",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road507_lane0",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road507_lane0",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road489_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
+      "road476_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road444_lane0",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road489_lane0",
+      "road489_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road455_lane0",
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane1",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane1",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane1",
+      "road476_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane1",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road489_lane0",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane1",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road481_lane0",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road499_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane1",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
+      "road444_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road489_lane0",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road489_lane0",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road455_lane0",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road455_lane0",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road455_lane0",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road455_lane0",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road507_lane0",
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road499_lane0",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road455_lane0",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane1",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road481_lane0",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road455_lane0",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road481_lane0",
+      "road444_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road489_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane1",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane1",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road476_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane1",
+      "road499_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road481_lane0",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane1",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
+      "road444_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road481_lane0",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road507_lane0",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road507_lane0",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road507_lane0",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road481_lane0",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road476_lane0",
+      "road476_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road507_lane0",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road476_lane0",
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road507_lane0",
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road444_lane0",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0",
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road455_lane0",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0",
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road507_lane0",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road455_lane0",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0",
+      "road489_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road499_lane0",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road455_lane0",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road444_lane0",
+      "road444_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road499_lane0",
+      "road499_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road481_lane0",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road481_lane0",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road489_lane0",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road444_lane0",
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0",
+      "road416_lane1"
+     ]
+    }
+   ]
+  },
+  "incomingLane": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road8_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane3"
+     ]
+    }
+   ]
+  },
+  "stoppedAfterArrivalFromLane": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "ego",
+      "road44_lane0"
+     ]
+    }
+   ]
+  },
+  "hasStopSign": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road8_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane3"
+     ]
+    }
+   ]
+  },
+  "violatesRule": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "stopAtSign"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "stopAtSign"
+     ]
+    }
+   ]
+  },
+  "leftAfter": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road44_lane0_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0_0",
+      "road8_lane0_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road8_lane0_0"
+     ]
+    }
+   ]
+  },
+  "leftToLane": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road44_lane0_0",
+      "road8_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road9_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road9_lane0"
+     ]
+    }
+   ]
+  },
+  "enteredFromLane": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road44_lane0_0",
+      "road44_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road8_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "road44_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "road45_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road8_lane0"
+     ]
+    }
+   ]
+  },
+  "crossedPathWith": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road8_lane0_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road8_lane1_0"
+     ]
+    }
+   ]
+  },
+  "nonConflictPathWith": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road44_lane0_0",
+      "road8_lane1_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road44_lane0_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0_0",
+      "road8_lane0_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road44_lane0_0"
+     ]
+    }
+   ]
+  },
+  "signaled": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "left"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "left"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0_0",
+      "left"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "left"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "left"
+     ]
+    }
+   ]
+  },
+  "stopped": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "ego"
+     ]
+    }
+   ]
+  },
+  "moved": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "ego"
+     ]
+    }
+   ]
+  },
+  "enteredLane": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "road444_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0_0",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road444_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0_0",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0_0",
+      "road499_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "road499_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road489_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road481_lane0"
+     ]
+    }
+   ]
+  },
+  "leftLane": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road44_lane0_0",
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road444_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0_0",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0_0",
+      "road499_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road489_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road481_lane0"
+     ]
+    }
+   ]
+  },
+  "appearedTo": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road44_lane0_0",
+      "ego"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "ego"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "ego"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road45_lane3_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "road8_lane1_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road44_lane0_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road45_lane3_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0_0",
+      "road8_lane1_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0_0",
+      "road45_lane3_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "ego",
+      "road45_lane3_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "ego"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "road44_lane0_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road44_lane0_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road8_lane1_0"
+     ]
+    }
+   ]
+  },
+  "disappearedFrom": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road44_lane0_0",
+      "ego"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "ego"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "ego"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "road8_lane1_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road44_lane0_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road45_lane3_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0_0",
+      "road8_lane1_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane0_0",
+      "road45_lane3_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "ego"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane3_0",
+      "road44_lane0_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road8_lane1_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane1_0",
+      "road44_lane0_0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane0_0",
+      "road45_lane3_0"
+     ]
+    }
+   ]
+  },
+  "connectingLane": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road416_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road444_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road455_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road476_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road467_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road507_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road489_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road415_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road552_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road553_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road481_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road416_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road499_lane0"
+     ]
+    }
+   ]
+  },
+  "outgoingLane": {
+   "py/set": [
+    {
+     "py/tuple": [
+      "road44_lane2"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road44_lane3"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road9_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane1"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road45_lane0"
+     ]
+    },
+    {
+     "py/tuple": [
+      "road8_lane2"
+     ]
+    }
+   ]
+  }
+ }
+}
