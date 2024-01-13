@@ -42,6 +42,12 @@ class LeaderboardAgent(object):
                        vertical_shift=0.1,
                        size=0.1,
                        downsample=10)
+        
+        # TODO condition this on TF++ leaderboard agent
+        if not os.environ.get("DIRECT"):
+            os.environ.setdefault("DIRECT","0")
+        else:
+            os.environ["DIRECT"] = "0"
 
         # Load agent
         module_name = os.path.basename(args.agent).split('.')[0]

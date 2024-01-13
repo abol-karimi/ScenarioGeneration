@@ -43,7 +43,7 @@ export PATH=/home/carla/ScenarioComplexity/src/complexgen/scripts/:$PATH
 export SCENARIO_RUNNER_ROOT=${WORK_DIR}/scenario_runner
 export LEADERBOARD_ROOT=${WORK_DIR}/leaderboard
 export WORK_DIR=${WORK_DIR}
-export PYTHONPATH=${WORK_DIR}/team_code:${SCENARIO_RUNNER_ROOT}:${LEADERBOARD_ROOT}:${PYTHONPATH}
+export PYTHONPATH=${WORK_DIR}:${WORK_DIR}/team_code:${SCENARIO_RUNNER_ROOT}:${LEADERBOARD_ROOT}:${PYTHONPATH}
 
 export force_color_prompt=yes
 
