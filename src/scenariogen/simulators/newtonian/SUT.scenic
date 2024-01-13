@@ -20,7 +20,7 @@ if config['ego_module']:
 
 if config['coverage_module']:
   coverage_module = importlib.import_module(f"scenariogen.core.coverages.{config['coverage_module']}")
-  coverage = coverage_module.Coverage([])
+  coverage_events = []
 
 scenario Main():
   setup:
@@ -47,8 +47,8 @@ scenario Main():
       ego = new Debris at p.x@p.y
 
     if config['coverage_module']:
-      require monitor coverage_module.CoverageMonitor(coverage)
-      record final coverage as coverage
+      require monitor coverage_module.EventsMonitor(coverage_events)
+      record final coverage_module.to_coverage(coverage_events) as coverage
 
   compose:  
     do nonegos_scenario

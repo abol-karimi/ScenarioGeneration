@@ -96,13 +96,17 @@ class SUTCallback:
     finally:
       if sim_result:
         coverage = sim_result.records['coverage']
+        events = [e.simplified() for e in sim_result.records['events']]
       else:
         coverage = None
+        events = None
 
     # Save coverage results to disk
     sha1 = hashlib.sha1(input_bytes).hexdigest()
     with open(Path(self.config['output_folder'])/f'coverages/{sha1}', 'w') as f:
       f.write(jsonpickle.encode(coverage, indent=1))
+    with open(Path(self.config['output_folder'])/f'events/{sha1}', 'w') as f:
+          f.write(jsonpickle.encode(events, indent=1))      
 
 
 

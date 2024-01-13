@@ -21,8 +21,9 @@ if config['ego_module']:
   ego_behavior = ego_module.ego_behavior
 
 if config['coverage_module']:
-  coverage_module = importlib.import_module(f"scenariogen.core.coverages.{config['coverage_module']}.monitor")
-  coverage = coverage_module.Coverage([])
+  coverage_module = importlib.import_module(f"scenariogen.core.coverages.{config['coverage_module']}")
+  coverage_monitor = importlib.import_module(f"scenariogen.core.coverages.{config['coverage_module']}.monitor")
+  coverage_events = []
 
 scenario Main():
   setup:
@@ -49,8 +50,9 @@ scenario Main():
       ego = new Debris at (p.x, p.y, -10)
 
     if config['coverage_module']:
-      require monitor coverage_module.CoverageMonitor(coverage)
-      record final coverage as coverage
+      require monitor coverage_monitor.EventsMonitor(coverage_events)
+      record final coverage_events as events
+      record final coverage_module.to_coverage(coverage_events, config) as coverage
 
     if config['render_spectator']:
       require monitor ShowIntersectionMonitor(config['intersection'],

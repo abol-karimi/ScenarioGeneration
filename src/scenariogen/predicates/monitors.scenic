@@ -5,6 +5,7 @@ import carla
 from scenic.core.regions import UnionRegion
 from scenic.domains.driving.roads import Lane, Intersection
 
+from scenariogen.core.geometry import CurvilinearTransform
 from scenariogen.predicates.events import *
 from scenariogen.simulators.carla.utils import vehicleLightState_to_signal
 
@@ -86,10 +87,16 @@ monitor RegionOverlapMonitor(config, eventsOut):
       wasOnRegion = region.uid in occupiedRegions[car]
       isOnRegion = region.intersects(PolygonalRegion(polygon=car._boundingPolygon))
       if isOnRegion and not wasOnRegion:
-        eventsOut.append(EnteredRegionEvent(car, region, car.lane, time_seconds))
+        if isinstance(region, Lane):
+          eventsOut.append(EnteredLaneEvent(car, region, time_seconds))
+        elif isinstance(region, Intersection):
+          eventsOut.append(EnteredIntersectionEvent(car, car.lane, time_seconds))
         occupiedRegions[car].add(region.uid)
       elif wasOnRegion and not isOnRegion:
-        eventsOut.append(LeftRegionEvent(car, region, car.lane, time_seconds))
+        if isinstance(region, Lane):
+          eventsOut.append(LeftLaneEvent(car, region, time_seconds))
+        elif isinstance(region, Intersection):
+          eventsOut.append(LeftIntersectionEvent(car, car.lane, time_seconds))
         occupiedRegions[car].remove(region.uid)
     wait
 
@@ -141,11 +148,16 @@ monitor CarlaCollisionMonitor(config, eventsOut):
 
   wait
 
-# monitor ActorsMonitor(config, eventsOut):
-#   """Assuming conservation of actors in the scene throughout the simulation,
-#   we only need to check once."""
-#   eventsOut.extend(ActorSpawnedEvent(a, 0) for a in simulation().agents)
-#   wait
+
+monitor ActorsMonitor(config, eventsOut):
+  """In Scenic actors are not spawned or destroyed during the simulation,
+  so we only need to check once."""
+  for agent in simulation().agents:
+    transform = CurvilinearTransform(agent.lane.centerline.lineString.coords)
+    progress = transform.curvilinear(agent.position)[0]
+    eventsOut.append(ActorSpawnedEvent(agent, agent.lane, progress, 0))
+  
+  wait
 
 # monitor TailgateMonitor(config, eventsOut):
 #   """

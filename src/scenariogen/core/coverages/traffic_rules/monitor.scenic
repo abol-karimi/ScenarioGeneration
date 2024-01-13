@@ -42,22 +42,22 @@ def to_coverage(events):
 from scenariogen.predicates.monitors import (ArrivingAtIntersectionMonitor,
                                              VehicleSignalMonitor,
                                              StoppingMonitor,
-                                             RegionOverlapMonitor)
+                                             RegionOverlapMonitor,
+                                             OcclusionMonitor,
+                                             NewtonianCollisionMonitor,
+                                             ActorsMonitor
+                                            )
 
-events = []
 trigger_regions = [intersection] + [m.connectingLane for m in intersection.maneuvers]
 
-monitor CoverageMonitor(coverageOut):
-  require monitor VehicleSignalMonitor(config, events)
-  require monitor ArrivingAtIntersectionMonitor({**config, 'network': network}, events)
-  require monitor StoppingMonitor(config, events)
-  require monitor RegionOverlapMonitor({**config, 'regions': trigger_regions}, events)
+monitor EventsMonitor(eventsOut):
+  require monitor VehicleSignalMonitor(config, eventsOut)
+  require monitor ArrivingAtIntersectionMonitor({**config, 'network': network}, eventsOut)
+  require monitor StoppingMonitor(config, eventsOut)
+  require monitor RegionOverlapMonitor({**config, 'regions': trigger_regions}, eventsOut)
+  require monitor OcclusionMonitor(config, eventsOut)
+  require monitor NewtonianCollisionMonitor(config, eventsOut)
+  require monitor ActorsMonitor(config, eventsOut)
 
-  for step in range(config['steps']):
+  while True:
     wait
-  coverageOut.update(to_coverage(events))
-
-  print('Coverage monitor last statement!')
-  wait
-
-  print('Should not reach here!')

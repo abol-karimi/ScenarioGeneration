@@ -20,8 +20,9 @@ from scenariogen.simulators.carla.monitors import (ForbidEgoCollisionsMonitor,
 
 
 if config['coverage_module']:
-  coverage_module = importlib.import_module(f"scenariogen.core.coverages.{config['coverage_module']}.monitor")
-  coverage = coverage_module.Coverage([])
+  coverage_module = importlib.import_module(f"scenariogen.core.coverages.{config['coverage_module']}")
+  coverage_monitor = importlib.import_module(f"scenariogen.core.coverages.{config['coverage_module']}.monitor")
+  coverage_events = []
 
 from scenariogen.core.geometry import CurvilinearTransform
 from scenariogen.simulators.carla.utils import vehicleLightState_to_signal
@@ -69,8 +70,9 @@ scenario Main():
       require monitor LabelCarsMonitor()
 
     if config['coverage_module']:
-      require monitor coverage_module.CoverageMonitor(coverage)
-      record final coverage as coverage
+      require monitor coverage_monitor.EventsMonitor(coverage_events)
+      record final coverage_events as events
+      record final coverage_module.to_coverage(coverage_events, config) as coverage
       
     record final seed_config as config
     record final tuple(names) as names

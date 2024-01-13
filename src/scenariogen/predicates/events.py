@@ -1,144 +1,188 @@
-from scenic.domains.driving.roads import Lane, Intersection
+from abc import ABC, abstractmethod
 
-from scenariogen.predicates.utils import time_to_term
 
-class ArrivedAtIntersectionEvent:
+class ActorEvent(ABC):
+    def __init__(self, vehicle, time):
+        self.vehicle = vehicle
+        self.time = time
+
+    @abstractmethod
+    def simplified(self):
+        pass
+
+    @abstractmethod
+    def __repr__(self):
+        pass
+
+    def __str__(self):
+        return repr(self.simplified())
+
+class ArrivedAtIntersectionEvent(ActorEvent):
     """Arrival of a vehicle at an intersection."""
 
-    def __init__(self, vehicle, lane, seconds):
-        self.vehicle = vehicle
+    def __init__(self, vehicle, lane, time):
+        super().__init__(vehicle, time)
         self.lane = lane
-        self.seconds = seconds
+    
+    def simplified(self):
+        return ArrivedAtIntersectionEvent(self.vehicle.name, self.lane.uid, self.time)
 
-    def __str__(self):
-        return f'arrivedFromLaneAtTime({self.vehicle.name}, {self.lane.uid}, {time_to_term(self.seconds)})'
+    def __repr__(self):
+        return f'arrivedFromLaneAtTime({self.vehicle}, {self.lane}, {self.time})'
+   
 
-
-class SignaledEvent:
+class SignaledEvent(ActorEvent):
     """A vehicle signaling when turning, stopping, etc."""
 
-    def __init__(self, vehicle, signal, seconds):
-        self.vehicle = vehicle
+    def __init__(self, vehicle, signal, time):
+        super().__init__(vehicle, time)
         self.signal = signal
-        self.seconds = seconds
 
-    def __str__(self):
-        return f'signaledAtTime({self.vehicle.name}, {self.signal.name.lower()}, {time_to_term(self.seconds)})'
+    def simplified(self):
+        return SignaledEvent(self.vehicle.name, self.signal.name.lower(), self.time)
+
+    def __repr__(self):
+        return f'signaledAtTime({self.vehicle}, {self.signal}, {self.time})'
 
 
-class StoppedEvent:
+class StoppedEvent(ActorEvent):
     """Slowing down to a speed threshold or less."""
 
-    def __init__(self, vehicle, seconds):
-        self.vehicle = vehicle
-        self.seconds = seconds
+    def simplified(self):
+        return StoppedEvent(self.vehicle.name, self.time)
 
-    def __str__(self):
-        return f'stoppedAtTime({self.vehicle.name}, {time_to_term(self.seconds)})'
+    def __repr__(self):
+        return f'stoppedAtTime({self.vehicle}, {self.time})'
 
 
-class MovedEvent:
+class MovedEvent(ActorEvent):
     """Speeding up to a speed threshold or more."""
 
-    def __init__(self, vehicle, seconds):
-        self.vehicle = vehicle
-        self.seconds = seconds
+    def simplified(self):
+        return MovedEvent(self.vehicle.name, self.time)
 
-    def __str__(self):
-        return f'movedAtTime({self.vehicle.name}, {time_to_term(self.seconds)})'
+    def __repr__(self):
+        return f'movedAtTime({self.vehicle}, {self.time})'
 
 
-class EnteredRegionEvent:
+class EnteredLaneEvent(ActorEvent):
     """When part of a vehicle enters the region."""
 
-    def __init__(self, vehicle, region, lane, seconds):
-        self.vehicle = vehicle
-        self.region = region
+    def __init__(self, vehicle, lane, time):
+        super().__init__(vehicle, time)
         self.lane = lane
-        self.seconds = seconds
 
-    def __str__(self):
-        if isinstance(self.region, Lane):
-            return f'enteredLaneAtTime({self.vehicle.name}, {self.region.uid}, {time_to_term(self.seconds)})'
-        elif isinstance(self.region, Intersection):
-            return f'enteredFromLaneAtTime({self.vehicle.name}, {self.lane.uid}, {time_to_term(self.seconds)})'
+    def simplified(self):
+        return EnteredLaneEvent(self.vehicle.name, self.lane.uid, self.time)
+
+    def __repr__(self):
+        return f'enteredLaneAtTime({self.vehicle}, {self.lane}, {self.time})'
 
 
-class LeftRegionEvent:
+class EnteredIntersectionEvent(ActorEvent):
+    """When part of a vehicle enters the region."""
+
+    def __init__(self, vehicle, lane, time):
+        super().__init__(vehicle, time)
+        self.lane = lane
+
+    def simplified(self):
+        return EnteredIntersectionEvent(self.vehicle.name, self.lane.uid, self.time)
+
+    def __repr__(self):
+        return f'enteredFromLaneAtTime({self.vehicle}, {self.lane}, {self.time})'
+
+
+class LeftLaneEvent(ActorEvent):
     """When the last part of a vehicle exits the region."""
 
-    def __init__(self, vehicle, region, lane, seconds):
-        self.vehicle = vehicle
-        self.region = region
+    def __init__(self, vehicle, lane, time):
+        super().__init__(vehicle, time)
         self.lane = lane
-        self.seconds = seconds
 
-    def __str__(self):
-        if isinstance(self.region, Lane):
-            return f'leftLaneAtTime({self.vehicle.name}, {self.region.uid}, {time_to_term(self.seconds)})'
-        elif isinstance(self.region, Intersection):
-            return f'leftToLaneAtTime({self.vehicle.name}, {self.lane.uid}, {time_to_term(self.seconds)})'       
+    def simplified(self):
+        return LeftLaneEvent(self.vehicle.name, self.lane.uid, self.time)
+
+    def __repr__(self):
+        return f'leftLaneAtTime({self.vehicle}, {self.lane}, {self.time})'
 
 
-class AppearedToOtherEvent:
+class LeftIntersectionEvent(ActorEvent):
+    """When the last part of a vehicle exits the region."""
+
+    def __init__(self, vehicle, lane, time):
+        super().__init__(vehicle, time)
+        self.lane = lane
+
+    def simplified(self):
+        return LeftIntersectionEvent(self.vehicle.name, self.lane.uid, self.time)
+
+    def __repr__(self):
+        return f'leftToLaneAtTime({self.vehicle}, {self.lane}, {self.time})'
+
+
+class AppearedToOtherEvent(ActorEvent):
     """Becoming visible to another agent."""
 
-    def __init__(self, vehicle, other, seconds):
-        self.vehicle = vehicle
+    def __init__(self, vehicle, other, time):
+        super().__init__(vehicle, time)
         self.other = other
-        self.seconds = seconds
 
-    def __str__(self):
-        return f'appearedToAtTime({self.vehicle.name}, {self.other.name}, {time_to_term(self.seconds)})'
+    def simplified(self):
+        return AppearedToOtherEvent(self.vehicle.name, self.other.name, self.time)
+
+    def __repr__(self):
+        return f'appearedToAtTime({self.vehicle}, {self.other}, {self.time})'
 
 
-class DisappearedFromOtherEvent:
+class DisappearedFromOtherEvent(ActorEvent):
     """Becoming invisible to another agent."""
 
-    def __init__(self, vehicle, other, seconds):
-        self.vehicle = vehicle
+    def __init__(self, vehicle, other, time):
+        super().__init__(vehicle, time)
         self.other = other
-        self.seconds = seconds
 
-    def __str__(self):
-        return f'disappearedFromAtTime({self.vehicle.name}, {self.other.name}, {time_to_term(self.seconds)})'
+    def simplified(self):
+        return DisappearedFromOtherEvent(self.vehicle.name, self.other.name, self.time)
+
+    def __repr__(self):
+        return f'disappearedFromAtTime({self.vehicle}, {self.other}, {self.time})'
 
 
-class ActorSpawnedEvent:
-    """Reporting the actors present in the scenario.
-    Assuming conservation of actors throught the scenario,
-    the list is static, so no time parameter needed.
-    """
+class ActorSpawnedEvent(ActorEvent):
+    """Reporting the actors present in the scenario."""
 
-    def __init__(self, vehicle, seconds):
-        self.vehicle = vehicle
-        self.seconds = seconds
+    def __init__(self, vehicle, lane, progress, time):
+        super().__init__(vehicle, time)
+        self.lane = lane
+        self.progress = progress
     
-    def __str__(self):
-        return f'actorSpawnedAtTime({self.vehicle.name}, {time_to_term(self.seconds)})'
+    def simplified(self):
+        return ActorSpawnedEvent(self.vehicle.name, self.lane.uid, int(self.progress), self.time)
+
+    def __repr__(self):
+        return f'actorSpawnedAtAlongLaneAtTime({self.vehicle}, {self.progress}, {self.lane}, {self.time})'
 
 
-class ActorDestroyedEvent:
-    """Reporting the actors present in the scenario.
-    Assuming conservation of actors throught the scenario,
-    the list is static, so no time parameter needed.
-    """
+class ActorDestroyedEvent(ActorEvent):
+    """Reporting the actors present in the scenario."""
+   
+    def simplified(self):
+        return ActorDestroyedEvent(self.vehicle.name, self.time)
 
-    def __init__(self, vehicle, seconds):
-        self.vehicle = vehicle
-        self.seconds = seconds
-    
-    def __str__(self):
-        return f'actorDestroyedEvent({self.vehicle.name}, {time_to_term(self.seconds)})'
+    def __repr__(self):
+        return f'actorDestroyedAtTime({self.vehicle}, {self.time})'
 
 
-class CollisionEvent:
+class CollisionEvent(ActorEvent):
     """Collision with other actors or props."""
 
-    def __init__(self, vehicle, other, seconds):
-        self.vehicle = vehicle
+    def __init__(self, vehicle, other, time):
+        super().__init__(vehicle, time)
         self.other = other
-        self.seconds = seconds
 
-    def __str__(self):
-        return f'collidedWithAtTime({self.vehicle.name}, {self.other.name}, {time_to_term(self.seconds)})'
+    def simplified(self):
+        return CollisionEvent(self.vehicle.name, self.other.name, self.time)
+
+    def __repr__(self):
+        return f'collidedWithAtTime({self.vehicle}, {self.other}, {self.time})'

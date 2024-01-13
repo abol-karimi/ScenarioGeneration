@@ -50,6 +50,7 @@ def run(config):
 
     if config['coverage_module']:
         coverages_path = Path(config['coverages_folder'])
+        events_path = coverages_path.parents[0]/'events'
        
     while time.time()-start_time < config['max_total_time']:
         try:
@@ -97,8 +98,11 @@ def run(config):
             
             if config['coverage_module']:
                 coverage_statements = sim_result.records['coverage']
+                events = [e.simplified() for e in sim_result.records['events']]
                 with open(coverages_path/seed_hash, 'w') as f:
                     f.write(jsonpickle.encode(coverage_statements, indent=1))
+                with open(events_path/seed_hash, 'w') as f:
+                    f.write(jsonpickle.encode(events, indent=1))
 
                 if coverage_statements:
                     coverage_predicates = coverage_statements.cast_to(PredicateCoverage)
