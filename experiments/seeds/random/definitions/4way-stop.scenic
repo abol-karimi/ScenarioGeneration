@@ -102,7 +102,8 @@ scenario SeedScenario():
     }
 
     blueprints = tuple(blueprint2dims.keys())
-    for i in range(DiscreteRange(1, max_nonegos)):
+    nonegos_count = Discrete({1:3, 2:3, 3:9, 4:2, 5:7, 6:4, 7:3, 8:3})
+    for i in range(nonegos_count):
       blueprint = Uniform(*blueprints)
       init_lane = Uniform(*intersection.incomingLanes, *intersection.outgoingLanes)
       x0 = Uniform(1, init_lane.centerline.length-3)
