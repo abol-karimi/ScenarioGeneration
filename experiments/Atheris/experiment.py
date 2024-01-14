@@ -38,7 +38,7 @@ if __name__ == '__main__':
     'crossOver': StructureAwareCrossOver(max_spline_knots_size=50,
                                         max_attempts=1,
                                         randomizer_seed=0),
-    'atheris_runs': 50, # each iteration takes about 60 seconds
+    'atheris_runs': 150, # each iteration takes about 60 seconds
     'max_seed_length': 1e+6, # 1 MB
   }
 

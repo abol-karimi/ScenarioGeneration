@@ -45,12 +45,11 @@ def run(config):
         settings.no_rendering_mode = True
         simulator.world.apply_settings(settings)
     
-    output_path = Path(config['output_folder'])
-    output_path.mkdir(parents=True, exist_ok=True)
+    fuzz_inputs_path = Path(config['fuzz_inputs_folder'])
+    fuzz_inputs_path.mkdir(parents=True, exist_ok=True)
 
     if config['coverage_module']:
-        coverages_path = Path(config['coverages_folder'])
-        events_path = coverages_path.parents[0]/'events'
+        events_path = Path(config['events_folder'])
        
     while time.time()-start_time < config['max_total_time']:
         try:
@@ -63,9 +62,6 @@ def run(config):
                                 maxIterations=config['simulate_maxIterations'],
                                 raiseGuardViolations=True
                                 )
-        except EgoCollisionError as err:
-            print(f'Ego collided with {err.other}, discarding the seed.')
-            continue
         except SimulationCreationError as e:
             print(f'Failed to create simulation: {e}')
             continue
@@ -91,37 +87,13 @@ def run(config):
             # Save the new seed
             seed_json_bytes = jsonpickle.encode(seed, indent=1).encode('utf-8')
             seed_hash = hashlib.sha1(seed_json_bytes).hexdigest()
-            with open(output_path/seed_hash, 'wb') as f:
+            with open(fuzz_inputs_path/seed_hash, 'wb') as f:
                 f.write(seed_json_bytes)
             seed_id += 1
             print(f'Saved the {ordinal(seed_id)} seed as {seed_hash}.')
             
             if config['coverage_module']:
-                coverage_statements = sim_result.records['coverage']
                 events = sim_result.records['events']
-                with open(coverages_path/seed_hash, 'w') as f:
-                    f.write(jsonpickle.encode(coverage_statements, indent=1))
                 with open(events_path/seed_hash, 'w') as f:
                     f.write(jsonpickle.encode(events, indent=1))
-
-                if coverage_statements:
-                    coverage_predicates = coverage_statements.cast_to(PredicateCoverage)
-                    coverage_predicateSet = coverage_statements.cast_to(PredicateSetCoverage)
-                    if len(coverage_statements - coverage_statements_seen) > 0 \
-                        or len(coverage_predicates - coverage_predicates_seen) > 0 \
-                        or len(coverage_predicateSet - coverage_predicateSet_seen) > 0:
-
-                        # Update total coverages seen
-                        coverage_statements_seen.update(coverage_statements)
-                        coverage_predicates_seen.update(coverage_predicates)
-                        coverage_predicateSet_seen.update(coverage_predicateSet)
-
-
-
-
-
-
-        
-
-            
                 

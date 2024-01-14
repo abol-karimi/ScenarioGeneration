@@ -62,7 +62,7 @@ def to_coverage(events, config):
     # Rename nonegos based on their spawn lane and progress relative to other nonegos on the same lane    
     for e in events:
       e.vehicle = old2new[e.vehicle]
-      if hasattr(e, 'other'):
+      if hasattr(e, 'other') and e.other in old2new:
         e.other = old2new[e.other]
 
   elif treat_unbounded_parameters == 'ignore':

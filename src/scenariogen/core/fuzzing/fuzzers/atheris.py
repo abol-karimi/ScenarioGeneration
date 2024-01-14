@@ -95,10 +95,8 @@ class SUTCallback:
       print(f'Exception in SUTCallback: {e}')
     finally:
       if sim_result:
-        coverage = sim_result.records['coverage']
         events = sim_result.records['events']
       else:
-        coverage = None
         events = None
 
     # Save coverage results to disk
@@ -114,21 +112,20 @@ class SUTCallback:
 class AtherisFuzzer:
   def __init__(self, config):
     self.config = config
-    self.output_path = Path(config['output_folder'])
     self.mutator = MutatorCallback(config['mutator'])
     self.crossOver = CrossOverCallback(config['crossOver'])
     self.libfuzzer_config = [f"-atheris_runs={config['atheris_runs']}",
-                             f"-artifact_prefix={self.output_path/'bugs'}/",
+                             f"-artifact_prefix={Path(config['bugs_folder'])}/",
                              f"-max_len={config['max_seed_length']}",
                              f"-timeout=300", # scenarios taking more than 5 minutes are considered as bugs
                              f"-report_slow_units=120", # scenarios taking more than 2 minutes are considered slow
                              f"-rss_limit_mb=16384",
-                             (self.output_path/'fuzz-inputs').as_posix(),
+                             Path(config['fuzz_inputs_folder']).as_posix(),
                              config['seeds_folder'],
                             ]
     self.SUT = SUTCallback({**config['SUT_config'],
                             **config['coverage_config'],
-                            'output_folder': config['output_folder'],
+                            'events_folder': config['events_folder'],
                             })
 
   def run(self, atheris_state=None):
