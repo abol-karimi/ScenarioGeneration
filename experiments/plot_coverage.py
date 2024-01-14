@@ -34,7 +34,7 @@ def plot(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage):
   statement_coverages = tuple(m['statement_coverage'] for m in measurements)
   for m in measurements:
     m['statement_coverage'].pred2args = {pred:args for pred,args in m['statement_coverage'].pred2args.items()
-                                         if not (pred.endswith('AtTime') or pred == 'changedSignalBetween')}
+                                         if pred in predicate_coverage_space.predicates}
 
   predicateSet_coverages = tuple(c.cast_to(PredicateSetCoverage) for c in statement_coverages)
   predicate_coverages = tuple(c.cast_to(PredicateCoverage) for c in statement_coverages)

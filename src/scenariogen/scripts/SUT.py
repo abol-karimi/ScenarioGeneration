@@ -3,6 +3,8 @@ import argparse
 import jsonpickle
 import importlib
 
+from scenic.domains.driving.roads import Network
+
 # This project
 from scenariogen.core.scenario import Scenario
 from scenariogen.core.errors import EgoCollisionError, NonegoCollisionError
@@ -82,6 +84,7 @@ else:
         coverage = sim_result.records['coverage']
         coverage.print()
 
+        config.update({'network': Network.fromFile(config['map'])})
         coverage_module = importlib.import_module(f'scenariogen.core.coverages.{args.coverage_module}')
         predicate_coverage_space = coverage_module.coverage_space(config)
         coverage_gap = predicate_coverage_space - coverage.cast_to(PredicateCoverage)

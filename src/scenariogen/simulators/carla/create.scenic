@@ -72,7 +72,7 @@ scenario Main():
     if config['coverage_module']:
       require monitor coverage_monitor.EventsMonitor(coverage_events)
       record final coverage_events as events
-      record final coverage_module.to_coverage(coverage_events, config) as coverage
+      record final coverage_module.to_coverage(coverage_events, {**config, 'network': network}) as coverage
       
     record final seed_config as config
     record final tuple(names) as names

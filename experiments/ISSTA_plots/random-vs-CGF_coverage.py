@@ -8,21 +8,27 @@ from functools import reduce
 import matplotlib.pyplot as plt
 import importlib
 
+from scenic.domains.driving.roads import Network
+
 from scenariogen.core.coverages.coverage import PredicateCoverage, PredicateSetCoverage
 
-def plot(experiment_type, gen_ego, test_ego, coverage_module_name, plot_label, plot_color, draw_predicate_coverage_space=False):
-  output_path = Path(f"experiments/{experiment_type}/output_{gen_ego}_{coverage_module_name}")
-  with open(tuple((output_path/'fuzz-inputs').glob('*'))[0], 'r') as f:
+
+def plot(experiment_type, gen_ego, test_ego, test_coverage, plot_label, plot_color, draw_predicate_coverage_space=False):
+  gen_coverage = test_coverage
+  fuzz_inputs_path = Path(f'experiments/{experiment_type}/gen_{gen_ego}_{gen_coverage}/fuzz-inputs')
+  coverage_file_path = Path(f'experiments/{experiment_type}/gen_{gen_ego}_{gen_coverage}/test_{test_ego}_{test_coverage}/coverage.json')
+
+  with open(tuple(fuzz_inputs_path.glob('*'))[0], 'r') as f:
     seed = jsonpickle.decode(f.read())
   
   config = {**seed.config,
-            'coverage_module': coverage_module_name
+            'coverage_module': test_coverage,
+            'network': Network.fromFile(seed.config['map']),
             }
-  coverage_module = importlib.import_module(f'scenariogen.core.coverages.{coverage_module_name}')
+  coverage_module = importlib.import_module(f'scenariogen.core.coverages.{test_coverage}')
   predicate_coverage_space = coverage_module.coverage_space(config)
 
-  coverage_file = output_path/f'coverage_{test_ego}_{coverage_module_name}.json'
-  with open(coverage_file, 'r') as f:
+  with open(coverage_file_path, 'r') as f:
     coverage = jsonpickle.decode(f.read())
 
   measurements = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements']},
@@ -32,7 +38,7 @@ def plot(experiment_type, gen_ego, test_ego, coverage_module_name, plot_label, p
   statement_coverages = tuple(m['statement_coverage'] for m in measurements)
   for m in measurements:
     m['statement_coverage'].pred2args = {pred:args for pred,args in m['statement_coverage'].pred2args.items()
-                                         if not (pred.endswith('AtTime') or pred == 'changedSignalBetween')}
+                                         if pred in predicate_coverage_space.predicates}
 
   predicateSet_coverages = tuple(c.cast_to(PredicateSetCoverage) for c in statement_coverages)
   predicate_coverages = tuple(c.cast_to(PredicateCoverage) for c in statement_coverages)
@@ -55,10 +61,10 @@ def plot(experiment_type, gen_ego, test_ego, coverage_module_name, plot_label, p
 
 
 if __name__ == '__main__':
-  coverage_module_name = 'traffic'
+  test_coverage = 'traffic'
   reports_config = (
-    ('random_search', 'TFPP', 'TFPP', coverage_module_name, 'Random search', 'b', False),
-    ('Atheris', 'TFPP', 'TFPP', coverage_module_name, 'Fuzzing', 'g', True),
+    ('random_search', 'TFPP', 'TFPP', test_coverage, 'Random search', 'b', False),
+    ('Atheris', 'TFPP', 'TFPP', test_coverage, 'Fuzzing', 'g', True),
   )
   fig_coverage = plt.figure()
   # fig_coverage.suptitle(f'Random vs. Coverage-Guided Fuzzing')
@@ -80,9 +86,9 @@ if __name__ == '__main__':
   ax2.set_ylabel('Predicate-Sets')
   ax3.set_ylabel('Predicates')
 
-  for experiment_type, gen_ego, test_ego, coverage_module_name, plot_label, plot_color, draw_predicate_coverage_space in reports_config:
-    plot(experiment_type, gen_ego, test_ego, coverage_module_name, plot_label, plot_color, draw_predicate_coverage_space)
+  for experiment_type, gen_ego, test_ego, test_coverage, plot_label, plot_color, draw_predicate_coverage_space in reports_config:
+    plot(experiment_type, gen_ego, test_ego, test_coverage, plot_label, plot_color, draw_predicate_coverage_space)
 
   ax3.legend()
   plt.tight_layout()
-  plt.savefig(f'experiments/ISSTA_plots/random-vs-CGF_coverage_{coverage_module_name}.png')
+  plt.savefig(f'experiments/ISSTA_plots/random-vs-CCGF_coverage_{test_coverage}.png')

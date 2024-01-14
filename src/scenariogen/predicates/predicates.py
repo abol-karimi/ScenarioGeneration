@@ -4,15 +4,15 @@ import clingo
 from scenariogen.core.signals import SignalType
 
 class TemporalOrder:
-  def __init__(self, ordinal2time):
-    self.ordinal2time = ordinal2time
+  def __init__(self, to_seconds):
+    self.to_seconds = to_seconds
 
   def lessThan(self, S, T):
-    lt = min_perceptible_time < self.ordinal2time[T.name] - self.ordinal2time[S.name]
+    lt = min_perceptible_time < self.to_seconds(T.name) - self.to_seconds(S.name)
     return clingo.Number(1) if lt else clingo.Number(0)
 
   def equal(self, S, T):
-    eq = abs(self.ordinal2time[S.name] - self.ordinal2time[T.name]) < min_perceptible_time
+    eq = abs(self.to_seconds(S.name) - self.to_seconds(T.name)) < min_perceptible_time
     return clingo.Number(1) if eq else clingo.Number(0)
 
 def geometry_atoms(network, intersection_uid):

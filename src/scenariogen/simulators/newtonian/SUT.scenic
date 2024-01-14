@@ -48,7 +48,7 @@ scenario Main():
 
     if config['coverage_module']:
       require monitor coverage_module.EventsMonitor(coverage_events)
-      record final coverage_module.to_coverage(coverage_events) as coverage
+      record final coverage_module.to_coverage(coverage_events, {**config, 'network': network}) as coverage
 
   compose:  
     do nonegos_scenario

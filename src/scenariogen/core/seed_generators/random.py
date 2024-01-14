@@ -98,7 +98,7 @@ def run(config):
             
             if config['coverage_module']:
                 coverage_statements = sim_result.records['coverage']
-                events = [e.simplified() for e in sim_result.records['events']]
+                events = sim_result.records['events']
                 with open(coverages_path/seed_hash, 'w') as f:
                     f.write(jsonpickle.encode(coverage_statements, indent=1))
                 with open(events_path/seed_hash, 'w') as f:

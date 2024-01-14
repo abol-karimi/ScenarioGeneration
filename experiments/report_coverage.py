@@ -34,10 +34,10 @@ def report1(experiment_type, ego, coverage):
   output_path = Path(f'experiments/{experiment_type}/output_{ego}_{coverage}')
   results_file = output_path/'results.json'
 
-  coverage_path = output_path/f'coverage_{ego}_{coverage}.json'
-  if coverage_path.is_file():
+  coverage_results_path = output_path/f'coverage_{ego}_{coverage}.json'
+  if coverage_results_path.is_file():
     # Resume
-    with open(coverage_path, 'r') as f:
+    with open(coverage_results_path, 'r') as f:
       results = jsonpickle.decode(f.read())
   else:
     # Start
@@ -54,7 +54,7 @@ def report1(experiment_type, ego, coverage):
         output = process_measurment1(measurement)
         measurement.update(output)
   
-  with open(coverage_path, 'w') as f:
+  with open(coverage_results_path, 'w') as f:
     f.write(jsonpickle.encode(results, indent=1))
 
 
@@ -115,10 +115,10 @@ def report2(experiment_type, seeds, gen_ego, gen_coverage, test_ego, test_covera
     'coverage_module': test_coverage,
   }
 
-  coverage_path = output_path/f'coverage_{test_ego}_{test_coverage}.json'
-  if coverage_path.is_file():
+  coverage_results_path = output_path/f'coverage_{test_ego}_{test_coverage}.json'
+  if coverage_results_path.is_file():
     # Resume
-    with open(coverage_path, 'r') as f:
+    with open(coverage_results_path, 'r') as f:
       results = jsonpickle.decode(f.read())
   else:
     # Start
@@ -136,18 +136,18 @@ def report2(experiment_type, seeds, gen_ego, gen_coverage, test_ego, test_covera
         try:
           output = process_measurment2(measurement, config)
         except KeyboardInterrupt:
-          with open(coverage_path, 'w') as f:
+          with open(coverage_results_path, 'w') as f:
             f.write(jsonpickle.encode(results, indent=1))
             sys.exit(1)
         else:
           measurement.update(output)
   
-  with open(coverage_path, 'w') as f:
+  with open(coverage_results_path, 'w') as f:
     f.write(jsonpickle.encode(results, indent=1))
 
 if __name__ == '__main__':
   reports_config = (
-    # ('Atheris', 'random', 'TFPP', 'traffic', 'TFPP', 'traffic'),
+    ('Atheris', 'random', 'TFPP', 'traffic', 'TFPP', 'traffic'),
     ('random_search', None, 'TFPP', 'traffic', 'TFPP', 'traffic'),
     # ('predicateFuzz', 'random', 'TFPP', 'traffic', 'TFPP', 'traffic'),
     # ('Atheris', 'random', 'TFPP', 'traffic', 'autopilot', 'traffic'),

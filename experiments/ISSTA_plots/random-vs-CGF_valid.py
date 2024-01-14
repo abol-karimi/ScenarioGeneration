@@ -7,7 +7,6 @@ import jsonpickle
 from functools import reduce
 import matplotlib.pyplot as plt
 
-from scenariogen.predicates.utils import predicates_of_logic_program
 
 def plot(experiment_type, experiment_name, coverage_ego):
   coverage_file = f'experiments/{experiment_type}/output_{experiment_name}/coverage_{coverage_ego}.json'

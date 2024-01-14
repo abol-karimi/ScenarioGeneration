@@ -37,8 +37,9 @@ if __name__ == '__main__':
             }
   
   fuzz_inputs_path = Path(config['output_folder'])
-  bugs_path = fuzz_inputs_path.parents[1]/'bugs'
+  bugs_path = fuzz_inputs_path.parents[0]/'bugs'
   coverages_path = Path(config['coverages_folder'])
+  events_path = coverages_path.parents[0]/'events'
 
   # Decide to resume or start
   results_file = fuzz_inputs_path.parents[0]/'results.json'
@@ -49,11 +50,14 @@ if __name__ == '__main__':
     fuzz_inputs_path.mkdir(parents=True, exist_ok=True)
     bugs_path.mkdir(parents=True, exist_ok=True)
     coverages_path.mkdir(parents=True, exist_ok=True)
+    events_path.mkdir(parents=True, exist_ok=True)
     for path in fuzz_inputs_path.glob('*'):
       path.unlink()
     for path in bugs_path.glob('*'):
       path.unlink()
     for path in coverages_path.glob('*'):
+      path.unlink()
+    for path in events_path.glob('*'):
       path.unlink()
     coverages = set()
     results = []
@@ -72,11 +76,11 @@ if __name__ == '__main__':
                         })
     print(f'\nMeasurement recorded!\n')
 
-  try:
-    tl.start(block=False)
-    generator_state = random_seed_generator.run(config)
-  except Exception as e:
-    print(f'Exception of type {type(e)} in random_search: {e}.')
+  # try:
+  tl.start(block=False)
+  generator_state = random_seed_generator.run(config)
+  # except Exception as e:
+  #   print(f'Exception of type {type(e)} in random_search: {e}.')
 
   print(f'Measurement thread will stop in {period} seconds...')
   time.sleep(period)

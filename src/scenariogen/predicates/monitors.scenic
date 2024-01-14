@@ -21,7 +21,7 @@ monitor VehicleSignalMonitor(config, eventsOut):
       signal_curr = vehicleLightState_to_signal(car.carlaActor.get_light_state())
       if signal[car] != signal_curr:
         signal[car] = signal_curr
-        eventsOut.append(SignaledEvent(car, signal_curr, time_seconds))
+        eventsOut.append(SignaledEvent(car.name, signal_curr.name.lower(), time_seconds))
     wait
 
 
@@ -49,7 +49,7 @@ monitor ArrivingAtIntersectionMonitor(config, eventsOut):
       if pre_arrived[car]:
         if (distance from (front of car) to intersection) <= config['arrival_distance']:
           pre_arrived[car] = False
-          eventsOut.append(ArrivedAtIntersectionEvent(car, network.laneAt(front of car), time_seconds))
+          eventsOut.append(ArrivedAtIntersectionEvent(car.name, network.laneAt(front of car).uid, time_seconds))
       else:
         pre_arrived[car] = True if (front of car) in incomingLanes and\
                                    (distance from (front of car) to intersection) > config['arrival_distance']\
@@ -66,10 +66,10 @@ monitor StoppingMonitor(config, eventsOut):
     time_seconds = simulation().currentTime * config['timestep']    
     for car in cars:
       if moving[car] and car.speed <= config['stopping_speed']:
-        eventsOut.append(StoppedEvent(car, time_seconds))
+        eventsOut.append(StoppedEvent(car.name, time_seconds))
         moving[car] = False
       elif (not moving[car]) and car.speed >= config['moving_speed']:
-        eventsOut.append(MovedEvent(car, time_seconds))
+        eventsOut.append(MovedEvent(car.name, time_seconds))
         moving[car] = True
     wait
 
@@ -88,15 +88,15 @@ monitor RegionOverlapMonitor(config, eventsOut):
       isOnRegion = region.intersects(PolygonalRegion(polygon=car._boundingPolygon))
       if isOnRegion and not wasOnRegion:
         if isinstance(region, Lane):
-          eventsOut.append(EnteredLaneEvent(car, region, time_seconds))
+          eventsOut.append(EnteredLaneEvent(car.name, region.uid, time_seconds))
         elif isinstance(region, Intersection):
-          eventsOut.append(EnteredIntersectionEvent(car, car.lane, time_seconds))
+          eventsOut.append(EnteredIntersectionEvent(car.name, car.lane.uid, time_seconds))
         occupiedRegions[car].add(region.uid)
       elif wasOnRegion and not isOnRegion:
         if isinstance(region, Lane):
-          eventsOut.append(LeftLaneEvent(car, region, time_seconds))
+          eventsOut.append(LeftLaneEvent(car.name, region.uid, time_seconds))
         elif isinstance(region, Intersection):
-          eventsOut.append(LeftIntersectionEvent(car, car.lane, time_seconds))
+          eventsOut.append(LeftIntersectionEvent(car.name, car.lane.uid, time_seconds))
         occupiedRegions[car].remove(region.uid)
     wait
 
@@ -113,10 +113,10 @@ monitor OcclusionMonitor(config, eventsOut):
     for c1, c2 in permutations(cars, 2):
       if (c1 can see c2) and not could_see[c1, c2]:
         could_see[c1, c2] = True
-        eventsOut.append(AppearedToOtherEvent(c2, c1, time_seconds))
+        eventsOut.append(AppearedToOtherEvent(c2.name, c1.name, time_seconds))
       elif (not c1 can see c2) and could_see[c1, c2]:
         could_see[c1, c2] = False
-        eventsOut.append(DisappearedFromOtherEvent(c2, c1, time_seconds))
+        eventsOut.append(DisappearedFromOtherEvent(c2.name, c1.name, time_seconds))
     wait
 
 
@@ -129,7 +129,9 @@ monitor CarlaCollisionMonitor(config, eventsOut):
   carla_world = simulation().world
   bp = carla_world.get_blueprint_library().find('sensor.other.collision')
   sensors = []
+  carla2scenic = {}
   for agent in simulation().agents:
+    carla2scenic[agent.carlaActor.id] = agent.name
     sensor = carla_world.spawn_actor(bp, carla.Transform(), attach_to=agent.carlaActor)
     sensors.append(sensor)
     sensor.listen(lambda e: on_collision(e, event_queue))
@@ -138,7 +140,13 @@ monitor CarlaCollisionMonitor(config, eventsOut):
     time_seconds = simulation().currentTime * config['timestep']
     while not event_queue.empty():
       event = event_queue.get()
-      eventsOut.append(CollisionEvent(event.actor, event.other_actor, time_seconds))
+      actor_name = carla2scenic[event.actor.id]
+      if event.other_actor.id in carla2scenic:
+        other_name = carla2scenic[event.other_actor.id]
+      else:
+        other_name = f"{event.other_actor.type_id.replace('.', '_')}_{event.other_actor.id}"
+
+      eventsOut.append(CollisionEvent(actor_name, other_name, time_seconds))
     wait
   
   for sensor in sensors:
@@ -155,7 +163,7 @@ monitor ActorsMonitor(config, eventsOut):
   for agent in simulation().agents:
     transform = CurvilinearTransform(agent.lane.centerline.lineString.coords)
     progress = transform.curvilinear(agent.position)[0]
-    eventsOut.append(ActorSpawnedEvent(agent, agent.lane, progress, 0))
+    eventsOut.append(ActorSpawnedEvent(agent.name, agent.lane.uid, int(progress), 0))
   
   wait
 

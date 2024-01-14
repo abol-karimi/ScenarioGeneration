@@ -23,5 +23,7 @@ monitor EventsMonitor(eventsOut):
   require monitor CarlaCollisionMonitor(config, eventsOut)
   require monitor ActorsMonitor(config, eventsOut)
 
+  eventsOut.clear()
+
   while True:
     wait
