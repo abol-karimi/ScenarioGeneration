@@ -33,13 +33,9 @@ def plot(experiment_type, gen_ego, test_ego, test_coverage, plot_label, plot_col
 
   measurements = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements']},
                           coverage)['measurements']
-  measurements = [m for m in measurements if 'statement_coverage' in m]
+  # measurements = [m for m in measurements if 'statement_coverage' in m]
   exe_times = tuple(m['exe_time'] for m in measurements)
   statement_coverages = tuple(m['statement_coverage'] for m in measurements)
-  for m in measurements:
-    m['statement_coverage'].pred2args = {pred:args for pred,args in m['statement_coverage'].pred2args.items()
-                                         if pred in predicate_coverage_space.predicates}
-
   predicateSet_coverages = tuple(c.cast_to(PredicateSetCoverage) for c in statement_coverages)
   predicate_coverages = tuple(c.cast_to(PredicateCoverage) for c in statement_coverages)
 
@@ -55,9 +51,9 @@ def plot(experiment_type, gen_ego, test_ego, test_coverage, plot_label, plot_col
 
   ax1.plot(exe_times_acc, tuple(len(c) for c in statement_coverages_acc), f'{plot_color}-', label=plot_label)
   ax2.plot(exe_times_acc, tuple(len(c) for c in predicateSet_coverages_acc), f'{plot_color}-', label=plot_label)
-  ax3.plot(exe_times_acc, tuple(len(c & predicate_coverage_space) for c in predicate_coverages_acc), f'{plot_color}-', label=plot_label)
+  ax3.plot(exe_times_acc, tuple(len(c) for c in predicate_coverages_acc), f'{plot_color}-', label=plot_label)
   if draw_predicate_coverage_space:
-    ax3.plot(exe_times_acc, tuple(len(predicate_coverage_space) for c in range(len(exe_times_acc))), 'r--', label='Predicate-Coverage Space')
+    ax3.plot(exe_times_acc, tuple(len(predicate_coverage_space) for _ in range(len(exe_times_acc))), 'r--', label='Predicate-Coverage Space')
 
 
 if __name__ == '__main__':

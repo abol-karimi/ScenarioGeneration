@@ -8,7 +8,10 @@ from scenariogen.predicates.predicates import TemporalOrder, geometry_atoms
 from scenariogen.predicates.events import ActorSpawnedEvent
 
 
-treat_unbounded_parameters = 'ignore'
+treat_unbounded_parameters = 'ordinal'
+# predicate_ban_tests = [lambda p: p.endswith('AtTime'),
+#                        lambda p: p == 'changedSignalBetween']
+predicate_ban_tests = []
 
 
 def coverage_space(config):
@@ -47,7 +50,7 @@ def to_coverage(events, config):
             for i, e in enumerate(lane2spawnEvents[l])}
   old2new['ego'] = 'ego'
 
-  if treat_unbounded_parameters == 'to_ordinal':
+  if treat_unbounded_parameters == 'ordinal':
     banned_terms = set()
     to_seconds = lambda x: ordinal2time[x]
 
@@ -88,9 +91,15 @@ def to_coverage(events, config):
   ctl.configuration.solve.models = "1"
   statement_coverage = StatementCoverage([])
 
+  predicate_coverage_space = coverage_space(config)
+
   with ctl.solve(yield_=True) as handle:
     for model in handle:
       for atom in model.symbols(atoms=True):
+        if any(test(atom.name) for test in predicate_ban_tests):
+          continue
+        if not atom.name in predicate_coverage_space.predicates:
+          continue
         args = tuple('_' if arg in banned_terms else arg
                      for arg in map(str, atom.arguments))
         statement_coverage.add(atom.name, args)
