@@ -2,724 +2,724 @@
  {
   "py/object": "scenariogen.predicates.events.SignaledEvent",
   "vehicle": "ego",
-  "time": "t0",
+  "time": 0.0,
   "signal": "left"
  },
  {
   "py/object": "scenariogen.predicates.events.SignaledEvent",
-  "vehicle": "road8_lane2_v0",
-  "time": "t0",
+  "vehicle": "road8_lane2_0",
+  "time": 0.0,
   "signal": "left"
  },
  {
   "py/object": "scenariogen.predicates.events.SignaledEvent",
-  "vehicle": "road44_lane2_v0",
-  "time": "t0",
+  "vehicle": "road44_lane2_0",
+  "time": 0.0,
   "signal": "left"
  },
  {
   "py/object": "scenariogen.predicates.events.SignaledEvent",
-  "vehicle": "road9_lane1_v1",
-  "time": "t0",
+  "vehicle": "road9_lane1_0",
+  "time": 0.0,
   "signal": "left"
  },
  {
   "py/object": "scenariogen.predicates.events.SignaledEvent",
-  "vehicle": "road9_lane1_v1",
-  "time": "t0",
+  "vehicle": "road9_lane1_0",
+  "time": 0.0,
   "signal": "left"
  },
  {
   "py/object": "scenariogen.predicates.events.SignaledEvent",
-  "vehicle": "road9_lane3_v0",
-  "time": "t0",
+  "vehicle": "road9_lane3_0",
+  "time": 0.0,
   "signal": "left"
  },
  {
   "py/object": "scenariogen.predicates.events.SignaledEvent",
-  "vehicle": "road9_lane0_v0",
-  "time": "t0",
+  "vehicle": "road9_lane0_0",
+  "time": 0.0,
   "signal": "left"
  },
  {
   "py/object": "scenariogen.predicates.events.SignaledEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t0",
+  "vehicle": "road8_lane0_0",
+  "time": 0.0,
   "signal": "left"
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t0"
+  "time": 0.0
  },
  {
   "py/object": "scenariogen.predicates.events.AppearedToOtherEvent",
-  "vehicle": "road9_lane1_v1",
-  "time": "t0",
-  "other": "road9_lane0_v0"
+  "vehicle": "road9_lane1_0",
+  "time": 0.0,
+  "other": "road9_lane0_0"
  },
  {
   "py/object": "scenariogen.predicates.events.AppearedToOtherEvent",
-  "vehicle": "road44_lane2_v0",
-  "time": "t0",
-  "other": "road8_lane0_v0"
+  "vehicle": "road44_lane2_0",
+  "time": 0.0,
+  "other": "road8_lane0_0"
  },
  {
   "py/object": "scenariogen.predicates.events.AppearedToOtherEvent",
-  "vehicle": "road9_lane1_v1",
-  "time": "t0",
-  "other": "road8_lane0_v0"
+  "vehicle": "road9_lane1_0",
+  "time": 0.0,
+  "other": "road8_lane0_0"
  },
  {
   "py/object": "scenariogen.predicates.events.ActorSpawnedEvent",
   "vehicle": "ego",
-  "time": "t0",
+  "time": 0,
   "lane": "road45_lane2",
   "progress": 20
  },
  {
   "py/object": "scenariogen.predicates.events.ActorSpawnedEvent",
-  "vehicle": "road8_lane2_v0",
-  "time": "t0",
+  "vehicle": "road8_lane2_0",
+  "time": 0,
   "lane": "road8_lane2",
   "progress": 29
  },
  {
   "py/object": "scenariogen.predicates.events.ActorSpawnedEvent",
-  "vehicle": "road44_lane2_v0",
-  "time": "t0",
+  "vehicle": "road44_lane2_0",
+  "time": 0,
   "lane": "road44_lane2",
   "progress": 1
  },
  {
   "py/object": "scenariogen.predicates.events.ActorSpawnedEvent",
-  "vehicle": "road9_lane1_v1",
-  "time": "t0",
+  "vehicle": "road9_lane1_0",
+  "time": 0,
   "lane": "road9_lane1",
   "progress": 1
  },
  {
   "py/object": "scenariogen.predicates.events.ActorSpawnedEvent",
-  "vehicle": "road9_lane1_v1",
-  "time": "t0",
+  "vehicle": "road9_lane1_0",
+  "time": 0,
   "lane": "road9_lane1",
   "progress": 121
  },
  {
   "py/object": "scenariogen.predicates.events.ActorSpawnedEvent",
-  "vehicle": "road9_lane3_v0",
-  "time": "t0",
+  "vehicle": "road9_lane3_0",
+  "time": 0,
   "lane": "road9_lane3",
   "progress": 1
  },
  {
   "py/object": "scenariogen.predicates.events.ActorSpawnedEvent",
-  "vehicle": "road9_lane0_v0",
-  "time": "t0",
+  "vehicle": "road9_lane0_0",
+  "time": 0,
   "lane": "road9_lane0",
   "progress": 127
  },
  {
   "py/object": "scenariogen.predicates.events.ActorSpawnedEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t0",
+  "vehicle": "road8_lane0_0",
+  "time": 0,
   "lane": "road8_lane0",
   "progress": 28
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t1"
+  "time": 0.05
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t2"
+  "time": 0.55
  },
  {
   "py/object": "scenariogen.predicates.events.LeftIntersectionEvent",
-  "vehicle": "road9_lane1_v1",
-  "time": "t3",
+  "vehicle": "road9_lane1_0",
+  "time": 1.05,
   "lane": "road9_lane1"
  },
  {
   "py/object": "scenariogen.predicates.events.LeftLaneEvent",
-  "vehicle": "road9_lane1_v1",
-  "time": "t3",
+  "vehicle": "road9_lane1_0",
+  "time": 1.05,
   "lane": "road415_lane1"
  },
  {
   "py/object": "scenariogen.predicates.events.LeftLaneEvent",
-  "vehicle": "road9_lane1_v1",
-  "time": "t3",
+  "vehicle": "road9_lane1_0",
+  "time": 1.05,
   "lane": "road467_lane0"
  },
  {
   "py/object": "scenariogen.predicates.events.DisappearedFromOtherEvent",
-  "vehicle": "road9_lane1_v1",
-  "time": "t4",
-  "other": "road9_lane0_v0"
+  "vehicle": "road9_lane1_0",
+  "time": 1.1,
+  "other": "road9_lane0_0"
  },
  {
   "py/object": "scenariogen.predicates.events.LeftIntersectionEvent",
-  "vehicle": "road44_lane2_v0",
-  "time": "t5",
+  "vehicle": "road44_lane2_0",
+  "time": 1.1500000000000001,
   "lane": "road44_lane2"
  },
  {
   "py/object": "scenariogen.predicates.events.LeftLaneEvent",
-  "vehicle": "road44_lane2_v0",
-  "time": "t5",
+  "vehicle": "road44_lane2_0",
+  "time": 1.1500000000000001,
   "lane": "road507_lane0"
  },
  {
   "py/object": "scenariogen.predicates.events.LeftLaneEvent",
-  "vehicle": "road44_lane2_v0",
-  "time": "t5",
+  "vehicle": "road44_lane2_0",
+  "time": 1.1500000000000001,
   "lane": "road553_lane0"
  },
  {
   "py/object": "scenariogen.predicates.events.DisappearedFromOtherEvent",
-  "vehicle": "road44_lane2_v0",
-  "time": "t5",
-  "other": "road8_lane0_v0"
+  "vehicle": "road44_lane2_0",
+  "time": 1.1500000000000001,
+  "other": "road8_lane0_0"
  },
  {
   "py/object": "scenariogen.predicates.events.AppearedToOtherEvent",
-  "vehicle": "road9_lane0_v0",
-  "time": "t6",
-  "other": "road9_lane1_v1"
+  "vehicle": "road9_lane0_0",
+  "time": 1.85,
+  "other": "road9_lane1_0"
  },
  {
   "py/object": "scenariogen.predicates.events.DisappearedFromOtherEvent",
-  "vehicle": "road9_lane0_v0",
-  "time": "t7",
-  "other": "road9_lane1_v1"
+  "vehicle": "road9_lane0_0",
+  "time": 2.25,
+  "other": "road9_lane1_0"
  },
  {
   "py/object": "scenariogen.predicates.events.AppearedToOtherEvent",
-  "vehicle": "road9_lane1_v1",
-  "time": "t8",
-  "other": "road9_lane0_v0"
+  "vehicle": "road9_lane1_0",
+  "time": 2.5500000000000003,
+  "other": "road9_lane0_0"
  },
  {
   "py/object": "scenariogen.predicates.events.DisappearedFromOtherEvent",
-  "vehicle": "road9_lane1_v1",
-  "time": "t9",
-  "other": "road8_lane0_v0"
+  "vehicle": "road9_lane1_0",
+  "time": 3.8000000000000003,
+  "other": "road8_lane0_0"
  },
  {
   "py/object": "scenariogen.predicates.events.EnteredIntersectionEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t10",
+  "vehicle": "road8_lane0_0",
+  "time": 4.9,
   "lane": "road8_lane0"
  },
  {
   "py/object": "scenariogen.predicates.events.EnteredLaneEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t10",
+  "vehicle": "road8_lane0_0",
+  "time": 4.9,
   "lane": "road415_lane0"
  },
  {
   "py/object": "scenariogen.predicates.events.EnteredLaneEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t10",
+  "vehicle": "road8_lane0_0",
+  "time": 4.9,
   "lane": "road489_lane0"
  },
  {
   "py/object": "scenariogen.predicates.events.AppearedToOtherEvent",
-  "vehicle": "road9_lane1_v1",
-  "time": "t11",
-  "other": "road9_lane3_v0"
+  "vehicle": "road9_lane1_0",
+  "time": 5.0,
+  "other": "road9_lane3_0"
  },
  {
   "py/object": "scenariogen.predicates.events.AppearedToOtherEvent",
-  "vehicle": "road9_lane3_v0",
-  "time": "t12",
-  "other": "road9_lane1_v1"
+  "vehicle": "road9_lane3_0",
+  "time": 5.6000000000000005,
+  "other": "road9_lane1_0"
  },
  {
   "py/object": "scenariogen.predicates.events.DisappearedFromOtherEvent",
-  "vehicle": "road9_lane1_v1",
-  "time": "t13",
-  "other": "road9_lane0_v0"
+  "vehicle": "road9_lane1_0",
+  "time": 5.75,
+  "other": "road9_lane0_0"
  },
  {
   "py/object": "scenariogen.predicates.events.AppearedToOtherEvent",
-  "vehicle": "road9_lane0_v0",
-  "time": "t14",
-  "other": "road9_lane1_v1"
+  "vehicle": "road9_lane0_0",
+  "time": 5.9,
+  "other": "road9_lane1_0"
  },
  {
   "py/object": "scenariogen.predicates.events.AppearedToOtherEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t15",
+  "vehicle": "road8_lane0_0",
+  "time": 6.2,
   "other": "ego"
  },
  {
   "py/object": "scenariogen.predicates.events.EnteredLaneEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t16",
+  "vehicle": "road8_lane0_0",
+  "time": 7.1000000000000005,
   "lane": "road552_lane0"
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t17"
+  "time": 7.3500000000000005
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t18"
+  "time": 7.45
  },
  {
   "py/object": "scenariogen.predicates.events.EnteredLaneEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t19",
+  "vehicle": "road8_lane0_0",
+  "time": 7.550000000000001,
   "lane": "road552_lane1"
  },
  {
   "py/object": "scenariogen.predicates.events.EnteredLaneEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t20",
+  "vehicle": "road8_lane0_0",
+  "time": 7.65,
   "lane": "road455_lane0"
  },
  {
   "py/object": "scenariogen.predicates.events.EnteredLaneEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t20",
+  "vehicle": "road8_lane0_0",
+  "time": 7.65,
   "lane": "road481_lane0"
  },
  {
   "py/object": "scenariogen.predicates.events.ArrivedAtIntersectionEvent",
   "vehicle": "ego",
-  "time": "t21",
+  "time": 7.8500000000000005,
   "lane": "road45_lane2"
  },
  {
   "py/object": "scenariogen.predicates.events.LeftLaneEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t21",
+  "vehicle": "road8_lane0_0",
+  "time": 7.8500000000000005,
   "lane": "road489_lane0"
  },
  {
   "py/object": "scenariogen.predicates.events.EnteredLaneEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t22",
+  "vehicle": "road8_lane0_0",
+  "time": 8.0,
   "lane": "road553_lane0"
+ },
+ {
+  "py/object": "scenariogen.predicates.events.LeftLaneEvent",
+  "vehicle": "road8_lane0_0",
+  "time": 8.1,
+  "lane": "road552_lane0"
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t23"
- },
- {
-  "py/object": "scenariogen.predicates.events.LeftLaneEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t23",
-  "lane": "road552_lane0"
+  "time": 8.15
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t24"
+  "time": 8.35
  },
  {
   "py/object": "scenariogen.predicates.events.DisappearedFromOtherEvent",
-  "vehicle": "road9_lane3_v0",
-  "time": "t25",
-  "other": "road9_lane1_v1"
+  "vehicle": "road9_lane3_0",
+  "time": 8.35,
+  "other": "road9_lane1_0"
  },
  {
   "py/object": "scenariogen.predicates.events.EnteredLaneEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t26",
+  "vehicle": "road8_lane0_0",
+  "time": 8.4,
   "lane": "road553_lane1"
  },
  {
   "py/object": "scenariogen.predicates.events.DisappearedFromOtherEvent",
-  "vehicle": "road9_lane1_v1",
-  "time": "t27",
-  "other": "road9_lane3_v0"
+  "vehicle": "road9_lane1_0",
+  "time": 8.450000000000001,
+  "other": "road9_lane3_0"
  },
  {
   "py/object": "scenariogen.predicates.events.LeftLaneEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t28",
+  "vehicle": "road8_lane0_0",
+  "time": 8.55,
   "lane": "road552_lane1"
  },
  {
   "py/object": "scenariogen.predicates.events.EnteredLaneEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t29",
+  "vehicle": "road8_lane0_0",
+  "time": 8.65,
   "lane": "road444_lane0"
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t30"
+  "time": 8.8
  },
  {
   "py/object": "scenariogen.predicates.events.LeftLaneEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t31",
+  "vehicle": "road8_lane0_0",
+  "time": 8.85,
   "lane": "road455_lane0"
  },
  {
   "py/object": "scenariogen.predicates.events.LeftLaneEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t31",
+  "vehicle": "road8_lane0_0",
+  "time": 8.85,
   "lane": "road481_lane0"
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t32"
+  "time": 9.0
  },
  {
   "py/object": "scenariogen.predicates.events.LeftLaneEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t32",
+  "vehicle": "road8_lane0_0",
+  "time": 9.0,
   "lane": "road553_lane0"
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t33"
+  "time": 9.25
+ },
+ {
+  "py/object": "scenariogen.predicates.events.MovedEvent",
+  "vehicle": "ego",
+  "time": 9.4
  },
  {
   "py/object": "scenariogen.predicates.events.LeftLaneEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t34",
+  "vehicle": "road8_lane0_0",
+  "time": 9.4,
   "lane": "road553_lane1"
  },
  {
-  "py/object": "scenariogen.predicates.events.MovedEvent",
-  "vehicle": "ego",
-  "time": "t35"
+  "py/object": "scenariogen.predicates.events.AppearedToOtherEvent",
+  "vehicle": "road8_lane0_0",
+  "time": 9.450000000000001,
+  "other": "road9_lane3_0"
  },
  {
   "py/object": "scenariogen.predicates.events.AppearedToOtherEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t35",
-  "other": "road9_lane3_v0"
- },
- {
-  "py/object": "scenariogen.predicates.events.AppearedToOtherEvent",
-  "vehicle": "road9_lane3_v0",
-  "time": "t35",
-  "other": "road8_lane0_v0"
+  "vehicle": "road9_lane3_0",
+  "time": 9.450000000000001,
+  "other": "road8_lane0_0"
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t36"
+  "time": 9.600000000000001
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t37"
+  "time": 9.75
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t38"
+  "time": 9.850000000000001
+ },
+ {
+  "py/object": "scenariogen.predicates.events.MovedEvent",
+  "vehicle": "ego",
+  "time": 10.0
+ },
+ {
+  "py/object": "scenariogen.predicates.events.StoppedEvent",
+  "vehicle": "ego",
+  "time": 10.100000000000001
  },
  {
   "py/object": "scenariogen.predicates.events.LeftIntersectionEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t39",
+  "vehicle": "road8_lane0_0",
+  "time": 10.100000000000001,
   "lane": "road9_lane0"
  },
  {
   "py/object": "scenariogen.predicates.events.LeftLaneEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t39",
+  "vehicle": "road8_lane0_0",
+  "time": 10.100000000000001,
   "lane": "road415_lane0"
  },
  {
   "py/object": "scenariogen.predicates.events.LeftLaneEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t39",
+  "vehicle": "road8_lane0_0",
+  "time": 10.100000000000001,
   "lane": "road444_lane0"
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t40"
+  "time": 10.25
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t41"
+  "time": 10.350000000000001
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t42"
+  "time": 10.5
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t43"
- },
- {
-  "py/object": "scenariogen.predicates.events.MovedEvent",
-  "vehicle": "ego",
-  "time": "t44"
+  "time": 10.600000000000001
  },
  {
   "py/object": "scenariogen.predicates.events.AppearedToOtherEvent",
-  "vehicle": "road9_lane1_v1",
-  "time": "t45",
-  "other": "road9_lane1_v1"
+  "vehicle": "road9_lane1_0",
+  "time": 10.700000000000001,
+  "other": "road9_lane1_0"
+ },
+ {
+  "py/object": "scenariogen.predicates.events.MovedEvent",
+  "vehicle": "ego",
+  "time": 10.75
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t46"
+  "time": 10.850000000000001
  },
  {
   "py/object": "scenariogen.predicates.events.DisappearedFromOtherEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t47",
+  "vehicle": "road8_lane0_0",
+  "time": 10.9,
   "other": "ego"
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t48"
- },
- {
-  "py/object": "scenariogen.predicates.events.StoppedEvent",
-  "vehicle": "ego",
-  "time": "t49"
+  "time": 11.05
  },
  {
   "py/object": "scenariogen.predicates.events.AppearedToOtherEvent",
   "vehicle": "ego",
-  "time": "t50",
-  "other": "road9_lane3_v0"
- },
- {
-  "py/object": "scenariogen.predicates.events.MovedEvent",
-  "vehicle": "ego",
-  "time": "t51"
+  "time": 11.100000000000001,
+  "other": "road9_lane3_0"
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t52"
+  "time": 11.15
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t53"
+  "time": 11.350000000000001
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t54"
+  "time": 11.450000000000001
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t55"
+  "time": 11.700000000000001
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t56"
+  "time": 11.75
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t57"
+  "time": 12.0
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t58"
+  "time": 12.05
  },
  {
   "py/object": "scenariogen.predicates.events.DisappearedFromOtherEvent",
-  "vehicle": "road8_lane0_v0",
-  "time": "t59",
-  "other": "road9_lane3_v0"
+  "vehicle": "road8_lane0_0",
+  "time": 12.200000000000001,
+  "other": "road9_lane3_0"
  },
  {
   "py/object": "scenariogen.predicates.events.DisappearedFromOtherEvent",
-  "vehicle": "road9_lane3_v0",
-  "time": "t59",
-  "other": "road8_lane0_v0"
+  "vehicle": "road9_lane3_0",
+  "time": 12.200000000000001,
+  "other": "road8_lane0_0"
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t60"
+  "time": 12.25
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t61"
+  "time": 12.3
  },
  {
   "py/object": "scenariogen.predicates.events.AppearedToOtherEvent",
-  "vehicle": "road9_lane3_v0",
-  "time": "t62",
+  "vehicle": "road9_lane3_0",
+  "time": 13.3,
   "other": "ego"
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t63"
+  "time": 14.25
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t64"
+  "time": 14.3
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t65"
+  "time": 14.75
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t66"
+  "time": 14.8
  },
  {
   "py/object": "scenariogen.predicates.events.DisappearedFromOtherEvent",
   "vehicle": "ego",
-  "time": "t67",
-  "other": "road9_lane3_v0"
+  "time": 15.25,
+  "other": "road9_lane3_0"
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t68"
- },
- {
-  "py/object": "scenariogen.predicates.events.StoppedEvent",
-  "vehicle": "ego",
-  "time": "t69"
+  "time": 16.0
  },
  {
   "py/object": "scenariogen.predicates.events.ArrivedAtIntersectionEvent",
-  "vehicle": "road9_lane3_v0",
-  "time": "t70",
+  "vehicle": "road9_lane3_0",
+  "time": 16.05,
   "lane": "road9_lane3"
  },
  {
-  "py/object": "scenariogen.predicates.events.MovedEvent",
-  "vehicle": "ego",
-  "time": "t71"
- },
- {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t72"
+  "time": 16.05
  },
  {
   "py/object": "scenariogen.predicates.events.DisappearedFromOtherEvent",
-  "vehicle": "road9_lane0_v0",
-  "time": "t73",
-  "other": "road9_lane1_v1"
+  "vehicle": "road9_lane0_0",
+  "time": 16.400000000000002,
+  "other": "road9_lane1_0"
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t74"
+  "time": 16.45
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t75"
+  "time": 16.5
+ },
+ {
+  "py/object": "scenariogen.predicates.events.MovedEvent",
+  "vehicle": "ego",
+  "time": 16.75
  },
  {
   "py/object": "scenariogen.predicates.events.EnteredIntersectionEvent",
   "vehicle": "ego",
-  "time": "t76",
+  "time": 16.75,
   "lane": "road45_lane2"
  },
  {
   "py/object": "scenariogen.predicates.events.EnteredLaneEvent",
   "vehicle": "ego",
-  "time": "t76",
+  "time": 16.75,
   "lane": "road481_lane0"
  },
  {
   "py/object": "scenariogen.predicates.events.EnteredLaneEvent",
   "vehicle": "ego",
-  "time": "t76",
+  "time": 16.75,
   "lane": "road553_lane0"
  },
  {
+  "py/object": "scenariogen.predicates.events.StoppedEvent",
+  "vehicle": "ego",
+  "time": 16.8
+ },
+ {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t77"
+  "time": 17.05
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t78"
+  "time": 17.1
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t79"
+  "time": 17.35
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t80"
+  "time": 17.400000000000002
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t81"
+  "time": 17.6
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t82"
+  "time": 17.7
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t83"
+  "time": 17.95
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t84"
+  "time": 18.0
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t85"
+  "time": 18.2
  },
  {
   "py/object": "scenariogen.predicates.events.StoppedEvent",
   "vehicle": "ego",
-  "time": "t86"
+  "time": 18.3
  },
  {
   "py/object": "scenariogen.predicates.events.MovedEvent",
   "vehicle": "ego",
-  "time": "t87"
+  "time": 18.5
  },
  {
   "py/object": "scenariogen.predicates.events.DisappearedFromOtherEvent",
-  "vehicle": "road9_lane1_v1",
-  "time": "t88",
-  "other": "road9_lane1_v1"
+  "vehicle": "road9_lane1_0",
+  "time": 19.35,
+  "other": "road9_lane1_0"
  },
  {
   "py/object": "scenariogen.predicates.events.AppearedToOtherEvent",
-  "vehicle": "road9_lane1_v1",
-  "time": "t89",
-  "other": "road8_lane0_v0"
+  "vehicle": "road9_lane1_0",
+  "time": 19.75,
+  "other": "road8_lane0_0"
  }
 ]

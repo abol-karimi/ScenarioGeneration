@@ -6,7 +6,7 @@ config = globalParameters.config
 # imports
 from tests.compose.newtonian.scenarios import NonegosScenario, DummyScenario, RecordEvents
 import importlib
-ego_module = importlib.import_module(config['ego_module'])
+ego_module = importlib.import_module(config['ego-module'])
 
 if config['ego']:
   ego_scenario = ego_module.EgoScenario()

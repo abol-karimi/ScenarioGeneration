@@ -45,13 +45,13 @@ def run(config):
         settings.no_rendering_mode = True
         simulator.world.apply_settings(settings)
     
-    fuzz_inputs_path = Path(config['fuzz_inputs_folder'])
+    fuzz_inputs_path = Path(config['fuzz-inputs-folder'])
     fuzz_inputs_path.mkdir(parents=True, exist_ok=True)
 
     if config['coverage_module']:
-        events_path = Path(config['events_folder'])
+        events_path = Path(config['events-folder'])
        
-    while time.time()-start_time < config['max_total_time']:
+    while time.time()-start_time < config['max-total-time']:
         try:
             scene, iterations = scenario.generate(maxIterations=config['scene_maxIterations'])
             print(f"Initial scene generated in {iterations} iteration{'(s)' if iterations > 1 else ''}.")

@@ -7,7 +7,7 @@ config = {
     'timestep': 0.05,
     'render': True,
     'ego': True,
-    'ego_module': 'tests.compose.newtonian.ego',
+    'ego-module': 'tests.compose.newtonian.ego',
     'simulator': 'newtonian',
 }
 

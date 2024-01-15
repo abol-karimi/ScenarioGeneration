@@ -18,13 +18,15 @@ from experiments.configs import coverage_config
 if __name__ == '__main__':
 
   gen_ego = 'TFPP'
-  coverage_module = 'traffic'
+  gen_coverage = 'traffic'
+  ego_coverage = f"{gen_ego if gen_ego else 'openLoop'}_{gen_coverage}"  
 
   config = {'scenario_path': f'experiments/seeds/random/definitions/4way-stop.scenic',
-            'output_folder': f'experiments/random_search/output_{gen_ego}_{coverage_module}/fuzz-inputs',
+            'fuzz-inputs-folder': f'experiments/random_search/gen_{ego_coverage}/fuzz-inputs',
+            'bugs-folder': f"experiments/Atheris/gen_{ego_coverage}/test_{ego_coverage}/bugs",
             **coverage_config,
-            'coverage_module': 'traffic',
-            'coverages_folder': f'experiments/random_search/output_{gen_ego}_{coverage_module}/coverages',
+            'coverage_module': gen_coverage,
+            'events-folder': f'experiments/random_search/gen_{ego_coverage}/test_{ego_coverage}/events',
             'simulator': 'carla',
             'render_spectator': False,
             'render_ego': False,
@@ -33,46 +35,45 @@ if __name__ == '__main__':
             'spline_knots_size': 50,
             'scene_maxIterations': 50,
             'simulate_maxIterations': 1,
-            'max_total_time': 60*60, # seconds
+            'max-total-time': 7988, # seconds
             }
-  
-  fuzz_inputs_path = Path(config['output_folder'])
-  bugs_path = fuzz_inputs_path.parents[0]/'bugs'
-  coverages_path = Path(config['coverages_folder'])
-  events_path = coverages_path.parents[0]/'events'
+
+  results_file_path = Path(f'experiments/PCGF/gen_{ego_coverage}/results.json')  
+  fuzz_inputs_path = Path(config['fuzz-inputs-folder'])
+  events_path = Path(config['events-folder'])
+  bugs_path = Path(config['bugs-folder'])
 
   # Decide to resume or start
-  results_file = fuzz_inputs_path.parents[0]/'results.json'
-  if results_file.is_file():
+  if results_file_path.is_file():
     print('Resume option not implemented yet!')
     exit(1)
   else:
     fuzz_inputs_path.mkdir(parents=True, exist_ok=True)
-    bugs_path.mkdir(parents=True, exist_ok=True)
-    coverages_path.mkdir(parents=True, exist_ok=True)
     events_path.mkdir(parents=True, exist_ok=True)
+    bugs_path.mkdir(parents=True, exist_ok=True)
     for path in fuzz_inputs_path.glob('*'):
-      path.unlink()
-    for path in bugs_path.glob('*'):
-      path.unlink()
-    for path in coverages_path.glob('*'):
       path.unlink()
     for path in events_path.glob('*'):
       path.unlink()
-    coverages = set()
+    for path in bugs_path.glob('*'):
+      path.unlink()
+
+    past_event_files = set()
     results = []
     generator_state = None
 
   # Set up a measurement loop
-  measurements = []
+  measurements = [{'exe_time': 0,
+                   'new_event_files': set(),
+                  }]
   tl = Timeloop()
   period = 60 # seconds
   @tl.job(interval=timedelta(seconds=period))
   def measure_progress():
-    new_coverages = set(coverages_path.glob('*')) - coverages
-    coverages.update(new_coverages)
+    new_event_files = set(events_path.glob('*')) - past_event_files
+    past_event_files.update(new_event_files)
     measurements.append({'exe_time': period,
-                        'new_coverages': new_coverages,
+                        'new_event_files': new_event_files,
                         })
     print(f'\nMeasurement recorded!\n')
 
@@ -89,5 +90,5 @@ if __name__ == '__main__':
                   'generator_state': generator_state
                   })
 
-  with open(results_file, 'w') as f:
+  with open(results_file_path, 'w') as f:
     f.write(jsonpickle.encode(results, indent=1))

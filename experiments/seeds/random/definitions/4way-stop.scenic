@@ -102,7 +102,10 @@ scenario SeedScenario():
     }
 
     blueprints = tuple(blueprint2dims.keys())
-    nonegos_count = Discrete({1:3, 2:3, 3:9, 4:2, 5:7, 6:4, 7:3, 8:3})
+
+    # Match the distribution of Atheris results for comparison
+    nonegos_count = Discrete({2: 22, 4: 11, 1: 10, 6: 10, 3: 7, 5: 5, 8: 5, 7: 3, 9: 3})
+    
     for i in range(nonegos_count):
       blueprint = Uniform(*blueprints)
       init_lane = Uniform(*intersection.incomingLanes, *intersection.outgoingLanes)

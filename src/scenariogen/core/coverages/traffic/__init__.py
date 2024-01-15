@@ -1,4 +1,5 @@
 from itertools import chain
+import copy
 import clingo
 
 from scenariogen.core.utils import classify_intersection
@@ -30,6 +31,8 @@ def coverage_space(config):
 
 
 def to_coverage(events, config):
+  events = copy.deepcopy(events)
+
   traffic_rules_file = classify_intersection(config['network'], config['intersection']) + '.lp'
   logic_files = (f'src/scenariogen/predicates/{traffic_rules_file}',
                   'src/scenariogen/predicates/traffic.lp',

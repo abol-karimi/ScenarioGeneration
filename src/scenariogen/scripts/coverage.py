@@ -21,7 +21,7 @@ args = parser.parse_args()
 config = {
   **SUT_config,
   **coverage_config,
-  'ego_module': args.ego_module,
+  'ego-module': args.ego_module,
   'coverage_module': 'traffic',
   'map': '/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/Town05.xodr',
   'intersection': 'intersection396',

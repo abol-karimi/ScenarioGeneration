@@ -14,17 +14,15 @@ from scenariogen.core.coverages.coverage import StatementCoverage, PredicateSetC
 class ModularFuzzer:
   def __init__(self, config):
     self.config = config
-    self.SUT_config = config['SUT_config']
-    self.coverage_config = config['coverage_config']
-    self.coverages_statements = StatementCoverage([])
-    self.coverages_predicateSet = PredicateSetCoverage([])
-    self.coverages_predicates = PredicateCoverage([])
+    self.coverage_statements_seen = StatementCoverage([])
+    self.coverage_predicateSets_seen = PredicateSetCoverage([])
+    self.coverage_predicates_seen = PredicateCoverage([])
     self.mutator = config['mutator']
     self.crossOver = config['crossOver']
     self.schedule = config['schedule']
     
     self.seeds = []
-    for seed_path in Path(config['seeds_folder']).glob('*'):
+    for seed_path in Path(config['seeds-folder']).glob('*'):
       with open(seed_path, 'r') as f:
         seed = jsonpickle.decode(f.read())
       self.seeds.append(seed)
@@ -51,14 +49,16 @@ class ModularFuzzer:
   
   def input_eval(self, fuzz_input):
     try:
-      sim_result = Scenario(fuzz_input).run({**self.SUT_config,
-                                            **self.coverage_config})
+      sim_result = Scenario(fuzz_input).run({**self.config['SUT-config'],
+                                            **self.config['coverage-config']})
+      events = sim_result.records['events']
       coverage = sim_result.records['coverage']
     except SimulationCreationError as e:
       print(e)
+      events = None
       coverage = None
     
-    return coverage
+    return events, coverage
     
   def run(self, fuzzer_state=None):
     start_time = time.time()
@@ -68,32 +68,39 @@ class ModularFuzzer:
     else:
       self.reset()
 
-    while time.time()-start_time < self.config['max_total_time']:
+    while time.time()-start_time < self.config['max-total-time']:
       print(f'Total elapsed time: {round(time.time()-start_time, 3)} seconds.')
       fuzz_input = self.fuzz()
-      coverage_statements = self.input_eval(fuzz_input)
-      if coverage_statements is None:
-        print('Simulation finished successfully, but no coverage recorded!')
+      coverage_events, coverage_statements = self.input_eval(fuzz_input)
+      if coverage_events is None:
+        print('Simulation finished successfully, but events not recorded!')
+      elif coverage_statements is None:
+        print('Events recorded, but coverage not recorded! Saving the fuzz-input in bugs...')
+        fuzz_input_bytes = jsonpickle.encode(fuzz_input, indent=1).encode('utf-8')
+        fuzz_input_hash = hashlib.sha1(fuzz_input_bytes).hexdigest()
+        with open(Path(self.config['bugs-folder'])/fuzz_input_hash, 'wb') as f:
+          f.write(fuzz_input_bytes)        
       else:
         coverage_predicateSet = coverage_statements.cast_to(PredicateSetCoverage)
         coverage_predicates = coverage_statements.cast_to(PredicateCoverage)
-        if len(coverage_statements - self.coverages_statements) > 0 \
-            or len(coverage_predicates - self.coverages_predicates) > 0 \
-            or len(coverage_predicateSet - self.coverages_predicateSet) > 0:
+        if len(coverage_statements - self.coverage_statements_seen) > 0 \
+            or len(coverage_predicates - self.coverage_predicates_seen) > 0 \
+            or len(coverage_predicateSet - self.coverage_predicateSets_seen) > 0:
 
           candidate = FuzzCandidate(fuzz_input)
           candidate.coverage = coverage_statements
           self.population.append(candidate)
-          self.coverages_statements.update(coverage_statements)
-          self.coverages_predicateSet.update(coverage_predicateSet)
-          self.coverages_predicates.update(coverage_predicates)
+          self.coverage_statements_seen.update(coverage_statements)
+          self.coverage_predicateSets_seen.update(coverage_predicateSet)
+          self.coverage_predicates_seen.update(coverage_predicates)
           
-          # Save results to disk
-          sha1 = hashlib.sha1(pickle.dumps(fuzz_input)).hexdigest()
-          with open(Path(self.config['output_folder'])/f'fuzz-inputs/{sha1}.json', 'w') as f:
-            f.write(jsonpickle.encode(fuzz_input, indent=1))
-          with open(Path(self.config['output_folder'])/f'coverages/{sha1}.json', 'w') as f:
-            f.write(jsonpickle.encode(coverage_statements, indent=1))
+          # Save fuzz-input and its coverage events to disk
+          fuzz_input_bytes = jsonpickle.encode(fuzz_input, indent=1).encode('utf-8')
+          fuzz_input_hash = hashlib.sha1(fuzz_input_bytes).hexdigest()
+          with open(Path(self.config['fuzz-inputs-folder'])/fuzz_input_hash, 'wb') as f:
+            f.write(fuzz_input_bytes)
+          with open(Path(self.config['events-folder'])/fuzz_input_hash, 'w') as f:
+            f.write(jsonpickle.encode(coverage_events, indent=1))
     
     # TODO return fuzzer state
     return None

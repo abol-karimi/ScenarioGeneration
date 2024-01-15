@@ -16,6 +16,9 @@ def add_coverage(measurement, config):
   measurement['statement_coverage'] = StatementCoverage([])
 
   for path in measurement['new_event_files']:
+    if not path.is_file():
+      continue
+    print(path)
     with open(path, 'r') as f:
       events = jsonpickle.decode(f.read())
     

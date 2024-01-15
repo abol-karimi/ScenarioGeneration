@@ -21,17 +21,17 @@ if __name__ == '__main__':
   results_file_path = Path(f'experiments/Atheris/gen_{ego_coverage}/results.json')
 
   fuzzer_config = {
-    'SUT_config': {**SUT_config,
-                  'ego_module': f'experiments.agents.{fuzzing_ego}' if fuzzing_ego else None,
+    'SUT-config': {**SUT_config,
+                  'ego-module': f'experiments.agents.{fuzzing_ego}' if fuzzing_ego else None,
                   'simulator': 'carla',
                   },
-    'coverage_config': {**coverage_config,
+    'coverage-config': {**coverage_config,
                         'coverage_module': coverage_module
                         },
-    'seeds_folder': f'experiments/seeds/random/seeds',
-    'fuzz_inputs_folder': f"experiments/Atheris/gen_{ego_coverage}/fuzz-inputs",
-    'events_folder': f"experiments/Atheris/gen_{ego_coverage}/test_{ego_coverage}/events",
-    'bugs_folder': f"experiments/Atheris/gen_{ego_coverage}/test_{ego_coverage}/bugs",
+    'seeds-folder': f'experiments/seeds/random/seeds',
+    'fuzz-inputs-folder': f"experiments/Atheris/gen_{ego_coverage}/fuzz-inputs",
+    'events-folder': f"experiments/Atheris/gen_{ego_coverage}/test_{ego_coverage}/events",
+    'bugs-folder': f"experiments/Atheris/gen_{ego_coverage}/test_{ego_coverage}/bugs",
     'mutator': StructureAwareMutator(max_spline_knots_size=50,
                                     max_mutations_per_iteration=1,
                                     randomizer_seed=0),
@@ -44,9 +44,9 @@ if __name__ == '__main__':
 
   atheris_fuzzer = AtherisFuzzer(fuzzer_config)
 
-  fuzz_inputs_path = Path(fuzzer_config['fuzz_inputs_folder'])
-  events_path = Path(fuzzer_config['events_folder'])
-  bugs_path = Path(fuzzer_config['bugs_folder'])
+  fuzz_inputs_path = Path(fuzzer_config['fuzz-inputs-folder'])
+  events_path = Path(fuzzer_config['events-folder'])
+  bugs_path = Path(fuzzer_config['bugs-folder'])
   
 
   # Decide to resume or start

@@ -3,7 +3,7 @@ SUT_config = {
   'render_ego': False,
   'weather': 'CloudySunset',
   'simulator': 'carla',
-  'ego_module': None,
+  'ego-module': None,
   'coverage_module': None,
 }
 

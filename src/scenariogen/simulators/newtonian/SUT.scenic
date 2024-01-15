@@ -14,8 +14,8 @@ nonegos_scenario = NonegosScenario(config)
 import jsonpickle
 import importlib
 intersection = network.elements[config['intersection']]
-if config['ego_module']:
-  ego_module = importlib.import_module(config['ego_module'])
+if config['ego-module']:
+  ego_module = importlib.import_module(config['ego-module'])
   ego_behavior = ego_module.ego_behavior
 
 if config['coverage_module']:
@@ -24,7 +24,7 @@ if config['coverage_module']:
 
 scenario Main():
   setup:
-    if config['ego_module']:
+    if config['ego-module']:
       with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f:
         blueprint2dims = jsonpickle.decode(f.read())
       lanes = [network.elements[l] for l in config['ego_route']]

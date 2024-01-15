@@ -12,7 +12,7 @@ config = {'scenario_path': f'experiments/seeds/random/definitions/4way-stop.scen
           'spline_knots_size': 50,
           'scene_maxIterations': 50,
           'simulate_maxIterations': 1,
-          'max_total_time': 5*60,
+          'max-total-time': 5*60,
           }
 
 random_seed_generator.run(config)

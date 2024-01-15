@@ -93,16 +93,12 @@ class SUTCallback:
       sim_result = Scenario(fuzz_input).run(self.config)
     except SimulationCreationError as e:
       print(f'Exception in SUTCallback: {e}')
-    finally:
-      if sim_result:
-        events = sim_result.records['events']
-      else:
-        events = None
-
-    # Save coverage results to disk
-    sha1 = hashlib.sha1(input_bytes).hexdigest()
-    with open(Path(self.config['events_folder'])/sha1, 'w') as f:
-          f.write(jsonpickle.encode(events, indent=1))      
+    else:
+      if sim_result and 'events' in sim_result.records:
+        # Save coverage events to disk
+        fuzz_input_hash = hashlib.sha1(input_bytes).hexdigest()
+        with open(Path(self.config['events-folder'])/fuzz_input_hash, 'w') as f:
+              f.write(jsonpickle.encode(sim_result.records['events'], indent=1))
 
 
 
@@ -115,17 +111,17 @@ class AtherisFuzzer:
     self.mutator = MutatorCallback(config['mutator'])
     self.crossOver = CrossOverCallback(config['crossOver'])
     self.libfuzzer_config = [f"-atheris_runs={config['atheris_runs']}",
-                             f"-artifact_prefix={Path(config['bugs_folder'])}/",
+                             f"-artifact_prefix={Path(config['bugs-folder'])}/",
                              f"-max_len={config['max_seed_length']}",
                              f"-timeout=300", # scenarios taking more than 5 minutes are considered as bugs
                              f"-report_slow_units=120", # scenarios taking more than 2 minutes are considered slow
                              f"-rss_limit_mb=16384",
-                             Path(config['fuzz_inputs_folder']).as_posix(),
-                             config['seeds_folder'],
+                             Path(config['fuzz-inputs-folder']).as_posix(),
+                             config['seeds-folder'],
                             ]
-    self.SUT = SUTCallback({**config['SUT_config'],
-                            **config['coverage_config'],
-                            'events_folder': config['events_folder'],
+    self.SUT = SUTCallback({**config['SUT-config'],
+                            **config['coverage-config'],
+                            'events-folder': config['events-folder'],
                             })
 
   def run(self, atheris_state=None):
