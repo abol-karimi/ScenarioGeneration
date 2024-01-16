@@ -4,7 +4,7 @@ import clingo
 
 from scenariogen.core.utils import classify_intersection
 from scenariogen.predicates.utils import predicates_of_logic_program, time_to_term, term_to_time
-from scenariogen.core.coverages.coverage import StatementCoverage
+from scenariogen.core.coverages.coverage import Statement, StatementCoverage, StatementSetCoverage, Predicate, PredicateCoverage
 from scenariogen.predicates.predicates import TemporalOrder, geometry_atoms
 from scenariogen.predicates.events import ActorSpawnedEvent
 
@@ -25,7 +25,7 @@ def coverage_space(config):
     with open(file_path, 'r') as f:
       encoding += f.read()
   
-  predicate_coverage_space = predicates_of_logic_program(encoding)
+  predicate_coverage_space = PredicateCoverage(predicates_of_logic_program(encoding))
 
   return predicate_coverage_space
 
@@ -92,8 +92,8 @@ def to_coverage(events, config):
   ctl.add("base", [], encoding+instance)
   ctl.ground([("base", [])], context=TemporalOrder(to_seconds))
   ctl.configuration.solve.models = "1"
-  statement_coverage = StatementCoverage([])
-
+  
+  statements = []
   predicate_coverage_space = coverage_space(config)
 
   with ctl.solve(yield_=True) as handle:
@@ -101,10 +101,11 @@ def to_coverage(events, config):
       for atom in model.symbols(atoms=True):
         if any(test(atom.name) for test in predicate_ban_tests):
           continue
-        if not atom.name in predicate_coverage_space.predicates:
+        predicate = Predicate(atom.name)
+        if not predicate in predicate_coverage_space:
           continue
         args = tuple('_' if arg in banned_terms else arg
                      for arg in map(str, atom.arguments))
-        statement_coverage.add(atom.name, args)
+        statements.append(Statement(predicate, args))
 
-  return statement_coverage
+  return StatementSetCoverage((StatementCoverage(statements),))

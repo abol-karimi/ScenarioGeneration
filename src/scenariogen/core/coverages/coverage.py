@@ -1,147 +1,179 @@
 import os
-import copy
 from functools import reduce
 from pathlib import Path
 import jsonpickle
+from typing import Tuple
 
 from scenic.core.simulators import SimulationCreationError
 
 from scenariogen.core.scenario import Scenario
 from scenariogen.core.errors import EgoCollisionError, NonegoCollisionError
 
-class PredicateCoverage:
-  """
-  Coverage of predicates, ignoring the values of their arguments.
-  TODO make it a subclass of abc
-  """
 
-  def __init__(self, predicates) -> None:
-    self.predicates = set(predicates)
+class Predicate:
+  def __init__(self, name: str):
+    self.name = name
+
+  def __eq__(self, other):
+    self.name == other.name
   
-  def add(self, pred):
-    self.predicates.add(pred)
+  def __str__(self):
+    return self.name
+   
+  def __hash__(self) -> int:
+    return hash(self.name)
+   
+
+class Statement:
+  def __init__(self, predicate: Predicate, args: Tuple[str]):
+    self.predicate = predicate
+    self.args = args
+
+  def __eq__(self, other):
+    return self.predicate == other.predicate and self.args == other.args
+
+  def cast_to(self, cls):
+    if cls is Statement:
+      return self
+    elif cls is Predicate:
+      return self.predicate
+    else:
+      assert False
+
+  def __str__(self):
+    return f"{self.predicate}({','.join(self.args)})"
+     
+  def __hash__(self) -> int:
+    return hash((self.predicate, *self.args))
+  
+
+
+class Coverage:
+  def __init__(self, items) -> None:
+    self.items = set(items)
+  
+  def add(self, item):
+    self.items.add(item)
 
   def __iadd__(self, other):
-    self.predicates.update(other.predicates)
+    self.items.update(other.items)
   
   def update(self, other):
-    self.predicates.update(other.predicates)
+    self.items.update(other.items)
   
-  def __add__(self, other):
-    return PredicateCoverage(self.predicates.union(other.predicates))
-    
-  def __sub__(self, other):
-    return PredicateCoverage(self.predicates - other.predicates)
-  
-  def __and__(self, other):
-    return PredicateCoverage(self.predicates & other.predicates)
-
   def __len__(self):
-    return len(self.predicates)
+    return len(self.items)
   
   def __eq__(self, other):
-    return self.predicates == other.predicates
-
+    return self.items == other.items
+  
   def __hash__(self):
-    return hash(repr(self.predicates))
+    return hash(tuple(self.items))
+
+  def __add__(self, other):
+    return self.__class__(self.items.union(other.items))
+    
+  def __sub__(self, other):
+    return self.__class__(self.items - other.items)
+  
+  def __and__(self, other):
+    return self.__class__(self.items & other.items)
 
   def print(self):
-    for pred in self.predicates:
-      print(f'\t{pred}')
+    for item in self.items:
+      if isinstance(item, Predicate) or isinstance(item, Statement):
+        print(str(item))
+      else:
+        item.print()
 
 
-class PredicateSetCoverage:
+class PredicateCoverage(Coverage):
+  """
+  Coverage of predicates, ignoring the values of their arguments.
+  """
+  def __init__(self, items):
+    super().__init__(items)
+    assert all(isinstance(item, Predicate) for item in items)
+  
+  def cast_to(self, cls):
+    if cls is PredicateCoverage:
+      return self
+    else:
+      assert False
+
+  def print(self):
+    for item in self.items:
+      print(f'\t{item}')
+
+  def __contains__(self, pred):
+    return any(pred.name == item.name for item in self.items)
+
+
+class PredicateSetCoverage(Coverage):
   """
   Coverage of sets of predicates.
   """
-
-  def __init__(self, predicateCoverages) -> None:
-    self.predicateCoverages = set(cov for cov in predicateCoverages)
-  
-  def add(self, predCov):
-    self.predicateCoverages.add(predCov)
-  
-  def __add__(self, other):
-    return PredicateSetCoverage(self.predicateCoverages.union(other.predicateCoverages))
-
-  def __iadd__(self, other):
-    self.predicateCoverages.update(other.predicateCoverages)
-  
-  def update(self, other):
-    self.predicateCoverages.update(other.predicateCoverages)
-    
-  def __sub__(self, other):
-    return PredicateSetCoverage(self.predicateCoverages-other.predicateCoverages)
-
-  def __len__(self):
-    return len(self.predicateCoverages)
+  def __init__(self, items):
+    super().__init__(items)
+    assert all(isinstance(item, PredicateCoverage) for item in items)
   
   def cast_to(self, cls):
-    if cls is PredicateCoverage:
-      return reduce(lambda x,y: x+y, self.predicateCoverages)
-    elif cls is PredicateSetCoverage:
+    if cls is PredicateSetCoverage:
       return self
+    elif cls is PredicateCoverage:
+      return reduce(lambda x,y: x+y, self.items)
+    else:
+      assert False
 
   def print(self):
-    for cov in self.predicateCoverages:
+    for i, cov in enumerate(self.items):
+      print(f'{i}th predicate coverage:')
       cov.print()
 
 
-class StatementCoverage:
+class StatementCoverage(Coverage):
   """
   Coverage of statements, i.e. considering predicates together with their argument values.
   """
-
-  def __init__(self, pred2args) -> None:
-    self.pred2args = {pred:args for pred,args in pred2args}
+  def __init__(self, items):
+    super().__init__(items)
+    assert all(isinstance(item, Statement) for item in items)
   
-  def add(self, pred, args):
-    if pred in self.pred2args:
-      self.pred2args[pred].add(args)
-    else:
-      self.pred2args[pred] = {args}
-  
-  def __add__(self, other):
-    pred2args = copy.copy(self.pred2args)
-    for pred, args in other.pred2args.items():
-      if pred in self.pred2args:
-        pred2args[pred] = self.pred2args[pred].union(args)
-      else:
-        pred2args[pred] = args
-    
-    return StatementCoverage(pred2args.items())
-
-  def __iadd__(self, other):
-    for pred in other.pred2args:
-      if pred in self.pred2args:
-        self.pred2args[pred].update(other.pred2args[pred])
-      else:
-        self.pred2args.update({pred: other.pred2args[pred]})
-  
-  def update(self, other):
-    self += other
-
-  def __sub__(self, other):
-    diff = {pred:self.pred2args[pred] - other.pred2args[pred]
-            for pred in set(self.pred2args.keys()).intersection(set(other.pred2args.keys()))}
-    return {key:val for key,val in diff.items() if len(val) > 0}
-
-  def __len__(self):
-    return sum(len(args) for args in self.pred2args.values())
- 
   def cast_to(self, cls):
-    if cls is PredicateCoverage:
-      return PredicateCoverage(self.pred2args.keys())
-    elif cls is PredicateSetCoverage:
-      return PredicateSetCoverage((self.cast_to(PredicateCoverage),))
-    elif cls is StatementCoverage:
+    if cls is StatementCoverage:
       return self
-
+    elif cls is PredicateCoverage:
+      return PredicateCoverage(item.cast_to(Predicate) for item in self.items)
+    else:
+      assert False
+  
   def print(self):
-    for pred_name in self.pred2args:
-      print(f'{pred_name}:')
-      for pred_args in self.pred2args[pred_name]:
-          print(f'\t{pred_args}')
+    for item in self.items:
+      print(f'\t{item}')
+    
+
+class StatementSetCoverage(Coverage):
+  """
+  Coverage of sets of statements.
+  """
+  def __init__(self, items):
+    super().__init__(items)
+    assert all(isinstance(item, StatementCoverage) for item in items)
+   
+  def cast_to(self, cls):
+    if cls is StatementSetCoverage:
+      return self
+    elif cls is StatementCoverage:
+      return reduce(lambda x,y: x+y, self.items)
+    elif cls is PredicateSetCoverage:
+      return PredicateSetCoverage(cov.cast_to(PredicateCoverage) for cov in self.items)
+    elif cls is PredicateCoverage:
+      return self.cast_to(PredicateSetCoverage).cast_to(PredicateCoverage)
+  
+  def print(self):
+    for i, cov in enumerate(self.items):
+      print(f'{i}th statement coverage:')
+      cov.print()
 
 
 def from_corpus(corpus_folder, config):

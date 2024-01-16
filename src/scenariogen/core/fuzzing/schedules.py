@@ -1,8 +1,8 @@
 from random import Random
+from collections import Counter
 
 # This project
-from scenariogen.core.fuzz_input import FuzzInput
-from scenariogen.core.coverages.coverage import StatementCoverage
+from scenariogen.core.coverages.coverage import StatementCoverage, PredicateSetCoverage
 
 
 class FuzzCandidate:
@@ -11,15 +11,16 @@ class FuzzCandidate:
     def __init__(self, fuzz_input):
         self.fuzz_input = fuzz_input
 
-        # These will be needed for advanced power schedules
-        self.coverage = StatementCoverage([])
+        # These will be needed for power schedules
+        self.coverage = None
         self.distance = -1
         self.energy = 0.0
 
 
 class PowerSchedule:
-  def __init__(self, randomizer_seed=0):
+  def __init__(self, randomizer_seed):
     self.random = Random(randomizer_seed)
+    self.coverage_frequency = Counter()
 
   def assignEnergy(self, population):
     """Assigns each fuzz_candidate the same energy"""
@@ -40,5 +41,17 @@ class PowerSchedule:
     norm_energy = self.normalizedEnergy(population)
     fuzz_candidate = self.random.choices(population, weights=norm_energy)[0]
     return fuzz_candidate
+
+
+class AFLFastSchedule(PowerSchedule):
+  def __init__(self, randomizer_seed, exponent):
+    super().__init__(randomizer_seed)
+    self.exponent = exponent
+
+  def assignEnergy(self, population):
+    """Assigns each fuzz_candidate the same energy"""
+    for fuzz_candidate in population:
+      fuzz_candidate.energy = 1 / (self.coverage_frequency[fuzz_candidate.coverage] ** self.exponent)
+
  
 

@@ -1,8 +1,8 @@
 import time
 from pathlib import Path
 import jsonpickle
-import pickle
 import hashlib
+from collections import Counter
 
 from scenic.core.simulators import SimulationCreationError
 
@@ -60,7 +60,42 @@ class ModularFuzzer:
     
     return events, coverage
     
-  def run(self, fuzzer_state=None):
+  def run(self):
+    fuzz_input = self.fuzz()
+    coverage_events, coverage_statements = self.input_eval(fuzz_input)
+    if coverage_events is None:
+      print('Simulation finished successfully, but events not recorded!')
+    elif coverage_statements is None:
+      print('Events recorded, but coverage not recorded! Saving the fuzz-input in bugs...')
+      fuzz_input_bytes = jsonpickle.encode(fuzz_input, indent=1).encode('utf-8')
+      fuzz_input_hash = hashlib.sha1(fuzz_input_bytes).hexdigest()
+      with open(Path(self.config['bugs-folder'])/fuzz_input_hash, 'wb') as f:
+        f.write(fuzz_input_bytes)        
+    else:
+      coverage_predicateSet = coverage_statements.cast_to(PredicateSetCoverage)
+      coverage_predicates = coverage_statements.cast_to(PredicateCoverage)
+      if len(coverage_statements - self.coverage_statements_seen) > 0 \
+          or len(coverage_predicates - self.coverage_predicates_seen) > 0 \
+          or len(coverage_predicateSet - self.coverage_predicateSets_seen) > 0:
+
+        candidate = FuzzCandidate(fuzz_input)
+        candidate.coverage = coverage_statements
+        self.population.append(candidate)
+        self.coverage_statements_seen.update(coverage_statements)
+        self.coverage_predicateSets_seen.update(coverage_predicateSet)
+        self.coverage_predicates_seen.update(coverage_predicates)
+        
+        # Save fuzz-input and its coverage events to disk
+        fuzz_input_bytes = jsonpickle.encode(fuzz_input, indent=1).encode('utf-8')
+        fuzz_input_hash = hashlib.sha1(fuzz_input_bytes).hexdigest()
+        with open(Path(self.config['fuzz-inputs-folder'])/fuzz_input_hash, 'wb') as f:
+          f.write(fuzz_input_bytes)
+        with open(Path(self.config['events-folder'])/fuzz_input_hash, 'w') as f:
+          f.write(jsonpickle.encode(coverage_events, indent=1))
+    
+    return coverage_events, coverage_statements
+  
+  def runs(self, fuzzer_state=None):
     start_time = time.time()
 
     if fuzzer_state:
@@ -69,42 +104,23 @@ class ModularFuzzer:
       self.reset()
 
     while time.time()-start_time < self.config['max-total-time']:
-      print(f'Total elapsed time: {round(time.time()-start_time, 3)} seconds.')
-      fuzz_input = self.fuzz()
-      coverage_events, coverage_statements = self.input_eval(fuzz_input)
-      if coverage_events is None:
-        print('Simulation finished successfully, but events not recorded!')
-      elif coverage_statements is None:
-        print('Events recorded, but coverage not recorded! Saving the fuzz-input in bugs...')
-        fuzz_input_bytes = jsonpickle.encode(fuzz_input, indent=1).encode('utf-8')
-        fuzz_input_hash = hashlib.sha1(fuzz_input_bytes).hexdigest()
-        with open(Path(self.config['bugs-folder'])/fuzz_input_hash, 'wb') as f:
-          f.write(fuzz_input_bytes)        
-      else:
-        coverage_predicateSet = coverage_statements.cast_to(PredicateSetCoverage)
-        coverage_predicates = coverage_statements.cast_to(PredicateCoverage)
-        if len(coverage_statements - self.coverage_statements_seen) > 0 \
-            or len(coverage_predicates - self.coverage_predicates_seen) > 0 \
-            or len(coverage_predicateSet - self.coverage_predicateSets_seen) > 0:
-
-          candidate = FuzzCandidate(fuzz_input)
-          candidate.coverage = coverage_statements
-          self.population.append(candidate)
-          self.coverage_statements_seen.update(coverage_statements)
-          self.coverage_predicateSets_seen.update(coverage_predicateSet)
-          self.coverage_predicates_seen.update(coverage_predicates)
-          
-          # Save fuzz-input and its coverage events to disk
-          fuzz_input_bytes = jsonpickle.encode(fuzz_input, indent=1).encode('utf-8')
-          fuzz_input_hash = hashlib.sha1(fuzz_input_bytes).hexdigest()
-          with open(Path(self.config['fuzz-inputs-folder'])/fuzz_input_hash, 'wb') as f:
-            f.write(fuzz_input_bytes)
-          with open(Path(self.config['events-folder'])/fuzz_input_hash, 'w') as f:
-            f.write(jsonpickle.encode(coverage_events, indent=1))
+      events, coverage = self.run()
     
-    # TODO return fuzzer state
-    return None
+    return self.get_state()
 
 
+class CountingGreyboxFuzzer(ModularFuzzer):
+  """Count how often predicate-sets are exercised."""
 
+  def reset(self):
+    """Reset path frequency"""
+    super().reset()
+    self.schedule.coverage_frequency = Counter()
 
+  def run(self, fuzzer_state=None):
+    """Inform scheduler about coverage frequency"""
+    events, coverage = super().run(fuzzer_state)
+
+    self.schedule.coverage_frequency.update({coverage})
+
+    return events, coverage

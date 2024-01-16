@@ -11,13 +11,13 @@ from functools import reduce
 from timeloop import Timeloop
 from datetime import timedelta
 import time
+from random import Random
 
 # This project
 from scenariogen.core.fuzzing.mutators import StructureAwareMutator
 from scenariogen.core.fuzzing.crossovers import StructureAwareCrossOver
-from scenariogen.core.fuzzing.schedules import PowerSchedule
+from scenariogen.core.fuzzing.schedules import AFLFastSchedule
 from scenariogen.core.fuzzing.fuzzers.modular import ModularFuzzer
-from scenariogen.core.coverages.coverage import PredicateSetCoverage
 from experiments.configs import SUT_config, coverage_config
 
 
@@ -25,8 +25,11 @@ if __name__ == '__main__':
 
   gen_ego = 'TFPP'
   gen_coverage = 'traffic'
-  ego_coverage = f"{gen_ego if gen_ego else 'openLoop'}_{gen_coverage}"
+  config_randomizer_seed = 0
+  config_randomizer = Random(config_randomizer_seed)
+  config_seed_range = 1000
 
+  ego_coverage = f"{gen_ego if gen_ego else 'openLoop'}_{gen_coverage}"
   fuzzer_config = {
     'SUT-config': {**SUT_config,
                   'ego-module': f'experiments.agents.{gen_ego}' if gen_ego else None,
@@ -41,12 +44,12 @@ if __name__ == '__main__':
     'bugs-folder': f"experiments/PCGF/gen_{ego_coverage}/test_{ego_coverage}/bugs",
     'mutator': StructureAwareMutator(max_spline_knots_size=50,
                                     max_mutations_per_iteration=1,
-                                    randomizer_seed=0),
+                                    randomizer_seed=config_randomizer.randrange(config_seed_range)),
     'crossOver': StructureAwareCrossOver(max_spline_knots_size=50,
                                         max_attempts=1,
-                                        randomizer_seed=0),
-    'schedule': PowerSchedule(),
-    'max-total-time': 274, # seconds
+                                        randomizer_seed=config_randomizer.randrange(config_seed_range)),
+    'schedule': AFLFastSchedule(config_randomizer.randrange(config_seed_range), 5),
+    'max-total-time': 3600, # seconds
     'max_seed_length': 1e+6, # 1 MB
   }
 
