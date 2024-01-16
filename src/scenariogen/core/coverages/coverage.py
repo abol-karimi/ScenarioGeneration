@@ -15,7 +15,7 @@ class Predicate:
     self.name = name
 
   def __eq__(self, other):
-    self.name == other.name
+    return self.name == other.name
   
   def __str__(self):
     return self.name
@@ -32,6 +32,9 @@ class Statement:
   def __eq__(self, other):
     return self.predicate == other.predicate and self.args == other.args
 
+  def __hash__(self) -> int:
+    return hash((self.predicate, self.args))
+
   def cast_to(self, cls):
     if cls is Statement:
       return self
@@ -41,11 +44,7 @@ class Statement:
       assert False
 
   def __str__(self):
-    return f"{self.predicate}({','.join(self.args)})"
-     
-  def __hash__(self) -> int:
-    return hash((self.predicate, *self.args))
-  
+    return f"{self.predicate}({','.join(self.args)})" 
 
 
 class Coverage:
@@ -171,8 +170,9 @@ class StatementSetCoverage(Coverage):
       return self.cast_to(PredicateSetCoverage).cast_to(PredicateCoverage)
   
   def print(self):
+    print('State-set coverage:')
     for i, cov in enumerate(self.items):
-      print(f'{i}th statement coverage:')
+      print(f'  {i}-th statement coverage:')
       cov.print()
 
 
