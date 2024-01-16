@@ -15,7 +15,12 @@ def predicates_of_logic_program(program_str):
         def visit_SymbolicAtom(self, node):
             predicates.append(Predicate(node.symbol.name))
             return node
+        def visit_External(self, node):
+            predicates.append(Predicate(node.atom.symbol.name))
+            return node
     anr = AtomNameRecorder()
     parse_string(program_str, lambda stm: anr(stm))
 
     return predicates
+
+

@@ -8,7 +8,7 @@ import clingo
 from scenariogen.core.utils import classify_intersection
 from scenariogen.predicates.predicates import TemporalOrder, geometry_atoms
 from scenariogen.predicates.events import *
-from scenariogen.core.coverages.coverage import StatementCoverage as Coverage
+from scenariogen.core.coverages.coverage import StatementSetCoverage
 
 traffic_rules_file = classify_intersection(network, config['intersection']) + '.lp'
 logic_files = (f'src/scenariogen/predicates/{traffic_rules_file}',
@@ -30,7 +30,7 @@ def to_coverage(events):
   ctl.add("base", [], instance+encoding)
   ctl.ground([("base", [])], context=TemporalOrder())
   ctl.configuration.solve.models = "1"
-  coverage = Coverage([])
+  coverage = StatementSetCoverage([])
   with ctl.solve(yield_=True) as handle:
     for model in handle:
       for atom in model.symbols(atoms=True):

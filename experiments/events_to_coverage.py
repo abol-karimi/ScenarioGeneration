@@ -9,11 +9,11 @@ import importlib
 
 from scenic.domains.driving.roads import Network
 
-from scenariogen.core.coverages.coverage import StatementCoverage
+from scenariogen.core.coverages.coverage import StatementSetCoverage
 
 
 def add_coverage(measurement, config):
-  measurement['statement_coverage'] = StatementCoverage([])
+  measurement['statement-set-coverage'] = StatementSetCoverage([])
 
   for path in measurement['new_event_files']:
     if not path.is_file():
@@ -23,8 +23,8 @@ def add_coverage(measurement, config):
       events = jsonpickle.decode(f.read())
     
     if events:
-      statement_coverage = config['coverage_module'].to_coverage(events, config)
-      measurement['statement_coverage'].update(statement_coverage)
+      cov = config['coverage_module'].to_coverage(events, config)
+      measurement['statement-set-coverage'].update(cov)
 
 
 def report(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage):

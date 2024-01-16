@@ -2,7 +2,7 @@
 import argparse
 from functools import reduce
 import importlib
-from scenariogen.core.coverages.coverage import from_corpus, StatementCoverage
+from scenariogen.core.coverages.coverage import from_corpus, StatementSetCoverage, PredicateCoverage
 from experiments.configs import SUT_config, coverage_config
 
 parser = argparse.ArgumentParser(
@@ -29,7 +29,7 @@ config = {
   'render_ego': args.render_ego
 }
 results = from_corpus(args.SUT_inputs_path, config)
-seed2statementCoverage = results[0]
+seed2statementSetCoverage = results[0]
 nonego_collisions = results[1]
 ego_collisions = results[2]
 simulation_creation_errors = results[3]
@@ -37,8 +37,8 @@ simulation_rejections = results[4]
 none_coverages = results[5]
 
 coverage = reduce(lambda c1,c2: c1+c2,
-                            list(seed2statementCoverage.values()),
-                            StatementCoverage([]))
+                            list(seed2statementSetCoverage.values()),
+                            StatementSetCoverage([]))
 print(f'\nCoverage:')
 coverage.print()
 

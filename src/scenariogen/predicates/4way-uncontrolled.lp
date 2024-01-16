@@ -51,13 +51,13 @@ changedSignalBetween(V, T1, T2):-
   signaledAtTime(V, _, Tm),
   eventTime(T1),
   eventTime(T2),
-  1 = @lessThan(T1, Tm),
-  1 = @lessThan(Tm, T2).
+  lessThan(T1, Tm),
+  lessThan(Tm, T2).
 
 signaledAtArrivalFromLane(V, S, La):-
   signaledAtTime(V, S, Ts),
   arrivedFromLaneAtTime(V, La, Ta),
-  1 = @lessThan(Ts, Ta),
+  lessThan(Ts, Ta),
   not changedSignalBetween(V, Ts, Ta).
 
 signaledLeftAtArrival(Vehicle):-
@@ -96,14 +96,14 @@ violatesRightOfForRule(V1, V2, yieldToInside):-
   V1 != V2,
   arrivedFromLaneAtTime(V1, La, Ta),
   enteredAtTime(V2, I, Te),
-  1 = @lessThan(Te, Ta),
+  lessThan(Te, Ta),
   arrivedFromDifferentHighways(V1, V2),
   requestedLane(V1, L1),
   requestedLane(V2, L2),
   overlaps(L1, L2),
   leftLaneAtTime(V2, L1, T1),
   enteredLaneAtTime(V1, L2, T2),
-  1 = @lessThan(T2, T1).
+  lessThan(T2, T1).
 
 %---------------------------------------------------------------------------------
 % 21800 (b)(1)
@@ -114,14 +114,14 @@ violatesRightOfForRule(V1, V2, yieldToRight):-
   V1 != V2,
   enteredAtTime(V1, I, Te1),
   enteredAtTime(V2, I, Te2),
-  1 = @equal(Te1, Te2),
+  equal(Te1, Te2),
   arrivedFromRightOf(V2, V1),
   requestedLane(V1, L1),
   requestedLane(V2, L2),
   overlaps(L1, L2),
   leftLaneAtTime(V2, L1, TV2L1l),
   enteredLaneAtTime(V1, L2, TV1L2e),
-  1 = @lessThan(TV1L2e, TV2L1l). % V1 entered the overlap before V2 left it
+  lessThan(TV1L2e, TV2L1l). % V1 entered the overlap before V2 left it
 
 %--------------------------------------------------------------------------------------------
 % 21801 (a)
@@ -139,9 +139,9 @@ violatesRightOfForRule(V1, V2, leftTurn):-
   overlaps(L1, L2),
   arrivedAtTime(V2, Ta),
   enteredLaneAtTime(V1, L2, Te1),
-  1 = @lessThan(Ta, Te1),
+  lessThan(Ta, Te1),
   leftLaneAtTime(V2, L1, Tl2),
-  1 = @lessThan(Te1, Tl2).
+  lessThan(Te1, Tl2).
 
 %--------------------------------------------------------------------------------------------
 % 22526 (a) (Signalized intersection?)

@@ -1,18 +1,13 @@
-from itertools import chain
+from itertools import combinations
 import copy
 import clingo
 
 from scenariogen.core.utils import classify_intersection
 from scenariogen.predicates.utils import predicates_of_logic_program, time_to_term, term_to_time
 from scenariogen.core.coverages.coverage import Statement, StatementCoverage, StatementSetCoverage, Predicate, PredicateCoverage
-from scenariogen.predicates.predicates import TemporalOrder, geometry_atoms
+from scenariogen.predicates.predicates import geometry_atoms
 from scenariogen.predicates.events import ActorSpawnedEvent
-
-
-treat_unbounded_parameters = 'ordinal'
-# predicate_ban_tests = [lambda p: p.endswith('AtTime'),
-#                        lambda p: p == 'changedSignalBetween']
-predicate_ban_tests = []
+from experiments.configs import coverage_config
 
 
 def coverage_space(config):
@@ -32,6 +27,7 @@ def coverage_space(config):
 
 def to_coverage(events, config):
   events = copy.deepcopy(events)
+  config = {**coverage_config, **config}
 
   traffic_rules_file = classify_intersection(config['network'], config['intersection']) + '.lp'
   logic_files = (f'src/scenariogen/predicates/{traffic_rules_file}',
@@ -53,44 +49,54 @@ def to_coverage(events, config):
             for i, e in enumerate(lane2spawnEvents[l])}
   old2new['ego'] = 'ego'
 
-  if treat_unbounded_parameters == 'ordinal':
-    banned_terms = set()
-    to_seconds = lambda x: ordinal2time[x]
+  # Choose symbolic constants for event times
+  time2ordinal = {t:o for o,t in ordinal2time.items()}
+  for e in events:
+    e.time = time2ordinal[e.time]
 
-    # Choose symbolic constants for event times
-    time2ordinal = {t:o for o,t in ordinal2time.items()}
-    for e in events:
-      e.time = time2ordinal[e.time]
+  # Rename nonegos based on their spawn lane and progress relative to other nonegos on the same lane    
+  for e in events:
+    e.vehicle = old2new[e.vehicle]
+    if hasattr(e, 'other') and e.other in old2new:
+      e.other = old2new[e.other]
 
-    # Rename nonegos based on their spawn lane and progress relative to other nonegos on the same lane    
-    for e in events:
-      e.vehicle = old2new[e.vehicle]
-      if hasattr(e, 'other') and e.other in old2new:
-        e.other = old2new[e.other]
 
-  elif treat_unbounded_parameters == 'ignore':
-    banned_terms = set(chain(ordinal2time.keys(), old2new.keys()))
-    to_seconds = lambda x: ordinal2time[x]
+  temporal_order = ['equal(T, T):- eventTime(T)',
+                    'equal(T1, T2):- equal(T2, T1)',
+                    'lessThan(T1, T3):- lessThan(T1, T2), lessThan(T2, T3)']
+  for t1, t2 in combinations(ordinal2time.keys(), 2):
+    if abs(ordinal2time[t2] - ordinal2time[t1]) < config['min_perceptible_time']:
+      temporal_order.append(f'equal({t1}, {t2})')
 
-    time2ordinal = {t:o for o,t in ordinal2time.items()}
-    for e in events:
-      e.time = time2ordinal[e.time]
-
-  else:
-    banned_terms = set()
-    to_seconds = term_to_time
-
-    for e in events:
-      e.time = time_to_term(e.time)
-
+  ordinals = tuple(ordinal2time.keys())
+  for i, oi in enumerate(ordinals[:-1]):
+    ti = ordinal2time[oi]
+    for j, oj in enumerate(ordinals[i+1:]):
+      tj = ordinal2time[oj]
+      if tj - ti < config['min_perceptible_time']:
+        continue
+      else:
+        temporal_order.append(f'lessThan({oi}, {oj})')
+        for ok in ordinals[j+1:]:
+          tk = ordinal2time[ok]
+          if tk - tj < config['min_perceptible_time']:
+            # lessThan(oi, oj) and equal(oj, ok) are not enough to imply lessThan(oi, ok),
+            # but we know that tj < tk, so we must add:
+            temporal_order.append(f'lessThan({oi}, {ok})')
+          else:
+            # lessThan(oi, oj) and lessThan(oj, ok) imply lessThan(oi, ok)
+            break
+        break
+  
   atoms = []
-  atoms = geometry_atoms(config['network'], config['intersection']) + atoms
+  atoms += geometry_atoms(config['network'], config['intersection'])
   atoms += [str(e) for e in events]
+  atoms += temporal_order
   instance = '.\n'.join(atoms)+'.\n'
 
   ctl = clingo.Control()
   ctl.add("base", [], encoding+instance)
-  ctl.ground([("base", [])], context=TemporalOrder(to_seconds))
+  ctl.ground([("base", [])])
   ctl.configuration.solve.models = "1"
   
   statements = []
@@ -99,13 +105,10 @@ def to_coverage(events, config):
   with ctl.solve(yield_=True) as handle:
     for model in handle:
       for atom in model.symbols(atoms=True):
-        if any(test(atom.name) for test in predicate_ban_tests):
-          continue
         predicate = Predicate(atom.name)
         if not predicate in predicate_coverage_space:
           continue
-        args = tuple('_' if arg in banned_terms else arg
-                     for arg in map(str, atom.arguments))
+        args = tuple(map(str, atom.arguments))
         statements.append(Statement(predicate, args))
 
   return StatementSetCoverage((StatementCoverage(statements),))

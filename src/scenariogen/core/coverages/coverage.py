@@ -120,7 +120,7 @@ class PredicateSetCoverage(Coverage):
     if cls is PredicateSetCoverage:
       return self
     elif cls is PredicateCoverage:
-      return reduce(lambda x,y: x+y, self.items)
+      return reduce(lambda x,y: x+y, self.items, PredicateCoverage([]))
     else:
       assert False
 
@@ -163,14 +163,14 @@ class StatementSetCoverage(Coverage):
     if cls is StatementSetCoverage:
       return self
     elif cls is StatementCoverage:
-      return reduce(lambda x,y: x+y, self.items)
+      return reduce(lambda x,y: x+y, self.items, StatementCoverage([]))
     elif cls is PredicateSetCoverage:
       return PredicateSetCoverage(cov.cast_to(PredicateCoverage) for cov in self.items)
     elif cls is PredicateCoverage:
       return self.cast_to(PredicateSetCoverage).cast_to(PredicateCoverage)
   
   def print(self):
-    print('State-set coverage:')
+    print('Statement-set coverage:')
     for i, cov in enumerate(self.items):
       print(f'  {i}-th statement coverage:')
       cov.print()

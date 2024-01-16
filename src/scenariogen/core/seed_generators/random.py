@@ -14,14 +14,8 @@ import scenic
 scenic.setDebuggingOptions(verbosity=1, fullBacktrace=True)
 from scenic.core.simulators import SimulationCreationError
 
-from scenariogen.core.errors import EgoCollisionError, SplineApproximationError
+from scenariogen.core.errors import SplineApproximationError
 from scenariogen.core.utils import seed_from_sim, ordinal
-from scenariogen.core.coverages.coverage import StatementCoverage, PredicateSetCoverage, PredicateCoverage
-
-
-coverage_statements_seen = StatementCoverage([])
-coverage_predicateSet_seen = PredicateSetCoverage([])
-coverage_predicates_seen = PredicateCoverage([])
 
 
 def run(config):
@@ -65,9 +59,6 @@ def run(config):
         except SimulationCreationError as e:
             print(f'Failed to create simulation: {e}')
             continue
-        # except Exception as e:
-        #     print(f'Exception of type {type(e)}: {e}. Discarding the simulation...')
-        #     continue
         else:
             if sim_result is None:
                 print(f'Simulation rejected!')

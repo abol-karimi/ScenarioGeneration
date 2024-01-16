@@ -9,6 +9,7 @@ from scenic.domains.driving.roads import Network
 from scenariogen.core.scenario import Scenario
 from scenariogen.core.errors import EgoCollisionError, NonegoCollisionError
 from scenariogen.core.coverages.coverage import PredicateCoverage
+from experiments.configs import SUT_config, coverage_config
 
 
 parser = argparse.ArgumentParser(
@@ -59,15 +60,12 @@ if args.weather:
     weather = args.weather
 
 # Scenario config
-config = {**seed.config}
+config = {**seed.config, **SUT_config, **coverage_config}
 config['simulator'] = args.simulator
 config['steps'] = steps
 config['timestep'] = timestep
 config['weather'] = weather
 config['fuzz_input'] = seed
-config['arrival_distance'] = 4
-config['stopping_speed'] = 0.5  # meters/seconds
-config['moving_speed'] = 0.6
 config['ego-module'] = args.ego_module
 config['coverage_module'] = args.coverage_module
 config['render_spectator'] = args.render_spectator

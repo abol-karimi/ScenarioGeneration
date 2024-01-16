@@ -9,9 +9,7 @@ import jsonpickle
 from functools import reduce
 
 from experiments.configs import SUT_config, coverage_config
-from scenariogen.core.coverages.coverage import StatementCoverage
 from scenariogen.core.scenario import Scenario
-from scenariogen.core.errors import EgoCollisionError, NonegoCollisionError
 from scenic.core.simulators import SimulationCreationError
 
 

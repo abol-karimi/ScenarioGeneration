@@ -60,13 +60,13 @@ changedSignalBetween(V, T1, T2):-
   signaledAtTime(V, _, Tm),
   eventTime(T1),
   eventTime(T2),
-  1 = @lessThan(T1, Tm),
-  1 = @lessThan(Tm, T2).
+  lessThan(T1, Tm),
+  lessThan(Tm, T2).
 
 signaledAtFork(V, S, F):-
   signaledAtTime(V, S, Ts),
   arrivedFromLaneAtTime(V, F, Ta),
-  1 = @lessThan(Ts, Ta),
+  lessThan(Ts, Ta),
   not changedSignalBetween(V, Ts, Ta).
 
 signaledLeft(V):-
@@ -111,9 +111,9 @@ violatesRightOfForRule(V1, V2, leftTurnFromContinuingHighway):-
   overlaps(L1, L2),
   arrivedAtTime(V2, Ta),
   enteredLaneAtTime(V1, L2, Te1),
-  1 = @lessThan(Ta, Te1),
+  lessThan(Ta, Te1),
   leftLaneAtTime(V2, L1, Tl2),
-  1 = @lessThan(Te1, Tl2).
+  lessThan(Te1, Tl2).
 
 % 21801 (b):
 % A driver having yielded as prescribed in subdivision (a),
@@ -130,10 +130,10 @@ violatesRightOfForRule(V2, V1, yieldToLeftTurnFromContinuingHighway):-
   overlaps(L1, L2),
   arrivedAtTime(V2, Ta),
   enteredLaneAtTime(V1, L2, Te1),
-  1 = @lessThan(Te1, Ta), % V1 enters the overlap earlier than V2 arrives at the intersection
+  lessThan(Te1, Ta), % V1 enters the overlap earlier than V2 arrives at the intersection
   leftLaneAtTime(V1, L2, Tl1),
   enteredLaneAtTime(V2, L1, Te2),
-  1 = @lessThan(Te2, Tl1). % V2 enters the overlap earlier than V1 leaves it
+  lessThan(Te2, Tl1). % V2 enters the overlap earlier than V1 leaves it
 
 % 22450 (a):
 % The driver of any vehicle approaching a stop sign at the entrance to, or within, an intersection
@@ -147,14 +147,14 @@ violatesRightOfForRule(V2, V1, yieldToLeftTurnFromContinuingHighway):-
 stoppedAtFork(V, F):-
   arrivedFromLaneAtTime(V, F, Ta),
   stoppedAtTime(V, Ts),
-  1 = @lessThan(Ta, Ts),
+  lessThan(Ta, Ts),
   enteredAtTime(V, Te),
-  1 = @lessThan(Ts, Te).
+  lessThan(Ts, Te).
 
 stoppedAtFork(V, F):-
   arrivedFromLaneAtTime(V, F, Ta),
   stoppedAtTime(V, Ts),
-  1 = @lessThan(Ta, Ts),
+  lessThan(Ta, Ts),
   not entered(V).
 
 violatesRule(V, stopAtSign):-
@@ -175,10 +175,10 @@ violatesRightOfForRule(V1, V2, yieldToCrossing):-
   overlaps(L1, L2),
   arrivedAtTime(V2, Ta),
   enteredAtTime(V1, Te),
-  1 = @lessThan(Ta, Te), % V2 arrives earlier than V1 enters
+  lessThan(Ta, Te), % V2 arrives earlier than V1 enters
   enteredLaneAtTime(V1, L2, Tle),
   leftLaneAtTime(V2, L1, Tll),
-  1 = @lessThan(Tle, Tll). % V1 enters the overlap earlier than V2 leaves it
+  lessThan(Tle, Tll). % V1 enters the overlap earlier than V2 leaves it
 
 % 21802 (b):
 % A driver having yielded as prescribed in subdivision (a) may proceed to enter the intersection,
@@ -195,10 +195,10 @@ violatesRightOfForRule(V2, V1, yieldToYieldedToCrossing):-
   overlaps(L1, L2),
   enteredAtTime(V1, Te),
   arrivedAtTime(V2, Ta),
-  1 = @lessThan(Te, Ta), % V1 enters before V2 arrives
+  lessThan(Te, Ta), % V1 enters before V2 arrives
   enteredLaneAtTime(V2, L1, Tle),
   leftLaneAtTime(V1, L2, Tll),
-  1 = @lessThan(Tle, Tll). % V2 enters the overlap earlier than V1 leaves it
+  lessThan(Tle, Tll). % V2 enters the overlap earlier than V1 leaves it
 
 %-------------------------------------------------
 violatesRightOf(V1, V2):-

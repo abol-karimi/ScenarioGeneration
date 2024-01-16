@@ -3,13 +3,13 @@
 leftAfter(V2, V1):-
   leftAtTime(V1, T1),
   leftAtTime(V2, T2),
-  1 = @lessThan(T1, T2).
+  lessThan(T1, T2).
 
 %---------- leader following ----------
 follows(V2, V1):-
   enteredFromLaneAtTime(V1, L, T1),
   enteredFromLaneAtTime(V2, L, T2),
-  1 = @lessThan(T1, T2),
+  lessThan(T1, T2),
   leftToLane(V1, L),
   leftToLane(V2, L).
 
