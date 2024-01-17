@@ -1,26 +1,30 @@
 from random import Random
 from collections import Counter
 
-# This project
-from scenariogen.core.coverages.coverage import StatementCoverage, PredicateSetCoverage
 
 
 class FuzzCandidate:
-    """Represent an input with additional attributes"""
+  """Represent an input with additional attributes"""
 
-    def __init__(self, fuzz_input):
-        self.fuzz_input = fuzz_input
+  def __init__(self, fuzz_input):
+    self.fuzz_input = fuzz_input
 
-        # These will be needed for power schedules
-        self.coverage = None
-        self.distance = -1
-        self.energy = 0.0
-
+    # These will be needed for power schedules
+    self.coverage = None
+    self.distance = -1
+    self.energy = 0.0
+  
 
 class PowerSchedule:
   def __init__(self, randomizer_seed):
     self.random = Random(randomizer_seed)
     self.coverage_frequency = Counter()
+
+  def get_state(self):
+    return self.random.getstate()
+  
+  def set_state(self, state):
+    self.random.setstate(state)
 
   def assignEnergy(self, population):
     """Assigns each fuzz_candidate the same energy"""

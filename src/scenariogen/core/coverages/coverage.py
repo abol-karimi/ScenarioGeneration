@@ -95,8 +95,8 @@ class PredicateCoverage(Coverage):
     for item in self.items:
       print(f'\t{item}')
 
-  def __contains__(self, pred):
-    return any(pred.name == item.name for item in self.items)
+  def __contains__(self, item):
+    return isinstance(item, Predicate) and item in self.items
 
 
 class PredicateSetCoverage(Coverage):
@@ -120,6 +120,9 @@ class PredicateSetCoverage(Coverage):
       print(f'{i}th predicate coverage:')
       cov.print()
 
+  def __contains__(self, item):
+    return isinstance(item, PredicateCoverage) and item in self.items
+
 
 class StatementCoverage(Coverage):
   """
@@ -140,6 +143,9 @@ class StatementCoverage(Coverage):
   def print(self):
     for item in self.items:
       print(f'\t{item}')
+
+  def __contains__(self, item):
+    return isinstance(item, Statement) and item in self.items
     
 
 class StatementSetCoverage(Coverage):
@@ -165,6 +171,9 @@ class StatementSetCoverage(Coverage):
     for i, cov in enumerate(self.items):
       print(f'  {i}-th statement coverage:')
       cov.print()
+  
+  def __contains__(self, item):
+    return isinstance(item, StatementCoverage) and item in self.items
 
 
 def from_corpus(corpus_folder, config):

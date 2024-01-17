@@ -38,3 +38,9 @@ class SplineApproximationError(Exception):
 
     def __init__(self, message):
         self.msg = message
+
+class CoverageError(Exception):
+    """Exception raised if coverage calculation fails."""
+
+    def __init__(self, message):
+        self.msg = message

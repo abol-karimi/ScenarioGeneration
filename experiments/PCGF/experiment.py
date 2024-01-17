@@ -17,7 +17,7 @@ from random import Random
 from scenariogen.core.fuzzing.mutators import StructureAwareMutator
 from scenariogen.core.fuzzing.crossovers import StructureAwareCrossOver
 from scenariogen.core.fuzzing.schedules import AFLFastSchedule
-from scenariogen.core.fuzzing.fuzzers.modular import ModularFuzzer
+from scenariogen.core.fuzzing.fuzzers.modular import CountingPredicateSetFuzzer
 from experiments.configs import SUT_config, coverage_config
 
 
@@ -49,11 +49,11 @@ if __name__ == '__main__':
                                         max_attempts=1,
                                         randomizer_seed=config_randomizer.randrange(config_seed_range)),
     'schedule': AFLFastSchedule(config_randomizer.randrange(config_seed_range), 5),
-    'max-total-time': 3600, # seconds
+    'max-total-time': 10*60, # seconds
     'max_seed_length': 1e+6, # 1 MB
   }
 
-  fuzzer = ModularFuzzer(fuzzer_config)
+  fuzzer = CountingPredicateSetFuzzer(fuzzer_config)
 
   results_file_path = Path(f'experiments/PCGF/gen_{ego_coverage}/results.json')
   fuzz_inputs_path = Path(fuzzer_config['fuzz-inputs-folder'])
@@ -106,7 +106,7 @@ if __name__ == '__main__':
 
   # try:
   tl.start(block=False)
-  fuzzer_state = fuzzer.run(fuzzer_state=fuzzer_state)
+  fuzzer_state = fuzzer.runs(fuzzer_state)
   # except Exception as e:
   #   print(f'Exception of type {type(e)} in modular fuzzer: {e}.')
 

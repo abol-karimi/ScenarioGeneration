@@ -41,11 +41,15 @@ def plot(experiment_type, gen_ego, test_ego, test_coverage, plot_label, plot_col
   for i in range(1, len(measurements)):
     exe_times_acc.append(exe_times_acc[-1] + exe_times[i])
     statementSet_coverages_acc.append(statementSet_coverages_acc[-1] + statementSet_coverages[i])
+  
+  statement_coverages_acc = tuple(c.cast_to(StatementCoverage) for c in statementSet_coverages_acc)
+  predicateSet_coverages_acc = tuple(c.cast_to(PredicateSetCoverage) for c in statementSet_coverages_acc)
+  predicate_coverages_acc = tuple(c.cast_to(PredicateCoverage) for c in statement_coverages_acc)
 
   ax1.plot(exe_times_acc, tuple(len(c) for c in statementSet_coverages_acc), f'{plot_color}-', label=plot_label)
-  ax2.plot(exe_times_acc, tuple(len(c.cast_to(StatementCoverage)) for c in statementSet_coverages_acc), f'{plot_color}-', label=plot_label)
-  ax3.plot(exe_times_acc, tuple(len(c.cast_to(PredicateSetCoverage)) for c in statementSet_coverages_acc), f'{plot_color}-', label=plot_label)
-  ax4.plot(exe_times_acc, tuple(len(c.cast_to(PredicateCoverage)) for c in statementSet_coverages_acc), f'{plot_color}-', label=plot_label)
+  ax2.plot(exe_times_acc, tuple(len(c) for c in statement_coverages_acc), f'{plot_color}-', label=plot_label)
+  ax3.plot(exe_times_acc, tuple(len(c) for c in predicateSet_coverages_acc), f'{plot_color}-', label=plot_label)
+  ax4.plot(exe_times_acc, tuple(len(c) for c in predicate_coverages_acc), f'{plot_color}-', label=plot_label)
   if draw_predicate_coverage_space:
     ax4.plot(exe_times_acc, tuple(len(predicate_coverage_space) for _ in range(len(exe_times_acc))), 'r--', label='Predicate-Coverage Space')
 
@@ -53,11 +57,12 @@ def plot(experiment_type, gen_ego, test_ego, test_coverage, plot_label, plot_col
 if __name__ == '__main__':
   test_coverage = 'traffic'
   reports_config = (
+    ('PCGF', 'TFPP', 'TFPP', test_coverage, 'PCGF', 'm', False),
     ('random_search', 'TFPP', 'TFPP', test_coverage, 'Random search', 'b', False),
-    ('Atheris', 'TFPP', 'TFPP', test_coverage, 'Fuzzing', 'g', True),
+    ('Atheris', 'TFPP', 'TFPP', test_coverage, 'Atheris', 'g', True),
   )
-  fig_coverage = plt.figure()
-  # fig_coverage.suptitle(f'Random vs. Coverage-Guided Fuzzing')
+  fig_coverage = plt.figure(layout='constrained')
+  # fig_coverage.suptitle(f'Baseline vs. Coverage-Guided Fuzzing')
 
   ax = fig_coverage.add_subplot(111)    # The big subplot
   # Turn off axis lines and ticks of the big subplot
@@ -66,8 +71,7 @@ if __name__ == '__main__':
   ax.spines['left'].set_color('none')
   ax.spines['right'].set_color('none')
   ax.tick_params(labelcolor='w', top=False, bottom=False, left=False, right=False)
-  # Set common labels
-  ax.set_xlabel('Wall-clock time (minutes)')
+    
 
   ax1 = fig_coverage.add_subplot(411)
   ax2 = fig_coverage.add_subplot(412)
@@ -77,10 +81,10 @@ if __name__ == '__main__':
   ax2.set_ylabel('Statements')
   ax3.set_ylabel('Predicate-Sets')
   ax4.set_ylabel('Predicates')
+  ax4.set_xlabel('Wall-clock time (minutes)')
 
   for experiment_type, gen_ego, test_ego, test_coverage, plot_label, plot_color, draw_predicate_coverage_space in reports_config:
     plot(experiment_type, gen_ego, test_ego, test_coverage, plot_label, plot_color, draw_predicate_coverage_space)
 
   ax4.legend()
-  plt.tight_layout()
-  plt.savefig(f'experiments/ISSTA_plots/random-vs-CCGF_coverage_{test_coverage}.png')
+  plt.savefig(f'experiments/ISSTA_plots/baseline-vs-CCGF_coverage_{test_coverage}.png')

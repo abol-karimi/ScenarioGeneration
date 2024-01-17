@@ -4,7 +4,7 @@ import clingo
 
 from scenariogen.core.utils import classify_intersection
 from scenariogen.predicates.utils import predicates_of_logic_program, time_to_term, term_to_time
-from scenariogen.core.coverages.coverage import Statement, StatementCoverage, StatementSetCoverage, Predicate, PredicateCoverage
+from scenariogen.core.coverages.coverage import Statement, StatementCoverage, Predicate, PredicateCoverage
 from scenariogen.predicates.predicates import geometry_atoms
 from scenariogen.predicates.events import ActorSpawnedEvent
 from experiments.configs import coverage_config
@@ -91,8 +91,6 @@ def to_coverage(events, config):
             # lessThan(oi, oj) and lessThan(oj, ok) imply lessThan(oi, ok) so no need to add it explicitly
             break
         break
-  for o in temporal_order:
-    print(o)
   
   atoms = []
   atoms += geometry_atoms(config['network'], config['intersection'])
@@ -117,4 +115,4 @@ def to_coverage(events, config):
         args = tuple(map(str, atom.arguments))
         statements.append(Statement(predicate, args))
 
-  return StatementSetCoverage((StatementCoverage(statements),))
+  return StatementCoverage(statements)

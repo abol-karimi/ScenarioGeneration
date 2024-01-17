@@ -58,4 +58,4 @@ if __name__ == '__main__':
     plot(experiment_type, experiment_name, coverage_ego)
 
   plt.tight_layout()
-  plt.savefig('experiments/ISSTA_plots/random-vs-CGF_valid.png')
+  plt.savefig('experiments/ISSTA_plots/baseline-vs-CCGF_valid.png')
