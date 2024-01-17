@@ -1,5 +1,5 @@
 
-% timeless abstraction of all event predicates:
+% time abstraction of all event predicates:
 arrivedFromLane(V, L):-
   arrivedFromLaneAtTime(V, L, _).
 
@@ -30,6 +30,9 @@ appearedTo(V1, V2):-
 disappearedFrom(V1, V2):-
   disappearedFromAtTime(V1, V2, _).
 
+actorSpawnedAtAlongLane(V, P, L):-
+  actorSpawnedAtAlongLaneAtTime(V, P, L, _).
+
 % Other abstractions:
 arrivedAtTime(V, T):-
   arrivedFromLaneAtTime(V, _, T).
@@ -39,3 +42,6 @@ enteredAtTime(V, T):-
 
 leftAtTime(V, T):-
   leftToLaneAtTime(V, _, T).
+
+actorSpawnedOnLane(V, L):-
+  actorSpawnedAtAlongLane(V, _, L).

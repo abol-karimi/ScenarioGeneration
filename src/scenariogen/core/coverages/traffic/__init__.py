@@ -39,7 +39,11 @@ def to_coverage(events, config):
     with open(file_path, 'r') as f:
       encoding += f.read()
 
-  ordinal2time = {f't{i}':t for i,t in enumerate(sorted(set(e.time for e in events)))}
+  event_times = sorted(set(e.time for e in events))
+  ordinals = tuple(f't{i}' for i in range(len(event_times)))
+  ordinal2time = {o:t for o,t in zip(ordinals, event_times)}
+  time2ordinal = {t:o for o,t in zip(ordinals, event_times)}
+
   spawn_events = [e for e in events if type(e) is ActorSpawnedEvent]
   lanes = set(e.lane for e in spawn_events)
   lane2spawnEvents = {l: sorted(list(filter(lambda e: e.lane == l, spawn_events)), reverse=True, key=lambda e: e.progress)
@@ -50,7 +54,6 @@ def to_coverage(events, config):
   old2new['ego'] = 'ego'
 
   # Choose symbolic constants for event times
-  time2ordinal = {t:o for o,t in ordinal2time.items()}
   for e in events:
     e.time = time2ordinal[e.time]
 
@@ -61,32 +64,35 @@ def to_coverage(events, config):
       e.other = old2new[e.other]
 
 
+  # To reduce the logic program size,
+  # we try to encode the perceptible temporal order between the events as compactly as possible
   temporal_order = ['equal(T, T):- eventTime(T)',
                     'equal(T1, T2):- equal(T2, T1)',
                     'lessThan(T1, T3):- lessThan(T1, T2), lessThan(T2, T3)']
-  for t1, t2 in combinations(ordinal2time.keys(), 2):
-    if abs(ordinal2time[t2] - ordinal2time[t1]) < config['min_perceptible_time']:
-      temporal_order.append(f'equal({t1}, {t2})')
+  for o1, o2 in combinations(ordinals, 2):
+    if abs(ordinal2time[o2] - ordinal2time[o1]) < config['min_perceptible_time']:
+      temporal_order.append(f'equal({o1}, {o2})')
 
-  ordinals = tuple(ordinal2time.keys())
-  for i, oi in enumerate(ordinals[:-1]):
-    ti = ordinal2time[oi]
-    for j, oj in enumerate(ordinals[i+1:]):
-      tj = ordinal2time[oj]
+  for i in range(len(event_times)-1):
+    ti = event_times[i]
+    for j in range(i+1, len(event_times)):
+      tj = event_times[j]
       if tj - ti < config['min_perceptible_time']:
         continue
       else:
-        temporal_order.append(f'lessThan({oi}, {oj})')
-        for ok in ordinals[j+1:]:
-          tk = ordinal2time[ok]
+        temporal_order.append(f'lessThan({ordinals[i]}, {ordinals[j]})')
+        for k in range(j+1, len(event_times)):
+          tk = event_times[k]
           if tk - tj < config['min_perceptible_time']:
             # lessThan(oi, oj) and equal(oj, ok) are not enough to imply lessThan(oi, ok),
             # but we know that tj < tk, so we must add:
-            temporal_order.append(f'lessThan({oi}, {ok})')
+            temporal_order.append(f'lessThan({ordinals[i]}, {ordinals[k]})')
           else:
-            # lessThan(oi, oj) and lessThan(oj, ok) imply lessThan(oi, ok)
+            # lessThan(oi, oj) and lessThan(oj, ok) imply lessThan(oi, ok) so no need to add it explicitly
             break
         break
+  for o in temporal_order:
+    print(o)
   
   atoms = []
   atoms += geometry_atoms(config['network'], config['intersection'])

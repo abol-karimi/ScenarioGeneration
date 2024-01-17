@@ -67,3 +67,22 @@ nonConflictPathWith(V1, V2):-
   lanePrecedes(L1, L13), lanePrecedes(L13, L3),
   lanePrecedes(L2, L24), lanePrecedes(L24, L4),
   not overlaps(L13, L24).
+
+nonego(V):-
+  actorSpawnedOnLane(V, _),
+  V != ego.
+
+% When ego collides with any actor
+egoNonegoCollision:-
+  collidedWithAtTime(ego, A, _),
+  nonego(A).
+
+% When nonegos collide. Might be an invalid scenario, e.g. nonegos might pass through each other since their physics is disabled.
+egoNonegoCollision:-
+  collidedWithAtTime(A, ego, _),
+  nonego(A).
+
+nonegoNonegoCollision:-
+  collidedWithAtTime(A, B, _),
+  nonego(A),
+  nonego(B).
