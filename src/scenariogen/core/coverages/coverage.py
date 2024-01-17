@@ -49,17 +49,8 @@ class Statement:
 
 class Coverage:
   def __init__(self, items) -> None:
-    self.items = set(items)
-  
-  def add(self, item):
-    self.items.add(item)
+    self.items = frozenset(items)
 
-  def __iadd__(self, other):
-    self.items.update(other.items)
-  
-  def update(self, other):
-    self.items.update(other.items)
-  
   def __len__(self):
     return len(self.items)
   

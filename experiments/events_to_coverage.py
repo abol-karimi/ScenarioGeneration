@@ -13,18 +13,18 @@ from scenariogen.core.coverages.coverage import StatementSetCoverage
 
 
 def add_coverage(measurement, config):
-  measurement['statement-set-coverage'] = StatementSetCoverage([])
+  statement_coverages = []
 
   for path in measurement['new_event_files']:
     if not path.is_file():
       continue
-    print(path)
     with open(path, 'r') as f:
-      events = jsonpickle.decode(f.read())
-    
+      events = jsonpickle.decode(f.read())   
     if events:
       cov = config['coverage_module'].to_coverage(events, config)
-      measurement['statement-set-coverage'].update(cov)
+      statement_coverages.append(cov)
+  
+  measurement['statement-set-coverage'] = StatementSetCoverage(statement_coverages)
 
 
 def report(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage):
@@ -53,9 +53,9 @@ def report(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage):
 
 if __name__ == '__main__':
   reports_config = (
-    ('Atheris', 'TFPP', 'traffic', 'TFPP', 'traffic'),
-    ('random_search', 'TFPP', 'traffic', 'TFPP', 'traffic'),
-    # ('predicateFuzz', 'TFPP', 'traffic', 'TFPP', 'traffic'),
+    # ('Atheris', 'TFPP', 'traffic', 'TFPP', 'traffic'),
+    # ('random_search', 'TFPP', 'traffic', 'TFPP', 'traffic'),
+    ('PCGF', 'TFPP', 'traffic', 'TFPP', 'traffic'),
     # ('Atheris', 'TFPP', 'traffic', 'autopilot', 'traffic'),
     # ('Atheris', 'TFPP', 'traffic', 'BehaviorAgent', 'traffic'),
     # ('Atheris', 'autopilot', 'traffic', 'autopilot', 'traffic'),
