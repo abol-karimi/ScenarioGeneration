@@ -49,7 +49,7 @@ if __name__ == '__main__':
                                         max_attempts=1,
                                         randomizer_seed=config_randomizer.randrange(config_seed_range)),
     'schedule': AFLFastSchedule(config_randomizer.randrange(config_seed_range), 5),
-    'max-total-time': 10*60, # seconds
+    'max-total-time': 120*60, # seconds
     'max_seed_length': 1e+6, # 1 MB
   }
 
@@ -76,6 +76,7 @@ if __name__ == '__main__':
       print('Cannot resume PCGF: the event_files in the folder do not match the event_files of results.json.')
       exit(1)
     fuzzer_state = results[-1]['fuzzer_state']
+    del results[-1]['fuzzer_state']
   else:
     # start
     fuzz_inputs_path.mkdir(parents=True, exist_ok=True)
@@ -94,25 +95,31 @@ if __name__ == '__main__':
   # Set up a measurement loop
   measurements = []
   tl = Timeloop()
-  period = 60 # seconds
+  period = 120 # seconds
   @tl.job(interval=timedelta(seconds=period))
   def measure_progress():
     new_event_files = set(events_path.glob('*')) - past_event_files
     past_event_files.update(new_event_files)
     measurements.append({'exe_time': period,
+                         'elapsed_time': time.time()-start_time,
                         'new_event_files': new_event_files,
                         })
     print(f'\nMeasurement recorded!\n')
 
-  # try:
   tl.start(block=False)
-  fuzzer_state = fuzzer.runs(fuzzer_state)
-  # except Exception as e:
-  #   print(f'Exception of type {type(e)} in modular fuzzer: {e}.')
-
-  print(f'Measurement thread will stop in {period} seconds...')
-  time.sleep(period)
-  tl.stop()
+  start_time = time.time()
+  try:
+    fuzzer_state = fuzzer.runs(fuzzer_state)
+  except Exception as e:
+    # print(f'Exception of type {type(e)} in modular fuzzer: {e}.')
+    raise e
+  finally:
+    tl.stop()
+    print(f'Measurement thread stopped.')
+  
+  # Measure one last time in case the the time-loop thread missed some new results
+  measure_progress()
+  
   results.append({'measurements': measurements,
                   'fuzzer_state': fuzzer_state
                   })

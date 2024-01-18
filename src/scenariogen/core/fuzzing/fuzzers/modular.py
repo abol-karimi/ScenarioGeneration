@@ -99,7 +99,7 @@ class ModularFuzzer:
       if statement_coverage in self.coverage_seen:
         coverage_events, statement_coverage = None, None
       else:
-        candidate = FuzzCandidate(fuzz_input)
+        candidate = FuzzCandidate(fuzz_input, fuzz_input_hash)
         self.fuzz_candidates.append(candidate)
         self.coverage_seen = self.coverage_seen + StatementSetCoverage([statement_coverage])
         

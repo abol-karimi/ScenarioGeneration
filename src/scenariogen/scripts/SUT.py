@@ -71,20 +71,15 @@ config['coverage_module'] = args.coverage_module
 config['render_spectator'] = args.render_spectator
 config['render_ego'] = args.render_ego
 
-try:
-    sim_result = Scenario(seed).run(config)
-except NonegoCollisionError as err:
-    print(f'Collision between nonegos {err.nonego} and {err.other}.')
-except EgoCollisionError as err:
-    print(f'Ego collided with {err.other}.')
-else:
-    if args.coverage_module:
-        coverage = sim_result.records['coverage']
-        coverage.print()
+sim_result = Scenario(seed).run(config)
 
-        config.update({'network': Network.fromFile(config['map'])})
-        coverage_module = importlib.import_module(f'scenariogen.core.coverages.{args.coverage_module}')
-        predicate_coverage_space = coverage_module.coverage_space(config)
-        coverage_gap = predicate_coverage_space - coverage.cast_to(PredicateCoverage)
-        print(f'\nPredicate coverage gap:')
-        coverage_gap.print()
+if args.coverage_module:
+    coverage = sim_result.records['coverage']
+    coverage.print()
+
+    config.update({'network': Network.fromFile(config['map'])})
+    coverage_module = importlib.import_module(f'scenariogen.core.coverages.{args.coverage_module}')
+    predicate_coverage_space = coverage_module.coverage_space(config)
+    coverage_gap = predicate_coverage_space - coverage.cast_to(PredicateCoverage)
+    print(f'\nPredicate coverage gap:')
+    coverage_gap.print()

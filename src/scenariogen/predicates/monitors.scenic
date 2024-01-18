@@ -49,7 +49,8 @@ monitor ArrivingAtIntersectionMonitor(config, eventsOut):
       if pre_arrived[car]:
         if (distance from (front of car) to intersection) <= config['arrival_distance']:
           pre_arrived[car] = False
-          eventsOut.append(ArrivedAtIntersectionEvent(car.name, network.laneAt(front of car).uid, time_seconds))
+          arrival_lane = network.laneAt(front of car)
+          eventsOut.append(ArrivedAtIntersectionEvent(car.name, arrival_lane.uid if arrival_lane else 'none', time_seconds))
       else:
         pre_arrived[car] = True if (front of car) in incomingLanes and\
                                    (distance from (front of car) to intersection) > config['arrival_distance']\
@@ -90,13 +91,15 @@ monitor RegionOverlapMonitor(config, eventsOut):
         if isinstance(region, Lane):
           eventsOut.append(EnteredLaneEvent(car.name, region.uid, time_seconds))
         elif isinstance(region, Intersection):
-          eventsOut.append(EnteredIntersectionEvent(car.name, car.lane.uid, time_seconds))
+          car_lane = car.lane.uid if car.lane else 'none'
+          eventsOut.append(EnteredIntersectionEvent(car.name, car_lane, time_seconds))
         occupiedRegions[car].add(region.uid)
       elif wasOnRegion and not isOnRegion:
         if isinstance(region, Lane):
           eventsOut.append(LeftLaneEvent(car.name, region.uid, time_seconds))
         elif isinstance(region, Intersection):
-          eventsOut.append(LeftIntersectionEvent(car.name, car.lane.uid, time_seconds))
+          car_lane = car.lane.uid if car.lane else 'none'
+          eventsOut.append(LeftIntersectionEvent(car.name, car_lane, time_seconds))
         occupiedRegions[car].remove(region.uid)
     wait
 

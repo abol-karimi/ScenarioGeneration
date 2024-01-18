@@ -37,7 +37,7 @@ export PATH=/home/carla/z3-4.8.10-x64-ubuntu-18.04/bin:$PATH
 # ScenarioComplexity
 export PYTHONPATH=/home/carla/ScenarioComplexity/src/:$PYTHONPATH
 export PYTHONPATH=/home/carla/ScenarioComplexity/:$PYTHONPATH
-export PATH=/home/carla/ScenarioComplexity/src/complexgen/scripts/:$PATH
+export PATH=$PATH:/home/carla/ScenarioComplexity/src/complexgen/scripts/
 
 # TF++ AV agent
 export SCENARIO_RUNNER_ROOT=${WORK_DIR}/scenario_runner
