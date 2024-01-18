@@ -167,8 +167,10 @@ class StructureAwareMutator():
     ext_len = 0
     if offset > available - 10: # 10 meters cushion
       # Extend the route by offset-available+10
-      lanes = self._extend_lanes_backward(fuzz_input.config['carla_map'], lanes, offset-available+10) + lanes
-      print(f'Extended the route backwards by {offset-available+10} meters.')
+      ext = self._extend_lanes_backward(fuzz_input.config['carla_map'], lanes, offset-available+10)
+      ext_len = sum(l.centerline.length for l in ext)
+      lanes =  ext + lanes
+      print(f'Extended the route backwards by {ext_len} meters.')
     
     new_footprint = Spline(degree=footprint.degree,
                       ctrlpts=tuple((p[0]+ext_len-offset, p[1]) for p in footprint.ctrlpts),
