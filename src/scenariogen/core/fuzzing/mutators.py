@@ -4,6 +4,7 @@ import jsonpickle
 import geomdl
 from geomdl import BSpline
 import shapely
+import hashlib
 from scenic.domains.driving.roads import Network
 
 # This project
@@ -21,18 +22,14 @@ class StructureAwareMutator():
   * Conservation of matter,
   i.e. vehicles don't spawn or disappear after a scenario starts till it ends.
 
-  * The created scenarios' durations don't exceed config['maxSeconds']
-
   """
   _networks_cache = {}
   _route_lengths_cache = {}
   _predecessors_cache = {}
 
   def __init__(self, max_spline_knots_size=50,
-                      max_mutations_per_iteration=1,
-                      randomizer_seed=0):
+                     randomizer_seed=0):
     self.max_spline_knots_size = max_spline_knots_size
-    self.max_mutations_per_iteration = max_mutations_per_iteration
     self.randomizer_seed = randomizer_seed
 
     self.random = Random(randomizer_seed)
@@ -485,8 +482,15 @@ class StructureAwareMutator():
       return fuzz_input
     except Exception as e:
       print(f'Error in the mutator: {e}')
-      with open('mutator_bug.json', 'w') as f:
-        f.write(jsonpickle.encode(fuzz_input, indent=1))
+      bug = {
+        'fuzz-input': fuzz_input,
+        'mutator': mutator,
+        'exception': e,
+      }
+      bug_bytes = jsonpickle.encode(bug, indent=1).encode('utf-8')
+      bug_hash = hashlib.sha1(bug_bytes).hexdigest()
+      with open(f'mutator-bug_{bug_hash}.json', 'wb') as f:
+        f.write(bug_bytes)
       raise e
     else:
       return mutant

@@ -28,8 +28,6 @@ parser.add_argument('--timestep', default=0.05, type=float,
 duration = parser.add_mutually_exclusive_group()
 duration.add_argument('--maxSteps', type=int, 
                       help='maximum allowed scenario duration in steps. Note that each scenario can have a different duration.')
-duration.add_argument('--maxSeconds', type=float, 
-                      help='maximum allowed scenario duration in seconds. Note that each scenario can have a different duration.')
 parser.add_argument('--max-nonegos', type=int, default=5,
                       help='maximum number of non-egos allowed')
 parser.add_argument('--ego', action='store_true',
@@ -37,7 +35,7 @@ parser.add_argument('--ego', action='store_true',
 parser.add_argument('--weather', default = 'CloudySunset')
 parser.add_argument('--spline-degree', default=3, type=int)
 parser.add_argument('--max-spline-knots-size', default=50, type=int)
-parser.add_argument('--max-mutations-per-iteration', default=4, type=int)
+parser.add_argument('--max-mutations-per-fuzz', default=10, type=int)
 parser.add_argument('--arrival-distance', default=4., type=float)
 args = parser.parse_args()
 
@@ -46,8 +44,6 @@ maxSteps = 400
 # Set maximum duration if requested:
 if args.maxSteps:
     maxSteps = args.maxSteps
-elif args.maxSeconds:
-    maxSteps = args.maxSeconds*args.timestep
 
 in_corpus = seed.SeedCorpus([])
 in_corpus.load(args.in_corpus)

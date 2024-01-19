@@ -41,10 +41,7 @@ def run(config):
     
     fuzz_inputs_path = Path(config['fuzz-inputs-folder'])
     fuzz_inputs_path.mkdir(parents=True, exist_ok=True)
-
-    if config['coverage_module']:
-        events_path = Path(config['events-folder'])
-       
+      
     while time.time()-start_time < config['max-total-time']:
         try:
             scene, iterations = scenario.generate(maxIterations=config['scene_maxIterations'])
@@ -83,8 +80,8 @@ def run(config):
             seed_id += 1
             print(f'Saved the {ordinal(seed_id)} seed as {seed_hash}.')
             
-            if config['coverage_module']:
+            if 'coverage_module' in config and config['save-coverage-events']:
                 events = sim_result.records['events']
-                with open(events_path/seed_hash, 'w') as f:
+                with open(Path(config['events-folder'])/seed_hash, 'w') as f:
                     f.write(jsonpickle.encode(events, indent=1))
                 

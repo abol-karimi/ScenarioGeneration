@@ -25,8 +25,7 @@ with open('experiments/seeds_manual/0.json', 'r') as f:
     assert isinstance(seed, FuzzInput)
 
 mutator = StructureAwareMutator(max_spline_knots_size=50,
-                        max_mutations_per_iteration=1,
-                        randomizer_seed=0)
+                                randomizer_seed=0)
 network = StructureAwareMutator.get_network(seed)
 
 resolution = 0.05

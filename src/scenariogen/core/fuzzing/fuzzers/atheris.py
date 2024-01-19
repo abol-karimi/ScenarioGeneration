@@ -1,18 +1,15 @@
 import sys
 import jsonpickle
-import pickle
 from pathlib import Path
 from typing import Any
 from multiprocessing import Process
 import hashlib
+from random import Random
 import atheris
 from scenic.core.simulators import SimulationCreationError
 
 # This project
 from scenariogen.core.scenario import Scenario
-from scenariogen.core.errors import InvalidFuzzInputError, EgoCollisionError
-from scenariogen.core.scenario import Scenario
-from scenariogen.core.fuzz_input import validate_input
 
 #----------------------------------------------
 #---------- mutator's wrapper ----------
@@ -20,8 +17,10 @@ from scenariogen.core.fuzz_input import validate_input
 class MutatorCallback:
   """ Mutator callback wrapper passed to atheris.
   """
-  def __init__(self, mutator):
-    self.mutator = mutator
+  def __init__(self, config):
+    self.mutator = config['mutator']
+    self.max_mutations_per_fuzz = config['max-mutations-per-fuzz']
+    self.random = config['random']
   
   def get_state(self):
     return self.mutator.get_state()
@@ -30,48 +29,14 @@ class MutatorCallback:
     self.mutator.set_state(state)
 
   def __call__(self, *args: Any, **kwds: Any):
-    data = args[0]
+    input_bytes = args[0]
+    fuzz_input = jsonpickle.decode(input_bytes.decode('utf-8'))
 
-    fdp = atheris.FuzzedDataProvider(data)
-    input_str = fdp.ConsumeUnicode(sys.maxsize)
-    input_str = '{' + input_str
+    mutations = self.random.randint(1, self.max_mutations_per_fuzz)
+    for i in range(mutations):
+      fuzz_input = self.mutator.mutate(fuzz_input) # valid in, valid out
 
-    decoded = jsonpickle.decode(input_str)
-
-    mutant = self.mutator.mutate(decoded) # valid in, valid out
-
-    return bytes(jsonpickle.encode(mutant, indent=1), encoding='utf-8')
-
-#------------------------------------------
-#---------- cross-over's wrapper ----------
-#------------------------------------------
-class CrossOverCallback:
-  """Crossover callback wrapper passed to atheris."""
-  def __init__(self, crossOver):
-    self.crossOver = crossOver
-
-  def get_state(self):
-    return self.crossOver.get_state()
-
-  def set_state(self, state):
-    self.crossOver.set_state(state)
-  
-  def __call__(self, *args: Any, **kwds: Any):
-    data1, data2 = args[0], args[1]
-
-    fdp1 = atheris.FuzzedDataProvider(data1)
-    input_str1 = fdp1.ConsumeUnicode(sys.maxsize)
-    input_str1 = '{' + input_str1
-    decoded1 = jsonpickle.decode(input_str1)
-
-    fdp2 = atheris.FuzzedDataProvider(data2)
-    input_str2 = fdp2.ConsumeUnicode(sys.maxsize)
-    input_str2 = '{' + input_str2
-    decoded2 = jsonpickle.decode(input_str2)
-
-    crossover = self.crossOver.cross_over(decoded1, decoded2) # valid in, valid out
-
-    return bytes(jsonpickle.encode(crossover, indent=1), encoding='utf-8')
+    return jsonpickle.encode(fuzz_input, indent=1).encode('utf-8')
 
 #-----------------------------------------------------------
 #---------- SUT wrapper to make an Atheris target ----------
@@ -108,11 +73,12 @@ class SUTCallback:
 class AtherisFuzzer:
   def __init__(self, config):
     self.config = config
-    self.mutator = MutatorCallback(config['mutator'])
-    self.crossOver = CrossOverCallback(config['crossOver'])
-    self.libfuzzer_config = [f"-atheris_runs={config['atheris_runs']}",
+    self.random = Random(config['randomizer-seed'])
+    self.mutator = MutatorCallback({**config['mutator-config'],
+                                    'random': self.random})
+    self.libfuzzer_config = [f"-max_total_time={config['max-total-time']}",
                              f"-artifact_prefix={Path(config['bugs-folder'])}/",
-                             f"-max_len={config['max_seed_length']}",
+                             f"-max_len={config['max-seed-length']}",
                              f"-timeout=300", # scenarios taking more than 5 minutes are considered as bugs
                              f"-report_slow_units=120", # scenarios taking more than 2 minutes are considered slow
                              f"-rss_limit_mb=16384",
@@ -124,7 +90,7 @@ class AtherisFuzzer:
                             'events-folder': config['events-folder'],
                             })
 
-  def run(self, atheris_state=None):
+  def run(self, atheris_state):
     if atheris_state: # resume
       self.set_state(atheris_state)
 
@@ -132,8 +98,7 @@ class AtherisFuzzer:
       atheris.instrument_all()
       atheris.Setup(sys.argv + self.libfuzzer_config,
                 self.SUT,
-                custom_mutator=self.mutator,
-                custom_crossover=self.crossOver
+                custom_mutator=self.mutator
                 )
       atheris.Fuzz()
 
@@ -146,10 +111,10 @@ class AtherisFuzzer:
   def get_state(self):
     state = {
       'mutator_state': self.mutator.get_state(),
-      'crossOver_state': self.crossOver.get_state()
+      'random_state': self.random.getstate(),
       }
     return state
 
   def set_state(self, state):
     self.mutator.set_state(state['mutator_state'])
-    self.crossOver.set_state(state['crossOver_state'])
+    self.random.setstate(state['random_state'])

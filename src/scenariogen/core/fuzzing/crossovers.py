@@ -22,8 +22,6 @@ class StructureAwareCrossOver():
   * Conservation of matter,
   i.e. vehicles don't spawn or disappear after a scenario starts till it ends.
 
-  * The created scenarios' durations don't exceed config['maxSeconds']
-
   """
   _networks_cache = {}
   _route_lengths_cache = {}

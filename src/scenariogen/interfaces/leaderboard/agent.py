@@ -43,7 +43,7 @@ class LeaderboardAgent(object):
                        size=0.1,
                        downsample=10)
         
-        # TODO condition this on TF++ leaderboard agent
+        # TODO condition this on TF++ agent
         if not os.environ.get("DIRECT"):
             os.environ.setdefault("DIRECT","0")
         else:
@@ -78,7 +78,6 @@ class LeaderboardAgent(object):
 
     def cleanup(self):
         self._agent_wrapper.cleanup()
-        # CarlaDataProvider.cleanup()
         try:
             if self.agent_instance:
                 self.agent_instance.destroy()
