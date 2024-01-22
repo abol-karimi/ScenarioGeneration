@@ -3,12 +3,12 @@ caller_config = globalParameters.caller_config
 
 # Load the given scenario
 import importlib
-seed_module = importlib.import_module(caller_config['scenario_path'].replace('/', '.').replace('.scenic', ''))
+seed_module = importlib.import_module(caller_config['scenario-file'].replace('/', '.').replace('.scenic', ''))
 seed_config = seed_module.config
 
 # Specify the simulator model after importing seed_module since it specifies the map
 model scenic.simulators.newtonian.driving_model
-if not caller_config['render_spectator']:
+if not caller_config['render-spectator']:
   param render = False
 
 from scenariogen.core.geometry import CurvilinearTransform
@@ -44,7 +44,7 @@ intersection = network.elements[seed_config['intersection']]
 # Record seed info
 scenario Main():
   setup:
-    if caller_config['render_spectator']:
+    if caller_config['render-spectator']:
       p = intersection.polygon.centroid
       ego = new Debris at p.x@p.y
   

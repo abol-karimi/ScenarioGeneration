@@ -9,7 +9,7 @@ import atheris
 from scenic.core.simulators import SimulationCreationError
 
 # This project
-from scenariogen.core.scenario import Scenario
+from scenariogen.core.fuzzing.runner import Runner
 
 #----------------------------------------------
 #---------- mutator's wrapper ----------
@@ -55,7 +55,10 @@ class SUTCallback:
     fuzz_input = jsonpickle.decode(input_bytes.decode('utf-8'))
     sim_result = None
     try:
-      sim_result = Scenario(fuzz_input).run(self.config)
+      sim_result = Runner.run({**self.config,
+                               **fuzz_input.config,                               
+                               'fuzz-input': fuzz_input,
+                               })
     except SimulationCreationError as e:
       print(f'Exception in SUTCallback: {e}')
     else:
@@ -90,7 +93,7 @@ class AtherisFuzzer:
                             'events-folder': config['events-folder'],
                             })
 
-  def run(self, atheris_state):
+  def runs(self, atheris_state):
     if atheris_state: # resume
       self.set_state(atheris_state)
 
@@ -106,15 +109,15 @@ class AtherisFuzzer:
     p.start()
     p.join()
 
-    return self.get_state()
+    return self.get_state() # TODO does this return the state of the subprocess?
   
   def get_state(self):
     state = {
-      'mutator_state': self.mutator.get_state(),
+      'mutator-state': self.mutator.get_state(),
       'random_state': self.random.getstate(),
       }
     return state
 
   def set_state(self, state):
-    self.mutator.set_state(state['mutator_state'])
+    self.mutator.set_state(state['mutator-state'])
     self.random.setstate(state['random_state'])

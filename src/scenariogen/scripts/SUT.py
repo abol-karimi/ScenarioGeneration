@@ -6,16 +6,15 @@ import importlib
 from scenic.domains.driving.roads import Network
 
 # This project
-from scenariogen.core.scenario import Scenario
-from scenariogen.core.errors import EgoCollisionError, NonegoCollisionError
+from scenariogen.core.fuzzing.runner import Runner
 from scenariogen.core.coverages.coverage import PredicateCoverage
 from experiments.configs import SUT_config, coverage_config
 
 
 parser = argparse.ArgumentParser(
     description='play the given scenario with a Carla autopilot driving the ego.')
-parser.add_argument('seed_path', 
-                    help='relative path of the seed')
+parser.add_argument('fuzz-input-path',
+                    help='relative path of the fuzz-input')
 parser.add_argument('--timestep', type=float,
                     help='length of each simulation step')
 parser.add_argument('--weather', type=str,
@@ -37,16 +36,16 @@ duration.add_argument('--seconds', type=float,
                       help='number of seconds to run the scenario')
 args = parser.parse_args()
 
-with open(args.seed_path, 'r') as f:
-    seed = jsonpickle.decode(f.read())
+with open(args.fuzz_input_path, 'r') as f:
+    fuzz_input = jsonpickle.decode(f.read())
 
-# Default timestep is defined by the seed
-timestep = seed.config['timestep']
+# Default timestep is defined by the fuzz_input
+timestep = fuzz_input.config['timestep']
 if args.timestep:
     timestep = args.timestep
 
 # Default duration is the whole scenario:
-seconds = seed.timings[0].knotvector[-1]
+seconds = fuzz_input.timings[0].knotvector[-1]
 if args.steps:
     seconds = args.steps * timestep
 elif args.seconds:
@@ -54,24 +53,27 @@ elif args.seconds:
 
 steps = int(seconds / timestep)
 
-# Default weather is defined by the seed
-weather = seed.config['weather']
+# Default weather is defined by the fuzz_input
+weather = fuzz_input.config['weather']
 if args.weather:
     weather = args.weather
 
 # Scenario config
-config = {**seed.config, **SUT_config, **coverage_config}
+config = {**fuzz_input.config, **SUT_config, **coverage_config}
 config['simulator'] = args.simulator
 config['steps'] = steps
 config['timestep'] = timestep
 config['weather'] = weather
-config['fuzz_input'] = seed
+config['fuzz-input'] = fuzz_input
 config['ego-module'] = args.ego_module
 config['coverage_module'] = args.coverage_module
-config['render_spectator'] = args.render_spectator
-config['render_ego'] = args.render_ego
+config['render-spectator'] = args.render_spectator
+config['render-ego'] = args.render_ego
 
-sim_result = Scenario(seed).run(config)
+sim_result = Runner.run({**config,
+                         **fuzz_input.config,
+                         'fuzz-input': fuzz_input,
+                        })
 
 if args.coverage_module:
     coverage = sim_result.records['coverage']

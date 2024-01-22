@@ -25,8 +25,8 @@ config = {
   'coverage_module': 'traffic',
   'map': '/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/Town05.xodr',
   'intersection': 'intersection396',
-  'render_spectator': args.render_spectator,
-  'render_ego': args.render_ego
+  'render-spectator': args.render_spectator,
+  'render-ego': args.render_ego
 }
 results = from_corpus(args.SUT_inputs_path, config)
 seed2statementSetCoverage = results[0]

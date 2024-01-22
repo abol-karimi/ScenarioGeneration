@@ -39,7 +39,7 @@ config = {'description': description,
           'timestep': globalParameters.timestep,
           'steps': globalParameters.steps,
           'intersection': intersection_uid,
-          'traffic_rules': traffic_rules,
+          'traffic-rules': traffic_rules,
           'ego_blueprint': ego_blueprint,
           'ego_route': ego_route,
           'ego_init_progress_ratio': ego_init_progress_ratio

@@ -21,11 +21,11 @@ from scenariogen.core.geometry import CurvilinearTransform
 from scenariogen.core.errors import SplineApproximationError
 
 
-def classify_intersection(network, intersection_uid):
+def classify_intersection(carla_map, intersection_uid):
     # Assuming Town05
-    if intersection_uid == 'intersection396':
+    if carla_map == 'Town05' and intersection_uid == 'intersection396':
         return '4way-stopOnAll'
-    elif intersection_uid == 'intersection1930':
+    elif carla_map == 'Town05' and intersection_uid == 'intersection1930':
         return '3way-T_stopOnAll'
     
     # TODO classify based on network geometry and semantics

@@ -1,14 +1,14 @@
 param config = None
 config = globalParameters.config
 
-if config['render_ego']:
+if config['render-ego']:
   param render = True
 else:
   param render = False
 
 # Load the given scenario
 import importlib
-seed_module = importlib.import_module(config['scenario_path'].replace('/', '.').replace('.scenic', ''))
+seed_module = importlib.import_module(config['scenario-file'].replace('/', '.').replace('.scenic', ''))
 seed_config = seed_module.config
 config.update(seed_config)
 
@@ -57,12 +57,12 @@ intersection = network.elements[seed_config['intersection']]
 # Record seed info
 scenario Main():
   setup:
-    if config['render_ego']:
+    if config['render-ego']:
       p = intersection.polygon.centroid
       ego = new Debris at p.x@p.y
   
     require monitor RecordSeedInfoMonitor()
-    if config['render_spectator']:
+    if config['render-spectator']:
       require monitor ShowIntersectionMonitor(seed_config['intersection'],
                                               label_lanes=True,
                                               life_time=seed_config['timestep']*seed_config['steps']

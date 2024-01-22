@@ -11,7 +11,7 @@ from experiments.configs import coverage_config
 
 
 def coverage_space(config):
-  traffic_rules_file = classify_intersection(config['network'], config['intersection']) + '.lp'
+  traffic_rules_file = classify_intersection(config['carla_map'], config['intersection']) + '.lp'
   logic_files = (f'src/scenariogen/predicates/{traffic_rules_file}',
                   'src/scenariogen/predicates/traffic.lp',
                 )
@@ -29,7 +29,7 @@ def to_coverage(events, config):
   events = copy.deepcopy(events)
   config = {**coverage_config, **config}
 
-  traffic_rules_file = classify_intersection(config['network'], config['intersection']) + '.lp'
+  traffic_rules_file = classify_intersection(config['carla_map'], config['intersection']) + '.lp'
   logic_files = (f'src/scenariogen/predicates/{traffic_rules_file}',
                   'src/scenariogen/predicates/traffic.lp',
                   'src/scenariogen/predicates/abstractions.lp'

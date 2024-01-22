@@ -1,7 +1,7 @@
 #!/usr/bin/env python3.8
 import matplotlib.pyplot as plt
 import argparse
-from src.scenariogen.core.mscatter import mscatter
+from scenariogen.core.mscatter import mscatter
 from geomdl import operations
 
 # This project
@@ -9,7 +9,7 @@ import scenariogen.core.fuzz_input as seed
 
 parser = argparse.ArgumentParser(description='Plot frame-distance curve of a car.')
 parser.add_argument('corpus', help='filename of the corpus of seeds')
-parser.add_argument('fuzz_input', type=int, help='seed number to replay')
+parser.add_argument('fuzz-input', type=int, help='seed number to replay')
 parser.add_argument('--resolution', type=int, default=701, help='Discretization resolution')
 args = parser.parse_args()
 

@@ -18,7 +18,7 @@ from scenariogen.core.errors import NonegoCollisionError
 
 #----------Main Script----------
 parser = argparse.ArgumentParser(description='Make a seed from a scenic scenario.')
-parser.add_argument('scenario_path', 
+parser.add_argument('scenario-file', 
                     help='Path of the Scenic file specifying the scenario')
 parser.add_argument('--simulator', choices=['newtonian', 'carla'], default='carla',
                     help='The simulator')
@@ -36,9 +36,9 @@ args = parser.parse_args()
 scenic_scenario = scenic.scenarioFromFile(
                     f'src/scenariogen/simulators/{args.simulator}/create.scenic',
                     mode2D=True,
-                    params = {'caller_config':{'scenario_path': args.scenario_path,
-                                               'render_spectator': args.render_spectator,
-                                               'render_ego': args.render_ego,
+                    params = {'caller_config':{'scenario-file': args.scenario_path,
+                                               'render-spectator': args.render_spectator,
+                                               'render-ego': args.render_ego,
                                                }
                               }
                     )

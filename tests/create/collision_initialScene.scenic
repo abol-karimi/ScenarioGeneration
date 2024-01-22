@@ -29,7 +29,7 @@ route_centerline = PolylineRegion.unionAll([l.centerline for l in route_lanes])
 config = {'carla_map': carla_map,
           'map': globalParameters.map,
           'intersection': intersection_uid,
-          'traffic_rules': traffic_rules,
+          'traffic-rules': traffic_rules,
           'ego_route': ego_route,
           'ego_init_progress_ratio': ego_init_progress_ratio
           }

@@ -40,13 +40,6 @@ config = {'description': description,
           'intersection': intersection_uid,
           }
 
-monitor CheckOnRoute(car, route_lanes):
-  region = UnionRegion(*route_lanes)
-  while True:
-    if not car.position in region:
-      print(f'Car {car.name} is off route at time step {simulation().currentTime}')
-    wait
-
 scenario SeedScenario():
   setup:
     min_route_length = 200
@@ -77,7 +70,7 @@ scenario SeedScenario():
     agent_config = '/home/carla/carla_garage_fork/pretrained_models/leaderboard/tfpp_wp_all_0'
     track = 'SENSORS'
     keypoints = (p[0]@p[1], p_end[0]@p_end[1])
-    ego_behavior = LeaderboardAgentBehavior(agent, agent_config, track, keypoints, debug=True)
+    ego_behavior = LeaderboardAgentBehavior(agent, agent_config, track, keypoints, debug=False)
 
     car = new Car at p[0]@p[1], facing p[2],
       with name 'ego',
@@ -102,10 +95,8 @@ scenario SeedScenario():
     }
 
     blueprints = tuple(blueprint2dims.keys())
-
-    # Match the distribution of Atheris results for comparison
-    nonegos_count = Discrete({2: 22, 4: 11, 1: 10, 6: 10, 3: 7, 5: 5, 8: 5, 7: 3, 9: 3})
     
+    nonegos_count = DiscreteRange(1, max_nonegos)
     for i in range(nonegos_count):
       blueprint = Uniform(*blueprints)
       init_lane = Uniform(*intersection.incomingLanes, *intersection.outgoingLanes)
@@ -132,5 +123,4 @@ scenario SeedScenario():
         with width blueprint2dims[blueprint]['width'],
         with color Color(0, 0, 1),
         with route route
-      
-      require monitor CheckOnRoute(car, lanes)
+

@@ -12,7 +12,7 @@ from scenic.domains.driving.roads import Network
 from scenic.core.regions import PolylineRegion
 
 # This project
-from src.scenariogen.core.geometry import CurvilinearTransform
+from scenariogen.core.geometry import CurvilinearTransform
 from scenariogen.core.fuzz_input import FuzzInput, Spline
 import scenariogen.simulators.carla.visualization as visualization
 

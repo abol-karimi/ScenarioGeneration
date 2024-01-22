@@ -1,10 +1,9 @@
 SUT_config = {
-  'render_spectator': False,
-  'render_ego': False,
+  'render-spectator': False,
+  'render-ego': False,
   'weather': 'CloudySunset',
-  'simulator': 'carla',
+  'simulator': None,
   'ego-module': None,
-  'coverage_module': None,
 }
 
 coverage_config = {

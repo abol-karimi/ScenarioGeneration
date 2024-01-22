@@ -9,7 +9,7 @@ import jsonpickle
 from functools import reduce
 
 from experiments.configs import SUT_config, coverage_config
-from scenariogen.core.scenario import Scenario
+from scenariogen.core.fuzzing.runner import Runner
 from scenic.core.simulators import SimulationCreationError
 
 
@@ -29,6 +29,8 @@ def report(experiment_type, seeds, gen_ego, gen_coverage, test_ego, test_coverag
     **coverage_config,
     'ego-module': f'experiments.agents.{test_ego}',
     'coverage_module': test_coverage,
+    'render-spectator': False,
+    'render-ego': False,
   }
 
   for fuzz_input_path in paths:
@@ -36,12 +38,11 @@ def report(experiment_type, seeds, gen_ego, gen_coverage, test_ego, test_coverag
       fuzz_input = jsonpickle.decode(f.read())
     try:
       print(f'Evaluating fuzz-input {fuzz_input_path}')
-      sim_result = Scenario(fuzz_input).run({'render_spectator': False,
-                                             'render_ego': False,
-                                             **config,
-                                             }
-                                            )
-
+      sim_result = Runner.run({**config,
+                               **fuzz_input.config,                               
+                               'fuzz-input': fuzz_input,
+                              }
+                             )
     except KeyboardInterrupt:
       exit(1)
     except SimulationCreationError as e:

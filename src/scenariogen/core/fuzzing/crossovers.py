@@ -9,7 +9,7 @@ from scenic.core.regions import PolygonalRegion, PolylineRegion
 
 # This project
 import src.scenariogen.core.utils as utils
-from src.scenariogen.core.signals import SignalType
+from scenariogen.core.signals import SignalType
 from scenariogen.core.fuzz_input import FuzzInput, Spline
 
 class StructureAwareCrossOver():

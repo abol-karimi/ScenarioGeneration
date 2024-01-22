@@ -29,7 +29,7 @@ intersection = network.elements[intersection_uid]
 config = {'carla_map': carla_map,
           'map': globalParameters.map,
           'intersection': intersection_uid,
-          'traffic_rules': traffic_rules,
+          'traffic-rules': traffic_rules,
           'simulator': 'carla',
           }
 

@@ -45,7 +45,7 @@ scenario Main():
         with physics True,
         with allowCollisions False
 
-    elif config['render_spectator'] or config['render_ego']:
+    elif config['render-spectator'] or config['render-ego']:
       p = intersection.polygon.centroid
       ego = new Debris at (p.x, p.y, -10)
 
@@ -54,7 +54,7 @@ scenario Main():
       record final coverage_events as events
       record final coverage_module.to_coverage(coverage_events, {**config, 'network': network}) as coverage
 
-    if config['render_spectator']:
+    if config['render-spectator']:
       require monitor ShowIntersectionMonitor(config['intersection'],
                                               label_lanes=True,
                                               life_time=config['timestep']*config['steps']

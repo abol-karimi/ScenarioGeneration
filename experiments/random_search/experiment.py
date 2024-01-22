@@ -2,7 +2,7 @@
 
 """
 Research question:
-  How does the performance of Atheris compare to a random search?
+  Can we beat random search as a baseline?
 
 """
 
@@ -14,31 +14,11 @@ import time
 
 from scenariogen.core.seed_generators import random as random_seed_generator
 from experiments.configs import coverage_config
+from experiments.runner import run
 
-if __name__ == '__main__':
 
-  gen_ego = 'TFPP'
-  gen_coverage = 'traffic'
-  ego_coverage = f"{gen_ego if gen_ego else 'openLoop'}_{gen_coverage}"  
-
-  config = {'scenario_path': f'experiments/seeds/random/definitions/4way-stop.scenic',
-            'fuzz-inputs-folder': f'experiments/random_search/gen_{ego_coverage}/fuzz-inputs',
-            'bugs-folder': f"experiments/Atheris/gen_{ego_coverage}/test_{ego_coverage}/bugs",
-            **coverage_config,
-            'coverage_module': gen_coverage,
-            'events-folder': f'experiments/random_search/gen_{ego_coverage}/test_{ego_coverage}/events',
-            'simulator': 'carla',
-            'render_spectator': False,
-            'render_ego': False,
-            'PRNG_seed': 0,
-            'spline_degree': 3,
-            'spline_knots_size': 50,
-            'scene_maxIterations': 50,
-            'simulate_maxIterations': 1,
-            'max-total-time': 7988, # seconds
-            }
-
-  results_file_path = Path(f'experiments/PCGF/gen_{ego_coverage}/results.json')  
+def run(config):
+  results_file_path = Path(config['results-file'])
   fuzz_inputs_path = Path(config['fuzz-inputs-folder'])
   events_path = Path(config['events-folder'])
   bugs_path = Path(config['bugs-folder'])
@@ -64,31 +44,72 @@ if __name__ == '__main__':
 
   # Set up a measurement loop
   measurements = [{'exe_time': 0,
+                   'elapsed_time': 0,                   
                    'new_event_files': set(),
                   }]
   tl = Timeloop()
-  period = 60 # seconds
+  period = 120 # seconds
   @tl.job(interval=timedelta(seconds=period))
   def measure_progress():
     new_event_files = set(events_path.glob('*')) - past_event_files
     past_event_files.update(new_event_files)
     measurements.append({'exe_time': period,
-                        'new_event_files': new_event_files,
+                         'elapsed_time': time.time()-start_time,
+                         'new_event_files': new_event_files,
                         })
+    partial_result = [{'measurements': measurements,
+                      'generator-state': None
+                      }]
+    with open(results_file_path, 'w') as f:
+      f.write(jsonpickle.encode(results+partial_result, indent=1))
+
     print(f'\nMeasurement recorded!\n')
 
-  # try:
   tl.start(block=False)
-  generator_state = random_seed_generator.run(config)
-  # except Exception as e:
-  #   print(f'Exception of type {type(e)} in random_search: {e}.')
+  start_time = time.time()
+  try:
+    generator_state = random_seed_generator.run(config)
+  except Exception as e:
+    print(f'Exception of type {type(e)} in atheris fuzzer: {e}.')
+    raise e
+  finally:
+    tl.stop()
+    print(f'Measurement thread stopped.')
 
-  print(f'Measurement thread will stop in {period} seconds...')
-  time.sleep(period)
-  tl.stop()
+  # Measure one last time in case the the time-loop thread missed some new results
+  measure_progress()
+  
   results.append({'measurements': measurements,
-                  'generator_state': generator_state
+                  'generator-state': generator_state
                   })
 
   with open(results_file_path, 'w') as f:
     f.write(jsonpickle.encode(results, indent=1))
+
+
+if __name__ == '__main__':
+  gen_ego = 'TFPP'
+  gen_coverage = 'traffic'
+  ego_coverage = f"{gen_ego if gen_ego else 'openLoop'}_{gen_coverage}"
+
+  config = {
+    'results-file': f'experiments/random_search/gen_{ego_coverage}/results.json',
+    'scenario-file': f'experiments/seeds/random/definitions/4way-stop.scenic',
+    'fuzz-inputs-folder': f'experiments/random_search/gen_{ego_coverage}/fuzz-inputs',
+    'bugs-folder': f"experiments/random_search/gen_{ego_coverage}/test_{ego_coverage}/bugs",
+    **coverage_config,
+    'coverage_module': gen_coverage,
+    'save-coverage-events': True,
+    'events-folder': f'experiments/random_search/gen_{ego_coverage}/test_{ego_coverage}/events',
+    'simulator': 'carla',
+    'render-spectator': False,
+    'render-ego': False,
+    'PRNG-seed': 0,
+    'spline-degree': 3,
+    'spline-knots-size': 50,
+    'scene-maxIterations': 50,
+    'simulate-maxIterations': 1,
+    'max-total-time': 4*60*60, # seconds
+    }
+  
+  run(config)

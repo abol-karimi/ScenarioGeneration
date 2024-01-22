@@ -26,7 +26,7 @@ behavior AnimateBehavior(traj, signal_actions):
 scenario NonegosScenario(config):
   setup:
     cars = []
-    fuzz_input = config['fuzz_input']
+    fuzz_input = config['fuzz-input']
     tjs = sample_trajectories(network, fuzz_input, int(config['steps'])+1)
     signals_actions = sample_signal_actions(fuzz_input, int(config['steps'])+1)
     for route, tj, timing, signal_actions, blueprint in zip(fuzz_input.routes,

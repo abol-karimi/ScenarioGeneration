@@ -36,10 +36,10 @@ args = parser.parse_args()
 scenic_scenario = scenic.scenarioFromFile(
                     f'src/scenariogen/simulators/{args.simulator}/create.scenic',
                     mode2D=True,
-                    params = {'caller_config':{'scenario_path': 'src/scenariogen/interfaces/complexgen/import.scenic',
+                    params = {'caller_config':{'scenario-file': 'src/scenariogen/interfaces/complexgen/import.scenic',
                                                'complexgen_scenario_path': args.complexgen_scenario_path,
-                                               'render_spectator': args.render_spectator,
-                                               'render_ego': args.render_ego,
+                                               'render-spectator': args.render_spectator,
+                                               'render-ego': args.render_ego,
                                                }
                               }
                     )

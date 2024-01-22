@@ -13,8 +13,8 @@ import scenariogen.core.fuzzing.mutators as mutators
 import src.scenariogen.core.fuzzers.fuzzers as fuzzers
 import src.scenariogen.core.fuzzing.schedules as schedules
 import src.scenariogen.core.coverages as coverages
-from src.scenariogen.core.signals import SignalType
-from src.scenariogen.core.utils import route_length
+from scenariogen.core.signals import SignalType
+from scenariogen.core.utils import route_length
 
 parser = argparse.ArgumentParser(description='Make new seeds by fuzzing the given seed corpus.')
 parser.add_argument('in-corpus', 
@@ -55,7 +55,7 @@ config['maxSteps'] = maxSteps
 config['timestep'] = args.timestep
 config['weather'] = args.weather
 config['arrival_distance'] = args.arrival_distance
-config['spline_degree'] = args.spline_degree
+config['spline-degree'] = args.spline_degree
 config['max_spline_knots_size'] = args.max_spline_knots_size
 config['max_mutations_per_iteration'] = args.max_mutations_per_iteration
 config['max_nonegos'] = args.max_nonegos

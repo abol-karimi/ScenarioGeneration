@@ -55,20 +55,10 @@ if __name__ == '__main__':
   reports_config = (
     # ('Atheris', 'TFPP', 'traffic', 'TFPP', 'traffic'),
     # ('random_search', 'TFPP', 'traffic', 'TFPP', 'traffic'),
-    ('PCGF', 'TFPP', 'traffic', 'TFPP', 'traffic'),
-    # ('Atheris', 'TFPP', 'traffic', 'autopilot', 'traffic'),
-    # ('Atheris', 'TFPP', 'traffic', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'autopilot', 'traffic', 'autopilot', 'traffic'),
-    # ('Atheris', 'autopilot', 'traffic', 'TFPP', 'traffic'),
-    # ('Atheris', 'autopilot', 'traffic', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'BehaviorAgent', 'traffic', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'BehaviorAgent', 'traffic', 'TFPP', 'traffic'),
-    # ('Atheris', 'BehaviorAgent', 'traffic', 'autopilot', 'traffic'),
-    # ('Atheris', 'intersectionAgent', 'traffic', 'intersectionAgent', 'traffic'),
-    # ('Atheris', 'intersectionAgent', 'traffic', 'autopilot', 'traffic'),
-    # ('Atheris', 'intersectionAgent', 'traffic', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'openLoop', 'traffic', 'autopilot', 'traffic'),
-    # ('Atheris', 'openLoop', 'traffic', 'BehaviorAgent', 'traffic'),
+    # ('PCGF', 'TFPP', 'traffic', 'TFPP', 'traffic'),
+    ('Atheris', 'TFPP', 'traffic', 'TFPP', 'traffic-rules'),
+    ('random_search', 'TFPP', 'traffic', 'TFPP', 'traffic-rules'),
+    ('PCGF', 'TFPP', 'traffic', 'TFPP', 'traffic-rules'),
   )
 
   for experiment_type, gen_ego, gen_coverage, test_ego, test_coverage in reports_config:

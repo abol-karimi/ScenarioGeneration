@@ -9,7 +9,7 @@ from scenic.domains.driving.roads import Network
 
 # This project
 from scenariogen.core.utils import extend_lane_backward, extend_lane_forward
-from src.scenariogen.core.signals import SignalType
+from scenariogen.core.signals import SignalType
 from scenariogen.core.fuzz_input import FuzzInput, Spline
 
 class StructureAwareMutator():

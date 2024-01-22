@@ -42,7 +42,7 @@ scenario Main():
         with physics True,
         with allowCollisions False
     
-    elif config['render_spectator'] or config['render_ego']:
+    elif config['render-spectator'] or config['render-ego']:
       p = intersection.polygon.centroid
       ego = new Debris at p.x@p.y
 

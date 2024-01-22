@@ -8,7 +8,7 @@ from random import Random
 from scenic.core.simulators import SimulationCreationError
 
 # This project
-from scenariogen.core.scenario import Scenario
+from scenariogen.core.fuzzing.runner import Runner
 from scenariogen.core.fuzzing.schedules import FuzzCandidate
 from scenariogen.core.coverages.coverage import StatementSetCoverage, PredicateSetCoverage, PredicateCoverage, StatementCoverage
 from scenariogen.core.errors import InvalidFuzzInputError, CoverageError
@@ -31,20 +31,20 @@ class ModularFuzzer:
     
   def get_state(self):
     state = {
-      'coverage_seen': self.coverage_seen,
-      'mutator_state': self.mutator.get_state(),
-      'schedule_state': self.schedule.get_state(),
-      'fuzz_candidates': self.fuzz_candidates,
-      'seed_index': self.seed_index,
+      'coverage-seen': self.coverage_seen,
+      'mutator-state': self.mutator.get_state(),
+      'schedule-state': self.schedule.get_state(),
+      'fuzz-candidates': self.fuzz_candidates,
+      'seed-index': self.seed_index,
       }
     return state
 
   def set_state(self, state):
-    self.coverage_seen = state['coverage_seen']
-    self.mutator.set_state(state['mutator_state'])
-    self.schedule.set_state(state['schedule_state'])
-    self.fuzz_candidates = state['fuzz_candidates']
-    self.seed_index = state['seed_index']
+    self.coverage_seen = state['coverage-seen']
+    self.mutator.set_state(state['mutator-state'])
+    self.schedule.set_state(state['schedule-state'])
+    self.fuzz_candidates = state['fuzz-candidates']
+    self.seed_index = state['seed-index']
 
   def reset(self):
     self.fuzz_candidates = []
@@ -75,8 +75,11 @@ class ModularFuzzer:
   
   def input_eval(self, fuzz_input):
     try:
-      sim_result = Scenario(fuzz_input).run({**self.config['SUT-config'],
-                                            **self.config['coverage-config']})
+      sim_result = Runner.run({**self.config['SUT-config'],
+                               **self.config['coverage-config'],
+                               **fuzz_input.config,
+                               'fuzz-input': fuzz_input,
+                              })
     except SimulationCreationError as e:
       raise InvalidFuzzInputError(e)
     else:
