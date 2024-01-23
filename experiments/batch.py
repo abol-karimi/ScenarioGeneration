@@ -12,9 +12,9 @@ fuzzer_config = {
                       'coverage_module': 'traffic'
                       },
   'seeds-folder': f'experiments/seeds/random/seeds',
-  'fuzz-inputs-folder': f"experiments/Atheris/gen_{ego_coverage}/fuzz-inputs",
-  'events-folder': f"experiments/Atheris/gen_{ego_coverage}/test_{ego_coverage}/events",
-  'bugs-folder': f"experiments/Atheris/gen_{ego_coverage}/test_{ego_coverage}/bugs",
+  'fuzz-inputs-folder': f"experiments/Atheris/gen_{gen_ego}_{gen_coverage}/fuzz-inputs",
+  'events-folder': f"experiments/Atheris/gen_{gen_ego}_{gen_coverage}/test_{gen_ego}_{gen_coverage}/events",
+  'bugs-folder': f"experiments/Atheris/gen_{gen_ego}_{gen_coverage}/test_{gen_ego}_{gen_coverage}/bugs",
   'mutator': StructureAwareMutator(max_spline_knots_size=50,
                                   randomizer_seed=config_randomizer.randrange(config_seed_range)),
   'max_total_time': max_total_time, # seconds

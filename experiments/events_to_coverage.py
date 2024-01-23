@@ -53,12 +53,9 @@ def report(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage):
 
 if __name__ == '__main__':
   reports_config = (
-    # ('Atheris', 'TFPP', 'traffic', 'TFPP', 'traffic'),
-    # ('random_search', 'TFPP', 'traffic', 'TFPP', 'traffic'),
-    # ('PCGF', 'TFPP', 'traffic', 'TFPP', 'traffic'),
-    ('Atheris', 'TFPP', 'traffic', 'TFPP', 'traffic-rules'),
-    ('random_search', 'TFPP', 'traffic', 'TFPP', 'traffic-rules'),
-    ('PCGF', 'TFPP', 'traffic', 'TFPP', 'traffic-rules'),
+    # ('Atheris', 'TFPP', 'traffic-rules', 'TFPP', 'traffic-rules'),
+    # ('random_search', 'TFPP', 'traffic-rules', 'TFPP', 'traffic-rules'),
+    ('PCGF', 'TFPP', 'traffic-rules', 'TFPP', 'traffic-rules'),
   )
 
   for experiment_type, gen_ego, gen_coverage, test_ego, test_coverage in reports_config:

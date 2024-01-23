@@ -17,19 +17,18 @@ from experiments.runner import run
 if __name__ == '__main__':
 
   gen_ego = 'TFPP'
-  gen_coverage = 'traffic'
+  gen_coverage = 'traffic-rules'
   config_randomizer_seed = 0
   config_randomizer = Random(config_randomizer_seed)
   config_seed_range = 1000
 
-  ego_coverage = f"{gen_ego if gen_ego else 'openLoop'}_{gen_coverage}"
   config = {
     'generator': AtherisFuzzer,
-    'results-file': f'experiments/Atheris/gen_{ego_coverage}/results.json',
+    'results-file': f'experiments/Atheris/gen_{gen_ego}_{gen_coverage}/results.json',
     'seeds-folder': f'experiments/seeds/random/seeds',
-    'fuzz-inputs-folder': f"experiments/Atheris/gen_{ego_coverage}/fuzz-inputs",
-    'events-folder': f"experiments/Atheris/gen_{ego_coverage}/test_{ego_coverage}/events",
-    'bugs-folder': f"experiments/Atheris/gen_{ego_coverage}/test_{ego_coverage}/bugs",
+    'fuzz-inputs-folder': f"experiments/Atheris/gen_{gen_ego}_{gen_coverage}/fuzz-inputs",
+    'events-folder': f"experiments/Atheris/gen_{gen_ego}_{gen_coverage}/test_{gen_ego}_{gen_coverage}/events",
+    'bugs-folder': f"experiments/Atheris/gen_{gen_ego}_{gen_coverage}/test_{gen_ego}_{gen_coverage}/bugs",
     'SUT-config': {**SUT_config,
                   'ego-module': f'experiments.agents.{gen_ego}' if gen_ego else None,
                   'simulator': 'carla',

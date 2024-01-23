@@ -6,7 +6,6 @@ from scenariogen.predicates.monitors import (ArrivingAtIntersectionMonitor,
                                              VehicleSignalMonitor,
                                              StoppingMonitor,
                                              RegionOverlapMonitor,
-                                             OcclusionMonitor,
                                              CarlaCollisionMonitor,
                                              ActorsMonitor
                                             )

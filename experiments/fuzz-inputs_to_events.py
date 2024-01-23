@@ -58,20 +58,6 @@ if __name__ == '__main__':
   reports_config = (
     # ('Atheris', 'random', 'TFPP', 'traffic', 'TFPP', 'traffic'),
     ('random_search', None, 'TFPP', 'traffic', 'TFPP', 'traffic'),
-    # ('predicateFuzz', 'random', 'TFPP', 'traffic', 'TFPP', 'traffic'),
-    # ('Atheris', 'random', 'TFPP', 'traffic', 'autopilot', 'traffic'),
-    # ('Atheris', 'random', 'TFPP', 'traffic', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'random', 'autopilot', 'traffic', 'autopilot', 'traffic'),
-    # ('Atheris', 'random', 'autopilot', 'traffic', 'TFPP', 'traffic'),
-    # ('Atheris', 'random', 'autopilot', 'traffic', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'random', 'BehaviorAgent', 'traffic', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'random', 'BehaviorAgent', 'traffic', 'TFPP', 'traffic'),
-    # ('Atheris', 'random', 'BehaviorAgent', 'traffic', 'autopilot', 'traffic'),
-    # ('Atheris', 'random', 'intersectionAgent', 'traffic', 'intersectionAgent', 'traffic'),
-    # ('Atheris', 'random', 'intersectionAgent', 'traffic', 'autopilot', 'traffic'),
-    # ('Atheris', 'random', 'intersectionAgent', 'traffic', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'random', 'openLoop', 'traffic', 'autopilot', 'traffic'),
-    # ('Atheris', 'random', 'openLoop', 'traffic', 'BehaviorAgent', 'traffic'),
   )
 
   for experiment_type, seeds, gen_ego, gen_coverage, test_ego, test_coverage in reports_config:

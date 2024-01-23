@@ -40,17 +40,6 @@ if __name__ == '__main__':
   reports_config = (
     ('Atheris', 'TFPP', 'traffic', 'TFPP', 'traffic'),
     ('random_search', 'TFPP', 'traffic', 'TFPP', 'traffic'),
-    # ('predicateFuzz', 'TFPP', 'traffic', 'TFPP', 'traffic'),
-    # ('Atheris', 'autopilot', 'traffic', 'autopilot', 'traffic'),
-    # ('Atheris', 'autopilot', 'traffic', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'BehaviorAgent', 'traffic', 'autopilot', 'traffic'),
-    # ('Atheris', 'BehaviorAgent', 'traffic', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'intersectionAgent', 'traffic', 'autopilot', 'traffic'),
-    # ('Atheris', 'intersectionAgent', 'traffic', 'BehaviorAgent', 'traffic'),
-    # ('Atheris', 'openLoop', 'traffic', 'autopilot', 'traffic'),
-    # ('Atheris', 'openLoop', 'traffic', 'BehaviorAgent', 'traffic'),
-    # ('random_search', 'autopilot', 'traffic', 'autopilot', 'traffic'),
-    # ('random_search', '4way-stop_autopilot', 'traffic', 'BehaviorAgent', 'traffic'),
   )
 
   for experiment_type, gen_ego, gen_coverage, test_ego, test_coverage in reports_config:

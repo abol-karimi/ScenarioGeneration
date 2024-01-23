@@ -90,17 +90,16 @@ def run(config):
 if __name__ == '__main__':
   gen_ego = 'TFPP'
   gen_coverage = 'traffic'
-  ego_coverage = f"{gen_ego if gen_ego else 'openLoop'}_{gen_coverage}"
 
   config = {
-    'results-file': f'experiments/random_search/gen_{ego_coverage}/results.json',
+    'results-file': f'experiments/random_search/gen_{gen_ego}_{gen_coverage}/results.json',
     'scenario-file': f'experiments/seeds/random/definitions/4way-stop.scenic',
-    'fuzz-inputs-folder': f'experiments/random_search/gen_{ego_coverage}/fuzz-inputs',
-    'bugs-folder': f"experiments/random_search/gen_{ego_coverage}/test_{ego_coverage}/bugs",
+    'fuzz-inputs-folder': f'experiments/random_search/gen_{gen_ego}_{gen_coverage}/fuzz-inputs',
+    'bugs-folder': f"experiments/random_search/gen_{gen_ego}_{gen_coverage}/test_{gen_ego}_{gen_coverage}/bugs",
     **coverage_config,
     'coverage_module': gen_coverage,
     'save-coverage-events': True,
-    'events-folder': f'experiments/random_search/gen_{ego_coverage}/test_{ego_coverage}/events',
+    'events-folder': f'experiments/random_search/gen_{gen_ego}_{gen_coverage}/test_{gen_ego}_{gen_coverage}/events',
     'simulator': 'carla',
     'render-spectator': False,
     'render-ego': False,

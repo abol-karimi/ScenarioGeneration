@@ -52,12 +52,11 @@ def plot(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage, plot_l
 
 
 if __name__ == '__main__':
-  gen_coverage = 'traffic'
-  test_coverage = 'traffic-rules'
+
   reports_config = (
-    ('PCGF', 'TFPP', gen_coverage, 'TFPP', test_coverage, 'PCGF', 'm'),
-    ('random_search', 'TFPP', gen_coverage, 'TFPP', test_coverage, 'Random search', 'b'),
-    ('Atheris', 'TFPP', gen_coverage, 'TFPP', test_coverage, 'Atheris', 'k'),
+    ('PCGF', 'TFPP', 'traffic-rules', 'TFPP', 'traffic-rules', 'PCGF', 'm'),
+    ('random_search', 'TFPP', 'traffic', 'TFPP', 'traffic-rules', 'Random search', 'b'),
+    ('Atheris', 'TFPP', 'traffic-rules', 'TFPP', 'traffic-rules', 'Atheris', 'k'),
   )
   fig_coverage = plt.figure(layout='constrained')
   # fig_coverage.suptitle(f'Baseline vs. Coverage-Guided Fuzzing')
@@ -88,4 +87,4 @@ if __name__ == '__main__':
   plot_predicate_coverage_space(ax4, (0, 4*60), 'TFPP', 'traffic', 'traffic-rules')
 
   ax4.legend()
-  plt.savefig(f'experiments/ISSTA_plots/baseline-vs-CCGF_coverage_{test_coverage}.png')
+  plt.savefig(f'experiments/ISSTA_plots/baseline-vs-PCGF_{test_coverage}_per-time.png')
