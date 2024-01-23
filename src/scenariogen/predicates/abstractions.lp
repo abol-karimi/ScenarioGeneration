@@ -33,6 +33,9 @@ disappearedFrom(V1, V2):-
 actorSpawnedAtAlongLane(V, P, L):-
   actorSpawnedAtAlongLaneAtTime(V, P, L, _).
 
+collidedWith(V, A):-
+  collidedWithAtTime(V, A, _).
+
 % Other abstractions:
 arrivedAtTime(V, T):-
   arrivedFromLaneAtTime(V, _, T).

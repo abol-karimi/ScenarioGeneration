@@ -181,3 +181,6 @@ violatesRule(V, stopAtSign):-
 %  a driver of a vehicle shall not enter an intersection or marked crosswalk
 %  unless there is sufficient space on the other side of the intersection or marked crosswalk
 %  to accommodate the vehicle driven without obstructing the through passage of vehicles from either side.
+
+collisionViolation:-
+  collidedWithAtTime(_, _, _).

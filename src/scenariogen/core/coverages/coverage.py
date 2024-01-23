@@ -140,6 +140,9 @@ class StatementCoverage(Coverage):
     else:
       assert False
   
+  def filter(self, statement_filter):
+    return StatementCoverage(filter(statement_filter, self.items))
+  
   def print(self):
     for item in self.items:
       print(f'\t{item}')
@@ -165,6 +168,9 @@ class StatementSetCoverage(Coverage):
       return PredicateSetCoverage(cov.cast_to(PredicateCoverage) for cov in self.items)
     elif cls is PredicateCoverage:
       return self.cast_to(PredicateSetCoverage).cast_to(PredicateCoverage)
+  
+  def filter(self, statement_filter):
+    return StatementSetCoverage(statement_cov.filter(statement_filter) for statement_cov in self.items)
   
   def print(self):
     print('Statement-set coverage:')
