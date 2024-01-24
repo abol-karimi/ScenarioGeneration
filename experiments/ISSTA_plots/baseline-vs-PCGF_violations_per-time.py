@@ -6,7 +6,6 @@ from pathlib import Path
 import jsonpickle
 from functools import reduce
 import matplotlib.pyplot as plt
-import importlib
 
 from scenariogen.core.coverages.coverage import Predicate, StatementCoverage, PredicateSetCoverage, PredicateCoverage
 
