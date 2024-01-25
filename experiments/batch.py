@@ -1,33 +1,20 @@
+#!/usr/bin/env python3.8
+
 # Run several experiments, populate results, plot the graphs
-import importlib
 
-from experiments.configs import SUT_config, coverage_config
-
-fuzzer_config = {
-  'SUT-config': {**SUT_config,
-                'simulator': 'carla',
-                'ego-module': f'experiments.agents.TFPP',
-                },
-  'coverage-config': {**coverage_config,
-                      'coverage_module': 'traffic'
-                      },
-  'seeds-folder': f'experiments/seeds/random/seeds',
-  'fuzz-inputs-folder': f"experiments/Atheris/gen_{gen_ego}_{gen_coverage}/fuzz-inputs",
-  'events-folder': f"experiments/Atheris/gen_{gen_ego}_{gen_coverage}/test_{gen_ego}_{gen_coverage}/events",
-  'bugs-folder': f"experiments/Atheris/gen_{gen_ego}_{gen_coverage}/test_{gen_ego}_{gen_coverage}/bugs",
-  'mutator': StructureAwareMutator(max_spline_knots_size=50,
-                                  randomizer_seed=config_randomizer.randrange(config_seed_range)),
-  'max_total_time': max_total_time, # seconds
-  'max-seed-length': 1e+6, # 1 MB
-}
-
-experiments_config = (
-  # ('Atheris', 'random', 'TFPP', 'traffic', 'TFPP', 'traffic'),
-  ('random_search', None, 'TFPP', 'traffic', 'TFPP', 'traffic'),
-)
+from experiments.random_search.experiment import config as random_search_config
+from experiments.Atheris.experiment import config as Atheris_config
+from experiments.PCGF.experiment import config as PCGF_config
+from experiments.runner import run
 
 
-for experiment_type, seeds, gen_ego, gen_coverage, test_ego, test_coverage in experiments_config:
-  print(f'Now running report: {experiment_type, seeds, gen_ego, gen_coverage, test_ego, test_coverage}')
+if __name__ == '__main__':
+  experiments = (
+    (random_search_config, 'Random search'),
+    (Atheris_config, 'Atheris'),
+    (PCGF_config, 'PCGF'),
+  )
 
-  importlib.import_module(f'experiments.{}')
+  for config, experiment_name in experiments:
+    print(f'Now running experiment: {experiment_name}')
+    run(config)

@@ -46,33 +46,33 @@ class RandomSeedGenerator:
         seed_id = 0
 
         scenario = scenic.scenarioFromFile(
-                        f"src/scenariogen/simulators/{config['simulator']}/create.scenic",
+                        f"src/scenariogen/simulators/{self.config['simulator']}/create.scenic",
                         mode2D=True,
-                        params={'render': config['render-ego'],
-                                'config': config
+                        params={'render': self.config['render-ego'],
+                                'config': self.config
                                 },
                         )
         print('Scenario compiled successfully.')
 
         simulator = scenario.getSimulator()
 
-        if not config['render-spectator']:
+        if not self.config['render-spectator']:
             settings = simulator.world.get_settings()
             settings.no_rendering_mode = True
             simulator.world.apply_settings(settings)
         
-        fuzz_inputs_path = Path(config['fuzz-inputs-folder'])
+        fuzz_inputs_path = Path(self.config['fuzz-inputs-folder'])
         fuzz_inputs_path.mkdir(parents=True, exist_ok=True)
         
-        while time.time()-start_time < config['max-total-time']:
+        while time.time()-start_time < self.config['max-total-time']:
             try:
-                scene, iterations = scenario.generate(maxIterations=config['scene-maxIterations'])
+                scene, iterations = scenario.generate(maxIterations=self.config['scene-maxIterations'])
                 print(f"Initial scene generated in {iterations} iteration{'(s)' if iterations > 1 else ''}.")
                 
                 sim_result = simulator.simulate(
                                     scene,
                                     maxSteps=scenario.params['steps'],
-                                    maxIterations=config['simulate-maxIterations'],
+                                    maxIterations=self.config['simulate-maxIterations'],
                                     raiseGuardViolations=True
                                     )
             except SimulationCreationError as e:
@@ -87,8 +87,8 @@ class RandomSeedGenerator:
             try:           
                 seed = seed_from_sim(sim_result,
                                     scenario.params['timestep'],
-                                    degree=config['spline-degree'],
-                                    knots_size=config['spline-knots-size']
+                                    degree=self.config['spline-degree'],
+                                    knots_size=self.config['spline-knots-size']
                                     )
             except SplineApproximationError as e:
                 print(e)
@@ -102,8 +102,8 @@ class RandomSeedGenerator:
                 seed_id += 1
                 print(f'Saved the {ordinal(seed_id)} seed as {seed_hash}.')
                 
-                if 'coverage_module' in config and config['save-coverage-events']:
+                if 'coverage_module' in self.config and self.config['save-coverage-events']:
                     events = sim_result.records['events']
-                    with open(Path(config['events-folder'])/seed_hash, 'w') as f:
+                    with open(Path(self.config['events-folder'])/seed_hash, 'w') as f:
                         f.write(jsonpickle.encode(events, indent=1))
                     
