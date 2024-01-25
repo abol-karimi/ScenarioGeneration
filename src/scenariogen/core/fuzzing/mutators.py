@@ -108,10 +108,16 @@ class StructureAwareMutator():
       lanes += self._extend_lanes_forward(lanes, offset-available+10)
       print(f'Extended the route forward by {offset-available+10} meters.')
 
+    start_lane_idx = 0
+    trim_length = 0
+    while footprint.ctrlpts[0][0]+offset-trim_length > lanes[start_lane_idx].centerline.length:
+      trim_length += lanes[start_lane_idx].centerline.length
+      start_lane_idx += 1
+    
+    new_route = tuple(l.uid for l in lanes[start_lane_idx:])
     new_footprint =  Spline(degree=footprint.degree,
-                           ctrlpts=tuple((p[0]+offset, p[1]) for p in footprint.ctrlpts),
+                           ctrlpts=tuple((p[0]+offset-trim_length, p[1]) for p in footprint.ctrlpts),
                            knotvector=footprint.knotvector)
-    new_route = tuple(l.uid for l in lanes)
 
     mutant = FuzzInput(config=fuzz_input.config,
                   blueprints=fuzz_input.blueprints+(fuzz_input.blueprints[nonego_idx],),

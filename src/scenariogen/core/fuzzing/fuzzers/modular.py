@@ -124,6 +124,8 @@ class ModularFuzzer:
         with open(Path(self.config['events-folder'])/fuzz_input_hash, 'w') as f:
           f.write(jsonpickle.encode(coverage_events, indent=1))
         
+        print(f'The fuzzed input with hash {fuzz_input_hash} expanded the coverage! The input is added it to the corpus.')
+
     finally:
       return coverage_events, statement_coverage
   

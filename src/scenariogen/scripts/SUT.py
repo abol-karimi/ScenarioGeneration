@@ -13,7 +13,7 @@ from experiments.configs import SUT_config, coverage_config
 
 parser = argparse.ArgumentParser(
     description='play the given scenario with a Carla autopilot driving the ego.')
-parser.add_argument('fuzz-input-path',
+parser.add_argument('fuzz_input_path',
                     help='relative path of the fuzz-input')
 parser.add_argument('--timestep', type=float,
                     help='length of each simulation step')
@@ -77,7 +77,7 @@ sim_result = Runner.run({**config,
 
 if args.coverage_module:
     coverage = sim_result.records['coverage']
-    coverage.print()
+    # coverage.print()
 
     config.update({'network': Network.fromFile(config['map'])})
     coverage_module = importlib.import_module(f'scenariogen.core.coverages.{args.coverage_module}')
