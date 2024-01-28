@@ -10,6 +10,9 @@ import importlib
 from scenic.domains.driving.roads import Network
 
 from scenariogen.core.coverages.coverage import StatementSetCoverage
+from experiments.PCGF.experiment import get_config as PCGF_get_config
+from experiments.Atheris.experiment import get_config as Atheris_get_config
+from experiments.test import get_test_config
 
 
 def add_coverage(measurement, config):
@@ -27,10 +30,11 @@ def add_coverage(measurement, config):
   measurement['statement-set-coverage'] = StatementSetCoverage(statement_coverages)
 
 
-def report(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage):
-  results_file_path = Path(f'experiments/{experiment_type}/gen_{gen_ego}_{gen_coverage}/results.json')
-  fuzz_inputs_path = Path(f'experiments/{experiment_type}/gen_{gen_ego}_{gen_coverage}/fuzz-inputs')
-  coverage_file_path = Path(f'experiments/{experiment_type}/gen_{gen_ego}_{gen_coverage}/test_{test_ego}_{test_coverage}/coverage.json')
+def report(test_config):
+  results_file_path = Path(test_config['results-file'])
+  fuzz_inputs_path = Path(test_config['seeds-folder'])
+  coverage_file_path = Path(test_config['output-folder'])/'coverage.json'
+  test_coverage = test_config['coverage-config']['coverage_module']
 
   with open(tuple(fuzz_inputs_path.glob('*'))[0], 'r') as f:
     seed = jsonpickle.decode(f.read())
@@ -53,11 +57,16 @@ def report(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage):
 
 if __name__ == '__main__':
   reports_config = (
-    # ('Atheris', 'TFPP', 'traffic-rules', 'TFPP', 'traffic-rules'),
-    # ('random_search', 'TFPP', 'traffic-rules', 'TFPP', 'traffic-rules'),
-    ('PCGF', 'TFPP', 'traffic-rules', 'TFPP', 'traffic-rules'),
+    ('PCGF', 'TFPP', 0, 4*60*60, 'traffic-rules', 'TFPP', 'traffic-rules'),
   )
 
-  for experiment_type, gen_ego, gen_coverage, test_ego, test_coverage in reports_config:
+  for experiment_type, gen_ego, randomizer_seed, max_total_time, gen_coverage, test_ego, test_coverage in reports_config:
     print(f'Now running report: {experiment_type, gen_ego, gen_coverage, test_ego, test_coverage}')
-    report(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage)
+    output_folder = f'experiments/{experiment_type}/{gen_ego}_{gen_coverage}_{randomizer_seed}_{max_total_time}'
+    if experiment_type == 'PCGF':
+      gen_config = PCGF_get_config(gen_ego, gen_coverage, randomizer_seed, max_total_time, output_folder)
+    elif experiment_type == 'Atheris':
+      gen_config = Atheris_get_config(gen_ego, gen_coverage, randomizer_seed, max_total_time, output_folder)
+
+    test_config = get_test_config(gen_config, test_ego, test_coverage, max_total_time)
+    report(test_coverage)

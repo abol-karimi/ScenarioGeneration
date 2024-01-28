@@ -36,7 +36,7 @@ def plot(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage):
   ax.plot(tuple(distribution.keys()), tuple(distribution.values()), 'bo')
 
   plt.tight_layout()
-  plt.savefig(fig_path)
+  fig.savefig(fig_path)
 
 if __name__ == '__main__':
   reports_config = (

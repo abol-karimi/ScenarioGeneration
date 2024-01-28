@@ -10,8 +10,6 @@ import importlib
 from collections import Counter
 import numpy as np
 
-from scenariogen.core.coverages.coverage import StatementCoverage, PredicateSetCoverage, PredicateCoverage
-
 
 def plot(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage, ax, plot_label):
   global predicates
@@ -62,12 +60,12 @@ if __name__ == '__main__':
 
   ax = fig_coverage.add_subplot(111)
   ax.set_xlabel('Predicate')
-  ax.set_ylabel('Average Statement Frequency (per fuzz-input)')
+  ax.set_ylabel('Average Frequency (per fuzz-input)')
   ax.set_yscale('log')
 
   reports_config = (
     ('PCGF', 'TFPP', 'traffic-rules', 'TFPP', 'traffic-rules', ax, 'PCGF'),
-    ('random_search', 'TFPP', 'traffic', 'TFPP', 'traffic-rules', ax, 'Random search'),
+    ('random_search', 'TFPP', 'traffic-rules', 'TFPP', 'traffic-rules', ax, 'Random search'),
     ('Atheris', 'TFPP', 'traffic-rules', 'TFPP', 'traffic-rules', ax, 'Atheris'),
   )
 
@@ -81,4 +79,4 @@ if __name__ == '__main__':
   ax.legend(loc='upper right', ncols=3)
   plt.setp(ax.get_xticklabels(), rotation=45, ha='right')
 
-  plt.savefig(f'experiments/ISSTA_plots/baseline-vs-PCGF_{test_coverage}_predicate-distribution.png')
+  fig_coverage.savefig(f'experiments/ISSTA_plots/baseline-vs-PCGF_{test_coverage}_predicate-distribution.png')

@@ -6,13 +6,12 @@ from pathlib import Path
 import jsonpickle
 from functools import reduce
 import matplotlib.pyplot as plt
-import importlib
 
 from scenariogen.core.coverages.coverage import Predicate, StatementCoverage, PredicateSetCoverage, PredicateCoverage
 
 
-def plot(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage, plot_label, plot_color):
-  coverage_file_path = Path(f'experiments/{experiment_type}/gen_{gen_ego}_{gen_coverage}/test_{test_ego}_{test_coverage}/coverage.json')
+def plot_curve(gen_config, test_config, plot_color, plot_label, axes):
+  coverage_file_path = Path(test_config['output-folder'])/'coverage.json'
 
   with open(coverage_file_path, 'r') as f:
     coverage = jsonpickle.decode(f.read())
@@ -38,19 +37,14 @@ def plot(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage, plot_l
 
   x_axis = tuple(len(files) for files in new_event_files_acc)
 
+  ax1, ax2, ax3, ax4 = axes
   ax1.plot(x_axis, tuple(len(c) for c in statementSet_coverages_acc), f'{plot_color}-', label=plot_label)
   ax2.plot(x_axis, tuple(len(c) for c in statement_coverages_acc), f'{plot_color}-', label=plot_label)
   ax3.plot(x_axis, tuple(len(c) for c in predicateSet_coverages_acc), f'{plot_color}-', label=plot_label)
   ax4.plot(x_axis, tuple(len(c) for c in predicate_coverages_acc), f'{plot_color}-', label=plot_label)
 
 
-if __name__ == '__main__':
-
-  reports_config = (
-    ('PCGF', 'TFPP', 'traffic-rules', 'TFPP', 'traffic-rules', 'PCGF', 'm'),
-    ('random_search', 'TFPP', 'traffic', 'TFPP', 'traffic', 'Random search', 'b'),
-    ('Atheris', 'TFPP', 'traffic-rules', 'TFPP', 'traffic-rules', 'Atheris', 'k'),
-  )
+def plot(plot_configs):
   fig_coverage = plt.figure(layout='constrained')
   # fig_coverage.suptitle(f'Baseline vs. Coverage-Guided Fuzzing')
 
@@ -61,7 +55,6 @@ if __name__ == '__main__':
   ax.spines['left'].set_color('none')
   ax.spines['right'].set_color('none')
   ax.tick_params(labelcolor='w', top=False, bottom=False, left=False, right=False)
-    
 
   ax1 = fig_coverage.add_subplot(411)
   ax2 = fig_coverage.add_subplot(412)
@@ -73,9 +66,13 @@ if __name__ == '__main__':
   ax4.set_ylabel('Predicates')
   ax4.set_xlabel('Number of fuzz-inputs generated')
 
-  for experiment_type, gen_ego, gen_coverage, test_ego, test_coverage, plot_label, plot_color in reports_config:
-    print(f'Now plotting report: {experiment_type, gen_ego, gen_coverage, test_ego, test_coverage}')
-    plot(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage, plot_label, plot_color)
+  axes = ax1, ax2, ax3, ax4
+
+  for gen_config, test_config, color, label in plot_configs:
+    print(f'Now plotting report:', label)
+    plot_curve(gen_config, test_config, color, label, axes)
 
   ax4.legend()
-  plt.savefig(f'experiments/ISSTA_plots/baseline-vs-PCGF_{test_coverage}_violations_per-fuzz-input.png')
+  test_coverage = test_config['coverage-config']['coverage_module']
+  fig_coverage.savefig(f'experiments/ISSTA/target-vs-surrogate_{test_coverage}_violations_per-fuzz-input.png')
+

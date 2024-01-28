@@ -6,22 +6,8 @@ from pathlib import Path
 import jsonpickle
 from functools import reduce
 import matplotlib.pyplot as plt
-import importlib
 
-from scenic.domains.driving.roads import Network
-
-from scenariogen.core.coverages.coverage import Statement, StatementCoverage, StatementSetCoverage, PredicateSetCoverage, PredicateCoverage
-
-
-def plot_predicate_coverage_space(axes, interval, gen_ego, gen_coverage, test_coverage):
-  fuzz_inputs_path = Path(f'experiments/{experiment_type}/gen_{gen_ego}_{gen_coverage}/fuzz-inputs')
-  with open(tuple(fuzz_inputs_path.glob('*'))[0], 'r') as f:
-    seed = jsonpickle.decode(f.read())
-  
-  coverage_module = importlib.import_module(f'scenariogen.core.coverages.{test_coverage}')
-  predicate_coverage_space = coverage_module.coverage_space(seed.config)
-
-  axes.plot(interval, (len(predicate_coverage_space),)*2, 'r--', label='Predicate-Coverage Space')
+from scenariogen.core.coverages.coverage import Predicate, StatementCoverage, PredicateSetCoverage, PredicateCoverage
 
 
 def plot(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage, plot_label, plot_color):
@@ -32,30 +18,36 @@ def plot(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage, plot_l
 
   measurements = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements']},
                           coverage)['measurements']
-  exe_times = tuple(int(m['exe_time']/60) for m in measurements)
-  statementSet_coverages = tuple(m['statement-set-coverage'] for m in measurements)
+  new_event_files = tuple(m['new_event_files'] for m in measurements)
+  ego_violation_filter = lambda s: s.predicate in {Predicate(name) for name in {'violatesRule',
+                                                                                'violatesRightOfForRule',
+                                                                                'collidedWithAtTime'}} \
+                                    and s.args[0] == 'ego'
+  statementSet_coverages = tuple(m['statement-set-coverage'].filter(ego_violation_filter) for m in measurements)
 
-  exe_times_acc = [exe_times[0]]
+  new_event_files_acc = [new_event_files[0]]
   statementSet_coverages_acc = [statementSet_coverages[0]]
   for i in range(1, len(measurements)):
-    exe_times_acc.append(exe_times_acc[-1] + exe_times[i])
+    new_event_files_acc.append(new_event_files_acc[-1].union(new_event_files[i]))
     statementSet_coverages_acc.append(statementSet_coverages_acc[-1] + statementSet_coverages[i])
   
   statement_coverages_acc = tuple(c.cast_to(StatementCoverage) for c in statementSet_coverages_acc)
   predicateSet_coverages_acc = tuple(c.cast_to(PredicateSetCoverage) for c in statementSet_coverages_acc)
   predicate_coverages_acc = tuple(c.cast_to(PredicateCoverage) for c in statement_coverages_acc)
 
-  ax1.plot(exe_times_acc, tuple(len(c) for c in statementSet_coverages_acc), f'{plot_color}-', label=plot_label)
-  ax2.plot(exe_times_acc, tuple(len(c) for c in statement_coverages_acc), f'{plot_color}-', label=plot_label)
-  ax3.plot(exe_times_acc, tuple(len(c) for c in predicateSet_coverages_acc), f'{plot_color}-', label=plot_label)
-  ax4.plot(exe_times_acc, tuple(len(c) for c in predicate_coverages_acc), f'{plot_color}-', label=plot_label)
+  x_axis = tuple(len(files) for files in new_event_files_acc)
+
+  ax1.plot(x_axis, tuple(len(c) for c in statementSet_coverages_acc), f'{plot_color}-', label=plot_label)
+  ax2.plot(x_axis, tuple(len(c) for c in statement_coverages_acc), f'{plot_color}-', label=plot_label)
+  ax3.plot(x_axis, tuple(len(c) for c in predicateSet_coverages_acc), f'{plot_color}-', label=plot_label)
+  ax4.plot(x_axis, tuple(len(c) for c in predicate_coverages_acc), f'{plot_color}-', label=plot_label)
 
 
 if __name__ == '__main__':
 
   reports_config = (
     ('PCGF', 'TFPP', 'traffic-rules', 'TFPP', 'traffic-rules', 'PCGF', 'm'),
-    ('random_search', 'TFPP', 'traffic', 'TFPP', 'traffic-rules', 'Random search', 'b'),
+    ('random_search', 'TFPP', 'traffic-rules', 'TFPP', 'traffic-rules', 'Random search', 'b'),
     ('Atheris', 'TFPP', 'traffic-rules', 'TFPP', 'traffic-rules', 'Atheris', 'k'),
   )
   fig_coverage = plt.figure(layout='constrained')
@@ -78,13 +70,11 @@ if __name__ == '__main__':
   ax2.set_ylabel('Statements')
   ax3.set_ylabel('Predicate-Sets')
   ax4.set_ylabel('Predicates')
-  ax4.set_xlabel('Wall-clock time (minutes)')
+  ax4.set_xlabel('Number of fuzz-inputs generated')
 
   for experiment_type, gen_ego, gen_coverage, test_ego, test_coverage, plot_label, plot_color in reports_config:
     print(f'Now plotting report: {experiment_type, gen_ego, gen_coverage, test_ego, test_coverage}')
     plot(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage, plot_label, plot_color)
 
-  plot_predicate_coverage_space(ax4, (0, 4*60), 'TFPP', 'traffic', 'traffic-rules')
-
   ax4.legend()
-  plt.savefig(f'experiments/ISSTA_plots/baseline-vs-PCGF_{test_coverage}_per-time.png')
+  fig_coverage.savefig(f'experiments/ISSTA_plots/baseline-vs-PCGF_{test_coverage}_violations_per-fuzz-input.png')

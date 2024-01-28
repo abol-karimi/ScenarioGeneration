@@ -6,9 +6,8 @@ param config = None
 config = globalParameters.config
 
 model scenic.simulators.carla.model
-from scenariogen.simulators.carla.monitors import ForbidEgoCollisionsMonitor, ShowIntersectionMonitor, LabelCarsMonitor
 from scenariogen.simulators.carla.scenarios import NonegosScenario
-from scenariogen.core.errors import EgoCollisionError
+from scenariogen.simulators.carla.monitors import ShowIntersectionMonitor
 
 nonegos_scenario = NonegosScenario(config)
 

@@ -73,7 +73,7 @@ def run(config):
   try:
     fuzzer_state = generator.runs(fuzzer_state)
   except Exception as e:
-    print(f'Exception of type {type(e)} in Atheris: {e}.')
+    print(f'Exception of type {type(e)} in generator: {e}.')
     raise e
   finally:
     tl.stop()

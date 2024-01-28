@@ -73,7 +73,7 @@ def plot(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage):
   ax3.plot(exe_times_acc, tuple(len(predicate_coverage_space) for c in range(len(exe_times_acc))), 'r--')
 
   plt.tight_layout()
-  plt.savefig(output_path/f'coverage_{test_ego}_{test_coverage}.png')
+  fig.savefig(output_path/f'coverage_{test_ego}_{test_coverage}.png')
 
 if __name__ == '__main__':
   reports_config = (

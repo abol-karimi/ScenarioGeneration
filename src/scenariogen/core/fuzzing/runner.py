@@ -18,7 +18,10 @@ class Runner:
 
   @classmethod
   def simulation_service(cls, connection, config):
-    """Reads scenario config from connection, then writes sim_result to connection."""
+    """Reads scenario config from connection, then writes sim_result to connection.
+    Does not catch any exceptions so the daemon exits upon any exception in the service process.
+    If the daemon exits, the Runner.run function will spawn a new daemon upon its next execution.
+    """
 
     if config['simulator'] == 'carla':
       simulator = CarlaSimulator(carla_map=config['carla_map'],

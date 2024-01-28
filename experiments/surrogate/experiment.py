@@ -1,10 +1,5 @@
 #!/usr/bin/env python3.8
 
-""" Run all the experiments,
-      populate coverage results,
-      plot the graphs.
-"""
-
 from experiments.PCGF.experiment import get_config as PCGF_get_config
 import experiments.runner
 from experiments.test import get_test_config
@@ -22,6 +17,7 @@ if __name__ == '__main__':
   output_folder = f'experiments/PCGF/{gen_ego}_{gen_coverage}'
   gen_config = PCGF_get_config(gen_ego, gen_coverage, randomizer_seed, baseline_total_time, output_folder)
   test_config = get_test_config(gen_config, gen_ego, gen_coverage, baseline_total_time)
+
   plot_configs.append((gen_config, test_config, 'b', f'{gen_ego} target'))
 
   # Generate open-loop for 60 minutes, test with TFPP till baseline_total_time
@@ -56,11 +52,11 @@ if __name__ == '__main__':
   test_coverage = 'traffic-rules'
   max_total_time =  baseline_total_time - gen_config['max-total-time']
   test_config = get_test_config(gen_config, test_ego, test_coverage, max_total_time)
-  experiments.runner.run(test_config)
-  experiments.events_to_coverage.report(test_config)
+  # experiments.runner.run(test_config)
+  # experiments.events_to_coverage.report(test_config)
 
   plot_configs.append((gen_config, test_config, 'g', 'autopilot surrogate'))
 
-  for plot in experiments.ISSTA.plots:
+  for plot in experiments.ISSTA.surrogate_plots:
     plot(plot_configs)
 

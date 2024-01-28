@@ -18,7 +18,7 @@ class ModularFuzzer:
     self.config = config
     self.coverage_seen = StatementSetCoverage([])
     self.random = Random(config['randomizer-seed'])
-    self.mutator = config['mutator']
+    self.mutator = config['mutator-config']['mutator']
     self.schedule = config['schedule']
     
     self.seeds = []
@@ -56,7 +56,7 @@ class ModularFuzzer:
 
       # Stacking: Apply multiple mutations to generate the candidate
       fuzz_input = selected.fuzz_input
-      mutations_per_fuzz = self.random.randint(1, self.config['max-mutations-per-fuzz'])
+      mutations_per_fuzz = self.random.randint(1, self.config['mutator-config']['max-mutations-per-fuzz'])
       for i in range(mutations_per_fuzz):
           fuzz_input = self.mutator.mutate(fuzz_input)
       return fuzz_input
@@ -124,7 +124,7 @@ class ModularFuzzer:
         with open(Path(self.config['events-folder'])/fuzz_input_hash, 'w') as f:
           f.write(jsonpickle.encode(coverage_events, indent=1))
         
-        print(f'The fuzzed input with hash {fuzz_input_hash} expanded the coverage! The input is added it to the corpus.')
+        print(f'The fuzzed input with hash {fuzz_input_hash} expanded the coverage! Added input to the corpus.')
 
     finally:
       return coverage_events, statement_coverage

@@ -105,16 +105,19 @@ class StructureAwareMutator():
     available = centerline.length - footprint.ctrlpts[-1][0]
     if offset > available - 10: # 10 meters cushion
       # Extend the route by offset-available+10
-      lanes += self._extend_lanes_forward(lanes, offset-available+10)
-      print(f'Extended the route forward by {offset-available+10} meters.')
+      ext = self._extend_lanes_forward(lanes, offset-available+10)
+      lanes += ext
+      print(f'Extended the route forward by {sum(l.centerline.length for l in ext)} meters.')
 
     start_lane_idx = 0
     trim_length = 0
     while footprint.ctrlpts[0][0]+offset-trim_length > lanes[start_lane_idx].centerline.length:
       trim_length += lanes[start_lane_idx].centerline.length
-      start_lane_idx += 1
-    
+      start_lane_idx += 1   
     new_route = tuple(l.uid for l in lanes[start_lane_idx:])
+    if trim_length > 0:
+      print(f'Trimmed {trim_length} meters from the beginning of the route.')
+
     new_footprint =  Spline(degree=footprint.degree,
                            ctrlpts=tuple((p[0]+offset-trim_length, p[1]) for p in footprint.ctrlpts),
                            knotvector=footprint.knotvector)
@@ -385,7 +388,7 @@ class StructureAwareMutator():
     # Mutate
     mutant = self.slowdown_with_params(fuzz_input, nonego_idx, (a, b), factor)
 
-    print(f'Slowed down nonego {nonego_idx} over interval {(a, b)} by a factor of {factor}.')
+    print(f'Mutation: Slowed down nonego {nonego_idx} over interval {(a, b)} by a factor of {factor}.')
 
     return mutant
   
@@ -397,7 +400,7 @@ class StructureAwareMutator():
     signal = self.random.choice(tuple(SignalType))
     
     # Mutate
-    print(f'Nonego {nonego_idx} signals {signal} at time {t}.')
+    print(f'Mutation: Nonego {nonego_idx} signals {signal} at time {t}.')
     mutant = self.add_signal_with_params(fuzz_input, nonego_idx, t, signal)
 
     return mutant
@@ -429,7 +432,7 @@ class StructureAwareMutator():
 
     event_index = self.random.randrange(1, len(signal))
 
-    print(f'Nonego {nonego_idx} will not signal at time {signal[event_index][0]}.')
+    print(f'Mutation: Nonego {nonego_idx} will not signal at time {signal[event_index][0]}.')
     mutant = self.remove_signal_with_params(fuzz_input, nonego_idx, event_index)
 
     return mutant

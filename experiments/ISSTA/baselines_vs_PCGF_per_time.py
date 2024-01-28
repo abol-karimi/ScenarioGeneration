@@ -8,9 +8,7 @@ from functools import reduce
 import matplotlib.pyplot as plt
 import importlib
 
-from scenic.domains.driving.roads import Network
-
-from scenariogen.core.coverages.coverage import Statement, StatementCoverage, StatementSetCoverage, PredicateSetCoverage, PredicateCoverage
+from scenariogen.core.coverages.coverage import StatementCoverage, PredicateSetCoverage, PredicateCoverage
 
 
 def plot_predicate_coverage_space(axes, interval, gen_ego, gen_coverage, test_coverage):
@@ -32,32 +30,30 @@ def plot(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage, plot_l
 
   measurements = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements']},
                           coverage)['measurements']
-  new_event_files = tuple(m['new_event_files'] for m in measurements)
+  exe_times = tuple(int(m['exe_time']/60) for m in measurements)
   statementSet_coverages = tuple(m['statement-set-coverage'] for m in measurements)
 
-  new_event_files_acc = [new_event_files[0]]
+  exe_times_acc = [exe_times[0]]
   statementSet_coverages_acc = [statementSet_coverages[0]]
   for i in range(1, len(measurements)):
-    new_event_files_acc.append(new_event_files_acc[-1].union(new_event_files[i]))
+    exe_times_acc.append(exe_times_acc[-1] + exe_times[i])
     statementSet_coverages_acc.append(statementSet_coverages_acc[-1] + statementSet_coverages[i])
   
   statement_coverages_acc = tuple(c.cast_to(StatementCoverage) for c in statementSet_coverages_acc)
   predicateSet_coverages_acc = tuple(c.cast_to(PredicateSetCoverage) for c in statementSet_coverages_acc)
   predicate_coverages_acc = tuple(c.cast_to(PredicateCoverage) for c in statement_coverages_acc)
 
-  x_axis = tuple(len(files) for files in new_event_files_acc)
-
-  ax1.plot(x_axis, tuple(len(c) for c in statementSet_coverages_acc), f'{plot_color}-', label=plot_label)
-  ax2.plot(x_axis, tuple(len(c) for c in statement_coverages_acc), f'{plot_color}-', label=plot_label)
-  ax3.plot(x_axis, tuple(len(c) for c in predicateSet_coverages_acc), f'{plot_color}-', label=plot_label)
-  ax4.plot(x_axis, tuple(len(c) for c in predicate_coverages_acc), f'{plot_color}-', label=plot_label)
+  ax1.plot(exe_times_acc, tuple(len(c) for c in statementSet_coverages_acc), f'{plot_color}-', label=plot_label)
+  ax2.plot(exe_times_acc, tuple(len(c) for c in statement_coverages_acc), f'{plot_color}-', label=plot_label)
+  ax3.plot(exe_times_acc, tuple(len(c) for c in predicateSet_coverages_acc), f'{plot_color}-', label=plot_label)
+  ax4.plot(exe_times_acc, tuple(len(c) for c in predicate_coverages_acc), f'{plot_color}-', label=plot_label)
 
 
 if __name__ == '__main__':
 
   reports_config = (
     ('PCGF', 'TFPP', 'traffic-rules', 'TFPP', 'traffic-rules', 'PCGF', 'm'),
-    ('random_search', 'TFPP', 'traffic', 'TFPP', 'traffic-rules', 'Random search', 'b'),
+    ('random_search', 'TFPP', 'traffic-rules', 'TFPP', 'traffic-rules', 'Random search', 'b'),
     ('Atheris', 'TFPP', 'traffic-rules', 'TFPP', 'traffic-rules', 'Atheris', 'k'),
   )
   fig_coverage = plt.figure(layout='constrained')
@@ -80,15 +76,13 @@ if __name__ == '__main__':
   ax2.set_ylabel('Statements')
   ax3.set_ylabel('Predicate-Sets')
   ax4.set_ylabel('Predicates')
-  ax4.set_xlabel('Number of fuzz-inputs generated')
+  ax4.set_xlabel('Wall-clock time (minutes)')
 
   for experiment_type, gen_ego, gen_coverage, test_ego, test_coverage, plot_label, plot_color in reports_config:
     print(f'Now plotting report: {experiment_type, gen_ego, gen_coverage, test_ego, test_coverage}')
     plot(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage, plot_label, plot_color)
 
-  events_path = Path(f'experiments/random_search/gen_{gen_ego}_{gen_coverage}/test_{test_ego}_{test_coverage}/events')
-  event_files_num = len(tuple(events_path.glob('*')))
-  plot_predicate_coverage_space(ax4, (0, event_files_num), 'TFPP', 'traffic', 'traffic-rules')
+  plot_predicate_coverage_space(ax4, (0, 4*60), 'TFPP', 'traffic', 'traffic-rules')
 
   ax4.legend()
-  plt.savefig(f'experiments/ISSTA_plots/baseline-vs-PCGF_{test_coverage}_per-fuzz-input.png')
+  fig_coverage.savefig(f'experiments/ISSTA_plots/baseline-vs-PCGF_{test_coverage}_per-time.png')
