@@ -27,10 +27,8 @@ class StructureAwareCrossOver():
   _route_lengths_cache = {}
   _predecessors_cache = {}
 
-  def __init__(self, max_spline_knots_size=50,
-                      max_attempts=1,
-                      randomizer_seed=0):
-    self.max_spline_knots_size = max_spline_knots_size
+  def __init__(self, max_attempts=1,
+                     randomizer_seed=0):
     self.max_attempts = max_attempts
     self.randomizer_seed = randomizer_seed
 
@@ -75,7 +73,7 @@ class StructureAwareCrossOver():
   
   @classmethod
   def get_network(cls, seed):
-    carla_map = seed.config['carla_map']
+    carla_map = seed.config['carla-map']
     if not carla_map in cls._networks_cache:
       network = Network.fromFile(seed.config['map'])
       cls._networks_cache[carla_map] = network

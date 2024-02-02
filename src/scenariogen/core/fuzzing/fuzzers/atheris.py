@@ -1,15 +1,16 @@
 import sys
 import jsonpickle
 from pathlib import Path
+import shutil
 from typing import Any
-from multiprocessing import Process
+import multiprocessing
 import hashlib
 from random import Random
 import atheris
 from scenic.core.simulators import SimulationCreationError
 
 # This project
-from scenariogen.core.fuzzing.runner import Runner
+from scenariogen.core.fuzzing.runner import SUTRunner
 
 #----------------------------------------------
 #---------- mutator's wrapper ----------
@@ -55,7 +56,7 @@ class SUTCallback:
     fuzz_input = jsonpickle.decode(input_bytes.decode('utf-8'))
     sim_result = None
     try:
-      sim_result = Runner.run({**self.config,
+      sim_result = SUTRunner.run({**self.config,
                                **fuzz_input.config,                               
                                'fuzz-input': fuzz_input,
                                })
@@ -73,6 +74,14 @@ class SUTCallback:
 #------------------------------------
 #---------- Atheris wrapper ---------
 #------------------------------------
+def atheris_target(libfuzzer_config, SUT, mutator):
+  atheris.instrument_all()
+  atheris.Setup(sys.argv + libfuzzer_config,
+                SUT,
+                custom_mutator=mutator)
+  atheris.Fuzz()
+
+
 class AtherisFuzzer:
   def __init__(self, config):
     self.config = config
@@ -97,19 +106,21 @@ class AtherisFuzzer:
     if atheris_state: # resume
       self.set_state(atheris_state)
 
-    def target():
-      atheris.instrument_all()
-      atheris.Setup(sys.argv + self.libfuzzer_config,
-                self.SUT,
-                custom_mutator=self.mutator
-                )
-      atheris.Fuzz()
-
-    p = Process(target=target, name='Atheris', args=())
+    ctx = multiprocessing.get_context('spawn')
+    p = ctx.Process(target=atheris_target,
+                    name='Atheris',
+                    args=(self.libfuzzer_config,
+                          self.SUT,
+                          self.mutator))
     p.start()
     p.join()
 
-    return self.get_state() # TODO does this return the state of the subprocess?
+    # include the seeds in the ouput
+    fuzz_inputs_path = Path(self.config['fuzz-inputs-folder'])
+    for seed_path in Path(self.config['seeds-folder']).glob('*'):
+      shutil.copy(seed_path, fuzz_inputs_path)
+
+    return None # We will not resume Atheris later
   
   def get_state(self):
     state = {

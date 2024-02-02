@@ -6,7 +6,7 @@ from pathlib import Path
 import scenic
 scenic.setDebuggingOptions(verbosity=1, fullBacktrace=True)
 
-from scenariogen.core.fuzzing.runner import Runner
+from scenariogen.core.fuzzing.runner import SUTRunner
 
 
 class SeedTester:
@@ -23,7 +23,7 @@ class SeedTester:
 
   def input_eval(self, seed):
     try:
-      sim_result = Runner.run({**self.config['SUT-config'],
+      sim_result = SUTRunner.run({**self.config['SUT-config'],
                                **self.config['coverage-config'],
                                **seed.config,
                                'fuzz-input': seed,

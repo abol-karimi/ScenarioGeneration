@@ -33,8 +33,7 @@ visualization.draw_spline(world, footprint, timing, resolution, umin, umax,
                           lifetime=120)
 
 # Speed up its trajectory over an interval, plot the new trajectory
-mutator = StructureAwareMutator(max_spline_knots_size=50,
-                              randomizer_seed=0)
+mutator = StructureAwareMutator(0)
 mutant = mutator.slowdown_with_params(seed, 0, (umin, umax/2), .9)
 footprint, timing = mutant.footprints[0], mutant.timings[0]
 visualization.draw_spline(world, footprint, timing, resolution, umin, umax,

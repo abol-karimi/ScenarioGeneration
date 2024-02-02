@@ -6,7 +6,7 @@ from typing import Tuple
 
 from scenic.core.simulators import SimulationCreationError
 
-from scenariogen.core.fuzzing.runner import Runner
+from scenariogen.core.fuzzing.runner import SUTRunner
 from scenariogen.core.errors import EgoCollisionError, NonegoCollisionError
 
 
@@ -197,7 +197,7 @@ def from_corpus(corpus_folder, config):
       fuzz_input = jsonpickle.decode(f.read())
     try:
       print(f'Running {path.name}')
-      sim_result = Runner.run({'render-spectator': False,
+      sim_result = SUTRunner.run({'render-spectator': False,
                                'render-ego': False,
                                **config,
                                **fuzz_input.config,                               

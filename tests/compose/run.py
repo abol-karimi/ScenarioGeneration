@@ -2,7 +2,7 @@
 import scenic
 
 config = {
-    'carla_map': 'Town05',
+    'carla-map': 'Town05',
     'intersection_uid': 'intersection1930',
     'timestep': 0.05,
     'render': True,
@@ -11,8 +11,8 @@ config = {
     'simulator': 'newtonian',
 }
 
-params = {'carla_map': config['carla_map'],
-          'map': f"/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/{config['carla_map']}.xodr",
+params = {'carla-map': config['carla-map'],
+          'map': f"/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/{config['carla-map']}.xodr",
           'render': config['render'],
           'timestep': config['timestep'],
           'config': config,

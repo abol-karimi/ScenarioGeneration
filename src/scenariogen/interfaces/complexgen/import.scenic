@@ -32,7 +32,7 @@ transform = CurvilinearTransform([p for lane in ego_lanes
 ego_init_progress_x = transform.curvilinear(ego_p0)[0]
 
 config = {'description': 'A scenario imported from complexgen',
-          'carla_map': scenario.map_name,
+          'carla-map': scenario.map_name,
           'map': scenario.map_path,
           'weather': scenario.weather,
           'timestep': scenario.timestep,

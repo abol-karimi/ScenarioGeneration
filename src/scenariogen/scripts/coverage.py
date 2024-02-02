@@ -10,7 +10,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument('SUT_inputs_path',
                     help='relative path of the corpus folder')
 parser.add_argument('--ego-module',
-                    default='experiments.agents.autopilot',
+                    default='evaluation.agents.autopilot',
                     help='the scenic file containing the ego scenario')
 parser.add_argument('--render-spectator', action='store_true',
                     help='render a spectator above the intersection')
@@ -22,7 +22,7 @@ config = {
   **SUT_config,
   **coverage_config,
   'ego-module': args.ego_module,
-  'coverage_module': 'traffic',
+  'coverage-module': 'traffic',
   'map': '/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/Town05.xodr',
   'intersection': 'intersection396',
   'render-spectator': args.render_spectator,
@@ -42,7 +42,7 @@ coverage = reduce(lambda c1,c2: c1+c2,
 print(f'\nCoverage:')
 coverage.print()
 
-coverage_module = importlib.import_module(f"scenariogen.core.coverages.{config['coverage_module']}")
+coverage_module = importlib.import_module(f"scenariogen.core.coverages.{config['coverage-module']}")
 predicate_coverage_space = coverage_module.coverage_space(config)
 coverage_gap = predicate_coverage_space - coverage.cast_to(PredicateCoverage)
 print(f'\nPredicate coverage gap:')

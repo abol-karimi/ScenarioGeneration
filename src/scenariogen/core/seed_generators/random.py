@@ -58,8 +58,7 @@ class RandomSeedGenerator:
     try:
       seed = seed_from_sim(sim_result,
                           scenario.params['timestep'],
-                          degree=self.config['spline-degree'],
-                          knots_size=self.config['spline-knots-size'])
+                          degree=self.config['spline-degree'])
     except SplineApproximationError as e:
       print(e)
       return
@@ -72,7 +71,7 @@ class RandomSeedGenerator:
       self.seed_id += 1
       print(f'Saved the {ordinal(self.seed_id)} seed as {seed_hash}.')
       
-      if 'coverage_module' in self.config and self.config['save-coverage-events']:
+      if 'coverage-config' in self.config and self.config['save-coverage-events']:
         events = sim_result.records['events']
         with open(Path(self.config['events-folder'])/seed_hash, 'w') as f:
             f.write(jsonpickle.encode(events, indent=1))
@@ -85,15 +84,17 @@ class RandomSeedGenerator:
       numpy.random.seed(self.config['randomizer-seed'])
     start_time = time.time()
     scenario = scenic.scenarioFromFile(
-                f"src/scenariogen/simulators/{self.config['simulator']}/create.scenic",
+                f"src/scenariogen/simulators/{self.config['SUT-config']['simulator']}/create.scenic",
                 mode2D=True,
-                params={'render': self.config['render-ego'],
-                        'config': self.config
+                params={'render': self.config['SUT-config']['render-ego'],
+                        'config': {**self.config['SUT-config'],
+                                   **self.config['coverage-config'],
+                                   }
                         },
                 )
     print('Scenario compiled successfully.')
     simulator = scenario.getSimulator()
-    if not self.config['render-spectator']:
+    if not self.config['SUT-config']['render-spectator']:
       settings = simulator.world.get_settings()
       settings.no_rendering_mode = True
       simulator.world.apply_settings(settings)

@@ -18,9 +18,9 @@ if config['ego-module']:
   ego_module = importlib.import_module(config['ego-module'])
   ego_behavior = ego_module.ego_behavior
 
-if 'coverage_module' in config:
-  coverage_module = importlib.import_module(f"scenariogen.core.coverages.{config['coverage_module']}")
-  coverage_monitor = importlib.import_module(f"scenariogen.core.coverages.{config['coverage_module']}.monitor")
+if 'coverage-module' in config:
+  coverage_module = importlib.import_module(f"scenariogen.core.coverages.{config['coverage-module']}")
+  coverage_monitor = importlib.import_module(f"scenariogen.core.coverages.{config['coverage-module']}.monitor")
   coverage_events = []
 
 scenario Main():
@@ -47,7 +47,7 @@ scenario Main():
       p = intersection.polygon.centroid
       ego = new Debris at p.x@p.y
 
-    if 'coverage_module' in config:
+    if 'coverage-module' in config:
       require monitor coverage_module.EventsMonitor(coverage_events)
       record final coverage_events as events
       record final coverage_module.to_coverage(coverage_events, {**config, 'network': network}) as coverage

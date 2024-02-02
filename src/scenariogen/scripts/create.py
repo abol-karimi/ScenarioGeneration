@@ -29,7 +29,6 @@ parser.add_argument('--render-ego', action='store_true',
 parser.add_argument('--out_path',
                     help='Path where the generated seed will be stored')
 parser.add_argument('--spline-degree', default = 3, type=int)
-parser.add_argument('--spline-knots-size', default = 50, type=int)
 args = parser.parse_args()
 
 # Run the scenario
@@ -69,8 +68,7 @@ else:
     scenario_path = Path(args.scenario_path)
     seed = seed_from_sim(sim_result,
                         scenic_scenario.params['timestep'],
-                        degree=args.spline_degree,
-                        knots_size=args.spline_knots_size)
+                        degree=args.spline_degree)
     if args.out_path:
         with open(args.out_path, 'w') as f:
             f.write(jsonpickle.encode(seed, indent=1))

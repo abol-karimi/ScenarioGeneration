@@ -26,7 +26,7 @@ model scenic.domains.driving.model
 intersection = network.elements[intersection_uid]
 route_lanes = [network.elements[l] for l in route.lanes]
 route_centerline = PolylineRegion.unionAll([l.centerline for l in route_lanes])
-config = {'carla_map': carla_map,
+config = {'carla-map': carla_map,
           'map': globalParameters.map,
           'intersection': intersection_uid,
           'traffic-rules': traffic_rules,

@@ -8,7 +8,7 @@ from random import Random
 from scenic.core.simulators import SimulationCreationError
 
 # This project
-from scenariogen.core.fuzzing.runner import Runner
+from scenariogen.core.fuzzing.runner import SUTRunner
 from scenariogen.core.fuzzing.schedules import FuzzCandidate
 from scenariogen.core.coverages.coverage import StatementSetCoverage, PredicateSetCoverage, PredicateCoverage, StatementCoverage
 from scenariogen.core.errors import InvalidFuzzInputError, CoverageError
@@ -75,7 +75,7 @@ class ModularFuzzer:
   
   def input_eval(self, fuzz_input):
     try:
-      sim_result = Runner.run({**self.config['SUT-config'],
+      sim_result = SUTRunner.run({**self.config['SUT-config'],
                                **self.config['coverage-config'],
                                **fuzz_input.config,
                                'fuzz-input': fuzz_input,

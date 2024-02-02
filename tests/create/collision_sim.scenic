@@ -27,7 +27,7 @@ route_left_lanes = [network.elements[l] for l in route_left]
 route_left_centerline = PolylineRegion.unionAll([l.centerline for l in route_left_lanes])
 route_right_lanes = [network.elements[l] for l in route_right]
 route_right_centerline = PolylineRegion.unionAll([l.centerline for l in route_right_lanes])
-config = {'carla_map': carla_map,
+config = {'carla-map': carla_map,
           'map': globalParameters.map,
           'intersection': intersection_uid,
           'traffic-rules': traffic_rules,

@@ -6,7 +6,7 @@ import importlib
 from scenic.domains.driving.roads import Network
 
 # This project
-from scenariogen.core.fuzzing.runner import Runner
+from scenariogen.core.fuzzing.runner import SUTRunner
 from scenariogen.core.coverages.coverage import PredicateCoverage
 from experiments.configs import SUT_config, coverage_config
 
@@ -66,11 +66,11 @@ config['timestep'] = timestep
 config['weather'] = weather
 config['fuzz-input'] = fuzz_input
 config['ego-module'] = args.ego_module
-config['coverage_module'] = args.coverage_module
+config['coverage-module'] = args.coverage_module
 config['render-spectator'] = args.render_spectator
 config['render-ego'] = args.render_ego
 
-sim_result = Runner.run({**config,
+sim_result = SUTRunner.run({**config,
                          **fuzz_input.config,
                          'fuzz-input': fuzz_input,
                         })

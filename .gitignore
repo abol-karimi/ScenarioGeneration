@@ -1,4 +1,5 @@
 __pycache__
+*.pyc
 .vscode
 *.snet
 *.sc
@@ -11,7 +12,7 @@ __pycache__
 Docker/*/z3-4.8.10-x64-ubuntu-18.04
 Docker/*/dist
 
-experiments/**/*.json
-experiments/**/fuzz-inputs
-experiments/**/events
-experiments/**/bugs
+evaluation/**/*.json
+evaluation/**/fuzz-inputs
+evaluation/**/events
+evaluation/**/bugs

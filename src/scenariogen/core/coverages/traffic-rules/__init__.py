@@ -7,11 +7,10 @@ from scenariogen.predicates.utils import predicates_of_logic_program
 from scenariogen.core.coverages.coverage import Statement, StatementCoverage, Predicate, PredicateCoverage
 from scenariogen.predicates.predicates import geometry_atoms
 from scenariogen.predicates.events import ActorSpawnedEvent
-from experiments.configs import coverage_config
 
 
 def coverage_space(config):
-  traffic_rules_file = classify_intersection(config['carla_map'], config['intersection']) + '.lp'
+  traffic_rules_file = classify_intersection(config['carla-map'], config['intersection']) + '.lp'
   logic_files = (f'src/scenariogen/predicates/{traffic_rules_file}',
                 )
   encoding = ''
@@ -26,9 +25,8 @@ def coverage_space(config):
 
 def to_coverage(events, config):
   events = copy.deepcopy(events)
-  config = {**coverage_config, **config}
 
-  traffic_rules_file = classify_intersection(config['carla_map'], config['intersection']) + '.lp'
+  traffic_rules_file = classify_intersection(config['carla-map'], config['intersection']) + '.lp'
   logic_files = (f'src/scenariogen/predicates/{traffic_rules_file}',
                   'src/scenariogen/predicates/abstractions.lp'
                 )

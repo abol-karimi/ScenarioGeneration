@@ -27,9 +27,7 @@ class StructureAwareMutator():
   _route_lengths_cache = {}
   _predecessors_cache = {}
 
-  def __init__(self, max_spline_knots_size=50,
-                     randomizer_seed=0):
-    self.max_spline_knots_size = max_spline_knots_size
+  def __init__(self, randomizer_seed):
     self.randomizer_seed = randomizer_seed
 
     self.random = Random(randomizer_seed)
@@ -55,7 +53,7 @@ class StructureAwareMutator():
 
   @classmethod
   def get_network(cls, fuzz_input):
-    carla_map = fuzz_input.config['carla_map']
+    carla_map = fuzz_input.config['carla-map']
     if not carla_map in cls._networks_cache:
       network = Network.fromFile(fuzz_input.config['map'])
       cls._networks_cache[carla_map] = network
@@ -173,7 +171,7 @@ class StructureAwareMutator():
     ext_len = 0
     if offset > available - 10: # 10 meters cushion
       # Extend the route by offset-available+10
-      ext = self._extend_lanes_backward(fuzz_input.config['carla_map'], lanes, offset-available+10)
+      ext = self._extend_lanes_backward(fuzz_input.config['carla-map'], lanes, offset-available+10)
       ext_len = sum(l.centerline.length for l in ext)
       lanes =  ext + lanes
       print(f'Extended the route backwards by {ext_len} meters.')
