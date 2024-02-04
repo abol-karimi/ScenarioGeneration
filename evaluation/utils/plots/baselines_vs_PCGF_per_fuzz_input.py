@@ -55,10 +55,9 @@ def plot_curve(gen_config, test_config, plot_color, plot_label, axes):
 
 def plot(plot_config):
   fig_coverage = plt.figure(layout='constrained')
-  # fig_coverage.suptitle(f'Baseline vs. Coverage-Guided Fuzzing')
 
-  ax = fig_coverage.add_subplot(111)    # The big subplot
-  # Turn off axis lines and ticks of the big subplot
+  # Empty axes used as a container of subplots
+  ax = fig_coverage.add_subplot(111)
   ax.spines['top'].set_color('none')
   ax.spines['bottom'].set_color('none')
   ax.spines['left'].set_color('none')

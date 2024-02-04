@@ -10,42 +10,33 @@ import matplotlib.pyplot as plt
 from scenariogen.core.coverages.coverage import Predicate, StatementCoverage, PredicateSetCoverage, PredicateCoverage
 
 
-def plot_curve(gen_config, test_config, plot_color, plot_label, axes):
-  coverage_file_path = Path(test_config['output-folder'])/'coverage.json'
+def plot_curves(config, axes):
+  with open(config['coverage-file'], 'r') as f:
+    result = jsonpickle.decode(f.read())
 
-  with open(coverage_file_path, 'r') as f:
-    coverage = jsonpickle.decode(f.read())
-
-  measurements = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements']},
-                          coverage)['measurements']
-  elapsed_times = tuple(int(m['elapsed_time']/60) for m in measurements)
-  ego_violation_filter = lambda s: s.predicate in {Predicate(name) for name in {'violatesRule',
-                                                                                'violatesRightOfForRule',
-                                                                                'collidedWithAtTime'}} \
-                                    and s.args[0] == 'ego'
-  statementSet_coverages = tuple(m['statement-set-coverage'].filter(ego_violation_filter) for m in measurements)
-
-  statementSet_coverages_acc = [statementSet_coverages[0]]
-  for i in range(1, len(measurements)):
-    statementSet_coverages_acc.append(statementSet_coverages_acc[-1] + statementSet_coverages[i])
-  
-  statement_coverages_acc = tuple(c.cast_to(StatementCoverage) for c in statementSet_coverages_acc)
-  predicateSet_coverages_acc = tuple(c.cast_to(PredicateSetCoverage) for c in statementSet_coverages_acc)
-  predicate_coverages_acc = tuple(c.cast_to(PredicateCoverage) for c in statement_coverages_acc)
-
+  elapsed_time = tuple(t/60 for t in result['elapsed-time'])
   ax1, ax2, ax3, ax4 = axes
-  ax1.plot(elapsed_times, tuple(len(c) for c in statementSet_coverages_acc), f'{plot_color}-', label=plot_label)
-  ax2.plot(elapsed_times, tuple(len(c) for c in statement_coverages_acc), f'{plot_color}-', label=plot_label)
-  ax3.plot(elapsed_times, tuple(len(c) for c in predicateSet_coverages_acc), f'{plot_color}-', label=plot_label)
-  ax4.plot(elapsed_times, tuple(len(c) for c in predicate_coverages_acc), f'{plot_color}-', label=plot_label)
+
+  fill_alpha = .2
+
+  ax1.plot(elapsed_time, result['statementSet_median'], config['color'], label=config['label'])
+  ax1.fill_between(elapsed_time, result['statementSet_min'], result['statementSet_max'], facecolor=config['color'], alpha=fill_alpha)
+
+  ax2.plot(elapsed_time, result['statement_median'], config['color'], label=config['label'])
+  ax2.fill_between(elapsed_time, result['statement_min'], result['statement_max'], facecolor=config['color'], alpha=fill_alpha)
+
+  ax3.plot(elapsed_time, result['predicateSet_median'], config['color'], label=config['label'])
+  ax3.fill_between(elapsed_time, result['predicateSet_min'], result['predicateSet_max'], facecolor=config['color'], alpha=fill_alpha)
+
+  ax4.plot(elapsed_time, result['predicate_median'], config['color'], label=config['label'])
+  ax4.fill_between(elapsed_time, result['predicate_min'], result['predicate_max'], facecolor=config['color'], alpha=fill_alpha)
 
 
-def plot(plot_configs):
+def plot(plot_config):
   fig_coverage = plt.figure(layout='constrained')
-  # fig_coverage.suptitle(f'Baseline vs. Coverage-Guided Fuzzing')
 
-  ax = fig_coverage.add_subplot(111)    # The big subplot
-  # Turn off axis lines and ticks of the big subplot
+  # Empty axes used as a container of subplots
+  ax = fig_coverage.add_subplot(111)
   ax.spines['top'].set_color('none')
   ax.spines['bottom'].set_color('none')
   ax.spines['left'].set_color('none')
@@ -64,10 +55,9 @@ def plot(plot_configs):
 
   axes = ax1, ax2, ax3, ax4
 
-  for gen_config, test_config, color, label in plot_configs:
-    print(f'Now plotting report:', label)
-    plot_curve(gen_config, test_config, color, label, axes)
+  for config in plot_config['violations-configs']:
+    print(f'Now plotting: ', config['coverage-file'])
+    plot_curves(config, axes)
 
   ax4.legend()
-  test_coverage = test_config['coverage-config']['coverage-module']
-  fig_coverage.savefig(f'experiments/ISSTA_plots/baseline-vs-PCGF_{test_coverage}_violations_per-time.png')
+  fig_coverage.savefig(f"{plot_config['output-folder']}/baselines-vs-PCGF_violations_per-time.png")
