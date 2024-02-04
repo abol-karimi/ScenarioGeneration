@@ -91,13 +91,13 @@ def sample_trial(test_config, ts, coverage_filter):
   for i in range(1, len(measurements)):
     statementSet_acc.append(statementSet_acc[-1] + statementSet_coverages[i])
   
-  print(f'Down-casting statement-set coverages to statement coverages...')
+  print(f'Down-casting statement-sets to statements...')
   statement_acc = tuple(c.cast_to(StatementCoverage) for c in statementSet_acc)
   
-  print(f'Down-casting statement-set coverages to predicate-set coverages...')
+  print(f'Down-casting statement-sets to predicate-sets...')
   predicateSet_acc = tuple(c.cast_to(PredicateSetCoverage) for c in statementSet_acc)
 
-  print(f'Down-casting statement coverages to predicate coverages...')
+  print(f'Down-casting statements to predicates...')
   predicate_acc = tuple(c.cast_to(PredicateCoverage) for c in statement_acc)
 
   interpolator = piecewise_constant_numpy
