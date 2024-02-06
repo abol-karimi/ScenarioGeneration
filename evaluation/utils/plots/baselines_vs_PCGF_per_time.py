@@ -33,7 +33,7 @@ def plot_curves(config, axes, coverage_types):
     ax.fill_between(elapsed_time, result[f'{cov_type}_min'], result[f'{cov_type}_max'], facecolor=config['color'], alpha=fill_alpha)
 
 
-def plot(plot_config, output_folder):
+def plot(plot_config):
   fig_coverage = plt.figure(layout='constrained')
 
   # Empty axes used as a container of subplots
@@ -60,4 +60,4 @@ def plot(plot_config, output_folder):
   # plot_predicate_coverage_space(ax4, (0, 4*60), 'TFPP', 'traffic', 'traffic-rules')
 
   axes[-1].legend()
-  fig_coverage.savefig(f"{output_folder}/baselines-vs-PCGF_per-time.png")
+  fig_coverage.savefig(plot_config['output-file'])

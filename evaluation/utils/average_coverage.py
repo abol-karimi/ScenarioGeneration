@@ -10,16 +10,16 @@ import statistics
 from evaluation.utils.utils import sample_trial
 
 
-def report(trials, output_file):
-  ts = np.arange(0, trials[0][1]['max-total-time'], 30)
+def report(trials, statement_filter, output_file):
+  ts = np.arange(0, trials[0]['max-total-time'], 30)
 
   statementSet_trials_samples = []
   statement_trials_samples = []
   predicateSet_trials_samples = []
   predicate_trials_samples = []
 
-  for _, test_config in trials:
-    trial_samples = sample_trial(test_config, ts, lambda s: s)
+  for test_config in trials:
+    trial_samples = sample_trial(test_config, ts, statement_filter)
 
     statementSet_trials_samples.append(tuple(trial_samples[0]))
     statement_trials_samples.append(tuple(trial_samples[1]))
