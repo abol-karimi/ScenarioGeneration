@@ -73,7 +73,7 @@ def piecewise_constant_numpy(ts, xs, ys):
   arr = np.piecewise(ts, condlist, funclist)
   return tuple(map(float, arr))
 
-def sample_trial(test_config, ts, coverage_filter):
+def sample_trial(test_config, ts, statement_filter):
   coverage_file_path = Path(test_config['output-folder'])/'coverage.json'
 
   print(f'Loading {coverage_file_path} ...')
@@ -84,35 +84,29 @@ def sample_trial(test_config, ts, coverage_filter):
                           coverage)['measurements']
   elapsed_times = tuple(m['elapsed_time'] for m in measurements)
 
-  statementSet_coverages = tuple(m['statement-set-coverage'] for m in measurements)
-  statementSet_coverages = tuple(m['statement-set-coverage'].filter(coverage_filter) for m in measurements)
+  statementSet_coverages = tuple(m['statement-set-coverage'].filter(statement_filter) for m in measurements)
+  predicateSet_coverages = tuple(c.cast_to(PredicateSetCoverage) for c in statementSet_coverages)
+  statement_coverages = tuple(c.cast_to(StatementCoverage) for c in statementSet_coverages)
+  predicate_coverages = tuple(c.cast_to(PredicateCoverage) for c in statement_coverages)
 
   statementSet_acc = [statementSet_coverages[0]]
+  predicateSet_acc = [predicateSet_coverages[0]]
+  statement_acc = [statement_coverages[0]]
+  predicate_acc = [predicate_coverages[0]]
   for i in range(1, len(measurements)):
     statementSet_acc.append(statementSet_acc[-1] + statementSet_coverages[i])
+    predicateSet_acc.append(predicateSet_acc[-1] + predicateSet_coverages[i])
+    statement_acc.append(statement_acc[-1] + statement_coverages[i])
+    predicate_acc.append(predicate_acc[-1] + predicate_coverages[i])
   
-  print(f'Down-casting statement-sets to statements...')
-  statement_acc = tuple(c.cast_to(StatementCoverage) for c in statementSet_acc)
-  
-  print(f'Down-casting statement-sets to predicate-sets...')
-  predicateSet_acc = tuple(c.cast_to(PredicateSetCoverage) for c in statementSet_acc)
+  interpolate = piecewise_constant_numpy
+  interpolator = interpolate.__name__
 
-  print(f'Down-casting statements to predicates...')
-  predicate_acc = tuple(c.cast_to(PredicateCoverage) for c in statement_acc)
-
-  interpolator = piecewise_constant_numpy
-
-  print(f'Evaluating statement-set coverages using {interpolator.__name__}...')
-  statementSet_samples = interpolator(ts, elapsed_times, tuple(len(c) for c in statementSet_acc))
-
-  print(f'Evaluating statement coverages using {interpolator.__name__}...')
-  statement_samples = interpolator(ts, elapsed_times, tuple(len(c) for c in statement_acc))
-
-  print(f'Evaluating predicate-set coverages using {interpolator.__name__}...')
-  predicateSet_samples = interpolator(ts, elapsed_times, tuple(len(c) for c in predicateSet_acc))
-  
-  print(f'Evaluating predicate coverages using {interpolator.__name__}...')
-  predicate_samples = interpolator(ts, elapsed_times, tuple(len(c) for c in predicate_acc))
+  print(f'Interpolating coverages using {interpolator}...')
+  statementSet_samples = interpolate(ts, elapsed_times, tuple(len(c) for c in statementSet_acc))
+  statement_samples = interpolate(ts, elapsed_times, tuple(len(c) for c in statement_acc))
+  predicateSet_samples = interpolate(ts, elapsed_times, tuple(len(c) for c in predicateSet_acc))
+  predicate_samples = interpolate(ts, elapsed_times, tuple(len(c) for c in predicate_acc))
 
   return (statementSet_samples,
           statement_samples,

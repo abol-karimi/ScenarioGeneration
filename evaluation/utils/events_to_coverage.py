@@ -11,6 +11,7 @@ from scenic.domains.driving.roads import Network
 from scenariogen.core.coverages.coverage import StatementSetCoverage
 from evaluation.configs import coverage_config
 
+
 def add_coverage(measurement, config):
   statement_coverages = []
 

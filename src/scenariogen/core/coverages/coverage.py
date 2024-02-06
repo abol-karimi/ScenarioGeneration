@@ -22,7 +22,7 @@ class Predicate:
    
   def __hash__(self) -> int:
     return hash(self.name)
-   
+
 
 class Statement:
   def __init__(self, predicate: Predicate, args: Tuple[str]):
@@ -58,7 +58,7 @@ class Coverage:
     return self.items == other.items
   
   def __hash__(self):
-    return hash(tuple(self.items))
+    return hash(self.items)
 
   def __add__(self, other):
     return self.__class__(self.items.union(other.items))
