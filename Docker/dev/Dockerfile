@@ -100,7 +100,7 @@ COPY --chown=carla:carla PythonAPI /home/carla/PythonAPI
 
 # Entrypoint script
 COPY --chown=carla:carla entrypoint.sh /home/carla/entrypoint.sh
-ENTRYPOINT [ "/bin/bash", "-c", "/home/carla/entrypoint.sh" ]
+ENTRYPOINT [ "/bin/sh", "-c", "/home/carla/entrypoint.sh" ]
 
 
 

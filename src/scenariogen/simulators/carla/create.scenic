@@ -19,7 +19,7 @@ from scenariogen.simulators.carla.monitors import (ForbidEgoCollisionsMonitor,
                                                   LabelCarsMonitor)
 
 
-if 'coverage-module' in config:
+if 'coverage-module' in config and config['coverage-module']:
   coverage_module = importlib.import_module(f"scenariogen.core.coverages.{config['coverage-module']}")
   coverage_monitor = importlib.import_module(f"scenariogen.core.coverages.{config['coverage-module']}.monitor")
   coverage_events = []
@@ -69,7 +69,7 @@ scenario Main():
                                              )
       require monitor LabelCarsMonitor()
 
-    if 'coverage-module' in config:
+    if 'coverage-module' in config and config['coverage-module']:
       require monitor coverage_monitor.EventsMonitor(coverage_events)
       record final coverage_events as events
       record final coverage_module.to_coverage(coverage_events, {**config, 'network': network}) as coverage

@@ -45,6 +45,7 @@ export LEADERBOARD_ROOT=${WORK_DIR}/leaderboard
 export WORK_DIR=${WORK_DIR}
 export PYTHONPATH=${WORK_DIR}:${WORK_DIR}/team_code:${SCENARIO_RUNNER_ROOT}:${LEADERBOARD_ROOT}:${PYTHONPATH}
 
+# For bash
 export force_color_prompt=yes
 
 cd ScenarioGeneration
