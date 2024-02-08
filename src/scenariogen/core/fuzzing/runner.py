@@ -4,6 +4,8 @@ from collections import namedtuple
 import subprocess
 import time
 import setproctitle
+import signal
+import ctypes
 
 import scenic
 scenic.setDebuggingOptions(verbosity=0, fullBacktrace=True)
@@ -16,6 +18,12 @@ from scenic.core.dynamics import GuardViolation
 from scenariogen.core.utils import ordinal
 
 SimResult = namedtuple('SimResult', ['records'])
+
+libc = ctypes.CDLL("libc.so.6")
+def set_pdeathsig(sig):
+  def callable():
+      return libc.prctl(1, sig)
+  return callable
 
 
 def simulation_service(connection):
@@ -36,6 +44,8 @@ def simulation_service(connection):
       print(f'Client closed the connection. Ending the simulation service...')
       connection.close()
       break
+    else:
+      print('Simulation service received a request.')
 
     # For any received simulation config, we must send a simulation result (even if the result is None).
     # In case of a simulator crash (e.g. Carla segmentation fault), the service restarts the simulator and tries again.
@@ -48,6 +58,10 @@ def simulation_service(connection):
                                                    'config': config},
                                           mode2D=True)
         scene, _ = scenario.generate(maxIterations=1)
+      except AssertionError:
+        traceback.print_exc()
+        print(f'Failed to create the initial scene due to AssertionError. Stopping the simulation service...')
+        exit(1)
       except Exception as e:
         traceback.print_exc()
         print(f'Failed to create the initial scene due to exception {e} of type {type(e)}. Returning a None result...')
@@ -66,8 +80,9 @@ def simulation_service(connection):
           if carla_server_process is None:
             print('Starting the Carla server...')
             render_option = '' if config['render-spectator'] or config['render-ego'] else '-RenderOffScreen'
-            carla_server_process = subprocess.Popen(f"/home/carla/CarlaUE4.sh {render_option}",
-                                                    shell=True)
+            carla_server_process = subprocess.Popen(["/home/carla/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Shipping", "CarlaUE4", render_option],
+                                                    preexec_fn=set_pdeathsig(signal.SIGKILL)
+                                                   )
             time.sleep(5)
 
           if simulator is None:
