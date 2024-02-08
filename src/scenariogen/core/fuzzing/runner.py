@@ -3,12 +3,15 @@ import traceback
 from collections import namedtuple
 import subprocess
 import time
+import setproctitle
 
 import scenic
 scenic.setDebuggingOptions(verbosity=0, fullBacktrace=True)
 from scenic.domains.driving.roads import Network
 from scenic.simulators.carla.simulator import CarlaSimulator
 from scenic.simulators.newtonian.simulator import NewtonianSimulator
+from scenic.core.simulators import SimulationCreationError
+from scenic.core.dynamics import GuardViolation
 
 from scenariogen.core.utils import ordinal
 
@@ -19,6 +22,8 @@ def simulation_service(connection):
   """Reads scenario config from connection, then writes sim_result to connection.
   Runs as a separate process to isolate the main process from crashes in Scenic, VUT, or Carla.
   """
+  print(f'Simulation service started!')
+  setproctitle.setproctitle('Sim-service')
   carla_server_process = None
   simulator = None
 
@@ -27,7 +32,9 @@ def simulation_service(connection):
     try:
       config = connection.recv()
     except EOFError:
+      traceback.print_exc()
       print(f'Client closed the connection. Ending the simulation service...')
+      connection.close()
       break
 
     # For any received simulation config, we must send a simulation result (even if the result is None).
@@ -42,7 +49,8 @@ def simulation_service(connection):
                                           mode2D=True)
         scene, _ = scenario.generate(maxIterations=1)
       except Exception as e:
-        print(f'Failed to create the initial scene due to exception {e}.')
+        traceback.print_exc()
+        print(f'Failed to create the initial scene due to exception {e} of type {type(e)}. Returning a None result...')
         connection.send(None)
         break
 
@@ -59,7 +67,9 @@ def simulation_service(connection):
             print('Starting the Carla server...')
             render_option = '' if config['render-spectator'] or config['render-ego'] else '-RenderOffScreen'
             carla_server_process = subprocess.Popen(f"/home/carla/CarlaUE4.sh {render_option}",
-                                                    shell=True)         
+                                                    shell=True)
+            time.sleep(5)
+
           if simulator is None:
             simulator = CarlaSimulator(carla_map=config['carla-map'],
                                        map_path=config['map'],
@@ -73,15 +83,21 @@ def simulation_service(connection):
         sim_result = simulator.simulate(scene,
                                         maxSteps=config['steps'],
                                         maxIterations=1)
+      except (SimulationCreationError, GuardViolation) as e:
+        traceback.print_exc()        
+        print(f'Failed to simulate the scenario due to exception {e}. Returning a None result...')
+        connection.send(None)
+        break
       except Exception as e:
+        traceback.print_exc()        
         print(f'Failed to simulate the scenario due to exception {e}. Will try again...')
       else:
         if sim_result:
           connection.send(SimResult(sim_result.records))
         else:
           connection.send(None)
-        # simulation request fulfilled
-        break
+
+        break # simulation request fulfilled
 
 
 class SUTRunner:

@@ -98,6 +98,11 @@ RUN . .venv/bin/activate ; \
 # Carla RSS python module
 COPY --chown=carla:carla PythonAPI /home/carla/PythonAPI
 
+# Apps useful for monitoring execution
+USER root
+RUN apt-get install -y psmisc
+USER carla
+
 # Entrypoint script
 COPY --chown=carla:carla entrypoint.sh /home/carla/entrypoint.sh
 ENTRYPOINT [ "/bin/sh", "-c", "/home/carla/entrypoint.sh" ]

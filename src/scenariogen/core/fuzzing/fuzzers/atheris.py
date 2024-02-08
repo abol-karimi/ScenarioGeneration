@@ -7,10 +7,12 @@ import multiprocessing
 import hashlib
 from random import Random
 import atheris
-from scenic.core.simulators import SimulationCreationError
+import setproctitle
+
 
 # This project
 from scenariogen.core.fuzzing.runner import SUTRunner
+
 
 #----------------------------------------------
 #---------- mutator's wrapper ----------
@@ -39,6 +41,7 @@ class MutatorCallback:
 
     return jsonpickle.encode(fuzz_input, indent=1).encode('utf-8')
 
+
 #-----------------------------------------------------------
 #---------- SUT wrapper to make an Atheris target ----------
 #----------------------------------------------------------- 
@@ -54,27 +57,22 @@ class SUTCallback:
       return
     
     fuzz_input = jsonpickle.decode(input_bytes.decode('utf-8'))
-    sim_result = None
-    try:
-      sim_result = SUTRunner.run({**self.config,
-                               **fuzz_input.config,                               
-                               'fuzz-input': fuzz_input,
-                               })
-    except SimulationCreationError as e:
-      print(f'Exception in SUTCallback: {e}')
-    else:
-      if sim_result and 'events' in sim_result.records:
-        # Save coverage events to disk
-        fuzz_input_hash = hashlib.sha1(input_bytes).hexdigest()
-        with open(Path(self.config['events-folder'])/fuzz_input_hash, 'w') as f:
-              f.write(jsonpickle.encode(sim_result.records['events'], indent=1))
-
+    sim_result = SUTRunner.run({**self.config,
+                                **fuzz_input.config,                               
+                                'fuzz-input': fuzz_input,
+                                })
+    if sim_result and 'events' in sim_result.records:
+      # Save coverage events to disk
+      fuzz_input_hash = hashlib.sha1(input_bytes).hexdigest()
+      with open(Path(self.config['events-folder'])/fuzz_input_hash, 'w') as f:
+        f.write(jsonpickle.encode(sim_result.records['events'], indent=1))
 
 
 #------------------------------------
 #---------- Atheris wrapper ---------
 #------------------------------------
 def atheris_target(libfuzzer_config, SUT, mutator):
+  setproctitle.setproctitle('Atheris target')
   atheris.instrument_all()
   atheris.Setup(sys.argv + libfuzzer_config,
                 SUT,

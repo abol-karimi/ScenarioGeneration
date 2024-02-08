@@ -74,17 +74,13 @@ class ModularFuzzer:
     return fuzz_input
   
   def input_eval(self, fuzz_input):
-    try:
-      sim_result = SUTRunner.run({**self.config['SUT-config'],
-                               **self.config['coverage-config'],
-                               **fuzz_input.config,
-                               'fuzz-input': fuzz_input,
-                              })
-    except SimulationCreationError as e:
-      raise InvalidFuzzInputError(e)
-    else:
-      if sim_result is None:
-        raise InvalidFuzzInputError(e)
+    sim_result = SUTRunner.run({**self.config['SUT-config'],
+                                **self.config['coverage-config'],
+                                **fuzz_input.config,
+                                'fuzz-input': fuzz_input,
+                                })
+    if sim_result is None:
+      raise InvalidFuzzInputError()
 
     events = sim_result.records['events']
     statement_coverage = sim_result.records['coverage']
