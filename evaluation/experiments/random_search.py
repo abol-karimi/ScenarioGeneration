@@ -7,7 +7,7 @@ Research question:
 """
 
 
-from scenariogen.core.seed_generators.random import RandomSeedGenerator
+from scenariogen.core.seed_generators.scenic import RandomSeedGenerator
 from evaluation.configs import get_experiment_config
 
 
