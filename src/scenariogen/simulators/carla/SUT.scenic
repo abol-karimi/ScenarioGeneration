@@ -5,7 +5,10 @@ Nonegos + optionally ego i.e. VUT (Vehicle Under Test) + optionally a coverage m
 param config = None
 config = globalParameters.config
 
+param cleanup_callbacks = None
+
 model scenic.simulators.carla.model
+from scenariogen.core.monitors import RejectOnAgentOverlapMonitor
 from scenariogen.simulators.carla.scenarios import NonegosScenario
 from scenariogen.simulators.carla.monitors import ShowIntersectionMonitor
 
@@ -50,14 +53,16 @@ scenario Main():
 
     if 'coverage-module' in config and config['coverage-module']:
       require monitor coverage_monitor.EventsMonitor(coverage_events)
-      record final coverage_events as events
       record final coverage_module.to_coverage(coverage_events, {**config, 'network': network}) as coverage
+      record final coverage_events as events # for debugging purposes
 
     if config['render-spectator']:
       require monitor ShowIntersectionMonitor(config['intersection'],
                                               label_lanes=True,
                                               life_time=config['timestep']*config['steps']
                                              )
+    
+    require monitor RejectOnAgentOverlapMonitor()
 
   compose:
     # Deterministic traffic manager with a common seed across all simulations so that autopilot's behavior is reproducible

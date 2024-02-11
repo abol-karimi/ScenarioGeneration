@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class ActorEvent(ABC):
+class AgentEvent(ABC):
     def __init__(self, vehicle, time):
         self.vehicle = vehicle
         self.time = time
@@ -11,7 +11,7 @@ class ActorEvent(ABC):
         pass
 
 
-class ArrivedAtIntersectionEvent(ActorEvent):
+class ArrivedAtIntersectionEvent(AgentEvent):
     """Arrival of a vehicle at an intersection."""
 
     def __init__(self, vehicle, lane, time):
@@ -22,7 +22,7 @@ class ArrivedAtIntersectionEvent(ActorEvent):
         return f'arrivedFromLaneAtTime({self.vehicle}, {self.lane}, {self.time})'
    
 
-class SignaledEvent(ActorEvent):
+class SignaledEvent(AgentEvent):
     """A vehicle signaling when turning, stopping, etc."""
 
     def __init__(self, vehicle, signal, time):
@@ -33,21 +33,21 @@ class SignaledEvent(ActorEvent):
         return f'signaledAtTime({self.vehicle}, {self.signal}, {self.time})'
 
 
-class StoppedEvent(ActorEvent):
+class StoppedEvent(AgentEvent):
     """Slowing down to a speed threshold or less."""
 
     def __str__(self):
         return f'stoppedAtTime({self.vehicle}, {self.time})'
 
 
-class MovedEvent(ActorEvent):
+class MovedEvent(AgentEvent):
     """Speeding up to a speed threshold or more."""
 
     def __str__(self):
         return f'movedAtTime({self.vehicle}, {self.time})'
 
 
-class EnteredLaneEvent(ActorEvent):
+class EnteredLaneEvent(AgentEvent):
     """When part of a vehicle enters the region."""
 
     def __init__(self, vehicle, lane, time):
@@ -58,7 +58,7 @@ class EnteredLaneEvent(ActorEvent):
         return f'enteredLaneAtTime({self.vehicle}, {self.lane}, {self.time})'
 
 
-class EnteredIntersectionEvent(ActorEvent):
+class EnteredIntersectionEvent(AgentEvent):
     """When part of a vehicle enters the region."""
 
     def __init__(self, vehicle, lane, time):
@@ -69,7 +69,7 @@ class EnteredIntersectionEvent(ActorEvent):
         return f'enteredFromLaneAtTime({self.vehicle}, {self.lane}, {self.time})'
 
 
-class LeftLaneEvent(ActorEvent):
+class LeftLaneEvent(AgentEvent):
     """When the last part of a vehicle exits the region."""
 
     def __init__(self, vehicle, lane, time):
@@ -80,7 +80,7 @@ class LeftLaneEvent(ActorEvent):
         return f'leftLaneAtTime({self.vehicle}, {self.lane}, {self.time})'
 
 
-class LeftIntersectionEvent(ActorEvent):
+class LeftIntersectionEvent(AgentEvent):
     """When the last part of a vehicle exits the region."""
 
     def __init__(self, vehicle, lane, time):
@@ -91,7 +91,7 @@ class LeftIntersectionEvent(ActorEvent):
         return f'leftToLaneAtTime({self.vehicle}, {self.lane}, {self.time})'
 
 
-class AppearedToOtherEvent(ActorEvent):
+class AppearedToOtherEvent(AgentEvent):
     """Becoming visible to another agent."""
 
     def __init__(self, vehicle, other, time):
@@ -102,7 +102,7 @@ class AppearedToOtherEvent(ActorEvent):
         return f'appearedToAtTime({self.vehicle}, {self.other}, {self.time})'
 
 
-class DisappearedFromOtherEvent(ActorEvent):
+class DisappearedFromOtherEvent(AgentEvent):
     """Becoming invisible to another agent."""
 
     def __init__(self, vehicle, other, time):
@@ -113,8 +113,8 @@ class DisappearedFromOtherEvent(ActorEvent):
         return f'disappearedFromAtTime({self.vehicle}, {self.other}, {self.time})'
 
 
-class ActorSpawnedEvent(ActorEvent):
-    """Reporting the actors present in the scenario."""
+class AgentSpawnedEvent(AgentEvent):
+    """Reporting the agents present in the scenario."""
 
     def __init__(self, vehicle, lane, progress, time):
         super().__init__(vehicle, time)
@@ -122,17 +122,17 @@ class ActorSpawnedEvent(ActorEvent):
         self.progress = progress
     
     def __str__(self):
-        return f'actorSpawnedAtAlongLaneAtTime({self.vehicle}, {self.progress}, {self.lane}, {self.time})'
+        return f'agentSpawnedAtAlongLaneAtTime({self.vehicle}, {self.progress}, {self.lane}, {self.time})'
 
 
-class ActorDestroyedEvent(ActorEvent):
-    """Reporting the actors present in the scenario."""
+class AgentDestroyedEvent(AgentEvent):
+    """Reporting the agents present in the scenario."""
    
     def __str__(self):
-        return f'actorDestroyedAtTime({self.vehicle}, {self.time})'
+        return f'agentDestroyedAtTime({self.vehicle}, {self.time})'
 
 
-class CollisionEvent(ActorEvent):
+class CollisionEvent(AgentEvent):
     """Collision with other actors or props."""
 
     def __init__(self, vehicle, other, time):

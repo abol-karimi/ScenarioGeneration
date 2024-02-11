@@ -9,7 +9,6 @@ import sympy
 from scipy.interpolate import splprep, splev
 import matplotlib.pyplot as plt
 
-from scenic.core.object_types import OrientedPoint
 from scenic.core.vectors import Vector
 from scenic.core.geometry import headingOfSegment
 from scenic.domains.driving.roads import ManeuverType
@@ -30,6 +29,7 @@ def classify_intersection(carla_map, intersection_uid):
     
     # TODO classify based on network geometry and semantics
     return None
+
 
 def seed_from_sim(sim_result, timestep, degree=3, plot_splines=False):
     cars_num = len(sim_result.records['routes'])
@@ -133,6 +133,7 @@ def seed_from_sim(sim_result, timestep, degree=3, plot_splines=False):
                     timings=tuple(timings),
                     signals=tuple(signals_events))
 
+
 def sample_trajectories(network, seed, sample_size):
     trajectories = []
     ts = np.linspace(0, seed.timings[0].knotvector[-1], num=sample_size)
@@ -145,6 +146,7 @@ def sample_trajectories(network, seed, sample_size):
         trajectories.append(sample_trajectory(footprint_rectilinear, timing, ts))
 
     return trajectories
+
 
 def sample_trajectory(footprint, timing, ts):
     spline = BSpline.Curve(normalize_kv = False)
@@ -164,6 +166,7 @@ def sample_trajectory(footprint, timing, ts):
                   )
                   for s in sample)
 
+
 def sample_signal_actions(seed, sample_size):
     signals_actions = []
     duration = seed.config['timestep']*seed.config['steps']
@@ -181,16 +184,12 @@ def sample_signal_actions(seed, sample_size):
 
     return signals_actions
 
+
 def connecting_lane(network, start, end):
     for m in network.elements[start].maneuvers:
         if m.endLane.uid == end:
             return m.connectingLane.uid
 
-def collides_with(query, data):
-    for q, d in product(query, data):
-        if q.intersects(d):
-            return True
-    return False
 
 def route_from_turns(network, init_lane, turns):
     """
@@ -241,6 +240,7 @@ def extend_lane_forward(lane, length, random, return_maneuvers=False):
         return ext, maneuvers
     else:
         return ext
+
 
 @cached(cache={}, key=lambda network: hashkey(tuple(i.uid for i in network.intersections)))
 def lane_to_predecessors(network):

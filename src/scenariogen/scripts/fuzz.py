@@ -64,7 +64,7 @@ config['ego'] = args.ego
 mutator = mutators.StructureAwareMutator(config)
 coverage = coverages.PredicateNameCoverage(config=config)
 scheduler = schedules.PriorityScheduler(config=config)
-fuzzer = fuzzers.ModularFuzzer(corpus=in_corpus,
+fuzzer = fuzzers.GreyboxFuzzer(corpus=in_corpus,
                                config=config,
                                coverage=coverage,
                                mutator=mutator,

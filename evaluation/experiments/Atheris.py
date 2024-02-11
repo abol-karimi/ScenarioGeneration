@@ -24,6 +24,7 @@ def get_config(gen_ego, gen_coverage, randomizer_seed, seeds_folder, max_total_t
     'mutator-config':{'mutator': StructureAwareMutator(mutator_seed),
                       'max-mutations-per-fuzz': config['max-mutations-per-fuzz'],
                       },
+    'atheris-output-folder': f'{output_folder}/atheris-output',
   }
 
   return {**config, **atheris_config}

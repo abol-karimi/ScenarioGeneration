@@ -61,12 +61,16 @@ class SUTCallback:
                                 **fuzz_input.config,                               
                                 'fuzz-input': fuzz_input,
                                 })
-    if sim_result and 'events' in sim_result.records:
-      # Save coverage events to disk
-      fuzz_input_hash = hashlib.sha1(input_bytes).hexdigest()
-      with open(Path(self.config['events-folder'])/fuzz_input_hash, 'w') as f:
+    if sim_result and 'coverage' in sim_result.records:
+      # Save the fuzz-input and its coverage to disk
+      with open(Path(self.config['fuzz-inputs-folder'])/hash(fuzz_input), 'wb') as f:
+        f.write(input_bytes)
+      with open(Path(self.config['coverages-folder'])/hash(fuzz_input), 'w') as f:
+        f.write(jsonpickle.encode(sim_result.records['coverage'], indent=1))
+      
+      # For debugging:
+      with open(Path(self.config['events-folder'])/hash(fuzz_input), 'w') as f:
         f.write(jsonpickle.encode(sim_result.records['events'], indent=1))
-
 
 #------------------------------------
 #---------- Atheris wrapper ---------
@@ -92,11 +96,13 @@ class AtherisFuzzer:
                              f"-timeout=300", # scenarios taking more than 5 minutes are considered as bugs
                              f"-report_slow_units=120", # scenarios taking more than 2 minutes are considered slow
                              f"-rss_limit_mb=16384",
-                             Path(config['fuzz-inputs-folder']).as_posix(),
+                             Path(config['atheris-output-folder']).as_posix(),
                              config['seeds-folder'],
                             ]
     self.SUT = SUTCallback({**config['SUT-config'],
                             **config['coverage-config'],
+                            'fuzz-inputs-folder': config['fuzz-inputs-folder'],
+                            'coverages-folder': config['coverages-folder'],
                             'events-folder': config['events-folder'],
                             })
 
@@ -106,10 +112,10 @@ class AtherisFuzzer:
 
     ctx = multiprocessing.get_context('spawn')
     p = ctx.Process(target=atheris_target,
-                    name='Atheris',
                     args=(self.libfuzzer_config,
                           self.SUT,
-                          self.mutator))
+                          self.mutator),
+                    name='Atheris')
     p.start()
     p.join()
 

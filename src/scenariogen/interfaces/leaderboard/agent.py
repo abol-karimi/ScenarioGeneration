@@ -10,7 +10,7 @@ from srunner.scenariomanager.timer import GameTime
 
 from leaderboard.autoagents.agent_wrapper import AgentWrapperFactory, validate_sensor_configuration
 
-from scenariogen.interfaces.leaderboard.utils import draw_waypoints
+from .utils import draw_waypoints
 
 sensors_to_icons = {
     'sensor.camera.rgb':        'carla_camera',
@@ -36,12 +36,13 @@ class LeaderboardAgent(object):
         self.client = args.client
         self.world = args.world
 
-        draw_waypoints(args.world,
-                       args.scenario_config['steps']*args.scenario_config['timestep'],
-                       args.route,
-                       vertical_shift=0.1,
-                       size=0.1,
-                       downsample=10)
+        if args.debug:
+            draw_waypoints(args.world,
+                           args.scenario_config['steps']*args.scenario_config['timestep'],
+                           args.route,
+                           vertical_shift=0.1,
+                           size=0.1,
+                           downsample=10)
         
         # TODO condition this on TF++ agent
         if not os.environ.get("DIRECT"):
@@ -52,11 +53,6 @@ class LeaderboardAgent(object):
         # Load agent
         module_name = os.path.basename(args.agent).split('.')[0]
         self.module_agent = importlib.import_module(module_name)
-
-        #-----------------------------------------------------------------------------------------
-        CarlaDataProvider.set_client(self.client)
-        CarlaDataProvider.set_world(self.world) # Who uses CarlaData provider?
-        self.world.tick()
 
         # Set up the user's agent
         agent_class_name = getattr(self.module_agent, 'get_entry_point')()
@@ -85,6 +81,8 @@ class LeaderboardAgent(object):
         except Exception as e:
             print("\n\033[91mFailed to stop the agent:")
             print(f"\n{traceback.format_exc()}\033[0m")
+        
+        print('Cleaned up leaderboard agent!')
 
     def run_step(self):
         vehicle_control = self._agent_wrapper()

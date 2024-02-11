@@ -77,6 +77,9 @@ enteredAfter(V, T):-
   eventTime(T),
   lessThan(T, Te).
 
+nonego(A):-
+  agentSpawnedOnLane(A, _),
+  A != ego.
 
 %--------------------------------------------
 %---Auxiliary predicates for traffic rules---
@@ -85,7 +88,6 @@ requestedLane(V, L):-
   signaledAtArrivalFromLane(V, S, La),
   lanePrecedes(La, L),
   laneCorrectSignal(L, S).
-
 
 %---------------- Rules ---------------
 % http://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?lawCode=VEH&division=11.&title=&part=&chapter=4.&article=
@@ -182,5 +184,23 @@ violatesRule(V, stopAtSign):-
 %  unless there is sufficient space on the other side of the intersection or marked crosswalk
 %  to accommodate the vehicle driven without obstructing the through passage of vehicles from either side.
 
-collisionViolation:-
-  collidedWithAtTime(_, _, _).
+
+% When ego collides with any nonego
+egoNonegoCollision:-
+  collidedWithAtTime(ego, A, _),
+  nonego(A).
+
+egoNonegoCollision:-
+  collidedWithAtTime(A, ego, _),
+  nonego(A).
+
+% When ego collides with props
+egoPropCollision:-
+  collidedWithAtTime(ego, P, _),
+  not nonego(P).
+
+% When nonegos collide. Might be an invalid scenario, e.g. nonegos might pass through each other if their physics is disabled.
+nonegoNonegoCollision:-
+  collidedWithAtTime(A, B, _),
+  nonego(A),
+  nonego(B).

@@ -170,14 +170,13 @@ behavior LeaderboardAgentBehavior(agent_path, agent_config, track, keypoints, de
 							scenario_config=config
 							)
 	agent = LeaderboardAgent(args)
+
+	globalParameters.cleanup_callbacks.put(agent.cleanup)
 	
-	for step in range(config['steps']-1):
+	while True:
 		try:
 			control = agent.run_step()
 			self.carlaActor.apply_control(control)
 		except SensorReceivedNoData:
-			print(f'Leaderboard agent received no sensor data at frame {simulation().currentTime}')
+			print(f'SensorReceivedNoData exception in Leaderboard behavior at step {simulation().currentTime}!')
 		wait
-
-	print(f'Clean up Leaderboard agent...')
-	agent.cleanup()

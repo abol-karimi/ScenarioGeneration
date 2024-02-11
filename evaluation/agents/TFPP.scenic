@@ -1,7 +1,7 @@
 config = globalParameters.config
 
 if config['simulator'] != 'carla':
-  raise ValueError(f"BehaviorAgent is not compatible with the {config['simulator']} simulator!")
+  raise ValueError(f"TF++ is not compatible with the {config['simulator']} simulator!")
 
 # Scenic parameters
 model scenic.simulators.carla.model
@@ -18,4 +18,4 @@ agent_config = '/home/carla/carla_garage_fork/pretrained_models/leaderboard/tfpp
 track = 'SENSORS'
 keypoints = (ego_init_pos, ego_centerline[-1])
 
-ego_behavior = LeaderboardAgentBehavior(agent, agent_config, track, keypoints, debug=True)
+ego_behavior = LeaderboardAgentBehavior(agent, agent_config, track, keypoints, debug=config['render-spectator'])

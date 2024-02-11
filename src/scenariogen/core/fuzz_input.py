@@ -1,18 +1,21 @@
 from dataclasses import dataclass
-from typing import List, Tuple, Dict
+from typing import Tuple, Dict
+import hashlib
+import jsonpickle
+from cachetools import cached
 
 # This project
 from scenariogen.core.signals import SignalType
 from scenariogen.core.errors import InvalidFuzzInputError
 
 
-@dataclass
+@dataclass(frozen=True)
 class Spline:
   degree : int = None
   ctrlpts : Tuple[Tuple[float]] = None
   knotvector : Tuple[float] = None
 
-@dataclass
+@dataclass(frozen=True)
 class FuzzInput:
   config: Dict = None
   blueprints: Tuple[str] = None
@@ -20,6 +23,14 @@ class FuzzInput:
   footprints: Tuple[Spline] = None # maps the timing output (below) to the location of the car
   timings: Tuple[Spline] = None # maps time to the parameter value of the footprint spline
   signals: Tuple[SignalType] = None
+
+  @cached
+  def __bytes__(self):
+    return jsonpickle.encode(self, indent=1).encode('utf-8')
+
+  @cached
+  def __hash__(self) -> int:   
+    return hashlib.sha1(bytes(self)).hexdigest()
 
   
 def validate_spline(spline):

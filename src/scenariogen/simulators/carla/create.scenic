@@ -6,6 +6,8 @@ if config['render-ego']:
 else:
   param render = False
 
+param cleanup_callbacks = None
+
 # Load the given scenario
 import importlib
 seed_module = importlib.import_module(config['scenario-file'].replace('/', '.').replace('.scenic', ''))
@@ -13,6 +15,7 @@ seed_config = seed_module.config
 config.update(seed_config)
 
 model scenic.simulators.carla.model
+from scenariogen.core.monitors import RejectOnAgentOverlapMonitor
 from scenariogen.simulators.carla.monitors import (ForbidEgoCollisionsMonitor,
                                                   ForbidNonegoCollisionsMonitor,
                                                   ShowIntersectionMonitor,
@@ -81,6 +84,8 @@ scenario Main():
     record final tuple(footprints) as footprints
     record final tuple(routes) as routes
     record final tuple(signals) as signals
+  
+    require monitor RejectOnAgentOverlapMonitor()
 
   compose:
     # Deterministic traffic manager with a common seed across all simulations so that autopilot's behavior is reproducible

@@ -7,7 +7,7 @@ import jsonpickle
 import matplotlib.pyplot as plt
 from collections import Counter
 
-from scenariogen.predicates.events import ActorSpawnedEvent
+from scenariogen.predicates.events import AgentSpawnedEvent
 
 
 def plot(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage):
@@ -20,7 +20,7 @@ def plot(experiment_type, gen_ego, gen_coverage, test_ego, test_coverage):
       events = jsonpickle.decode(f.read())
     if not events:
       continue
-    nonegos = {e.vehicle for e in events if type(e) is ActorSpawnedEvent and e.vehicle != 'ego'}
+    nonegos = {e.vehicle for e in events if type(e) is AgentSpawnedEvent and e.vehicle != 'ego'}
     nonegos_num.append(len(nonegos))
   
   nonegos_num.sort()

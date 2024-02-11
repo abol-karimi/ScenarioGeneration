@@ -6,7 +6,7 @@ from scenariogen.core.utils import classify_intersection
 from scenariogen.predicates.utils import predicates_of_logic_program, time_to_term, term_to_time
 from scenariogen.core.coverages.coverage import Statement, StatementCoverage, Predicate, PredicateCoverage
 from scenariogen.predicates.predicates import geometry_atoms
-from scenariogen.predicates.events import ActorSpawnedEvent
+from scenariogen.predicates.events import AgentSpawnedEvent
 
 
 def coverage_space(config):
@@ -42,7 +42,7 @@ def to_coverage(events, config):
   ordinal2time = {o:t for o,t in zip(ordinals, event_times)}
   time2ordinal = {t:o for o,t in zip(ordinals, event_times)}
 
-  spawn_events = [e for e in events if type(e) is ActorSpawnedEvent]
+  spawn_events = [e for e in events if type(e) is AgentSpawnedEvent]
   lanes = set(e.lane for e in spawn_events)
   lane2spawnEvents = {l: sorted(list(filter(lambda e: e.lane == l, spawn_events)), reverse=True, key=lambda e: e.progress)
                       for l in lanes}

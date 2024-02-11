@@ -7,7 +7,7 @@ from scenariogen.predicates.monitors import (ArrivingAtIntersectionMonitor,
                                              StoppingMonitor,
                                              RegionOverlapMonitor,
                                              CarlaCollisionMonitor,
-                                             ActorsMonitor
+                                             AgentsMonitor
                                             )
 
 intersection = network.elements[config['intersection']]
@@ -19,7 +19,7 @@ monitor EventsMonitor(eventsOut):
   require monitor StoppingMonitor(config, eventsOut)
   require monitor RegionOverlapMonitor({**config, 'regions': trigger_regions}, eventsOut)
   require monitor CarlaCollisionMonitor(config, eventsOut)
-  require monitor ActorsMonitor(config, eventsOut)
+  require monitor AgentsMonitor(config, eventsOut)
 
   eventsOut.clear()
 

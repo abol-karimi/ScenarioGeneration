@@ -1,11 +1,12 @@
 import multiprocessing
 import traceback
-from collections import namedtuple
 import subprocess
 import time
 import setproctitle
 import signal
 import ctypes
+import torch
+from queue import Queue, Empty
 
 import scenic
 scenic.setDebuggingOptions(verbosity=0, fullBacktrace=True)
@@ -15,15 +16,35 @@ from scenic.simulators.newtonian.simulator import NewtonianSimulator
 from scenic.core.simulators import SimulationCreationError
 from scenic.core.dynamics import GuardViolation
 
+from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
+
 from scenariogen.core.utils import ordinal
 
-SimResult = namedtuple('SimResult', ['records'])
+
+class SimResult:
+  def __init__(self, simulation):
+    result = simulation.result
+    self.trajectory = result.trajectory
+    self.finalState = result.finalState
+    self.terminationType = result.terminationType
+    self.terminationReason = result.terminationReason
+    self.records = result.records
+
 
 libc = ctypes.CDLL("libc.so.6")
 def set_pdeathsig(sig):
   def callable():
       return libc.prctl(1, sig)
   return callable
+
+
+def run_callbacks(callbacks):
+  while not callbacks.empty():
+    try:
+      callback = callbacks.get(True, 1)
+      callback()
+    except Empty:
+      continue
 
 
 def simulation_service(connection):
@@ -52,10 +73,12 @@ def simulation_service(connection):
     # In case of a service crash, the client is informed by calling is_alive. Then the client restarts the service and resends the request.
     while True:
       try:
+        cleanup_callbacks = Queue()
         scenario = scenic.scenarioFromFile(f"src/scenariogen/simulators/{config['simulator']}/SUT.scenic",
                                           params= {'map': config['map'],
                                                    'weather': config['weather'],
-                                                   'config': config},
+                                                   'config': config,
+                                                   'cleanup_callbacks': cleanup_callbacks},
                                           mode2D=True)
         scene, _ = scenario.generate(maxIterations=1)
       except AssertionError:
@@ -64,7 +87,7 @@ def simulation_service(connection):
         exit(1)
       except Exception as e:
         traceback.print_exc()
-        print(f'Failed to create the initial scene due to exception {e} of type {type(e)}. Returning a None result...')
+        print(f'Failed to create the initial scene due to an unexpected exception of type {type(e)}: {e}. Returning a None result...')
         connection.send(None)
         break
 
@@ -90,25 +113,40 @@ def simulation_service(connection):
                                        map_path=config['map'],
                                        timestep=config['timestep'],
                                        render=config['render-ego'])
+            
+            # For Leaderboard agents
+            CarlaDataProvider.set_client(simulator.client)
+            CarlaDataProvider.set_world(simulator.world)
+            simulator.world.tick()
+
             if not config['render-spectator']:
               settings = simulator.world.get_settings()
               settings.no_rendering_mode = True
               simulator.world.apply_settings(settings)
 
-        sim_result = simulator.simulate(scene,
+        simulation = simulator.simulate(scene,
                                         maxSteps=config['steps'],
-                                        maxIterations=1)
+                                        maxIterations=1,
+                                        raiseGuardViolations=True)
       except (SimulationCreationError, GuardViolation) as e:
+        run_callbacks(cleanup_callbacks)
         traceback.print_exc()        
         print(f'Failed to simulate the scenario due to exception {e}. Returning a None result...')
         connection.send(None)
         break
+      except torch.cuda.OutOfMemoryError as e:
+        print(f'Failed to simulate the scenario due to exception {e}. Will close Carla and the simulation service, then try again...')
+        carla_server_process.terminate()
+        torch.cuda.empty_cache()
+        exit(1)
       except Exception as e:
-        traceback.print_exc()        
-        print(f'Failed to simulate the scenario due to exception {e}. Will try again...')
+        run_callbacks(cleanup_callbacks)
+        traceback.print_exc()
+        print(f'Failed to simulate the scenario due to unexpected exception {e}. Will try again...')
       else:
-        if sim_result:
-          connection.send(SimResult(sim_result.records))
+        run_callbacks(cleanup_callbacks)
+        if simulation:
+          connection.send(SimResult(simulation))
         else:
           connection.send(None)
 
@@ -130,29 +168,29 @@ class SUTRunner:
     while True:
       try:
         if cls.server_process is None:
-          print(f"Starting the simulation-service daemon...")
+          print(f"Starting the simulation service...")
           cls.server_process = cls.ctx.Process(target=simulation_service,
-                                               name='Simulation-service daemon',
                                                args=(cls.server_conn,),
+                                               name='Simulation service',
                                                daemon=True)
           cls.server_process.start()
         elif not cls.server_process.is_alive():
           cls.crashes += 1
-          print(f"Simulation-service daemon crashed for the {ordinal(cls.crashes)} time! Restarting the daemon...")
+          print(f"Simulation service crashed for the {ordinal(cls.crashes)} time! Restarting the service...")
           cls.server_process.close()
           cls.client_conn.close()
           cls.server_conn.close()      
           cls.client_conn, cls.server_conn = cls.ctx.Pipe(duplex=True)
           cls.server_process = cls.ctx.Process(target=simulation_service,
-                                               name='Simulation-service daemon',
+                                               name='Simulation service',
                                                args=(cls.server_conn,),
                                                daemon=True)
           cls.server_process.start()
         
-        print('Sending a request to the simulation-service daemon...')
+        print('Sending a request to the simulation service...')
         cls.client_conn.send(config)
 
-        print(f'Waiting for simulation result from the simulation-service daemon...')
+        print(f'Waiting for simulation result from the simulation service...')
         while cls.server_process.is_alive():
           if cls.client_conn.poll(10):
             sim_result = cls.client_conn.recv()

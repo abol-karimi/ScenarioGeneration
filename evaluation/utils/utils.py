@@ -6,7 +6,7 @@ import numpy as np
 from functools import reduce
 
 from scenariogen.core.fuzzing.fuzzers.seed_tester import SeedTester
-from scenariogen.core.coverages.coverage import Predicate, StatementCoverage, PredicateSetCoverage, PredicateCoverage
+from scenariogen.core.coverages.coverage import StatementSetCoverage, StatementCoverage, PredicateSetCoverage, PredicateCoverage
 from evaluation.configs import SUT_config, coverage_config
 
 
@@ -26,6 +26,7 @@ def get_test_config(gen_config, test_ego, test_coverage, max_total_time):
     'results-file': f'{output_folder}/results.json',
     'seeds-folder': gen_config['fuzz-inputs-folder'],
     'fuzz-inputs-folder': f'{output_folder}/fuzz-inputs',
+    'coverages-folder': f'{output_folder}/coverages',
     'events-folder': f'{output_folder}/events',
     'bugs-folder': f'{output_folder}/bugs',
     'SUT-config': {**SUT_config,
@@ -73,18 +74,26 @@ def piecewise_constant_numpy(ts, xs, ys):
   arr = np.piecewise(ts, condlist, funclist)
   return tuple(map(float, arr))
 
-def sample_trial(test_config, ts, statement_filter):
-  coverage_file_path = Path(test_config['output-folder'])/'coverage.json'
 
-  print(f'Loading {coverage_file_path} ...')
-  with open(coverage_file_path, 'r') as f:
-    coverage = jsonpickle.decode(f.read())
+def sample_trial(test_config, ts, coverage_filter):
+  results_file_path = Path(test_config['results-file'])
 
-  measurements = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements']},
-                          coverage)['measurements']
+  print(f'Loading {results_file_path} ...')
+  with open(results_file_path, 'r') as f:
+    results = jsonpickle.decode(f.read())
+
+  measurements = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements']}, results)['measurements']
   elapsed_times = tuple(m['elapsed_time'] for m in measurements)
 
-  statementSet_coverages = tuple(m['statement-set-coverage'].filter(statement_filter) for m in measurements)
+  statementSet_coverages = []
+  for m in measurements:
+    new_statement_coverages = []
+    for coverage_file in m['new-coverage-files']:
+      with open(coverage_file, 'r') as f:
+        statement_coverage = coverage_filter(jsonpickle.decode(f.read()))
+        new_statement_coverages.append(statement_coverage)
+    statementSet_coverages.append(StatementSetCoverage(new_statement_coverages))
+
   predicateSet_coverages = tuple(c.cast_to(PredicateSetCoverage) for c in statementSet_coverages)
   statement_coverages = tuple(c.cast_to(StatementCoverage) for c in statementSet_coverages)
   predicate_coverages = tuple(c.cast_to(PredicateCoverage) for c in statement_coverages)

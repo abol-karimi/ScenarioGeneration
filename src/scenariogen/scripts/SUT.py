@@ -72,10 +72,17 @@ if __name__ == '__main__':
     config['render-ego'] = args.render_ego
 
     sim_result = SUTRunner.run({**config,
-                            **fuzz_input.config,
-                            'fuzz-input': fuzz_input,
-                            })
-
+                                **fuzz_input.config,
+                                'fuzz-input': fuzz_input,
+                                })
+    if sim_result is None:       
+        exit(1)
+    
+    print(f'len(trajectory): {len(sim_result.trajectory)}')
+    print(f'terminationType: {sim_result.terminationType}')
+    print(f'terminationReason: {sim_result.terminationReason}')
+    print(f'finalState: {sim_result.finalState}')
+    
     if args.coverage_module:
         coverage = sim_result.records['coverage']
         # coverage.print()

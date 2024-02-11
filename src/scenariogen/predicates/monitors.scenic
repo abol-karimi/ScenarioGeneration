@@ -16,7 +16,7 @@ monitor VehicleSignalMonitor(config, eventsOut):
   cars = simulation().agents
   signal = {car: None for car in cars}
   while True:
-    time_seconds = simulation().currentTime * config['timestep']
+    time_seconds = simulation().currentRealTime
     for car in cars:
       signal_curr = vehicleLightState_to_signal(car.carlaActor.get_light_state())
       if signal[car] != signal_curr:
@@ -43,7 +43,7 @@ monitor ArrivingAtIntersectionMonitor(config, eventsOut):
                            else False
                   for car in cars}
   while True:
-    time_seconds = simulation().currentTime * config['timestep']
+    time_seconds = simulation().currentRealTime
     for car in cars:
       # We assume that from the pre_arrived state, the only possible next states are pre_arrived and arrived.
       if pre_arrived[car]:
@@ -64,7 +64,7 @@ monitor StoppingMonitor(config, eventsOut):
   cars = simulation().agents
   moving = {car: False for car in cars}
   while True:
-    time_seconds = simulation().currentTime * config['timestep']    
+    time_seconds = simulation().currentRealTime    
     for car in cars:
       if moving[car] and car.speed <= config['stopping_speed']:
         eventsOut.append(StoppedEvent(car.name, time_seconds))
@@ -83,7 +83,7 @@ monitor RegionOverlapMonitor(config, eventsOut):
   occupiedRegions = {car: set(region.uid for region in config['regions'] if region.intersects(PolygonalRegion(polygon=car._boundingPolygon))) 
                     for car in cars}
   while True:
-    time_seconds = simulation().currentTime * config['timestep']    
+    time_seconds = simulation().currentRealTime    
     for car, region in product(cars, config['regions']):
       wasOnRegion = region.uid in occupiedRegions[car]
       isOnRegion = region.intersects(PolygonalRegion(polygon=car._boundingPolygon))
@@ -112,7 +112,7 @@ monitor OcclusionMonitor(config, eventsOut):
   cars = simulation().agents
   could_see = {(c1, c2):False for c1, c2 in permutations(cars, 2)}
   while True:
-    time_seconds = simulation().currentTime * config['timestep']
+    time_seconds = simulation().currentRealTime
     for c1, c2 in permutations(cars, 2):
       if (c1 can see c2) and not could_see[c1, c2]:
         could_see[c1, c2] = True
@@ -140,7 +140,7 @@ monitor CarlaCollisionMonitor(config, eventsOut):
     sensor.listen(lambda e: on_collision(e, event_queue))
 
   while (simulation().currentTime < config['steps']):
-    time_seconds = simulation().currentTime * config['timestep']
+    time_seconds = simulation().currentRealTime
     while not event_queue.empty():
       event = event_queue.get()
       actor_name = carla2scenic[event.actor.id]
@@ -160,14 +160,13 @@ monitor CarlaCollisionMonitor(config, eventsOut):
   wait
 
 
-monitor ActorsMonitor(config, eventsOut):
-  """In Scenic actors are not spawned or destroyed during the simulation,
+monitor AgentsMonitor(config, eventsOut):
+  """In Scenic, all agents are spawned before the simulation, and destroyed after the simulation,
   so we only need to check once."""
   for agent in simulation().agents:
     transform = CurvilinearTransform(agent.lane.centerline.lineString.coords)
     progress = transform.curvilinear(agent.position)[0]
-    eventsOut.append(ActorSpawnedEvent(agent.name, agent.lane.uid, int(progress), 0))
-  
+    eventsOut.append(AgentSpawnedEvent(agent.name, agent.lane.uid, int(progress), 0))
   wait
 
 # monitor TailgateMonitor(config, eventsOut):

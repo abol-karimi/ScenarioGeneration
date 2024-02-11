@@ -3,7 +3,7 @@ import argparse
 from functools import reduce
 import importlib
 from scenariogen.core.coverages.coverage import from_corpus, StatementSetCoverage, PredicateCoverage
-from experiments.configs import SUT_config, coverage_config
+from evaluation.configs import SUT_config, coverage_config
 
 parser = argparse.ArgumentParser(
     description='Compute the predicate coverage of a corpus of SUT inputs.')

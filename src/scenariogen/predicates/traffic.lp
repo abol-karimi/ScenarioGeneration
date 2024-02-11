@@ -69,7 +69,7 @@ nonConflictPathWith(V1, V2):-
   not overlaps(L13, L24).
 
 nonego(V):-
-  actorSpawnedOnLane(V, _),
+  agentSpawnedOnLane(V, _),
   V != ego.
 
 % When ego collides with any actor

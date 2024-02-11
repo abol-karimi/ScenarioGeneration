@@ -6,12 +6,9 @@ from collections import Counter
 class FuzzCandidate:
   """Represent an input with additional attributes"""
 
-  def __init__(self, fuzz_input, fuzz_input_hash=None):
+  def __init__(self, fuzz_input):
     self.fuzz_input = fuzz_input
     
-    # For logging purposes
-    self.fuzz_input_hash = fuzz_input_hash
-
     # These will be needed for power schedules
     self.coverage = None
     self.distance = -1
@@ -47,7 +44,7 @@ class PowerSchedule:
     self.assignEnergy(population)
     norm_energy = self.normalizedEnergy(population)
     fuzz_candidate = self.random.choices(population, weights=norm_energy)[0]
-    print(f'Chose fuzz-candidate with fuzz-input-hash {fuzz_candidate.fuzz_input_hash}')
+    print(f'Chose fuzz-candidate with fuzz-input-hash {hash(fuzz_candidate.fuzz_input)}')
     return fuzz_candidate
 
 

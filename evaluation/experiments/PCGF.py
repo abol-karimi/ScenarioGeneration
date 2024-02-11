@@ -9,7 +9,7 @@ from random import Random
 
 from scenariogen.core.fuzzing.mutators import StructureAwareMutator
 from scenariogen.core.fuzzing.schedules import AFLFastSchedule
-from scenariogen.core.fuzzing.fuzzers.modular import CountingPredicateSetFuzzer
+from scenariogen.core.fuzzing.fuzzers.counting import CountingPredicateSetFuzzer
 from evaluation.configs import get_experiment_config
 
 

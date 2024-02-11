@@ -31,20 +31,20 @@ def plot_curve(gen_config, test_config, plot_color, plot_label, axes):
 
   measurements = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements']},
                           coverage)['measurements']
-  new_event_files = tuple(m['new_event_files'] for m in measurements)
+  new_fuzz_input_files = tuple(m['new-fuzz-input-files'] for m in measurements)
   statementSet_coverages = tuple(m['statement-set-coverage'] for m in measurements)
 
-  new_event_files_acc = [new_event_files[0]]
+  new_fuzz_input_files_acc = [new_fuzz_input_files[0]]
   statementSet_coverages_acc = [statementSet_coverages[0]]
   for i in range(1, len(measurements)):
-    new_event_files_acc.append(new_event_files_acc[-1].union(new_event_files[i]))
+    new_fuzz_input_files_acc.append(new_fuzz_input_files_acc[-1].union(new_fuzz_input_files[i]))
     statementSet_coverages_acc.append(statementSet_coverages_acc[-1] + statementSet_coverages[i])
   
   statement_coverages_acc = tuple(c.cast_to(StatementCoverage) for c in statementSet_coverages_acc)
   predicateSet_coverages_acc = tuple(c.cast_to(PredicateSetCoverage) for c in statementSet_coverages_acc)
   predicate_coverages_acc = tuple(c.cast_to(PredicateCoverage) for c in statement_coverages_acc)
 
-  x_axis = tuple(len(files) for files in new_event_files_acc)
+  x_axis = tuple(len(files) for files in new_fuzz_input_files_acc)
 
   ax1, ax2, ax3, ax4 = axes
   ax1.plot(x_axis, tuple(len(c) for c in statementSet_coverages_acc), f'{plot_color}-', label=plot_label)
@@ -80,13 +80,11 @@ def plot(plot_config):
     print(f'Now plotting report:', label)
     plot_curve(gen_config, test_config, color, label, axes)
 
-  max_event_files = 0
-  for gen_config, test_config, color, label in plot_config:
-    events_path = Path(test_config['events-folder'])
-    event_files_num = len(tuple(events_path.glob('*')))
-    max_event_files = max(max_event_files, event_files_num)
+  fuzz_inputs_nums = [len(tuple(Path(test_config['fuzz_inputs-folder']).glob('*')))
+                      for _, test_config, _, _ in plot_config]
+  max_fuzz_inputs_num = max(fuzz_inputs_nums)
 
-  plot_predicate_coverage_space(ax4, (0, max_event_files), 'TFPP', 'traffic', 'traffic-rules')
+  plot_predicate_coverage_space(ax4, (0, max_fuzz_inputs_num), 'TFPP', 'traffic', 'traffic-rules')
 
   ax4.legend()
   test_coverage = test_config['coverage-config']['coverage-module']

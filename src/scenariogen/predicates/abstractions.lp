@@ -31,7 +31,7 @@ disappearedFrom(V1, V2):-
   disappearedFromAtTime(V1, V2, _).
 
 actorSpawnedAtAlongLane(V, P, L):-
-  actorSpawnedAtAlongLaneAtTime(V, P, L, _).
+  agentSpawnedAtAlongLaneAtTime(V, P, L, _).
 
 collidedWith(V, A):-
   collidedWithAtTime(V, A, _).
@@ -46,5 +46,5 @@ enteredAtTime(V, T):-
 leftAtTime(V, T):-
   leftToLaneAtTime(V, _, T).
 
-actorSpawnedOnLane(V, L):-
+agentSpawnedOnLane(V, L):-
   actorSpawnedAtAlongLane(V, _, L).

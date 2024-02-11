@@ -1,7 +1,6 @@
 #!/usr/bin/env python3.8
 
-from scenariogen.core.coverages.coverage import Predicate
-
+from scenariogen.core.coverages.coverage import Predicate, StatementCoverage
 import evaluation.experiments.Atheris as Atheris_experiment
 import evaluation.experiments.PCGF as PCGF_experiment
 import evaluation.experiments.random_search as random_search_experiment
@@ -10,9 +9,11 @@ from evaluation.utils.utils import get_test_config
 import evaluation.utils.events_to_coverage
 import evaluation.utils.average_coverage
 import evaluation.utils.plots
-
+import setproctitle
 
 if __name__ == '__main__':
+  setproctitle.setproctitle('baseline-vs-PCGF')
+
   max_total_time = 8*60*60 # seconds
   gen_ego = 'TFPP'
   gen_coverage = 'traffic-rules'
@@ -22,43 +23,71 @@ if __name__ == '__main__':
   output_folder = f'evaluation/results/baselines_vs_PCGF'
 
   run_configs = [
-    {'generator': 'PCGF',
-     'experiment-module': PCGF_experiment,
+    # {'generator': 'PCGF',
+    #  'experiment-module': PCGF_experiment,
+    #  'trial-seeds': (4,),
+    #  'max-total-time': max_total_time,
+    #  },
+    {'generator': 'Atheris',
+     'experiment-module': Atheris_experiment,
      'trial-seeds': (4,),
      'max-total-time': max_total_time,
      },
   ]
   events2coverage_configs = [
-    {'generator': 'PCGF',
-     'experiment-module': PCGF_experiment,
+    # {'generator': 'PCGF',
+    #  'experiment-module': PCGF_experiment,
+    #  'trial-seeds': (4,),
+    #  'max-total-time': max_total_time,
+    #  },
+    {'generator': 'Atheris',
+     'experiment-module': Atheris_experiment,
      'trial-seeds': (4,),
      'max-total-time': max_total_time,
      },
   ]
   average_configs = [
-    {'generator': 'PCGF',
-     'experiment-module': PCGF_experiment,
+    # {'generator': 'PCGF',
+    #  'experiment-module': PCGF_experiment,
+    #  'trial-seeds': (4,),
+    #  'max-total-time': max_total_time,
+    #  'output-file': f'{output_folder}/PCGF/all-coverage.json',
+    #  'coverage-filter': lambda s: s,
+    #  },
+    # {'generator': 'PCGF',
+    #  'experiment-module': PCGF_experiment,
+    #  'trial-seeds': (4,),
+    #  'max-total-time': max_total_time,
+    #  'output-file': f'{output_folder}/PCGF/violations-coverage.json',
+    #  'coverage-filter': lambda s:
+    #                       s.predicate in {Predicate('violatesRule'),
+    #                                       Predicate('violatesRightOfForRule'),
+    #                                       Predicate('collidedWithAtTime')} \
+    #                       and s.args[0] == 'ego',
+    #  },
+    {'generator': 'Atheris',
+     'experiment-module': Atheris_experiment,
      'trial-seeds': (4,),
      'max-total-time': max_total_time,
-     'output-file': f'{output_folder}/PCGF/all-coverage.json',
-     'statement-filter': lambda s: s,
+     'output-file': f'{output_folder}/Atheris/all-coverage.json',
+     'coverage-filter': lambda s: s,
      },
-    {'generator': 'PCGF',
-     'experiment-module': PCGF_experiment,
+    {'generator': 'Atheris',
+     'experiment-module': Atheris_experiment,
      'trial-seeds': (4,),
      'max-total-time': max_total_time,
-     'output-file': f'{output_folder}/PCGF/violations-coverage.json',
-     'statement-filter': lambda s:
+     'output-file': f'{output_folder}/Atheris/violations-coverage.json',
+     'coverage-filter': lambda cov: StatementCoverage(s for s in cov if \
                           s.predicate in {Predicate('violatesRule'),
                                           Predicate('violatesRightOfForRule'),
                                           Predicate('collidedWithAtTime')} \
-                          and s.args[0] == 'ego',
+                          and s.args[0] == 'ego')
      },
   ]
 
   coverage_plot_configs = [
     {
-      'generators': ['PCGF', ],
+      'generators': ['PCGF', 'Atheris', ],
       'coverage-types': ['statementSet', 'statement', 'predicateSet', 'predicate'],
       'PCGF': {'coverage-file': f'{output_folder}/PCGF/all-coverage.json',
                 'color': 'g',
@@ -75,7 +104,7 @@ if __name__ == '__main__':
       'output-file': f'{output_folder}/baselines-vs-PCGF_per-time.png',
      },
     {
-      'generators': ['PCGF', ],
+      'generators': ['PCGF', 'Atheris', ],
       'coverage-types': ['statementSet', 'statement', 'predicateSet', 'predicate'],
       'PCGF': {'coverage-file': f'{output_folder}/PCGF/violations-coverage.json',
                 'color': 'g',
@@ -116,7 +145,7 @@ if __name__ == '__main__':
       trial_output_folder = f"{output_folder}/{config['generator']}/{gen_ego}_{gen_coverage}_{trial_seed}"
       gen_config = config['experiment-module'].get_config(gen_ego, gen_coverage, trial_seed, seeds_folder, config['max-total-time'], trial_output_folder)
       test_configs.append(get_test_config(gen_config, test_ego, test_coverage, config['max-total-time']))
-    evaluation.utils.average_coverage.report(test_configs, config['statement-filter'], config['output-file'])
+    evaluation.utils.average_coverage.report(test_configs, config['coverage-filter'], config['output-file'])
 
 
 #-----------------------Plots-----------------------

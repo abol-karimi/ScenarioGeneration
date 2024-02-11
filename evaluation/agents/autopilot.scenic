@@ -10,7 +10,7 @@ model scenic.simulators.carla.model
 # imports
 from scenariogen.simulators.carla.behaviors import AutopilotRouteBehavior
 from scenariogen.core.utils import turns_from_route
-from experiments.agents.configs import autopilot_config
+from evaluation.agents.configs import autopilot_config
 
 lanes = [network.elements[l] for l in config['ego_route']]
 
