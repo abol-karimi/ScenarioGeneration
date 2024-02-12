@@ -100,7 +100,7 @@ scenario SeedScenario():
     for i in range(nonegos_count):
       blueprint = Uniform(*blueprints)
       init_lane = Uniform(*intersection.incomingLanes, *intersection.outgoingLanes)
-      x0 = Uniform(1, init_lane.centerline.length-3)
+      x0 = Range(1, init_lane.centerline.length-3)
       ext = extend_lane_forward(init_lane, min_route_length - init_lane.centerline.length + x0, random)
       lanes = (init_lane,) + tuple(ext)
       turns = turns_from_route(lanes)

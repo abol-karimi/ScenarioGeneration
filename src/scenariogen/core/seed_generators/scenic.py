@@ -8,7 +8,6 @@ import time
 import random
 import numpy
 import jsonpickle
-import hashlib
 from pathlib import Path
 
 import scenic
@@ -64,16 +63,14 @@ class RandomSeedGenerator:
       return
     else:
       # Save the new seed
-      seed_json_bytes = jsonpickle.encode(seed, indent=1).encode('utf-8')
-      seed_hash = hashlib.sha1(seed_json_bytes).hexdigest()
-      with open(Path(self.config['fuzz-inputs-folder'])/seed_hash, 'wb') as f:
-          f.write(seed_json_bytes)
+      with open(Path(self.config['fuzz-inputs-folder'])/f'{seed.hexdigest}.json', 'wb') as f:
+          f.write(seed.bytes)
       self.seed_id += 1
-      print(f'Saved the {ordinal(self.seed_id)} seed as {seed_hash}.')
+      print(f'Saved the {ordinal(self.seed_id)} seed as {seed.hexdigest}.')
       
       if 'coverage-config' in self.config and self.config['save-coverage-events']:
         events = sim_result.records['events']
-        with open(Path(self.config['events-folder'])/seed_hash, 'w') as f:
+        with open(Path(self.config['events-folder'])/f'{seed.hexdigest}.json', 'w') as f:
             f.write(jsonpickle.encode(events, indent=1))
 
   def runs(self, generator_state):
