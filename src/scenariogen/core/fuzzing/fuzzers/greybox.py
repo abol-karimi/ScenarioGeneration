@@ -85,18 +85,19 @@ class GreyboxFuzzer(Fuzzer):
     return fuzz_input
     
   def run(self):
+    fuzz_candidate = None
     fuzz_input = self.gen_input()
     statement_coverage = self.input_eval(fuzz_input)
-    if not statement_coverage is None:
-      # Save the fuzz-input and its coverage to disk
+    if not statement_coverage is None: # if fuzz-input is valid
       with open(Path(self.config['fuzz-inputs-folder'])/fuzz_input.hexdigest, 'wb') as f:
         f.write(fuzz_input.bytes)
       with open(Path(self.config['coverages-folder'])/fuzz_input.hexdigest, 'w') as f:
         f.write(jsonpickle.encode(statement_coverage, indent=1))
 
       if not statement_coverage in self.coverage_seen:
-        self.fuzz_candidates.append(FuzzCandidate(fuzz_input))
+        fuzz_candidate = FuzzCandidate(fuzz_input)
+        self.fuzz_candidates.append(fuzz_candidate)
         self.coverage_seen = self.coverage_seen + StatementSetCoverage([statement_coverage])    
         print(f'The fuzz input with hash {fuzz_input.hexdigest} expanded the coverage! Added to fuzz candidates.')
 
-    return statement_coverage
+    return fuzz_candidate, statement_coverage
