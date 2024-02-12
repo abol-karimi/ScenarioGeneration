@@ -18,7 +18,7 @@ def plot_curve(gen_config, test_config, plot_color, plot_label, axes):
 
   measurements = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements']},
                           coverage)['measurements']
-  elapsed_times = tuple(int(m['elapsed_time']/60) for m in measurements)
+  elapsed_times = tuple(int(m['elapsed-time']/60) for m in measurements)
   ego_violation_filter = lambda s: s.predicate in {Predicate(name) for name in {'violatesRule',
                                                                                 'violatesRightOfForRule',
                                                                                 'collidedWithAtTime'}} \

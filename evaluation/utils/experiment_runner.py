@@ -5,45 +5,94 @@ import time
 import multiprocessing
 import setproctitle
 
+from scenariogen.core.fuzzing.fuzzers.atheris import AtherisFuzzer
+
 
 def generator_process_target(config, generator_state):
   setproctitle.setproctitle('exp-run target')
+  
+  if config['generator'] is AtherisFuzzer:
+    atheris_output_path = Path(config['atheris-output-folder'])
+    atheris_output_path.mkdir(parents=True, exist_ok=True)
+    for path in atheris_output_path.glob('*'):
+      path.unlink()
+
   generator = config['generator'](config)
-  generator.runs(generator_state)
+  final_state = generator.runs(generator_state)
+  with open(f"{config['output-folder']}/generator-state.json", 'w') as f:
+    f.write(jsonpickle.encode(final_state, indent=1))
+
+def measure_progress(fuzz_inputs_path,
+                      past_fuzz_input_files,
+                      coverages_path,
+                      past_coverage_files,
+                      start_time,
+                      measurements,
+                      results_file_path,
+                      results,
+                      config):
+  new_fuzz_input_files = set(fuzz_inputs_path.glob('*')) - past_fuzz_input_files
+  new_coverage_files = set(coverages_path.glob('*')) - past_coverage_files
+  elapsed_time = time.time()-start_time
+
+  past_fuzz_input_files.update(new_fuzz_input_files)
+  past_coverage_files.update(new_coverage_files)
+  measurements.append({'elapsed-time': elapsed_time,
+                        'new-fuzz-input-files': new_fuzz_input_files,
+                        'new-coverage-files': new_coverage_files,
+                      })
+  partial_result = [{'measurements': measurements}]
+  with open(results_file_path, 'w') as f:
+    f.write(jsonpickle.encode(results+partial_result, indent=1))
+
+  print(f'Measurement recorded!')
+  print(f'\t Elapsed time: {elapsed_time}')
+  print(f"\t output-folder: {config['output-folder']}")
 
 
 def run(config):
   measurement_period = 60 # seconds
   
+  generator_state_path = Path(config['output-folder'])/'generator-state.json'
   results_file_path = Path(config['results-file'])
   fuzz_inputs_path = Path(config['fuzz-inputs-folder'])
   coverages_path = Path(config['coverages-folder'])
+  events_path = Path(config['events-folder'])
   bugs_path = Path(config['bugs-folder'])
   
   # Decide to resume or start
-  if results_file_path.is_file():
+  if generator_state_path.is_file():
     # resume
-    coverage_files = set((coverages_path).glob('*'))
+    fuzz_input_files = set((fuzz_inputs_path).glob('*'))
     with open(results_file_path, 'r') as f:
       results = jsonpickle.decode(f.read())
     merged_results = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements']},
                             results)
     results_fuzz_input_files = reduce(lambda i1,i2: i1.union(i2),
                                       [m['new-fuzz-input-files'] for m in merged_results['measurements']])
-    if results_fuzz_input_files != coverage_files:
-      print('Cannot resume experiment: the coverage_files in the folder do not match the coverage_files of results.json.')
-      print('results_fuzz_input_files - coverage_files:', results_fuzz_input_files - coverage_files)
-      print('coverage_files - results_fuzz_input_files:', coverage_files - results_fuzz_input_files)
+    if results_fuzz_input_files != fuzz_input_files:
+      print('Cannot resume experiment: the fuzz_input_files in the folder do not match the fuzz_input_files of results.json!')
+      print('results_fuzz_input_files - fuzz_input_files:', results_fuzz_input_files - fuzz_input_files)
+      print('fuzz_input_files - results_fuzz_input_files:', fuzz_input_files - results_fuzz_input_files)
       exit(1)
-    generator_state = results[-1].pop('generator-state')
+   
+    past_fuzz_input_files = results_fuzz_input_files
+    past_coverage_files = reduce(lambda i1,i2: i1.union(i2),
+                                      [m['new-coverage-files'] for m in merged_results['measurements']])
+    with open(f"{config['output-folder']}/generator-state.json", 'r') as f:
+      generator_state = jsonpickle.decode(f.read())
+    
   else:
     # start
     fuzz_inputs_path.mkdir(parents=True, exist_ok=True)
     coverages_path.mkdir(parents=True, exist_ok=True)
+    events_path.mkdir(parents=True, exist_ok=True)
     bugs_path.mkdir(parents=True, exist_ok=True)
     for path in fuzz_inputs_path.glob('*'):
       path.unlink()
     for path in coverages_path.glob('*'):
+      path.unlink()
+    for path in events_path.glob('*'):
       path.unlink()
     for path in bugs_path.glob('*'):
       path.unlink()
@@ -54,31 +103,12 @@ def run(config):
     generator_state = None
 
   # Set up a measurement loop
-  measurements = [{'elapsed_time': 0,
+  measurements = [{'elapsed-time': 0,
                    'new-fuzz-input-files': set(),
                    'new-coverage-files': set(),
                   }]
   
-  def measure_progress():
-    new_fuzz_input_files = set(fuzz_inputs_path.glob('*')) - past_fuzz_input_files
-    new_coverage_files = set(coverages_path.glob('*')) - past_coverage_files
-    elapsed_time = time.time()-start_time
-
-    past_fuzz_input_files.update(new_fuzz_input_files)
-    past_coverage_files.update(new_coverage_files)
-    measurements.append({'elapsed_time': elapsed_time,
-                         'new-fuzz-input-files': new_fuzz_input_files,
-                         'new-coverage-files': new_coverage_files,
-                        })
-    partial_result = [{'measurements': measurements}]
-    with open(results_file_path, 'w') as f:
-      f.write(jsonpickle.encode(results+partial_result, indent=1))
-
-    print(f'\nMeasurement recorded!')
-    print(f'\t Elapsed time: {elapsed_time}')
-    print(f"\t output-folder: {config['output-folder']}")
-
-  print(f"Now running experiment: {config['output-folder']}")
+  print(f"\nNow running experiment: {config['output-folder']}")
  
   ctx = multiprocessing.get_context('spawn')
   p = ctx.Process(target=generator_process_target,
@@ -89,5 +119,14 @@ def run(config):
   p.start()
 
   while p.is_alive(): # all the implemented generators exit after config['max-total-time']
-    measure_progress()
-    time.sleep(measurement_period)
+    p.join(measurement_period-(time.time()-start_time-measurements[-1]['elapsed-time']))
+    measure_progress(fuzz_inputs_path,
+                      past_fuzz_input_files,
+                      coverages_path,
+                      past_coverage_files,
+                      start_time,
+                      measurements,
+                      results_file_path,
+                      results,
+                      config)
+

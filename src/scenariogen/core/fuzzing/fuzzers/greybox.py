@@ -30,6 +30,7 @@ class GreyboxFuzzer(Fuzzer):
   def get_state(self):
     state = {
       'coverage-seen': self.coverage_seen,
+      'random-state': self.random.getstate(),
       'mutator-state': self.mutator.get_state(),
       'schedule-state': self.schedule.get_state(),
       'fuzz-candidates': self.fuzz_candidates,
@@ -39,6 +40,7 @@ class GreyboxFuzzer(Fuzzer):
 
   def set_state(self, state):
     self.coverage_seen = state['coverage-seen']
+    self.random.setstate(state['random-state'])
     self.mutator.set_state(state['mutator-state'])
     self.schedule.set_state(state['schedule-state'])
     self.fuzz_candidates = state['fuzz-candidates']
@@ -52,7 +54,7 @@ class GreyboxFuzzer(Fuzzer):
                                 })
     if (not sim_result is None) and 'coverage' in sim_result.records:
       # For debugging purposes, save events
-      with open(Path(self.config['events-folder'])/hash(fuzz_input), 'w') as f:
+      with open(Path(self.config['events-folder'])/fuzz_input.hexdigest, 'w') as f:
         f.write(jsonpickle.encode(sim_result.records['events'], indent=1))
 
       return sim_result.records['coverage']
@@ -90,11 +92,11 @@ class GreyboxFuzzer(Fuzzer):
       self.coverage_seen = self.coverage_seen + StatementSetCoverage([statement_coverage])
       
       # Save the fuzz-input and its coverage to disk
-      with open(Path(self.config['fuzz-inputs-folder'])/hash(fuzz_input), 'wb') as f:
-        f.write(bytes(fuzz_input))
-      with open(Path(self.config['coverages-folder'])/hash(fuzz_input), 'w') as f:
+      with open(Path(self.config['fuzz-inputs-folder'])/fuzz_input.hexdigest, 'wb') as f:
+        f.write(fuzz_input.bytes)
+      with open(Path(self.config['coverages-folder'])/fuzz_input.hexdigest, 'w') as f:
         f.write(jsonpickle.encode(statement_coverage, indent=1))
       
-      print(f'The fuzzed input with hash {hash(fuzz_input)} expanded the coverage! Added input to the corpus.')
+      print(f'The fuzzed input with hash {fuzz_input.hexdigest} expanded the coverage! Added input to the corpus.')
 
     return statement_coverage

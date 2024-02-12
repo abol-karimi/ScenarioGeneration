@@ -83,7 +83,7 @@ def sample_trial(test_config, ts, coverage_filter):
     results = jsonpickle.decode(f.read())
 
   measurements = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements']}, results)['measurements']
-  elapsed_times = tuple(m['elapsed_time'] for m in measurements)
+  elapsed_times = tuple(m['elapsed-time'] for m in measurements)
 
   statementSet_coverages = []
   for m in measurements:

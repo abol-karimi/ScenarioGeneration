@@ -25,5 +25,6 @@ class Fuzzer:
 
     while time.time()-start_time < self.config['max-total-time']:
       self.run()
+
     
     return self.get_state()

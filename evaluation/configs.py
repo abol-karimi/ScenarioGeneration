@@ -1,3 +1,6 @@
+from scenariogen.core.coverages.coverage import Predicate, StatementCoverage
+
+
 SUT_config = {
   'render-spectator': False,
   'render-ego': False,
@@ -14,6 +17,19 @@ coverage_config = {
   'moving_speed': 0.6,
   'coverage-module': None,
 }
+
+
+def ego_violations_coverage_filter(cov):
+  statements = (s for s in cov.items if
+    (s.predicate in {Predicate('violatesRule'),
+                     Predicate('violatesRightOfForRule'),
+                     Predicate('collidedWithAtTime')} \
+      and s.args[0] == 'ego'
+    ) \
+    or s.predicate in {Predicate('egoNonegoCollision'),
+                       Predicate('egoPropCollision')}
+  )
+  return StatementCoverage(statements)
 
 
 def get_experiment_config(gen_ego, gen_coverage, randomizer_seed, seeds_folder, max_total_time, output_folder):

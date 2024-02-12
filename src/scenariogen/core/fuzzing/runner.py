@@ -130,6 +130,7 @@ def simulation_service(connection):
                                         raiseGuardViolations=True)
       except (SimulationCreationError, GuardViolation) as e:
         run_callbacks(cleanup_callbacks)
+        simulator.world.tick()
         traceback.print_exc()        
         print(f'Failed to simulate the scenario due to exception {e}. Returning a None result...')
         connection.send(None)
@@ -141,10 +142,12 @@ def simulation_service(connection):
         exit(1)
       except Exception as e:
         run_callbacks(cleanup_callbacks)
+        simulator.world.tick()
         traceback.print_exc()
         print(f'Failed to simulate the scenario due to unexpected exception {e}. Will try again...')
       else:
         run_callbacks(cleanup_callbacks)
+        simulator.world.tick()
         if simulation:
           connection.send(SimResult(simulation))
         else:
@@ -194,6 +197,8 @@ class SUTRunner:
         while cls.server_process.is_alive():
           if cls.client_conn.poll(10):
             sim_result = cls.client_conn.recv()
+            if not sim_result:
+              print(f'Simulation rejected fuzz-input with hash ', config['fuzz-input'].hexdigest)
             return sim_result
       except Exception as e:
         print(f'Failed to run the scenario due to exception {e}. Retrying...')

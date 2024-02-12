@@ -1,7 +1,7 @@
 #!/usr/bin/env python3.8
 """
 Research question:
-  Does prioritizing seeds based on their predicate-coverage improve the fuzzing performance?
+  Does guiding input generation using code-coverage improve the predicate-coverage?
 """
 
 

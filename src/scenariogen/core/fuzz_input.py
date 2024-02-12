@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Tuple, Dict
 import hashlib
 import jsonpickle
-from cachetools import cached
+from functools import cached_property
 
 # This project
 from scenariogen.core.signals import SignalType
@@ -24,13 +24,13 @@ class FuzzInput:
   timings: Tuple[Spline] = None # maps time to the parameter value of the footprint spline
   signals: Tuple[SignalType] = None
 
-  @cached
-  def __bytes__(self):
+  @cached_property
+  def bytes(self):
     return jsonpickle.encode(self, indent=1).encode('utf-8')
 
-  @cached
-  def __hash__(self) -> int:   
-    return hashlib.sha1(bytes(self)).hexdigest()
+  @cached_property
+  def hexdigest(self):
+    return hashlib.sha1(self.bytes).hexdigest()
 
   
 def validate_spline(spline):

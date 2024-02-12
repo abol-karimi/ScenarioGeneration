@@ -1,10 +1,8 @@
 import sys
 import jsonpickle
 from pathlib import Path
-import shutil
 from typing import Any
 import multiprocessing
-import hashlib
 from random import Random
 import atheris
 import setproctitle
@@ -63,20 +61,30 @@ class SUTCallback:
                                 })
     if sim_result and 'coverage' in sim_result.records:
       # Save the fuzz-input and its coverage to disk
-      with open(Path(self.config['fuzz-inputs-folder'])/hash(fuzz_input), 'wb') as f:
+      with open(Path(self.config['fuzz-inputs-folder'])/fuzz_input.hexdigest, 'wb') as f:
         f.write(input_bytes)
-      with open(Path(self.config['coverages-folder'])/hash(fuzz_input), 'w') as f:
+      with open(Path(self.config['coverages-folder'])/fuzz_input.hexdigest, 'w') as f:
         f.write(jsonpickle.encode(sim_result.records['coverage'], indent=1))
       
       # For debugging:
-      with open(Path(self.config['events-folder'])/hash(fuzz_input), 'w') as f:
+      with open(Path(self.config['events-folder'])/fuzz_input.hexdigest, 'w') as f:
         f.write(jsonpickle.encode(sim_result.records['events'], indent=1))
 
 #------------------------------------
 #---------- Atheris wrapper ---------
 #------------------------------------
-def atheris_target(libfuzzer_config, SUT, mutator):
+def atheris_target(config, SUT, mutator):
   setproctitle.setproctitle('Atheris target')
+  print('\n\n\nmax-total-time: ', config['max-total-time'], '\n\n')
+  libfuzzer_config = [f"-max_total_time={config['max-total-time']}",
+                      f"-artifact_prefix={Path(config['bugs-folder'])}/",
+                      f"-max_len={config['max-seed-length']}",
+                      f"-timeout=300", # scenarios taking more than 5 minutes are considered as bugs
+                      f"-report_slow_units=120", # scenarios taking more than 2 minutes are considered slow
+                      f"-rss_limit_mb=16384",
+                      Path(config['atheris-output-folder']).as_posix(),
+                      config['seeds-folder'],
+                    ]
   atheris.instrument_all()
   atheris.Setup(sys.argv + libfuzzer_config,
                 SUT,
@@ -90,15 +98,7 @@ class AtherisFuzzer:
     self.random = Random(config['randomizer-seed'])
     self.mutator = MutatorCallback({**config['mutator-config'],
                                     'random': self.random})
-    self.libfuzzer_config = [f"-max_total_time={config['max-total-time']}",
-                             f"-artifact_prefix={Path(config['bugs-folder'])}/",
-                             f"-max_len={config['max-seed-length']}",
-                             f"-timeout=300", # scenarios taking more than 5 minutes are considered as bugs
-                             f"-report_slow_units=120", # scenarios taking more than 2 minutes are considered slow
-                             f"-rss_limit_mb=16384",
-                             Path(config['atheris-output-folder']).as_posix(),
-                             config['seeds-folder'],
-                            ]
+
     self.SUT = SUTCallback({**config['SUT-config'],
                             **config['coverage-config'],
                             'fuzz-inputs-folder': config['fuzz-inputs-folder'],
@@ -106,33 +106,29 @@ class AtherisFuzzer:
                             'events-folder': config['events-folder'],
                             })
 
+  def get_state(self):
+    state = {
+      'mutator-state': self.mutator.get_state(),
+      'random-state': self.random.getstate(),
+      }
+    return state
+
+  def set_state(self, state):
+    self.mutator.set_state(state['mutator-state'])
+    self.random.setstate(state['random-state'])
+
   def runs(self, atheris_state):
     if atheris_state: # resume
       self.set_state(atheris_state)
 
     ctx = multiprocessing.get_context('spawn')
     p = ctx.Process(target=atheris_target,
-                    args=(self.libfuzzer_config,
+                    args=(self.config,
                           self.SUT,
                           self.mutator),
                     name='Atheris')
     p.start()
     p.join()
 
-    # include the seeds in the ouput
-    fuzz_inputs_path = Path(self.config['fuzz-inputs-folder'])
-    for seed_path in Path(self.config['seeds-folder']).glob('*'):
-      shutil.copy(seed_path, fuzz_inputs_path)
-
     return None # We will not resume Atheris later
   
-  def get_state(self):
-    state = {
-      'mutator-state': self.mutator.get_state(),
-      'random_state': self.random.getstate(),
-      }
-    return state
-
-  def set_state(self, state):
-    self.mutator.set_state(state['mutator-state'])
-    self.random.setstate(state['random_state'])

@@ -44,7 +44,7 @@ class PowerSchedule:
     self.assignEnergy(population)
     norm_energy = self.normalizedEnergy(population)
     fuzz_candidate = self.random.choices(population, weights=norm_energy)[0]
-    print(f'Chose fuzz-candidate with fuzz-input-hash {hash(fuzz_candidate.fuzz_input)}')
+    print(f'Chose fuzz-candidate with fuzz-input-hash {fuzz_candidate.fuzz_input.hexdigest}')
     return fuzz_candidate
 
 
