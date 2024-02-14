@@ -59,15 +59,15 @@ class SUTCallback:
                                 **fuzz_input.config,                               
                                 'fuzz-input': fuzz_input,
                                 })
+    # check if fuzz_input is valid
     if sim_result and 'coverage' in sim_result.records:
-      # Save the fuzz-input and its coverage to disk
-      with open(Path(self.config['fuzz-inputs-folder'])/fuzz_input.hexdigest, 'wb') as f:
+      with open(Path(self.config['fuzz-inputs-folder'])/f'{fuzz_input.hexdigest}.json', 'wb') as f:
         f.write(input_bytes)
-      with open(Path(self.config['coverages-folder'])/fuzz_input.hexdigest, 'w') as f:
+      with open(Path(self.config['coverages-folder'])/f'{fuzz_input.hexdigest}.json', 'w') as f:
         f.write(jsonpickle.encode(sim_result.records['coverage'], indent=1))
       
       # For debugging:
-      with open(Path(self.config['events-folder'])/fuzz_input.hexdigest, 'w') as f:
+      with open(Path(self.config['events-folder'])/f'{fuzz_input.hexdigest}.json', 'w') as f:
         f.write(jsonpickle.encode(sim_result.records['events'], indent=1))
 
 #------------------------------------

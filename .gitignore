@@ -16,3 +16,4 @@ evaluation/**/*.json
 evaluation/**/fuzz-inputs
 evaluation/**/events
 evaluation/**/bugs
+evaluation/**/atheris-output

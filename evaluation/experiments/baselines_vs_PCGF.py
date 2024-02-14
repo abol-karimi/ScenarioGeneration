@@ -4,7 +4,7 @@ import setproctitle
 
 import evaluation.experiments.Atheris as Atheris_experiment
 import evaluation.experiments.PCGF as PCGF_experiment
-import evaluation.experiments.random_search as random_search_experiment
+import evaluation.experiments.Random as Random_experiment
 import evaluation.utils.experiment_runner
 from evaluation.utils.utils import get_test_config
 import evaluation.utils.events_to_coverage
@@ -16,7 +16,7 @@ from evaluation.configs import ego_violations_coverage_filter
 if __name__ == '__main__':
   setproctitle.setproctitle('baseline-vs-PCGF')
 
-  max_total_time = 30*60 # seconds
+  max_total_time = 8*60*60 # seconds
   gen_ego = 'TFPP'
   gen_coverage = 'traffic-rules'
   test_ego = gen_ego
@@ -25,81 +25,100 @@ if __name__ == '__main__':
   output_folder = f'evaluation/results/baselines_vs_PCGF'
 
   run_configs = [
-    {'generator': 'PCGF',
-     'experiment-module': PCGF_experiment,
-     'trial-seeds': (0,),
+    # {'generator': 'PCGF',
+    #  'experiment-module': PCGF_experiment,
+    #  'trial-seeds': (0,1),
+    #  'max-total-time': max_total_time,
+    #  },
+    # {'generator': 'Atheris',
+    #  'experiment-module': Atheris_experiment,
+    #  'trial-seeds': (0,1),
+    #  'max-total-time': max_total_time,
+    #  },
+    {'generator': 'Random',
+     'experiment-module': Random_experiment,
+     'trial-seeds': (0,1),
      'max-total-time': max_total_time,
-     },
-    {'generator': 'Atheris',
-     'experiment-module': Atheris_experiment,
-     'trial-seeds': (0,),
-     'max-total-time': max_total_time,
-     },
+     },     
   ]
   average_configs = [
     {'generator': 'PCGF',
      'experiment-module': PCGF_experiment,
-     'trial-seeds': (0,),
+     'trial-seeds': (0,1),
      'max-total-time': max_total_time,
      'output-file': f'{output_folder}/PCGF/all-coverage.json',
      'coverage-filter': lambda s: s,
      },
     {'generator': 'PCGF',
      'experiment-module': PCGF_experiment,
-     'trial-seeds': (0,),
+     'trial-seeds': (0,1),
      'max-total-time': max_total_time,
      'output-file': f'{output_folder}/PCGF/violations-coverage.json',
      'coverage-filter': ego_violations_coverage_filter,
      },
     {'generator': 'Atheris',
      'experiment-module': Atheris_experiment,
-     'trial-seeds': (0,),
+     'trial-seeds': (0,1),
      'max-total-time': max_total_time,
      'output-file': f'{output_folder}/Atheris/all-coverage.json',
      'coverage-filter': lambda s: s,
      },
     {'generator': 'Atheris',
      'experiment-module': Atheris_experiment,
-     'trial-seeds': (0,),
+     'trial-seeds': (0,1),
      'max-total-time': max_total_time,
      'output-file': f'{output_folder}/Atheris/violations-coverage.json',
+     'coverage-filter': ego_violations_coverage_filter,
+     },
+    {'generator': 'Random',
+     'experiment-module': Random_experiment,
+     'trial-seeds': (0,1),
+     'max-total-time': max_total_time,
+     'output-file': f'{output_folder}/Random/all-coverage.json',
+     'coverage-filter': lambda s: s,
+     },
+    {'generator': 'Random',
+     'experiment-module': Random_experiment,
+     'trial-seeds': (0,1),
+     'max-total-time': max_total_time,
+     'output-file': f'{output_folder}/Random/violations-coverage.json',
      'coverage-filter': ego_violations_coverage_filter,
      },
   ]
 
   coverage_plot_configs = [
     {
-      'generators': ['PCGF', 'Atheris', ],
+      'generators': ['PCGF', 'Atheris', 'Random'],
       'coverage-types': ['statementSet', 'statement', 'predicateSet', 'predicate'],
       'PCGF': {'coverage-file': f'{output_folder}/PCGF/all-coverage.json',
                 'color': 'g',
                 'label': 'PCGF', 
               },
       'Atheris': {'coverage-file': f'{output_folder}/Atheris/all-coverage.json',
-                  'color': 'r',
+                  'color': 'b',
                   'label': 'Atheris',
                   },
-      'random-search': {'coverage-file': f'{output_folder}/random_search/all-coverage.json',
-                        'color': 'b',
-                        'label': 'Random search',
-                        },
+      'Random': {'coverage-file': f'{output_folder}/Random/all-coverage.json',
+                  'color': 'r',
+                  'label': 'Random',
+                  },
       'output-file': f'{output_folder}/baselines-vs-PCGF_per-time.png',
      },
     {
-      'generators': ['PCGF', 'Atheris', ],
+      'generators': ['PCGF', 'Atheris', 'Random'],
       'coverage-types': ['statementSet', 'statement', 'predicateSet', 'predicate'],
       'PCGF': {'coverage-file': f'{output_folder}/PCGF/violations-coverage.json',
                 'color': 'g',
                 'label': 'PCGF',
                 },
       'Atheris': {'coverage-file': f'{output_folder}/Atheris/violations-coverage.json',
-                  'color': 'r',
+                  'color': 'b',
                   'label': 'Atheris',
                   },
-      'random-search': {'coverage-file': f'{output_folder}/random_search/violations-coverage.json',
-                        'color': 'b',
-                        'label': 'Random search',
-                        },
+      'Random': {'coverage-file': f'{output_folder}/Random/violations-coverage.json',
+                  'color': 'r',
+                  'label': 'Random',
+                  },
       'output-file': f'{output_folder}/baselines-vs-PCGF_violations_per-time.png',
     },
   ]

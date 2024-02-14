@@ -1,3 +1,10 @@
+"""
+Generates random seeds using simulation.
+1. A random route through the intersection is chosen for the VUT.
+2. A random number of non-egos with random routes through the intersection are chosen.
+3. All the vehicles (VUT and non-egos) are driven using the VUT's algorithm.
+"""
+
 from pathlib import Path
 import jsonpickle
 from random import Random
@@ -8,9 +15,9 @@ from scenariogen.core.fuzzing.schedules import FuzzCandidate
 from scenariogen.core.coverages.coverage import StatementSetCoverage
 
 from .base import Fuzzer
- 
 
-class GreyboxFuzzer(Fuzzer):
+
+class MutationFuzzer(Fuzzer):
   def __init__(self, config):
     self.config = config
     self.coverage_seen = StatementSetCoverage([])
@@ -54,7 +61,7 @@ class GreyboxFuzzer(Fuzzer):
                                 })
     if (not sim_result is None) and 'coverage' in sim_result.records:
       # For debugging purposes, save events
-      with open(Path(self.config['events-folder'])/fuzz_input.hexdigest, 'w') as f:
+      with open(Path(self.config['events-folder'])/f'{fuzz_input.hexdigest}.json', 'w') as f:
         f.write(jsonpickle.encode(sim_result.records['events'], indent=1))
 
       return sim_result.records['coverage']
@@ -89,9 +96,9 @@ class GreyboxFuzzer(Fuzzer):
     fuzz_input = self.gen_input()
     statement_coverage = self.input_eval(fuzz_input)
     if not statement_coverage is None: # if fuzz-input is valid
-      with open(Path(self.config['fuzz-inputs-folder'])/fuzz_input.hexdigest, 'wb') as f:
+      with open(Path(self.config['fuzz-inputs-folder'])/f'{fuzz_input.hexdigest}.json', 'wb') as f:
         f.write(fuzz_input.bytes)
-      with open(Path(self.config['coverages-folder'])/fuzz_input.hexdigest, 'w') as f:
+      with open(Path(self.config['coverages-folder'])/f'{fuzz_input.hexdigest}.json', 'w') as f:
         f.write(jsonpickle.encode(statement_coverage, indent=1))
 
       if not statement_coverage in self.coverage_seen:

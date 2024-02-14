@@ -1,10 +1,10 @@
 from collections import Counter
 
-from scenariogen.core.fuzzing.fuzzers.greybox import GreyboxFuzzer
+from scenariogen.core.fuzzing.fuzzers.mutation import MutationFuzzer
 from scenariogen.core.coverages.coverage import PredicateCoverage
 
 
-class CountingPredicateSetFuzzer(GreyboxFuzzer):
+class CountingPredicateSetFuzzer(MutationFuzzer):
   """Count how often predicate-sets are exercised."""
   def __init__(self, config):
     super().__init__(config)

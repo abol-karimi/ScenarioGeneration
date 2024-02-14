@@ -7,6 +7,8 @@ import signal
 import ctypes
 import torch
 from queue import Queue, Empty
+from dataclasses import dataclass
+from typing import Any
 
 import scenic
 scenic.setDebuggingOptions(verbosity=0, fullBacktrace=True)
@@ -21,14 +23,22 @@ from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
 from scenariogen.core.utils import ordinal
 
 
+@dataclass(frozen=True)
 class SimResult:
-  def __init__(self, simulation):
+  trajectory : Any = None
+  finalState : Any = None
+  terminationType : Any = None
+  terminationReason : Any = None
+  records : Any = None
+
+  @classmethod
+  def from_simulation(cls, simulation):
     result = simulation.result
-    self.trajectory = result.trajectory
-    self.finalState = result.finalState
-    self.terminationType = result.terminationType
-    self.terminationReason = result.terminationReason
-    self.records = result.records
+    return cls(result.trajectory,
+               result.finalState,
+               result.terminationType,
+               result.terminationReason,
+               result.records)
 
 
 libc = ctypes.CDLL("libc.so.6")
@@ -149,7 +159,7 @@ def simulation_service(connection):
         run_callbacks(cleanup_callbacks)
         simulator.world.tick()
         if simulation:
-          connection.send(SimResult(simulation))
+          connection.send(SimResult.from_simulation(simulation))
         else:
           connection.send(None)
 
