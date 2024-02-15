@@ -2,12 +2,8 @@
 
 """ Generate the coverage reports """
 
-from pathlib import Path
 import jsonpickle
-from functools import reduce
 import matplotlib.pyplot as plt
-
-from scenariogen.core.coverages.coverage import StatementCoverage, PredicateSetCoverage, PredicateCoverage
 
 
 # def plot_predicate_coverage_space(axes, interval, gen_ego, gen_coverage, test_coverage):

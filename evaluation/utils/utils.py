@@ -85,6 +85,8 @@ def sample_trial(test_config, ts, coverage_filter):
   measurements = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements']}, results)['measurements']
   elapsed_times = tuple(m['elapsed-time'] for m in measurements)
 
+  fuzz_input_files = [m['new-fuzz-input-files'] for m in measurements]
+
   statementSet_coverages = []
   for m in measurements:
     new_statement_coverages = []
@@ -98,11 +100,13 @@ def sample_trial(test_config, ts, coverage_filter):
   statement_coverages = tuple(c.cast_to(StatementCoverage) for c in statementSet_coverages)
   predicate_coverages = tuple(c.cast_to(PredicateCoverage) for c in statement_coverages)
 
+  fuzz_input_files_acc = [fuzz_input_files[0]]
   statementSet_acc = [statementSet_coverages[0]]
   predicateSet_acc = [predicateSet_coverages[0]]
   statement_acc = [statement_coverages[0]]
   predicate_acc = [predicate_coverages[0]]
   for i in range(1, len(measurements)):
+    fuzz_input_files_acc.append(fuzz_input_files_acc[-1].union(fuzz_input_files[i]))
     statementSet_acc.append(statementSet_acc[-1] + statementSet_coverages[i])
     predicateSet_acc.append(predicateSet_acc[-1] + predicateSet_coverages[i])
     statement_acc.append(statement_acc[-1] + statement_coverages[i])
@@ -111,13 +115,15 @@ def sample_trial(test_config, ts, coverage_filter):
   interpolate = piecewise_constant_numpy
   interpolator = interpolate.__name__
 
-  print(f'Interpolating coverages using {interpolator}...')
+  print(f'Sampling trial using interpolator {interpolator}...')
+  fuzz_inputs_num_samples = interpolate(ts, elapsed_times, tuple(len(c) for c in fuzz_input_files_acc))
   statementSet_samples = interpolate(ts, elapsed_times, tuple(len(c) for c in statementSet_acc))
   statement_samples = interpolate(ts, elapsed_times, tuple(len(c) for c in statement_acc))
   predicateSet_samples = interpolate(ts, elapsed_times, tuple(len(c) for c in predicateSet_acc))
   predicate_samples = interpolate(ts, elapsed_times, tuple(len(c) for c in predicate_acc))
 
-  return (statementSet_samples,
-          statement_samples,
-          predicateSet_samples,
-          predicate_samples)
+  return {'fuzz-inputs-num': fuzz_inputs_num_samples,
+          'statementSet': statementSet_samples,
+          'statement': statement_samples,
+          'predicateSet': predicateSet_samples,
+          'predicate': predicate_samples}
