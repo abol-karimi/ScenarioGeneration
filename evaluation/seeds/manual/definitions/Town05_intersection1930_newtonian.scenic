@@ -8,7 +8,7 @@ description = """
 
 param carla_map = 'Town05'
 carla_map = globalParameters.carla_map
-param map = f'/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/{carla_map}.xodr'
+param map = f'/home/ak/Scenic/assets/maps/CARLA/{carla_map}.xodr'
 model scenic.simulators.newtonian.driving_model
 param weather = 'CloudySunset'
 param timestep = 0.05

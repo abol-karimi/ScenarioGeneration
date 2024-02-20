@@ -3,7 +3,7 @@
  "config": {
   "description": "\n  Several cars randomly pass through a 3way-stop intersection.\n  ",
   "carla-map": "Town05",
-  "map": "/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/Town05.xodr",
+  "map": "/home/ak/Scenic/assets/maps/CARLA/Town05.xodr",
   "weather": "CloudySunset",
   "timestep": 0.05,
   "steps": 400,

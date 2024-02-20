@@ -29,13 +29,14 @@ scenario NonegosScenario(config):
     fuzz_input = config['fuzz-input']
     tjs = sample_trajectories(network, fuzz_input, int(config['steps'])+1)
     signals_actions = sample_signal_actions(fuzz_input, int(config['steps'])+1)
-    for route, tj, timing, signal_actions, blueprint in zip(fuzz_input.routes,
-                                                           tjs,
-                                                           fuzz_input.timings,
-                                                           signals_actions,
-                                                           fuzz_input.blueprints):
+    for route, tj, timing, signal_actions, blueprint, footprint in zip(fuzz_input.routes,
+                                                                        tjs,
+                                                                        fuzz_input.timings,
+                                                                        signals_actions,
+                                                                        fuzz_input.blueprints,
+                                                                        fuzz_input.footprints):
       car = new Car at tj[0][0]@tj[0][1], facing tj[0][2],
-        with name f'{route[0]}_{int(10*timing.ctrlpts[0][1])}',
+        with name f'{route[0]}_{int(footprint.ctrlpts[0][0])}',
         with blueprint blueprint,
         with length blueprint2dims[blueprint]['length'],
         with width blueprint2dims[blueprint]['width'],

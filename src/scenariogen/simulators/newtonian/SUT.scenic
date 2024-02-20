@@ -1,5 +1,5 @@
 """ System Under Test (SUT)
-Nonegos + optionally ego i.e. VUT (Vehicle Under Test)
+Nonegos + optionally ego i.e. VUT (Vehicle Under Test) + optionally a coverage monitor
 """
 
 param config = None
@@ -49,8 +49,8 @@ scenario Main():
 
     if 'coverage-module' in config and config['coverage-module']:
       require monitor coverage_module.EventsMonitor(coverage_events)
-      record final coverage_events as events
       record final coverage_module.to_coverage(coverage_events, {**config, 'network': network}) as coverage
+      record final coverage_events as events     
 
   compose:  
     do nonegos_scenario

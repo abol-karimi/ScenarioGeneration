@@ -23,7 +23,7 @@ config = {
   **coverage_config,
   'ego-module': args.ego_module,
   'coverage-module': 'traffic',
-  'map': '/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/Town05.xodr',
+  'map': '/home/ak/Scenic/assets/maps/CARLA/Town05.xodr',
   'intersection': 'intersection396',
   'render-spectator': args.render_spectator,
   'render-ego': args.render_ego

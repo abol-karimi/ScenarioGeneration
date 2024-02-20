@@ -1,0 +1,133 @@
+Bootstrap: localimage
+From: Docker/dev/vulkan.sif
+
+%files
+    # Scenic
+    /home/ak/Scenic_10-03-2023 /home/ak/Scenic
+
+    # ScenarioComplexity
+    /home/ak/ScenarioComplexity/requirements.txt
+    /home/ak/z3-4.8.10-x64-ubuntu-18.04
+
+    # TF++ Carla Leaderboard agent
+    /home/ak/carla_garage_fork/scenario_runner/requirements.txt
+    /home/ak/carla_garage_fork/leaderboard/requirements.txt
+    /home/ak/carla_garage_fork/team_code/requirements.txt
+
+    # ScenarioGeneration
+    /home/ak/ScenarioGeneration/requirements.txt
+
+%post
+    # https://github.com/carla-simulator/carla/blob/master/Util/Docker/Release.Dockerfile
+    apt-key adv --fetch-keys "https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub"
+    apt-get update
+    packages='libsdl2-2.0 xserver-xorg libomp5'   
+    DEBIAN_FRONTEND=noninteractive apt-get install -y $packages --no-install-recommends
+
+    #--- apt dependencies ---
+    # interactive GUI mode (suppresses the warning "xdg-user-dir: not found")
+    apt-get install -y xdg-user-dirs xdg-utils
+    # other build/runtime dependencies
+    apt-get install -y \
+    build-essential \
+    gcc \
+    clang \
+    bison \
+    re2c \
+    cmake \
+    wget \
+    curl \
+    git \
+    fontconfig \
+    fonts-freefont-ttf \
+    libjpeg-turbo8 \
+    libjpeg-turbo8-dev \
+    libtbb2 \
+    eog \
+    vim \
+    software-properties-common
+    # Apps useful for monitoring execution
+    apt-get install -y psmisc
+
+    #--- Python 3.8.17 ---
+    # for compiling python from source
+    apt-get install -y \
+    zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev
+    # since didn't install precompiled python binaries
+    apt-get install -y \
+    libbz2-dev liblzma-dev
+    # For python wrappers for sqlite
+    apt-get install -y libsqlite3-dev
+    # Needed for enabling TK with python
+    DEBIAN_FRONTEND=noninteractive TZ=US/NewYork apt-get install -y tk-dev
+    # Compile the source
+    mkdir /home/ak/python-setup
+    cd /home/ak/python-setup
+    wget https://www.python.org/ftp/python/3.8.17/Python-3.8.17.tgz
+    tar -xvf Python-3.8.17.tgz
+    cd Python-3.8.17
+    ./configure --enable-loadable-sqlite-extensions \
+                --enable-optimizations \
+                --with-tcltk-includes='-I/usr/include' \
+                --with-tcltk-libs='-L/usr/lib'
+    # Use all cpu cores to make:
+    make -j12
+    # Alternative installation since Ubuntu's GUI depends on the default Python 2.7
+    make altinstall
+
+    #--- Setup python environment ---
+    cd /home/ak
+    python3.8 -m venv .venv
+    . .venv/bin/activate
+
+    #--- Scenic 3 ---
+    pip install numpy scipy pybind11 wheel
+    # Apps needed for 3D geometry operations
+    add-apt-repository ppa:openscad/releases
+    apt-get update
+    apt-get install -y openscad
+    apt-get install -y blender
+    pip install -e /home/ak/Scenic
+
+    #--- ScenarioGeneration ---
+    pip install -r /home/ak/ScenarioGeneration/requirements.txt
+    # Clingo with Python support
+    pip install --upgrade cmake
+    pip install cffi
+    git clone --depth 1 --branch v5.6.2 https://github.com/potassco/clingo.git
+    git -C /home/ak/clingo submodule update --init --recursive
+    cmake -H/home/ak/clingo -B/home/ak/clingo-build \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/home/ak/clingo-install \
+        -DCLINGO_BUILD_APPS=ON \
+        -DCLINGO_BUILD_SHARED=ON \
+        -DCLINGO_BUILD_WITH_PYTHON=ON \
+        -DCLINGO_PYTHON_VERSION:LIST="3.8;EXACT" \
+        -DPython_ROOT=/home/ak/.venv \
+    -DPYCLINGO_INSTALL_DIR=/home/ak/.venv/lib/python3.8/site-packages
+    cmake --build /home/ak/clingo-build
+    cmake --build /home/ak/clingo-build --target install
+
+    #--- ScenarioComplexity ---
+    pip install -r /home/ak/ScenarioComplexity/requirements.txt
+
+    #--- TF++ Carla Leaderboard agent ---
+    pip install -r /home/ak/carla_garage_fork/scenario_runner/requirements.txt
+    pip install -r /home/ak/carla_garage_fork/leaderboard/requirements.txt
+    pip install -r /home/ak/carla_garage_fork/team_code/requirements.txt
+
+    # for code coverage measurements
+    pip install pyinstrument coverage
+
+
+
+%runscript
+    cd /home/ak
+    ScenarioGeneration/Docker/dev/singularity.sh "$@"
+
+%startscript
+    cd /home/ak
+    ScenarioGeneration/Docker/dev/singularity.sh "$@"
+
+# singularity run --no-home --env DISPLAY=$DISPLAY,SDL_VIDEODRIVER=x11 --nv --nvccli --bind /tmp/.X11-unix:/tmp/.X11-unix:rw scenariogen-dev.sif -RenderOffScreen -ini:[/Script/Engine.RendererSettings]:r.GraphicsAdapter=2
+# singularity run --no-home --nv --nvccli --bind /tmp/.X11-unix:/tmp/.X11-unix:rw scenariogen-dev.sif

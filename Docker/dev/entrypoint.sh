@@ -33,7 +33,7 @@ export PATH=/home/carla/ScenarioGeneration/src/scenariogen/scripts/:$PATH
 export PATH=/home/carla/ScenarioGeneration/src/scenariogen/scripts/carla:$PATH
 export PATH=/home/carla/ScenarioGeneration/src/scenariogen/scripts/newtonian:$PATH
 export PATH=/home/carla/z3-4.8.10-x64-ubuntu-18.04/bin:$PATH
-cp -f /home/carla/ScenarioGeneration/src/scenariogen/simulators/carla/Town05Engine.ini /home/carla/CarlaUE4/Config/DefaultEngine.ini
+cp -f /home/carla/ScenarioGeneration/src/scenariogen/simulators/carla/Town05Engine.ini /home/ak/carla/CarlaUE4/Config/DefaultEngine.ini
 
 # ScenarioComplexity
 export PYTHONPATH=/home/carla/ScenarioComplexity/src/:$PYTHONPATH

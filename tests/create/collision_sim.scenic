@@ -18,7 +18,7 @@ route_right = ('road8_lane1', 'road415_lane1', 'road9_lane1')
 
 #--- Scenic parameters
 param carla_map = carla_map
-param map = f'/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/{carla_map}.xodr'
+param map = f'/home/ak/Scenic/assets/maps/CARLA/{carla_map}.xodr'
 model scenic.simulators.newtonian.driving_model
 
 #--- Derived constants

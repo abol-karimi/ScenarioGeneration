@@ -103,9 +103,11 @@ USER root
 RUN apt-get install -y psmisc
 USER carla
 
+# To suppress the warning "xdg-user-dir: not found"
+USER root
+RUN apt-get install -y xdg-user-dirs xdg-utils
+USER carla
+
 # Entrypoint script
 COPY --chown=carla:carla entrypoint.sh /home/carla/entrypoint.sh
 ENTRYPOINT [ "/bin/sh", "-c", "/home/carla/entrypoint.sh" ]
-
-
-

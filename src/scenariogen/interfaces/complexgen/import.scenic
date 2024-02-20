@@ -1,7 +1,7 @@
 """ Scenario Description
 Replay complexgen's scenario without the ego agents ('ego' and 'illega').
 """
-param map = localPath('/home/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/Town05.xodr')  # or other CARLA map that definitely works
+param map = localPath('/home/ak/Scenic/assets/maps/CARLA/Town05.xodr')  # or other CARLA map that definitely works
 param carla_map = 'Town05'
 model scenic.simulators.carla.model
 
