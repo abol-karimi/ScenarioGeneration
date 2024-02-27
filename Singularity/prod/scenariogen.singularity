@@ -1,0 +1,77 @@
+Bootstrap: localimage
+From: Singularity/python.sif
+
+%files
+    # Scenic
+    /home/ak/Scenic_10-03-2023 /home/ak/Scenic
+
+    # ScenarioComplexity
+    /home/ak/ScenarioComplexity/requirements.txt
+    /home/ak/z3-4.8.10-x64-ubuntu-18.04
+
+    # TF++ Carla Leaderboard agent
+    /home/ak/carla_garage_fork/scenario_runner/requirements.txt
+    /home/ak/carla_garage_fork/leaderboard/requirements.txt
+    /home/ak/carla_garage_fork/team_code/requirements.txt
+
+    # ScenarioGeneration
+    /home/ak/ScenarioGeneration/requirements.txt
+
+%post  
+
+    #--- Setup python environment ---
+    cd /home/ak
+    python3.8 -m venv .venv
+    . .venv/bin/activate
+
+    #--- Scenic 3 ---
+    pip install numpy scipy pybind11 wheel
+    # Apps needed for 3D geometry operations
+    add-apt-repository ppa:openscad/releases
+    apt-get update
+    apt-get install -y openscad
+    apt-get install -y blender
+    pip install -e /home/ak/Scenic
+
+    #--- ScenarioGeneration ---
+    pip install -r /home/ak/ScenarioGeneration/requirements.txt
+    # Clingo with Python support
+    pip install --upgrade cmake
+    pip install cffi
+    git clone --depth 1 --branch v5.6.2 https://github.com/potassco/clingo.git
+    git -C /home/ak/clingo submodule update --init --recursive
+    cmake -H/home/ak/clingo -B/home/ak/clingo-build \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/home/ak/clingo-install \
+        -DCLINGO_BUILD_APPS=ON \
+        -DCLINGO_BUILD_SHARED=ON \
+        -DCLINGO_BUILD_WITH_PYTHON=ON \
+        -DCLINGO_PYTHON_VERSION:LIST="3.8;EXACT" \
+        -DPython_ROOT=/home/ak/.venv \
+    -DPYCLINGO_INSTALL_DIR=/home/ak/.venv/lib/python3.8/site-packages
+    cmake --build /home/ak/clingo-build
+    cmake --build /home/ak/clingo-build --target install
+
+    #--- ScenarioComplexity ---
+    pip install -r /home/ak/ScenarioComplexity/requirements.txt
+
+    #--- TF++ Carla Leaderboard agent ---
+    pip install -r /home/ak/carla_garage_fork/scenario_runner/requirements.txt
+    pip install -r /home/ak/carla_garage_fork/leaderboard/requirements.txt
+    pip install -r /home/ak/carla_garage_fork/team_code/requirements.txt
+
+    # for code coverage measurements
+    pip install pyinstrument coverage
+
+
+
+%runscript
+    cd /home/ak
+    ScenarioGeneration/Singularity/prod/entrypoint.sh "$@"
+
+%startscript
+    cd /home/ak
+    ScenarioGeneration/Singularity/prod/entrypoint.sh "$@"
+
+# singularity run --no-home --env DISPLAY=$DISPLAY,SDL_VIDEODRIVER=x11 --nv --nvccli --bind /tmp/.X11-unix:/tmp/.X11-unix:rw scenariogen-dev.sif -RenderOffScreen -ini:[/Script/Engine.RendererSettings]:r.GraphicsAdapter=2
+# singularity run --no-home --nv --nvccli --bind /tmp/.X11-unix:/tmp/.X11-unix:rw scenariogen-dev.sif

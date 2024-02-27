@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: Docker/dev/vulkan.sif
+From: Singularity/python.sif
 
 %files
     # Scenic
@@ -17,63 +17,7 @@ From: Docker/dev/vulkan.sif
     # ScenarioGeneration
     /home/ak/ScenarioGeneration/requirements.txt
 
-%post
-    # https://github.com/carla-simulator/carla/blob/master/Util/Docker/Release.Dockerfile
-    apt-key adv --fetch-keys "https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub"
-    apt-get update
-    packages='libsdl2-2.0 xserver-xorg libomp5'   
-    DEBIAN_FRONTEND=noninteractive apt-get install -y $packages --no-install-recommends
-
-    #--- apt dependencies ---
-    # interactive GUI mode (suppresses the warning "xdg-user-dir: not found")
-    apt-get install -y xdg-user-dirs xdg-utils
-    # other build/runtime dependencies
-    apt-get install -y \
-    build-essential \
-    gcc \
-    clang \
-    bison \
-    re2c \
-    cmake \
-    wget \
-    curl \
-    git \
-    fontconfig \
-    fonts-freefont-ttf \
-    libjpeg-turbo8 \
-    libjpeg-turbo8-dev \
-    libtbb2 \
-    eog \
-    vim \
-    software-properties-common
-    # Apps useful for monitoring execution
-    apt-get install -y psmisc
-
-    #--- Python 3.8.17 ---
-    # for compiling python from source
-    apt-get install -y \
-    zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev
-    # since didn't install precompiled python binaries
-    apt-get install -y \
-    libbz2-dev liblzma-dev
-    # For python wrappers for sqlite
-    apt-get install -y libsqlite3-dev
-    # Needed for enabling TK with python
-    DEBIAN_FRONTEND=noninteractive TZ=US/NewYork apt-get install -y tk-dev
-    # Compile the source
-    mkdir /home/ak/python-setup
-    cd /home/ak/python-setup
-    wget https://www.python.org/ftp/python/3.8.17/Python-3.8.17.tgz
-    tar -xvf Python-3.8.17.tgz
-    cd Python-3.8.17
-    ./configure --enable-loadable-sqlite-extensions \
-                --enable-optimizations \
-                --with-tcltk-includes='-I/usr/include' \
-                --with-tcltk-libs='-L/usr/lib'
-    # Use all cpu cores to make:
-    make -j12
-    # Alternative installation since Ubuntu's GUI depends on the default Python 2.7
-    make altinstall
+%post  
 
     #--- Setup python environment ---
     cd /home/ak
@@ -123,11 +67,11 @@ From: Docker/dev/vulkan.sif
 
 %runscript
     cd /home/ak
-    ScenarioGeneration/Docker/dev/singularity.sh "$@"
+    ScenarioGeneration/Singularity/entrypoint.sh "$@"
 
 %startscript
     cd /home/ak
-    ScenarioGeneration/Docker/dev/singularity.sh "$@"
+    ScenarioGeneration/Singularity/entrypoint.sh "$@"
 
 # singularity run --no-home --env DISPLAY=$DISPLAY,SDL_VIDEODRIVER=x11 --nv --nvccli --bind /tmp/.X11-unix:/tmp/.X11-unix:rw scenariogen-dev.sif -RenderOffScreen -ini:[/Script/Engine.RendererSettings]:r.GraphicsAdapter=2
 # singularity run --no-home --nv --nvccli --bind /tmp/.X11-unix:/tmp/.X11-unix:rw scenariogen-dev.sif
