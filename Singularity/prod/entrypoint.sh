@@ -7,7 +7,8 @@
 
 # Carla
 export CARLA_ROOT='/home/scenariogen/carla'
-export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/
+export PYTHONPATH=${CARLA_ROOT}/PythonAPI/examples/
+export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/:$PYTHONPATH
 export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/agents/:$PYTHONPATH
 export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/dist/${carla_egg}:$PYTHONPATH
 

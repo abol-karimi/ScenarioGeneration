@@ -9,10 +9,9 @@ from collections import namedtuple
 import carla
 from leaderboard.envs.sensor_interface import SensorReceivedNoData
 
-# from examples.rss.rss_sensor import RssSensor
+# from rss.rss_sensor import RssSensor
 from agents.navigation.behavior_agent import BehaviorAgent
 from scenic.simulators.carla.utils.utils import scenicToCarlaLocation, carlaToScenicPosition
-from scenariogen.simulators.carla.rss_sensor import RssSensor # TODO replace with carla module above
 from scenariogen.simulators.carla.utils import (signal_to_vehicleLightState, 
 																								maneuverType_to_Autopilot_turn,
 																								interpolate_trajectory
@@ -92,28 +91,28 @@ behavior BehaviorAgentReachDestination(dest, aggressiveness='normal', debug=Fals
 	print(f'Car {self.name} reached its destination.')
 
 
-behavior BehaviorAgentRSSReachDestination(dest, aggressiveness='normal', debug=False):
-	agent = BehaviorAgent(self.carlaActor,
-												behavior=aggressiveness,
-												map_inst=simulation().map)
-	agent.set_destination(scenicToCarlaLocation(dest, world=simulation().world),
-												scenicToCarlaLocation(self.position, world=simulation().world))
+# behavior BehaviorAgentRSSReachDestination(dest, aggressiveness='normal', debug=False):
+# 	agent = BehaviorAgent(self.carlaActor,
+# 												behavior=aggressiveness,
+# 												map_inst=simulation().map)
+# 	agent.set_destination(scenicToCarlaLocation(dest, world=simulation().world),
+# 												scenicToCarlaLocation(self.position, world=simulation().world))
 
-	transforms = [wp.transform for wp, _ in agent._local_planner._waypoints_queue]
-	rss_sensor = RssSensor(self.carlaActor, simulation().world,
-													None, None, None,
-													routing_targets=transforms)
-	restrictor = carla.RssRestrictor()
-	vehicle_physics = self.carlaActor.get_physics_control()
-	while not agent.done():
-		control = agent.run_step(debug=debug)
-		rss_proper_response = rss_sensor.proper_response if rss_sensor.response_valid else None
-		if rss_proper_response:
-			control = restrictor.restrict_vehicle_control(
-					control, rss_proper_response, rss_sensor.ego_dynamics_on_route, vehicle_physics)
-		self.carlaActor.apply_control(control)
-		wait
-	print(f'Car {self.name} reached its destination.')
+# 	transforms = [wp.transform for wp, _ in agent._local_planner._waypoints_queue]
+# 	rss_sensor = RssSensor(self.carlaActor, simulation().world,
+# 													None, None, None,
+# 													routing_targets=transforms)
+# 	restrictor = carla.RssRestrictor()
+# 	vehicle_physics = self.carlaActor.get_physics_control()
+# 	while not agent.done():
+# 		control = agent.run_step(debug=debug)
+# 		rss_proper_response = rss_sensor.proper_response if rss_sensor.response_valid else None
+# 		if rss_proper_response:
+# 			control = restrictor.restrict_vehicle_control(
+# 					control, rss_proper_response, rss_sensor.ego_dynamics_on_route, vehicle_physics)
+# 		self.carlaActor.apply_control(control)
+# 		wait
+# 	print(f'Car {self.name} reached its destination.')
 
 
 behavior BehaviorAgentFollowWaypoints(waypoints, aggressiveness):
