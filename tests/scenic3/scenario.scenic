@@ -4,7 +4,7 @@ Som description.
 
 ## SET MAP AND MODEL (i.e. definitions of all referenceable vehicle types, road library, etc)
 param carla_map = 'Town05'
-param map = f'/home/ak/Scenic/assets/maps/CARLA/{globalParameters.carla_map}.xodr'
+param map = f'/home/scenariogen/Scenic/assets/maps/CARLA/{globalParameters.carla_map}.xodr'
 param render = '0'
 model scenic.simulators.newtonian.driving_model
 

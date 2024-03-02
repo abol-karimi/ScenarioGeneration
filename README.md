@@ -11,3 +11,7 @@ Run any script from `~/ScenarioGeneration` (i.e. the project root folder).
 * For running the experiment scripts in `experiments/` prefix them with the full relative path e.g. `experiments/predicate-coverage/experiment.py`. These scripts don't take CLI options, as all the parameters are set in the scripts.
 * For running the scripts in `src/scenariogen/scripts` just type the script name, as the folder is in `$PATH`. Run the scripts with the `-h` flag to see the options.
 
+
+## carla_garage_fork
+After installing the pip requirements, run:
+`get_pretrained_models.sh`

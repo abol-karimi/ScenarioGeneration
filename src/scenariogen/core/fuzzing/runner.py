@@ -114,7 +114,7 @@ def simulation_service(connection):
             print('Starting the Carla server...')
             carlaUE4_options = ["CarlaUE4", "-nosound"]
             carlaUE4_options.append('' if config['render-spectator'] or config['render-ego'] else '-RenderOffScreen')
-            carla_server_process = subprocess.Popen(["/home/ak/carla/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Shipping"]+carlaUE4_options,
+            carla_server_process = subprocess.Popen(["/home/scenariogen/carla/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Shipping"]+carlaUE4_options,
                                                     preexec_fn=set_pdeathsig(signal.SIGKILL)
                                                    )
             time.sleep(10)

@@ -2,7 +2,7 @@
  "py/object": "scenariogen.core.fuzz_input.FuzzInput",
  "config": {
   "carla-map": "Town05",
-  "map": "/home/ak/Scenic/assets/maps/CARLA/Town05.xodr",
+  "map": "/home/scenariogen/Scenic/assets/maps/CARLA/Town05.xodr",
   "intersection": "intersection396",
   "traffic_rules": "4way-uncontrolled.lp",
   "ego_route": {

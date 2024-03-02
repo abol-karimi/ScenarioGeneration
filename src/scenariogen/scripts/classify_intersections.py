@@ -12,7 +12,7 @@ client = carla.Client('127.0.0.1', 2000)
 
 if args.map_name:
     map_name = args.map_name
-    map_path = f'/home/ak/Scenic/assets/maps/CARLA/{map_name}.xodr'
+    map_path = f'/home/scenariogen/Scenic/assets/maps/CARLA/{map_name}.xodr'
     world = client.load_world(map_name)
     network = Network.fromFile(map_path)
 else:

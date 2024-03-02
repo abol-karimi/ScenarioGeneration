@@ -12,7 +12,7 @@ config = {
 }
 
 params = {'carla-map': config['carla-map'],
-          'map': f"/home/ak/Scenic/assets/maps/CARLA/{config['carla-map']}.xodr",
+          'map': f"/home/scenariogen/Scenic/assets/maps/CARLA/{config['carla-map']}.xodr",
           'render': config['render'],
           'timestep': config['timestep'],
           'config': config,

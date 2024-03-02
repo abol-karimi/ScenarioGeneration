@@ -4,7 +4,7 @@ description = """
   """
 param carla_map = 'Town05'
 carla_map = globalParameters.carla_map
-param map = f'/home/ak/Scenic/assets/maps/CARLA/{carla_map}.xodr'
+param map = f'/home/scenariogen/Scenic/assets/maps/CARLA/{carla_map}.xodr'
 model scenic.simulators.carla.model
 param weather = 'CloudySunset'
 param timestep = 0.05
@@ -66,8 +66,8 @@ scenario SeedScenario():
     p = transform.rectilinear(x0@y0, h0)
     p_end = transform.rectilinear(transform.axis.length@0, 0)
 
-    agent = '/home/ak/carla_garage_fork/team_code/sensor_agent'
-    agent_config = '/home/ak/carla_garage_fork/pretrained_models/leaderboard/tfpp_wp_all_0'
+    agent = '/home/scenariogen/carla_garage_fork/team_code/sensor_agent'
+    agent_config = '/home/scenariogen/carla_garage_fork/pretrained_models/leaderboard/tfpp_wp_all_0'
     track = 'SENSORS'
     keypoints = (p[0]@p[1], p_end[0]@p_end[1])
     ego_behavior = LeaderboardAgentBehavior(agent, agent_config, track, keypoints, debug=False)

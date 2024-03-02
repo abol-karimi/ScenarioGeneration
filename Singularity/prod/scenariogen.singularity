@@ -3,24 +3,24 @@ From: Singularity/python.sif
 
 %files
     # Scenic
-    /home/ak/Scenic_10-03-2023 /home/ak/Scenic
+    {{DependencyFolder}}/Scenic_10-03-2023 /home/scenariogen/Scenic
 
     # ScenarioComplexity
-    /home/ak/ScenarioComplexity/requirements.txt
-    /home/ak/z3-4.8.10-x64-ubuntu-18.04
+    {{DependencyFolder}}/ScenarioComplexity/requirements.txt /home/scenariogen/ScenarioComplexity/requirements.txt
+    {{DependencyFolder}}/z3-4.8.10-x64-ubuntu-18.04 /home/scenariogen/z3-4.8.10-x64-ubuntu-18.04
 
     # TF++ Carla Leaderboard agent
-    /home/ak/carla_garage_fork/scenario_runner/requirements.txt
-    /home/ak/carla_garage_fork/leaderboard/requirements.txt
-    /home/ak/carla_garage_fork/team_code/requirements.txt
+    {{DependencyFolder}}/carla_garage_fork/scenario_runner/requirements.txt /home/scenariogen/carla_garage_fork/scenario_runner/requirements.txt
+    {{DependencyFolder}}/carla_garage_fork/leaderboard/requirements.txt /home/scenariogen/carla_garage_fork/leaderboard/requirements.txt
+    {{DependencyFolder}}/carla_garage_fork/team_code/requirements.txt /home/scenariogen/carla_garage_fork/team_code/requirements.txt
 
     # ScenarioGeneration
-    /home/ak/ScenarioGeneration/requirements.txt
+    {{DependencyFolder}}/ScenarioGeneration/requirements.txt /home/scenariogen/ScenarioGeneration/requirements.txt
 
 %post  
 
     #--- Setup python environment ---
-    cd /home/ak
+    cd /home/scenariogen
     python3.8 -m venv .venv
     . .venv/bin/activate
 
@@ -31,34 +31,34 @@ From: Singularity/python.sif
     apt-get update
     apt-get install -y openscad
     apt-get install -y blender
-    pip install -e /home/ak/Scenic
+    pip install -e /home/scenariogen/Scenic
 
     #--- ScenarioGeneration ---
-    pip install -r /home/ak/ScenarioGeneration/requirements.txt
+    pip install -r /home/scenariogen/ScenarioGeneration/requirements.txt
     # Clingo with Python support
     pip install --upgrade cmake
     pip install cffi
     git clone --depth 1 --branch v5.6.2 https://github.com/potassco/clingo.git
-    git -C /home/ak/clingo submodule update --init --recursive
-    cmake -H/home/ak/clingo -B/home/ak/clingo-build \
+    git -C /home/scenariogen/clingo submodule update --init --recursive
+    cmake -H/home/scenariogen/clingo -B/home/scenariogen/clingo-build \
         -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_INSTALL_PREFIX=/home/ak/clingo-install \
+        -DCMAKE_INSTALL_PREFIX=/home/scenariogen/clingo-install \
         -DCLINGO_BUILD_APPS=ON \
         -DCLINGO_BUILD_SHARED=ON \
         -DCLINGO_BUILD_WITH_PYTHON=ON \
         -DCLINGO_PYTHON_VERSION:LIST="3.8;EXACT" \
-        -DPython_ROOT=/home/ak/.venv \
-    -DPYCLINGO_INSTALL_DIR=/home/ak/.venv/lib/python3.8/site-packages
-    cmake --build /home/ak/clingo-build
-    cmake --build /home/ak/clingo-build --target install
+        -DPython_ROOT=/home/scenariogen/.venv \
+    -DPYCLINGO_INSTALL_DIR=/home/scenariogen/.venv/lib/python3.8/site-packages
+    cmake --build /home/scenariogen/clingo-build
+    cmake --build /home/scenariogen/clingo-build --target install
 
     #--- ScenarioComplexity ---
-    pip install -r /home/ak/ScenarioComplexity/requirements.txt
+    pip install -r /home/scenariogen/ScenarioComplexity/requirements.txt
 
     #--- TF++ Carla Leaderboard agent ---
-    pip install -r /home/ak/carla_garage_fork/scenario_runner/requirements.txt
-    pip install -r /home/ak/carla_garage_fork/leaderboard/requirements.txt
-    pip install -r /home/ak/carla_garage_fork/team_code/requirements.txt
+    pip install -r /home/scenariogen/carla_garage_fork/scenario_runner/requirements.txt
+    pip install -r /home/scenariogen/carla_garage_fork/leaderboard/requirements.txt
+    pip install -r /home/scenariogen/carla_garage_fork/team_code/requirements.txt
 
     # for code coverage measurements
     pip install pyinstrument coverage
@@ -66,12 +66,9 @@ From: Singularity/python.sif
 
 
 %runscript
-    cd /home/ak
+    cd /home/scenariogen
     ScenarioGeneration/Singularity/prod/entrypoint.sh "$@"
 
 %startscript
-    cd /home/ak
+    cd /home/scenariogen
     ScenarioGeneration/Singularity/prod/entrypoint.sh "$@"
-
-# singularity run --no-home --env DISPLAY=$DISPLAY,SDL_VIDEODRIVER=x11 --nv --nvccli --bind /tmp/.X11-unix:/tmp/.X11-unix:rw scenariogen-dev.sif -RenderOffScreen -ini:[/Script/Engine.RendererSettings]:r.GraphicsAdapter=2
-# singularity run --no-home --nv --nvccli --bind /tmp/.X11-unix:/tmp/.X11-unix:rw scenariogen-dev.sif

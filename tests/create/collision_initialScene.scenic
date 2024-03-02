@@ -19,7 +19,7 @@ route = Route(lanes=['road44_lane1', 'road552_lane1', 'road45_lane1'])
 
 #--- Scenic parameters
 param carla_map = carla_map
-param map = f'/home/ak/Scenic/assets/maps/CARLA/{carla_map}.xodr'
+param map = f'/home/scenariogen/Scenic/assets/maps/CARLA/{carla_map}.xodr'
 model scenic.domains.driving.model
 
 #--- Derived constants

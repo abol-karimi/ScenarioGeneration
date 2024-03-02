@@ -45,8 +45,8 @@ From: Singularity/vulkan.sif
     # Needed for enabling TK with python
     DEBIAN_FRONTEND=noninteractive TZ=US/NewYork apt-get install -y tk-dev
     # Compile the source
-    mkdir -p /home/ak/python-setup
-    cd /home/ak/python-setup
+    mkdir -p /home/scenariogen/python-setup
+    cd /home/scenariogen/python-setup
     wget https://www.python.org/ftp/python/3.8.17/Python-3.8.17.tgz
     tar -xvf Python-3.8.17.tgz
     cd Python-3.8.17
