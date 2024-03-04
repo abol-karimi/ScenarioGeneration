@@ -8,4 +8,7 @@
 #SBATCH -t 00:02:00
 #SBATCH --qos gpu_access
 
-/users/a/b/abol/ScenarioGeneration/Singularity/prod/run.sh -c evaluation/experiments/baselines_vs_PCGF.py
+DependencyFolder=/users/a/b/abol \
+/users/a/b/abol/ScenarioGeneration/Singularity/run.sh \
+/users/a/b/abol/ScenarioGeneration/Singularity/scenariogen.sif \
+-c evaluation/experiments/baselines_vs_PCGF.py

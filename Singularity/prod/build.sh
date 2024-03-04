@@ -1,1 +1,0 @@
-sudo singularity build Singularity/prod/scenariogen.sif Singularity/prod/scenariogen.singularity
