@@ -5,7 +5,7 @@
 #SBATCH --gres=gpu:1
 #SBATCH -p gpu,volta-gpu,a100-gpu
 #SBATCH --mem=16G
-#SBATCH -t 00:02:00
+#SBATCH -t 00:05:00
 #SBATCH --qos gpu_access
 
 DependencyFolder=/users/a/b/abol \

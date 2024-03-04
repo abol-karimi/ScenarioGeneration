@@ -96,4 +96,4 @@ From: Singularity/python.sif
     export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/dist/${carla_egg}:$PYTHONPATH
     . /home/scenariogen/.venv/bin/activate
     cd /home/scenariogen/ScenarioGeneration
-    /bin/bash "$@"
+    "$@"
