@@ -1,24 +1,26 @@
 Bootstrap: localimage
-From: Singularity/python.sif
+From: python.sif
+
+%setup
+    mkdir -p ${SINGULARITY_ROOTFS}/home/scenariogen/clingo-source
+    cp -r ~/Downloads/clingo_v5.6.2/* ${SINGULARITY_ROOTFS}/home/scenariogen/clingo-source/
 
 %files
     # Scenic
-    {{DependencyFolder}}/Scenic_10-03-2023 /home/scenariogen/Scenic
+    {{ScenariogenDependencies}}/Scenic_10-03-2023 /home/scenariogen/Scenic
 
     # ScenarioComplexity
-    {{DependencyFolder}}/ScenarioComplexity/requirements.txt /home/scenariogen/ScenarioComplexity/requirements.txt
-    {{DependencyFolder}}/z3-4.8.10-x64-ubuntu-18.04 /home/scenariogen/z3-4.8.10-x64-ubuntu-18.04
+    {{ScenariogenDependencies}}/ScenarioComplexity/requirements.txt /home/scenariogen/ScenarioComplexity/requirements.txt
 
     # TF++ Carla Leaderboard agent
-    {{DependencyFolder}}/carla_garage_fork/scenario_runner/requirements.txt /home/scenariogen/carla_garage_fork/scenario_runner/requirements.txt
-    {{DependencyFolder}}/carla_garage_fork/leaderboard/requirements.txt /home/scenariogen/carla_garage_fork/leaderboard/requirements.txt
-    {{DependencyFolder}}/carla_garage_fork/team_code/requirements.txt /home/scenariogen/carla_garage_fork/team_code/requirements.txt
+    {{ScenariogenDependencies}}/carla_garage_fork/scenario_runner/requirements.txt /home/scenariogen/carla_garage_fork/scenario_runner/requirements.txt
+    {{ScenariogenDependencies}}/carla_garage_fork/leaderboard/requirements.txt /home/scenariogen/carla_garage_fork/leaderboard/requirements.txt
+    {{ScenariogenDependencies}}/carla_garage_fork/team_code/requirements.txt /home/scenariogen/carla_garage_fork/team_code/requirements.txt
 
     # ScenarioGeneration
-    {{DependencyFolder}}/ScenarioGeneration/requirements.txt /home/scenariogen/ScenarioGeneration/requirements.txt
+    {{ScenariogenDependencies}}/ScenarioGeneration/requirements.txt /home/scenariogen/ScenarioGeneration/requirements.txt
 
-%post  
-
+%post
     #--- Setup python environment ---
     cd /home/scenariogen
     python3.8 -m venv .venv
@@ -38,9 +40,7 @@ From: Singularity/python.sif
     # Clingo with Python support
     pip install --upgrade cmake
     pip install cffi
-    git clone --depth 1 --branch v5.6.2 https://github.com/potassco/clingo.git
-    git -C /home/scenariogen/clingo submodule update --init --recursive
-    cmake -H/home/scenariogen/clingo -B/home/scenariogen/clingo-build \
+    cmake -H/home/scenariogen/clingo-source -B/home/scenariogen/clingo-build \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX=/home/scenariogen/clingo-install \
         -DCLINGO_BUILD_APPS=ON \
@@ -51,6 +51,9 @@ From: Singularity/python.sif
     -DPYCLINGO_INSTALL_DIR=/home/scenariogen/.venv/lib/python3.8/site-packages
     cmake --build /home/scenariogen/clingo-build
     cmake --build /home/scenariogen/clingo-build --target install
+
+    rm -rf /home/scenariogen/clingo-source
+    rm -rf /home/scenariogen/clingo-build
 
     #--- ScenarioComplexity ---
     pip install -r /home/scenariogen/ScenarioComplexity/requirements.txt
@@ -69,11 +72,10 @@ From: Singularity/python.sif
     export PYTHONPATH=/home/scenariogen/ScenarioGeneration/src/:$PYTHONPATH
     export PYTHONPATH=/home/scenariogen/ScenarioGeneration/:$PYTHONPATH
     export PATH=/home/scenariogen/ScenarioGeneration/:$PATH
-    export PATH=/home/scenariogen/ScenarioGeneration/tests/:$PATH
     export PATH=/home/scenariogen/ScenarioGeneration/src/scenariogen/scripts/:$PATH
     export PATH=/home/scenariogen/ScenarioGeneration/src/scenariogen/scripts/carla:$PATH
     export PATH=/home/scenariogen/ScenarioGeneration/src/scenariogen/scripts/newtonian:$PATH
-    export PATH=/home/scenariogen/z3-4.8.10-x64-ubuntu-18.04/bin:$PATH
+    export PATH=/home/scenariogen/z3/bin:$PATH
 
     # ScenarioComplexity
     export PYTHONPATH=/home/scenariogen/ScenarioComplexity/src/:$PYTHONPATH
@@ -84,7 +86,10 @@ From: Singularity/python.sif
     export WORK_DIR=/home/scenariogen/carla_garage_fork
     export SCENARIO_RUNNER_ROOT=${WORK_DIR}/scenario_runner
     export LEADERBOARD_ROOT=${WORK_DIR}/leaderboard
-    export PYTHONPATH=${WORK_DIR}:${WORK_DIR}/team_code:${SCENARIO_RUNNER_ROOT}:${LEADERBOARD_ROOT}:${PYTHONPATH}
+    export PYTHONPATH=${WORK_DIR}:$PYTHONPATH
+    export PYTHONPATH=${WORK_DIR}/team_code:$PYTHONPATH
+    export PYTHONPATH=${SCENARIO_RUNNER_ROOT}:$PYTHONPATH
+    export PYTHONPATH=${LEADERBOARD_ROOT}:$PYTHONPATH
 
 
 %runscript

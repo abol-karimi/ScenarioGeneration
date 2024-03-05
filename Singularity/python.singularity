@@ -1,25 +1,11 @@
-Bootstrap: docker
-From: nvidia/vulkan:1.1.121-cuda-10.1--ubuntu18.04
+Bootstrap: localimage
+From: carla.sif
 
+%setup
+    mkdir -p ${SINGULARITY_ROOTFS}/home/scenariogen/python
+    cp -r ~/Downloads/Python-3.8.18/* ${SINGULARITY_ROOTFS}/home/scenariogen/python/
+    
 %post
-    # vulkan drivers
-    # https://forums.developer.nvidia.com/t/running-vulkan-inside-singularity-container/157653/4
-    apt-key adv --fetch-keys "https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub"
-    apt-get update -q \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y wget vulkan-utils libvulkan-dev libvulkan1
-    NVIDIA_DRIVER_VERSION=535.161.07
-    wget -q http://us.download.nvidia.com/XFree86/Linux-x86_64/${NVIDIA_DRIVER_VERSION}/NVIDIA-Linux-x86_64-${NVIDIA_DRIVER_VERSION}.run
-    sh NVIDIA-Linux-x86_64-${NVIDIA_DRIVER_VERSION}.run --extract-only
-    cp -r NVIDIA-Linux-x86_64-${NVIDIA_DRIVER_VERSION}/* ${SINGULARITY_ROOTFS}/usr/lib/x86_64-linux-gnu/
-
-    #--- apt dependencies ---
-    packages='libsdl2-2.0 xserver-xorg libomp5'
-    DEBIAN_FRONTEND=noninteractive apt-get install -y $packages --no-install-recommends
-
-    # interactive GUI mode (suppresses the warning "xdg-user-dir: not found")
-    apt-get install -y \
-        xdg-user-dirs \
-        xdg-utils
     # other build/runtime dependencies
     apt-get install -y \
         build-essential \
@@ -28,40 +14,48 @@ From: nvidia/vulkan:1.1.121-cuda-10.1--ubuntu18.04
         bison \
         re2c \
         cmake \
-        wget \
-        curl \
-        git \
         fontconfig \
         fonts-freefont-ttf \
         libjpeg-turbo8 \
         libjpeg-turbo8-dev \
         libtbb2 \
         software-properties-common
-    # Apps useful for monitoring execution
-    apt-get install -y psmisc
 
-    #--- Python 3.8.17 ---
     # for compiling python from source
     apt-get install -y \
-    zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev
+        zlib1g-dev \
+        libncurses5-dev \
+        libgdbm-dev \
+        libnss3-dev \
+        libssl-dev \
+        libreadline-dev \
+        libffi-dev
+
     # since didn't install precompiled python binaries
     apt-get install -y \
-    libbz2-dev liblzma-dev
+        libbz2-dev \
+        liblzma-dev
+
     # For python wrappers for sqlite
     apt-get install -y libsqlite3-dev
+
     # Needed for enabling TK with python
     DEBIAN_FRONTEND=noninteractive TZ=US/NewYork apt-get install -y tk-dev
-    # Compile the source
-    mkdir -p /home/scenariogen/python-setup
-    cd /home/scenariogen/python-setup
-    wget https://www.python.org/ftp/python/3.8.17/Python-3.8.17.tgz
-    tar -xvf Python-3.8.17.tgz
-    cd Python-3.8.17
+
+    # Configure the compilation
+    cd /home/scenariogen/python && \
     ./configure --enable-loadable-sqlite-extensions \
                 --enable-optimizations \
                 --with-tcltk-includes='-I/usr/include' \
                 --with-tcltk-libs='-L/usr/lib'
-    # Use all cpu cores to make:
+
+    # Compile using all cpu cores
+    cd /home/scenariogen/python && \
     make -j12
+
     # Alternative installation since Ubuntu's GUI depends on the default Python 2.7
+    cd /home/scenariogen/python && \
     make altinstall
+
+    # Remove setup artifacts
+    rm -rf /home/scenariogen/python

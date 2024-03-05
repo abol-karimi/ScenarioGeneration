@@ -11,3 +11,7 @@ https://github.com/EpicGames/UnrealEngine/blob/c3caf7b6bf12ae4c8e09b606f10a09776
 To tell UE4 to use a particular VGA adapter:
 `-graphicsadapter=number`
 
+
+https://www.aditiashenoy.com/posts/blog3_nvidiacudasing/
+System specification:
+`uname -m && cat /etc/*release`
