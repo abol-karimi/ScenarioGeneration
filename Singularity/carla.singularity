@@ -12,13 +12,18 @@ From: nvidia/vulkan:1.2.170-470
     && DEBIAN_FRONTEND=noninteractive apt-get install -y gnupg
     # vulkan drivers
     # https://forums.developer.nvidia.com/t/running-vulkan-inside-singularity-container/157653/4
-    apt-key adv --fetch-keys "https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub"
+    apt-key adv --fetch-keys "https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/3bf863cc.pub"
     apt-get update -q \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y libvulkan1
+
+    # upgrade before installing nvidia drivers
+    apt-get update && apt-get upgrade -y
+
     cp -r /home/scenariogen/nvidia/* /usr/lib/x86_64-linux-gnu/
     rm -rf /home/scenariogen/nvidia
 
     # To suppress the harmless warning "xdg-user-dir: not found"
-    apt-get install -y \
-        xdg-user-dirs \
-        xdg-utils
+    DEBIAN_FRONTEND=noninteractive TZ=US/NewYork \
+        apt-get install -y \
+            xdg-user-dirs \
+            xdg-utils

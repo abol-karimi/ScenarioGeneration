@@ -1,13 +1,16 @@
 #!/bin/sh
 #SBATCH --job-name=scenariogen
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=12
 #SBATCH -o %N-%x-%j.out # File to which STDOUT will be written
 #SBATCH --gres=gpu:1
-#SBATCH -p gpu,volta-gpu,a100-gpu
+#SBATCH -p volta-gpu
 #SBATCH --mem=16G
 #SBATCH -t 00:05:00
 #SBATCH --qos gpu_access
 
-/users/a/b/abol/ScenarioGeneration/Singularity/run.sh \
-/users/a/b/abol/ScenarioGeneration/Singularity/scenariogen.sif \
-evaluation/experiments/baselines_vs_PCGF.py
+nvidia-smi
+
+$ScenariogenDependencies/ScenarioGeneration/Singularity/run.sh \
+SUT.py evaluation/seeds/random/seeds/1d6da581c30402e94a8c94b1ef2b40a1cde442f2 \
+--ego-module evaluation.agents.TFPP \
+--coverage-module traffic-rules

@@ -125,7 +125,8 @@ def simulation_service(connection):
             simulator = CarlaSimulator(carla_map=config['carla-map'],
                                        map_path=config['map'],
                                        timestep=config['timestep'],
-                                       render=config['render-ego'])
+                                       render=config['render-ego'],
+                                       timeout=30)
             
             # For Leaderboard agents
             CarlaDataProvider.set_client(simulator.client)

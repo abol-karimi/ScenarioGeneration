@@ -2,7 +2,7 @@ geomdl
 networkx
 jsonpickle
 atheris
-z3-solver==4.8.10.0
+z3-solver==4.12.6.0
 cachetools
 more-itertools
 sympy
