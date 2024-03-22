@@ -4,7 +4,7 @@ singularity run --nv \
 --bind $ScenariogenDependencies/Scenic_10-03-2023:/home/scenariogen/Scenic \
 --bind $ScenariogenDependencies/ScenarioGeneration:/home/scenariogen/ScenarioGeneration \
 --bind $ScenariogenDependencies/ScenarioComplexity:/home/scenariogen/ScenarioComplexity \
---bind ~/Downloads/z3-4.12.6-x64-glibc-2.35:/home/scenariogen/z3 \
+--bind $ScenariogenDependencies/z3-4.12.6-x64-glibc-2.35:/home/scenariogen/z3 \
 --bind $ScenariogenDependencies/carla_garage_fork:/home/scenariogen/carla_garage_fork \
-scenariogen.sif \
+$ScenariogenDependencies/ScenarioGeneration/Singularity/scenariogen.sif \
 "$@"
