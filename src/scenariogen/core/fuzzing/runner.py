@@ -71,7 +71,7 @@ def log_carla_output(pipe):
   logger.info('Started logging Carla output...')
   with pipe:
     for line in iter(pipe.readline, b'\n'): # b'\n'-separated lines
-      logger.info('got line from subprocess: %r', line)
+      logger.info(line)
 
 
 def simulation_service(connection):

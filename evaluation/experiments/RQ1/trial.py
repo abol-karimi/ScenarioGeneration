@@ -2,6 +2,7 @@
 
 import setproctitle
 import argparse
+from pathlib import Path
 
 import evaluation.experiments.Atheris as Atheris_experiment
 import evaluation.experiments.PCGF as PCGF_experiment
@@ -35,7 +36,9 @@ if __name__ == '__main__':
     experiment = g2e[args.generator]
 
     # Run the experiment
-    trial_output_folder = f"evaluation/results/baselines_vs_PCGF/{args.generator}/{args.ego}_{args.coverage}_{args.randomizer_seed}"
+    trial_output_folder = f"evaluation/results/RQ1/{args.generator}/{args.ego}_{args.coverage}_{args.randomizer_seed}"
+    trial_output_path = Path(trial_output_folder)
+    trial_output_path.mkdir(parents=True, exist_ok=True)
 
     logger = Logger(f'{trial_output_folder}/trial.log', filemode='w')
     logger.start()
