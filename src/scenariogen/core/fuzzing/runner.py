@@ -1,5 +1,5 @@
 import multiprocessing
-import traceback
+import threading
 import subprocess
 import time
 import setproctitle
@@ -9,6 +9,13 @@ import torch
 from queue import Queue, Empty
 from dataclasses import dataclass
 from typing import Any
+
+import logging, logging.handlers
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+# socketHandler = logging.handlers.SocketHandler('localhost',
+#                     logging.handlers.DEFAULT_TCP_LOGGING_PORT)
+# logger.addHandler(socketHandler)
 
 import scenic
 scenic.setDebuggingOptions(verbosity=0, fullBacktrace=True)
@@ -57,11 +64,29 @@ def run_callbacks(callbacks):
       continue
 
 
+def log_carla_output(pipe):
+  logger = logging.getLogger(f'{__name__}.simulation_service.carla')
+  logger.setLevel(logging.DEBUG)
+  socketHandler = logging.handlers.SocketHandler('localhost',
+                      logging.handlers.DEFAULT_TCP_LOGGING_PORT)
+  logger.addHandler(socketHandler)
+  logger.info('Started logging Carla output...')
+  with pipe:
+    for line in iter(pipe.readline, b'\n'): # b'\n'-separated lines
+      logger.info('got line from subprocess: %r', line)
+
+
 def simulation_service(connection):
   """Reads scenario config from connection, then writes sim_result to connection.
   Runs as a separate process to isolate the main process from crashes in Scenic, VUT, or Carla.
   """
-  print(f'Simulation service started!')
+  logger = logging.getLogger(f'{__name__}.simulation_service')
+  logger.setLevel(logging.DEBUG)
+  socketHandler = logging.handlers.SocketHandler('localhost',
+                      logging.handlers.DEFAULT_TCP_LOGGING_PORT)
+  logger.addHandler(socketHandler)
+
+  logger.info(f'Simulation service started!')
   setproctitle.setproctitle('Sim-service')
   carla_server_process = None
   simulator = None
@@ -71,12 +96,11 @@ def simulation_service(connection):
     try:
       config = connection.recv()
     except EOFError:
-      traceback.print_exc()
-      print(f'Client closed the connection. Ending the simulation service...')
+      logger.exception(f'Client closed the connection. Ending the simulation service...')
       connection.close()
       break
     else:
-      print('Simulation service received a request.')
+      logger.info('Simulation service received a request.')
 
     # For any received simulation config, we must send a simulation result (even if the result is None).
     # In case of a simulator crash (e.g. Carla segmentation fault), the service restarts the simulator and tries again.
@@ -92,12 +116,10 @@ def simulation_service(connection):
                                           mode2D=True)
         scene, _ = scenario.generate(maxIterations=1)
       except AssertionError:
-        traceback.print_exc()
-        print(f'Failed to create the initial scene due to AssertionError. Stopping the simulation service...')
+        logger.exception(f'Failed to create the initial scene due to AssertionError. Stopping the simulation service...')
         exit(1)
       except Exception as e:
-        traceback.print_exc()
-        print(f'Failed to create the initial scene due to an unexpected exception of type {type(e)}: {e}. Returning a None result...')
+        logger.exception(f'Failed to create the initial scene due to an unexpected exception of type {type(e)}: {e}. Returning a None result...')
         connection.send(None)
         break
 
@@ -107,19 +129,27 @@ def simulation_service(connection):
                                           render=config['render-spectator'])
         elif config['simulator'] == 'carla':
           if (not carla_server_process is None) and not carla_server_process.poll() is None:
-            print(f'Carla server exited with return code {carla_server_process.returncode}')
+            logger.warning(f'Carla server exited with return code {carla_server_process.returncode}')
             carla_server_process = None
 
           if carla_server_process is None:
-            print('Starting the Carla server...')
+            logger.info('Starting the Carla server...')
             carlaUE4_options = ["CarlaUE4", "-nosound"] # -ini:[/Script/Engine.RendererSettings]:r.GraphicsAdapter=2
             carlaUE4_options.append('' if config['render-spectator'] or config['render-ego'] else '-RenderOffScreen')
             carla_server_process = subprocess.Popen(["/home/scenariogen/carla/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Shipping"]+carlaUE4_options,
-                                                    preexec_fn=set_pdeathsig(signal.SIGKILL)
+                                                    preexec_fn=set_pdeathsig(signal.SIGKILL),
+                                                    text=True,
+                                                    stdout=subprocess.PIPE,
+                                                    stderr=subprocess.STDOUT
                                                    )
+            log_thread = threading.Thread(target=log_carla_output,
+                                          args=(carla_server_process.stdout,))
+            log_thread.daemon = True
+            log_thread.start()
+
             time.sleep(10)
             if not carla_server_process.poll() is None:
-              print(f'Carla crashed immediately with exit code {carla_server_process.returncode}!')
+              logger.error(f'Carla crashed immediately with exit code {carla_server_process.returncode}!')
 
           if simulator is None:
             simulator = CarlaSimulator(carla_map=config['carla-map'],
@@ -145,20 +175,18 @@ def simulation_service(connection):
       except (SimulationCreationError, GuardViolation) as e:
         run_callbacks(cleanup_callbacks)
         simulator.world.tick()
-        traceback.print_exc()        
-        print(f'Failed to simulate the scenario due to exception {e}. Returning a None result...')
+        logger.exception(f'Failed to simulate the scenario due to exception {e}. Returning a None result...')
         connection.send(None)
         break
       except torch.cuda.OutOfMemoryError as e:
-        print(f'Failed to simulate the scenario due to exception {e}. Will close Carla and the simulation service, then try again...')
+        logger.exception(f'Failed to simulate the scenario due to exception {e}. Will close Carla and the simulation service, then try again...')
         carla_server_process.terminate()
         torch.cuda.empty_cache()
         exit(1)
       except Exception as e:
         run_callbacks(cleanup_callbacks)
         simulator.world.tick()
-        traceback.print_exc()
-        print(f'Failed to simulate the scenario due to unexpected exception {e}. Will try again...')
+        logger.exception(f'Failed to simulate the scenario due to unexpected exception {e}. Will try again...')
       else:
         run_callbacks(cleanup_callbacks)
         simulator.world.tick()
@@ -185,7 +213,7 @@ class SUTRunner:
     while True:
       try:
         if cls.server_process is None:
-          print(f"Starting the simulation service...")
+          logger.info(f"Starting the simulation service...")
           cls.server_process = cls.ctx.Process(target=simulation_service,
                                                args=(cls.server_conn,),
                                                name='Simulation service',
@@ -193,7 +221,7 @@ class SUTRunner:
           cls.server_process.start()
         elif not cls.server_process.is_alive():
           cls.crashes += 1
-          print(f"Simulation service crashed for the {ordinal(cls.crashes)} time! Restarting the service...")
+          logger.warning(f"Simulation service crashed for the {ordinal(cls.crashes)} time! Restarting the service...")
           cls.server_process.close()
           cls.client_conn.close()
           cls.server_conn.close()      
@@ -204,18 +232,20 @@ class SUTRunner:
                                                daemon=True)
           cls.server_process.start()
         
-        print('Sending a request to the simulation service...')
+        logger.info('Sending a request to the simulation service...')
         cls.client_conn.send(config)
 
-        print(f'Waiting for simulation result from the simulation service...')
+        logger.info(f'Waiting for simulation result from the simulation service...')
         while cls.server_process.is_alive():
           if cls.client_conn.poll(10):
             sim_result = cls.client_conn.recv()
-            if not sim_result:
-              print(f'Simulation rejected fuzz-input with hash ', config['fuzz-input'].hexdigest)
+            if sim_result:
+              logger.info(f'Simulation completed successfully.')
+            else:
+              logger.info(f'Simulation rejected fuzz-input with hash ', config['fuzz-input'].hexdigest)
             return sim_result
       except Exception as e:
-        print(f'Failed to run the scenario due to exception {e}. Retrying...')
+        logger.exception(f'Failed to run the scenario due to exception {e}. Retrying...')
 
 
 

@@ -6,11 +6,14 @@ import importlib
 from scenic.domains.driving.roads import Network
 
 # This project
+from scenariogen.core.logger import Logger
 from scenariogen.core.fuzzing.runner import SUTRunner
 from scenariogen.core.coverages.coverage import PredicateCoverage
 from evaluation.configs import SUT_config, coverage_config
 
 if __name__ == '__main__':
+    logger = Logger('SUT.log', filemode='w')
+    logger.start()
 
     parser = argparse.ArgumentParser(
         description='play the given scenario with a Carla autopilot driving the ego.')
@@ -93,3 +96,5 @@ if __name__ == '__main__':
         coverage_gap = predicate_coverage_space - coverage.cast_to(PredicateCoverage)
         print(f'\nPredicate coverage gap:')
         coverage_gap.print()
+    
+    logger.stop()
