@@ -7,7 +7,7 @@ import evaluation.experiments.Atheris as Atheris_experiment
 import evaluation.experiments.PCGF as PCGF_experiment
 import evaluation.experiments.Random as Random_experiment
 import evaluation.utils.experiment_runner
-
+from scenariogen.core.logger import Logger
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -36,6 +36,10 @@ if __name__ == '__main__':
 
     # Run the experiment
     trial_output_folder = f"evaluation/results/baselines_vs_PCGF/{args.generator}/{args.ego}_{args.coverage}_{args.randomizer_seed}"
+
+    logger = Logger(f'{trial_output_folder}/trial.log', filemode='w')
+    logger.start()
+
     gen_config = experiment.get_config(args.ego,
                                        args.coverage,
                                        args.randomizer_seed,
@@ -43,3 +47,5 @@ if __name__ == '__main__':
                                        args.seconds,
                                        trial_output_folder)
     evaluation.utils.experiment_runner.run(gen_config)
+
+    logger.stop()

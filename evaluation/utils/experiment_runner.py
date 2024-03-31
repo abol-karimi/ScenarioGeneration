@@ -5,6 +5,11 @@ import time
 import multiprocessing
 import setproctitle
 
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+
 from scenariogen.core.fuzzing.fuzzers.atheris import AtherisFuzzer
 
 
@@ -45,9 +50,11 @@ def measure_progress(fuzz_inputs_path,
   with open(results_file_path, 'w') as f:
     f.write(jsonpickle.encode(results+partial_result, indent=1))
 
-  print(f'Measurement recorded!')
-  print(f'\t Elapsed time: {elapsed_time}')
-  print(f"\t output-folder: {config['output-folder']}")
+  logger.info(f'''Measurement recorded!
+                \t Elapsed time: {elapsed_time}
+                \t output-folder: {config['output-folder']}
+                '''
+              )
 
 
 def run(config):
@@ -71,9 +78,10 @@ def run(config):
     results_fuzz_input_files = reduce(lambda i1,i2: i1.union(i2),
                                       [m['new-fuzz-input-files'] for m in merged_results['measurements']])
     if results_fuzz_input_files != fuzz_input_files:
-      print('Cannot resume experiment: the fuzz_input_files in the folder do not match the fuzz_input_files of results.json!')
-      print('results_fuzz_input_files - fuzz_input_files:', results_fuzz_input_files - fuzz_input_files)
-      print('fuzz_input_files - results_fuzz_input_files:', fuzz_input_files - results_fuzz_input_files)
+      logger.error(f'''Cannot resume experiment: the fuzz_input_files in the folder do not match the fuzz_input_files of results.json!
+                      results_fuzz_input_files - fuzz_input_files: {results_fuzz_input_files - fuzz_input_files}
+                      fuzz_input_files - results_fuzz_input_files: {fuzz_input_files - results_fuzz_input_files}
+                    ''')
       exit(1)
    
     past_fuzz_input_files = results_fuzz_input_files
@@ -108,7 +116,7 @@ def run(config):
                    'new-coverage-files': set(),
                   }]
   
-  print(f"\nNow running experiment: {config['output-folder']}")
+  logger.info(f"Now running experiment: {config['output-folder']}")
  
   ctx = multiprocessing.get_context('spawn')
   p = ctx.Process(target=generator_process_target,
@@ -118,7 +126,7 @@ def run(config):
   start_time = time.time()
   p.start()
 
-  while p.is_alive(): # all the implemented generators exit after config['max-total-time']
+  while p.is_alive(): # the generator exits after config['max-total-time']
     p.join(measurement_period-(time.time()-start_time-measurements[-1]['elapsed-time']))
     measure_progress(fuzz_inputs_path,
                       past_fuzz_input_files,

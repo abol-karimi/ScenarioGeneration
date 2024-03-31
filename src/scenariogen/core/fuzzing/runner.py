@@ -13,9 +13,7 @@ from typing import Any
 import logging, logging.handlers
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-# socketHandler = logging.handlers.SocketHandler('localhost',
-#                     logging.handlers.DEFAULT_TCP_LOGGING_PORT)
-# logger.addHandler(socketHandler)
+
 
 import scenic
 scenic.setDebuggingOptions(verbosity=0, fullBacktrace=True)
