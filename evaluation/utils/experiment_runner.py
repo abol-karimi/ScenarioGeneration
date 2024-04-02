@@ -4,17 +4,18 @@ from functools import reduce
 import time
 import multiprocessing
 import setproctitle
-
 import logging
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
 
 from scenariogen.core.fuzzing.fuzzers.atheris import AtherisFuzzer
+from scenariogen.core.logging.client import configure_logger
 
 
-def generator_process_target(config, generator_state):
+logger = logging.getLogger(__name__)
+
+
+def generator_process_target(config, generator_state, log_queue):
   setproctitle.setproctitle('exp-run target')
+  configure_logger(log_queue)
   
   if config['generator'] is AtherisFuzzer:
     atheris_output_path = Path(config['atheris-output-folder'])
@@ -26,6 +27,7 @@ def generator_process_target(config, generator_state):
   final_state = generator.runs(generator_state)
   with open(f"{config['output-folder']}/generator-state.json", 'w') as f:
     f.write(jsonpickle.encode(final_state, indent=1))
+
 
 def measure_progress(fuzz_inputs_path,
                       past_fuzz_input_files,

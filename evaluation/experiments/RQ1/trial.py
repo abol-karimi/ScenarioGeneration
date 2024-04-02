@@ -8,7 +8,7 @@ import evaluation.experiments.Atheris as Atheris_experiment
 import evaluation.experiments.PCGF as PCGF_experiment
 import evaluation.experiments.Random as Random_experiment
 import evaluation.utils.experiment_runner
-from scenariogen.core.logger import Logger
+import scenariogen.core.logging.server as log_server
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -40,8 +40,7 @@ if __name__ == '__main__':
     trial_output_path = Path(trial_output_folder)
     trial_output_path.mkdir(parents=True, exist_ok=True)
 
-    logger = Logger(f'{trial_output_folder}/trial.log', filemode='w')
-    logger.start()
+    log_server.start(f'{trial_output_folder}/trial.log')
 
     gen_config = experiment.get_config(args.ego,
                                        args.coverage,
@@ -51,4 +50,4 @@ if __name__ == '__main__':
                                        trial_output_folder)
     evaluation.utils.experiment_runner.run(gen_config)
 
-    logger.stop()
+    log_server.stop()

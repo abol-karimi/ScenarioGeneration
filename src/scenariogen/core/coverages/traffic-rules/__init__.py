@@ -1,6 +1,8 @@
 from itertools import combinations
 import copy
 import clingo
+import logging
+logger = logging.getLogger(__name__)
 
 from scenariogen.core.utils import classify_intersection
 from scenariogen.predicates.utils import predicates_of_logic_program
@@ -97,6 +99,8 @@ def to_coverage(events, config):
   ctl = clingo.Control()
   ctl.add("base", [], encoding+instance)
   ctl.ground([("base", [])])
+  logger.debug('Clingo program grounded.')
+  print('Clingo program grounded.')
   ctl.configuration.solve.models = "1"
   
   statements = []

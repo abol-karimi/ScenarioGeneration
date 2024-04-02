@@ -4,6 +4,8 @@ import traceback
 import importlib
 import os
 import carla
+import logging
+logger = logging.getLogger(__name__)
 
 from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
 from srunner.scenariomanager.timer import GameTime
@@ -79,10 +81,11 @@ class LeaderboardAgent(object):
                 self.agent_instance.destroy()
                 self.agent_instance = None
         except Exception as e:
-            print("\n\033[91mFailed to stop the agent:")
-            print(f"\n{traceback.format_exc()}\033[0m")
+            logger.error(f'''Failed to stop the agent:
+                            \t{traceback.format_exc()}
+                            ''')
         
-        print('Cleaned up leaderboard agent!')
+        logger.info('Cleaned up leaderboard agent!')
 
     def run_step(self):
         vehicle_control = self._agent_wrapper()

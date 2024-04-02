@@ -9,11 +9,7 @@ import torch
 from queue import Queue, Empty
 from dataclasses import dataclass
 from typing import Any
-
-import logging, logging.handlers
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
+import logging
 
 import scenic
 scenic.setDebuggingOptions(verbosity=0, fullBacktrace=True)
@@ -26,6 +22,7 @@ from scenic.core.dynamics import GuardViolation
 from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
 
 from scenariogen.core.utils import ordinal
+from scenariogen.core.logging.client import configure_logger
 
 
 @dataclass(frozen=True)
@@ -63,29 +60,23 @@ def run_callbacks(callbacks):
 
 
 def log_carla_output(pipe):
-  logger = logging.getLogger(f'{__name__}.simulation_service.carla')
-  logger.setLevel(logging.DEBUG)
-  socketHandler = logging.handlers.SocketHandler('localhost',
-                      logging.handlers.DEFAULT_TCP_LOGGING_PORT)
-  logger.addHandler(socketHandler)
+  logger = logging.getLogger(f'{__name__}.sim-service.carla')
   logger.info('Started logging Carla output...')
   with pipe:
     for line in iter(pipe.readline, b'\n'): # b'\n'-separated lines
       logger.info(line)
 
 
-def simulation_service(connection):
+def simulation_service(connection, log_queue):
   """Reads scenario config from connection, then writes sim_result to connection.
   Runs as a separate process to isolate the main process from crashes in Scenic, VUT, or Carla.
   """
-  logger = logging.getLogger(f'{__name__}.simulation_service')
-  logger.setLevel(logging.DEBUG)
-  socketHandler = logging.handlers.SocketHandler('localhost',
-                      logging.handlers.DEFAULT_TCP_LOGGING_PORT)
-  logger.addHandler(socketHandler)
+  setproctitle.setproctitle('sim-service')
 
-  logger.info(f'Simulation service started!')
-  setproctitle.setproctitle('Sim-service')
+  configure_logger(log_queue)
+  logger = logging.getLogger(f'{__name__}.sim-service')
+  logger.info('Simulation service started!')
+
   carla_server_process = None
   simulator = None
 
@@ -207,14 +198,16 @@ class SUTRunner:
     """ Runs the scenario.
     Keeps retrying if the simulation server process exits with an error.
     """
+    import scenariogen.core.logging.server as log_server
+    logger = logging.getLogger(__name__)
 
     while True:
       try:
         if cls.server_process is None:
           logger.info(f"Starting the simulation service...")
           cls.server_process = cls.ctx.Process(target=simulation_service,
-                                               args=(cls.server_conn,),
-                                               name='Simulation service',
+                                               args=(cls.server_conn, log_server.queue),
+                                               name='sim-service',
                                                daemon=True)
           cls.server_process.start()
         elif not cls.server_process.is_alive():
@@ -225,8 +218,8 @@ class SUTRunner:
           cls.server_conn.close()      
           cls.client_conn, cls.server_conn = cls.ctx.Pipe(duplex=True)
           cls.server_process = cls.ctx.Process(target=simulation_service,
-                                               name='Simulation service',
-                                               args=(cls.server_conn,),
+                                               name='sim-service',
+                                               args=(cls.server_conn, log_server.queue),
                                                daemon=True)
           cls.server_process.start()
         
