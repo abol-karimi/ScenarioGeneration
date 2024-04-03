@@ -8,6 +8,8 @@ Generates random seeds using simulation.
 from pathlib import Path
 import jsonpickle
 from random import Random
+import logging
+logger = logging.getLogger(__name__)
 
 # This project
 from scenariogen.core.fuzzing.runner import SUTRunner
@@ -105,6 +107,6 @@ class MutationFuzzer(Fuzzer):
         fuzz_candidate = FuzzCandidate(fuzz_input)
         self.fuzz_candidates.append(fuzz_candidate)
         self.coverage_seen = self.coverage_seen + StatementSetCoverage([statement_coverage])    
-        print(f'The fuzz input with hash {fuzz_input.hexdigest} expanded the coverage! Added to fuzz candidates.')
+        logger.info(f'The fuzz input with hash {fuzz_input.hexdigest} expanded the coverage! Added to fuzz candidates.')
 
     return fuzz_candidate, statement_coverage

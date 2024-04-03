@@ -40,7 +40,7 @@ def start(filename, filemode):
                 'class': 'logging.handlers.RotatingFileHandler',
                 'filename': filename,
                 'mode': filemode,
-                'maxBytes': 10*1024**2, # 10MB
+                'maxBytes': 5*1024*1024, # 5MB
                 'backupCount': 10, # 10 files
                 'formatter': 'detailed',
             },

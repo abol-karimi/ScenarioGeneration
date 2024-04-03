@@ -6,6 +6,9 @@ __pycache__
 *.jpg
 *.png
 *.log
+*.log.?
+*.log.??
+*.out
 *.pickle
 *.xodr
 *.sif

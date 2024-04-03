@@ -4,7 +4,7 @@ from datetime import timedelta
 
 generators = ['PCGF', 'Atheris', 'Random']
 randomizer_seeds = [0, 1, 2, 3, 4]
-trial_timeout = timedelta(minutes=10)
+trial_timeout = timedelta(minutes=90)
 slurm_timeout = trial_timeout + timedelta(minutes=5)
 scenariogen_dependencies = '/users/a/b/abol'
 

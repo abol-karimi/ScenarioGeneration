@@ -136,7 +136,7 @@ def simulation_service(connection, log_queue):
             log_thread.daemon = True
             log_thread.start()
 
-            time.sleep(10)
+            time.sleep(20)
             if not carla_server_process.poll() is None:
               logger.error(f'Carla crashed immediately with exit code {carla_server_process.returncode}!')
 

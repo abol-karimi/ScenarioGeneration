@@ -10,9 +10,6 @@ from scenariogen.core.fuzzing.fuzzers.atheris import AtherisFuzzer
 from scenariogen.core.logging.client import configure_logger
 
 
-logger = logging.getLogger(__name__)
-
-
 def generator_process_target(config, generator_state, log_queue):
   setproctitle.setproctitle('exp-run target')
   configure_logger(log_queue)
@@ -38,6 +35,8 @@ def measure_progress(fuzz_inputs_path,
                       results_file_path,
                       results,
                       config):
+  logger = logging.getLogger(__name__)
+
   new_fuzz_input_files = set(fuzz_inputs_path.glob('*')) - past_fuzz_input_files
   new_coverage_files = set(coverages_path.glob('*')) - past_coverage_files
   elapsed_time = time.time()-start_time
@@ -54,12 +53,12 @@ def measure_progress(fuzz_inputs_path,
 
   logger.info(f'''Measurement recorded!
                 \t Elapsed time: {elapsed_time}
-                \t output-folder: {config['output-folder']}
-                '''
+                \t output-folder: {config['output-folder']}'''
               )
 
 
 def run(config):
+  logger = logging.getLogger(__name__)
   measurement_period = 60 # seconds
   
   generator_state_path = Path(config['output-folder'])/'generator-state.json'
@@ -119,10 +118,11 @@ def run(config):
                   }]
   
   logger.info(f"Now running experiment: {config['output-folder']}")
- 
+
+  import scenariogen.core.logging.server as log_server
   ctx = multiprocessing.get_context('spawn')
   p = ctx.Process(target=generator_process_target,
-                  args=(config, generator_state),
+                  args=(config, generator_state, log_server.queue),
                   name=config['output-folder'])
   
   start_time = time.time()

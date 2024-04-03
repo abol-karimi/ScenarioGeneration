@@ -96,11 +96,10 @@ def to_coverage(events, config):
   atoms += temporal_order
   instance = '.\n'.join(atoms)+'.\n'
 
-  ctl = clingo.Control()
+  ctl = clingo.Control(logger=lambda mc,m: logger.warning(m))
   ctl.add("base", [], encoding+instance)
   ctl.ground([("base", [])])
   logger.debug('Clingo program grounded.')
-  print('Clingo program grounded.')
   ctl.configuration.solve.models = "1"
   
   statements = []
