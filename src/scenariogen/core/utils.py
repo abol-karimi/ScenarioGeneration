@@ -8,6 +8,7 @@ import numpy as np
 import sympy
 from scipy.interpolate import splprep, splev
 import matplotlib.pyplot as plt
+import socket
 
 from scenic.core.vectors import Vector
 from scenic.core.geometry import headingOfSegment
@@ -284,3 +285,11 @@ def ordinal(n):
     else:
         suffix = ['th', 'st', 'nd', 'rd', 'th'][min(n % 10, 4)]
     return str(n) + suffix
+
+
+def get_free_port():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(("",0))
+    port = s.getsockname()[1]
+    s.close()
+    return port

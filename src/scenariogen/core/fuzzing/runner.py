@@ -21,7 +21,7 @@ from scenic.core.dynamics import GuardViolation
 
 from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
 
-from scenariogen.core.utils import ordinal
+from scenariogen.core.utils import ordinal, get_free_port
 from scenariogen.core.logging.client import configure_logger
 
 
@@ -122,8 +122,15 @@ def simulation_service(connection, log_queue):
             carla_server_process = None
 
           if carla_server_process is None:
+            CarlaDataProvider.set_rpc_port(get_free_port())
+            CarlaDataProvider.set_streaming_port(get_free_port())
+            CarlaDataProvider.set_traffic_manager_port(get_free_port())
             logger.info('Starting the Carla server...')
-            carlaUE4_options = ["CarlaUE4", "-nosound"] # -ini:[/Script/Engine.RendererSettings]:r.GraphicsAdapter=2
+            carlaUE4_options = ["CarlaUE4",
+                                "-nosound",
+                                "-carla-rpc-port="+str(CarlaDataProvider.get_rpc_port()),
+                                "-carla-streaming-port="+str(CarlaDataProvider.get_streaming_port()),
+                                ] # -ini:[/Script/Engine.RendererSettings]:r.GraphicsAdapter=2
             carlaUE4_options.append('' if config['render-spectator'] or config['render-ego'] else '-RenderOffScreen')
             carla_server_process = subprocess.Popen(["/home/scenariogen/carla/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Shipping"]+carlaUE4_options,
                                                     preexec_fn=set_pdeathsig(signal.SIGKILL),
@@ -136,7 +143,7 @@ def simulation_service(connection, log_queue):
             log_thread.daemon = True
             log_thread.start()
 
-            time.sleep(20)
+            time.sleep(10)
             if not carla_server_process.poll() is None:
               logger.error(f'Carla crashed immediately with exit code {carla_server_process.returncode}!')
 
@@ -145,7 +152,10 @@ def simulation_service(connection, log_queue):
                                        map_path=config['map'],
                                        timestep=config['timestep'],
                                        render=config['render-ego'],
-                                       timeout=30)
+                                       timeout=30,
+                                       port=CarlaDataProvider.get_rpc_port(),
+                                       traffic_manager_port=CarlaDataProvider.get_traffic_manager_port()
+                                      )
             
             # For Leaderboard agents
             CarlaDataProvider.set_client(simulator.client)

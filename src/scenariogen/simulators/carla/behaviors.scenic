@@ -8,6 +8,7 @@ config = globalParameters.config
 from collections import namedtuple
 import carla
 from leaderboard.envs.sensor_interface import SensorReceivedNoData
+from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
 
 # from rss.rss_sensor import RssSensor
 from agents.navigation.behavior_agent import BehaviorAgent
@@ -117,6 +118,7 @@ behavior LeaderboardAgentBehavior(agent_path, agent_config, track, keypoints, de
   Args = namedtuple('Args',
                     ['host',
                       'port',
+                      'traffic_manager_port',
                       'client',
                       'world',
                       'carla_actor',
@@ -132,7 +134,8 @@ behavior LeaderboardAgentBehavior(agent_path, agent_config, track, keypoints, de
   keypoints_carla = tuple(scenicToCarlaLocation(kp, world=simulation().world) for kp in keypoints)
   gps_route, route = interpolate_trajectory(simulation().map, keypoints_carla)
   args = Args(host='127.0.0.1',
-        port='2000',
+        port=CarlaDataProvider.get_rpc_port(),
+        traffic_manager_port=CarlaDataProvider.get_traffic_manager_port(),
         client=simulation().client,
         world=simulation().world,
         carla_actor=self.carlaActor,
