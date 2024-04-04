@@ -11,7 +11,7 @@ from scenariogen.core.logging.client import configure_logger
 
 
 def generator_process_target(config, generator_state, log_queue):
-  setproctitle.setproctitle('exp-run target')
+  setproctitle.setproctitle(config['generator'].__name__)
   configure_logger(log_queue)
   
   if config['generator'] is AtherisFuzzer:
@@ -128,7 +128,7 @@ def run(config):
   start_time = time.time()
   p.start()
 
-  while p.is_alive(): # the generator exits after config['max-total-time']
+  while p.is_alive(): # the generator is expected to exit after config['max-total-time']
     p.join(measurement_period-(time.time()-start_time-measurements[-1]['elapsed-time']))
     measure_progress(fuzz_inputs_path,
                       past_fuzz_input_files,

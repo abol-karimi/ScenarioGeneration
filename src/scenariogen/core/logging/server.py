@@ -32,7 +32,7 @@ def start(filename, filemode):
         'formatters': {
             'detailed': {
                 'class': 'logging.Formatter',
-                'format': '%(name)s %(levelname)s %(processName)s %(message)s'
+                'format': '%(name)s %(levelname)s %(message)s'
             }
         },
         'handlers': {
@@ -40,8 +40,8 @@ def start(filename, filemode):
                 'class': 'logging.handlers.RotatingFileHandler',
                 'filename': filename,
                 'mode': filemode,
-                'maxBytes': 5*1024*1024, # 5MB
-                'backupCount': 10, # 10 files
+                'maxBytes': 10*1024*1024, # 10MB
+                'backupCount': 100, # 100 files
                 'formatter': 'detailed',
             },
         },

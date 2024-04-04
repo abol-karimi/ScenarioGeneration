@@ -2,16 +2,16 @@ import subprocess
 from itertools import product
 from datetime import timedelta
 
-generators = ['PCGF', 'Atheris', 'Random']
+generators = ['PCGF', 'Random']
 randomizer_seeds = [0, 1, 2, 3, 4]
-trial_timeout = timedelta(minutes=90)
+trial_timeout = timedelta(minutes=10)
 slurm_timeout = trial_timeout + timedelta(minutes=5)
 scenariogen_dependencies = '/users/a/b/abol'
 
 for generator, randomizer_seed in product(generators, randomizer_seeds):
     cmd = f'''
         srun \
-        --job-name=scenariogen \
+        --job-name={generator}_{randomizer_seed} \
         --cpus-per-task=12 \
         -o %N-%x-%j.out \
         --gres=gpu:1 \
