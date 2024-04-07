@@ -32,7 +32,8 @@ def start(filename, filemode):
         'formatters': {
             'detailed': {
                 'class': 'logging.Formatter',
-                'format': '%(name)s %(levelname)s %(message)s'
+                'format': '%(asctime)s %(name)s %(levelname)s %(message)s',
+                'datefmt': '%H:%M:%S',
             }
         },
         'handlers': {

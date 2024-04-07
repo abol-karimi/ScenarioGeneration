@@ -67,15 +67,16 @@ def log_carla_output(pipe):
       logger.info(line)
 
 
-def simulation_service(connection, log_queue):
+def simulation_service(connection, log_queue, sync_lock):
   """Reads scenario config from connection, then writes sim_result to connection.
   Runs as a separate process to isolate the main process from crashes in Scenic, VUT, or Carla.
   """
+  sync_lock.release()
+
   setproctitle.setproctitle('sim-service')
 
   configure_logger(log_queue)
   logger = logging.getLogger(f'{__name__}.sim-service')
-  logger.info('Simulation service started!')
 
   carla_server_process = None
   simulator = None
@@ -122,15 +123,11 @@ def simulation_service(connection, log_queue):
             carla_server_process = None
 
           if carla_server_process is None:
-            CarlaDataProvider.set_rpc_port(get_free_port())
-            CarlaDataProvider.set_streaming_port(get_free_port())
-            CarlaDataProvider.set_traffic_manager_port(get_free_port())
             logger.info('Starting the Carla server...')
             carlaUE4_options = ["CarlaUE4",
                                 "-nosound",
-                                "-carla-rpc-port="+str(CarlaDataProvider.get_rpc_port()),
-                                "-carla-streaming-port="+str(CarlaDataProvider.get_streaming_port()),
-                                ] # -ini:[/Script/Engine.RendererSettings]:r.GraphicsAdapter=2
+                                # "-ini:[/Script/Engine.RendererSettings]:r.GraphicsAdapter=2"
+                                ]
             carlaUE4_options.append('' if config['render-spectator'] or config['render-ego'] else '-RenderOffScreen')
             carla_server_process = subprocess.Popen(["/home/scenariogen/carla/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Shipping"]+carlaUE4_options,
                                                     preexec_fn=set_pdeathsig(signal.SIGKILL),
@@ -143,7 +140,7 @@ def simulation_service(connection, log_queue):
             log_thread.daemon = True
             log_thread.start()
 
-            time.sleep(10)
+            time.sleep(15)
             if not carla_server_process.poll() is None:
               logger.error(f'Carla crashed immediately with exit code {carla_server_process.returncode}!')
 
@@ -152,10 +149,7 @@ def simulation_service(connection, log_queue):
                                        map_path=config['map'],
                                        timestep=config['timestep'],
                                        render=config['render-ego'],
-                                       timeout=30,
-                                       port=CarlaDataProvider.get_rpc_port(),
-                                       traffic_manager_port=CarlaDataProvider.get_traffic_manager_port()
-                                      )
+                                       timeout=30)
             
             # For Leaderboard agents
             CarlaDataProvider.set_client(simulator.client)
@@ -215,11 +209,18 @@ class SUTRunner:
       try:
         if cls.server_process is None:
           logger.info(f"Starting the simulation service...")
+          sync_lock = cls.ctx.Lock()
           cls.server_process = cls.ctx.Process(target=simulation_service,
-                                               args=(cls.server_conn, log_server.queue),
+                                               args=(cls.server_conn, log_server.queue, sync_lock),
                                                name='sim-service',
                                                daemon=True)
+          sync_lock.acquire()
           cls.server_process.start()
+          if sync_lock.acquire(timeout=30):
+            logger.info('Simulation service started!')
+          else:
+            logger.warning('Simulation service did not start within 30 seconds.')
+
         elif not cls.server_process.is_alive():
           cls.crashes += 1
           logger.warning(f"Simulation service crashed for the {ordinal(cls.crashes)} time! Restarting the service...")
