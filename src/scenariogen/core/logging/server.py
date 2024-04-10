@@ -50,6 +50,7 @@ def start(filename, filemode):
             'level': 'DEBUG',
             'handlers': ['file']
         },
+        'catureWarnings': True,
     }
     logging.config.dictConfig(d)
     thread = threading.Thread(target=logger_thread, args=(queue,))

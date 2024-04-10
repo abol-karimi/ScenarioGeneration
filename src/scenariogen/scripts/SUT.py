@@ -1,4 +1,5 @@
 #!/usr/bin/env python3.8
+import os
 import argparse
 import jsonpickle
 import importlib
@@ -12,7 +13,9 @@ from scenariogen.core.coverages.coverage import PredicateCoverage
 from evaluation.configs import SUT_config, coverage_config
 
 if __name__ == '__main__':
-    log_server.start('SUT.log', filemode='w')
+    
+    logfile = os.environ.get('SLURM_JOB_ID', 'SUT') + '.log'
+    log_server.start(logfile, filemode='w')
 
     parser = argparse.ArgumentParser(
         description='play the given scenario with a Carla autopilot driving the ego.')

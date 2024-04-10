@@ -1,3 +1,4 @@
+import sys
 import multiprocessing
 import threading
 import subprocess
@@ -59,12 +60,29 @@ def run_callbacks(callbacks):
       continue
 
 
-def log_carla_output(pipe):
+def log_carla_output(carla_process):
   logger = logging.getLogger(f'{__name__}.sim-service.carla')
   logger.info('Started logging Carla output...')
-  with pipe:
-    for line in iter(pipe.readline, b'\n'): # b'\n'-separated lines
-      logger.info(line)
+
+  while True:
+    line = carla_process.stdout.readline()
+    if not line:
+      logger.info('Stopped logging Carla output.')
+      break
+    logger.info(line)
+
+
+class LoggerWriter:
+  def __init__(self, level):
+    self.level = level
+
+  def write(self, message):
+    m = message.strip()
+    if m != '':
+      self.level(m)
+
+  def flush(self):
+    self.level(sys.stderr)
 
 
 def simulation_service(connection, log_queue, sync_lock):
@@ -77,6 +95,8 @@ def simulation_service(connection, log_queue, sync_lock):
 
   configure_logger(log_queue)
   logger = logging.getLogger(f'{__name__}.sim-service')
+  sys.stdout = LoggerWriter(logger.debug)
+  sys.stderr = LoggerWriter(logger.warning)
 
   carla_server_process = None
   simulator = None
@@ -123,9 +143,16 @@ def simulation_service(connection, log_queue, sync_lock):
             carla_server_process = None
 
           if carla_server_process is None:
+            CarlaDataProvider.set_rpc_port(get_free_port())
+            CarlaDataProvider.set_streaming_port(get_free_port())
+            CarlaDataProvider.set_secondary_port(get_free_port())
+            CarlaDataProvider.set_traffic_manager_port(get_free_port())
             logger.info('Starting the Carla server...')
             carlaUE4_options = ["CarlaUE4",
                                 "-nosound",
+                                f"-carla-rpc-port={CarlaDataProvider.get_rpc_port()}",
+                                f"-carla-streaming-port={CarlaDataProvider.get_streaming_port()}",
+                                f"-carla-secondary-port={CarlaDataProvider.get_secondary_port()}",
                                 # "-ini:[/Script/Engine.RendererSettings]:r.GraphicsAdapter=2"
                                 ]
             carlaUE4_options.append('' if config['render-spectator'] or config['render-ego'] else '-RenderOffScreen')
@@ -135,12 +162,12 @@ def simulation_service(connection, log_queue, sync_lock):
                                                     stdout=subprocess.PIPE,
                                                     stderr=subprocess.STDOUT
                                                    )
+            time.sleep(15)
             log_thread = threading.Thread(target=log_carla_output,
-                                          args=(carla_server_process.stdout,))
-            log_thread.daemon = True
+                                          args=(carla_server_process,),
+                                          daemon=True)
             log_thread.start()
 
-            time.sleep(15)
             if not carla_server_process.poll() is None:
               logger.error(f'Carla crashed immediately with exit code {carla_server_process.returncode}!')
 
@@ -149,7 +176,9 @@ def simulation_service(connection, log_queue, sync_lock):
                                        map_path=config['map'],
                                        timestep=config['timestep'],
                                        render=config['render-ego'],
-                                       timeout=30)
+                                       timeout=30,
+                                       port=CarlaDataProvider.get_rpc_port(),
+                                       traffic_manager_port=CarlaDataProvider.get_traffic_manager_port())
             
             # For Leaderboard agents
             CarlaDataProvider.set_client(simulator.client)
@@ -230,7 +259,7 @@ class SUTRunner:
           cls.client_conn, cls.server_conn = cls.ctx.Pipe(duplex=True)
           cls.server_process = cls.ctx.Process(target=simulation_service,
                                                name='sim-service',
-                                               args=(cls.server_conn, log_server.queue),
+                                               args=(cls.server_conn, log_server.queue, sync_lock),
                                                daemon=True)
           cls.server_process.start()
         
