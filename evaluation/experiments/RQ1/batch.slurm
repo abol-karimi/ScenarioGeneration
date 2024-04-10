@@ -21,9 +21,8 @@ declare -i id=$SLURM_ARRAY_TASK_ID
 generator=${generators[ id / trials ]}
 trial_seed=${trial_seeds[ id % trials ]}
 
-srun \
-    -o %x-%N-${generator}-${trial_seed}.out \
-    singularity run --nv \
+singularity run \
+    --nv \
     --env carla_egg=carla-0.9.15-py3.7-linux-x86_64.egg \
     --bind ${scenariogen_dependencies}/CARLA_0.9.15:/home/scenariogen/carla \
     --bind ${scenariogen_dependencies}/Scenic_10-03-2023:/home/scenariogen/Scenic \
@@ -33,9 +32,9 @@ srun \
     --bind ${scenariogen_dependencies}/carla_garage_fork:/home/scenariogen/carla_garage_fork \
     ${scenariogen_dependencies}/ScenarioGeneration/Singularity/scenariogen.sif \
     evaluation/experiments/RQ1/trial.py \
-    --generator ${generator} \
-    --ego TFPP \
-    --randomizer-seed ${trial_seed} \
-    --coverage traffic-rules \
-    --seconds ${trial_timeout}
+        --generator ${generator} \
+        --ego TFPP \
+        --randomizer-seed ${trial_seed} \
+        --coverage traffic-rules \
+        --seconds ${trial_timeout}
 

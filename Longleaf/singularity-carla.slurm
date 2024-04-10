@@ -3,14 +3,13 @@
 #SBATCH -o %j-%N-%x.out # File to which STDOUT will be written
 #SBATCH -p volta-gpu
 #SBATCH --nodes=1
-#SBATCH --nodelist=g0307
 #SBATCH --qos gpu_access
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=16G
 #SBATCH -t 01:00:00
 
-srun singularity run \
+singularity run \
     --nv \
     --env carla_egg=carla-0.9.15-py3.7-linux-x86_64.egg \
     --bind $1/CARLA_0.9.15:/home/scenariogen/carla \

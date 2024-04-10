@@ -150,6 +150,7 @@ def simulation_service(connection, log_queue, sync_lock):
             logger.info('Starting the Carla server...')
             carlaUE4_options = ["CarlaUE4",
                                 "-nosound",
+                                "-prefernvidia",
                                 f"-carla-rpc-port={CarlaDataProvider.get_rpc_port()}",
                                 f"-carla-streaming-port={CarlaDataProvider.get_streaming_port()}",
                                 f"-carla-secondary-port={CarlaDataProvider.get_secondary_port()}",
@@ -162,7 +163,9 @@ def simulation_service(connection, log_queue, sync_lock):
                                                     stdout=subprocess.PIPE,
                                                     stderr=subprocess.STDOUT
                                                    )
+            logger.info('Waiting 15 seconds for Carla to start...')
             time.sleep(15)
+
             log_thread = threading.Thread(target=log_carla_output,
                                           args=(carla_server_process,),
                                           daemon=True)
@@ -261,7 +264,12 @@ class SUTRunner:
                                                name='sim-service',
                                                args=(cls.server_conn, log_server.queue, sync_lock),
                                                daemon=True)
+          sync_lock.acquire()
           cls.server_process.start()
+          if sync_lock.acquire(timeout=30):
+            logger.info('Simulation service started!')
+          else:
+            logger.warning('Simulation service did not start within 30 seconds.')
         
         logger.info('Sending a request to the simulation service...')
         cls.client_conn.send(config)
