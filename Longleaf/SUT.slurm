@@ -3,7 +3,7 @@
 #SBATCH -o %j-%N-%x.out # File to which STDOUT will be written
 #SBATCH -p volta-gpu
 #SBATCH --nodes=1
-#SBATCH --nodelist=g0310
+#SBATCH --nodelist=dgx03
 #SBATCH --qos gpu_access
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=12
@@ -21,4 +21,5 @@ singularity run \
     --bind $1/carla_garage_fork:/home/scenariogen/carla_garage_fork \
     $1/ScenarioGeneration/Singularity/scenariogen.sif \
     SUT.py evaluation/seeds/random/seeds/1d6da581c30402e94a8c94b1ef2b40a1cde442f2 \
+    --ego-module evaluation.agents.TFPP \
     --coverage-module traffic-rules
