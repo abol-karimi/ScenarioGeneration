@@ -1,0 +1,914 @@
+Using binned2.
+- Existing per-process limit (soft=262144, hard=262144) is enough for us (need only 262144)
+Increasing per-process limit of core file size to infinity.
+LogInit: LLM is enabled
+LogInit: LLM CsvWriter: off TraceWriter: off
+LogPlatformFile: Using cached read wrapper
+LogInit: NumberOfWorkerThreadsToSpawn:
+LogInit:  - Number of physical cores available for the process: 16
+LogInit:  - Number of logical cores available for the process: 16
+LogInit:  - Worker number by default: 15 (you can change this number with the command line parameter '-workersthreadpool X', for a max of 26 threads)
+LogTaskGraph: Started task graph with 5 named threads and 50 total threads with 3 sets of task threads.
+LogStats: Stats thread started at 0.242385
+LogInit: NumberOfWorkerThreadsToSpawn:
+LogInit:  - Number of physical cores available for the process: 16
+LogInit:  - Number of logical cores available for the process: 16
+LogInit:  - Worker number by default: 15 (you can change this number with the command line parameter '-workersthreadpool X', for a max of 26 threads)
+LogICUInternationalization: ICU TimeZone Detection - Raw Offset: -5:00, Platform Override: ''
+LogPluginManager: Mounting plugin MeshPainting
+LogPluginManager: Mounting plugin Niagara
+LogPluginManager: Mounting plugin PerformanceMonitor
+LogPluginManager: Mounting plugin ScreenshotTools
+LogPluginManager: Mounting plugin Paper2D
+LogPluginManager: Mounting plugin TemplateSequence
+LogPluginManager: Mounting plugin MatineeToLevelSequence
+LogPluginManager: Mounting plugin ActorSequence
+LogPluginManager: Mounting plugin LevelSequenceEditor
+LogPluginManager: Mounting plugin UdpMessaging
+LogPluginManager: Mounting plugin TcpMessaging
+LogPluginManager: Mounting plugin LightPropagationVolume
+LogPluginManager: Mounting plugin AppleImageUtils
+LogPluginManager: Mounting plugin HairStrands
+LogPluginManager: Mounting plugin CustomMeshComponent
+LogPluginManager: Mounting plugin EditableMesh
+LogPluginManager: Mounting plugin WmfMedia
+LogPluginManager: Mounting plugin SoundFields
+LogPluginManager: Mounting plugin SignificanceManager
+LogPluginManager: Mounting plugin RuntimePhysXCooking
+LogPluginManager: Mounting plugin AudioCapture
+LogPluginManager: Mounting plugin MediaCompositing
+LogPluginManager: Mounting plugin WebMMedia
+LogPluginManager: Mounting plugin AvfMedia
+LogPluginManager: Mounting plugin Synthesis
+LogPluginManager: Mounting plugin ImgMedia
+LogPluginManager: Mounting plugin ChunkDownloader
+LogPluginManager: Mounting plugin ActorLayerUtilities
+LogPluginManager: Mounting plugin ProceduralMeshComponent
+LogPluginManager: Mounting plugin AssetTags
+LogPluginManager: Mounting plugin AlembicHairImporter
+LogPluginManager: Mounting plugin GooglePAD
+LogPluginManager: Mounting plugin LinuxDeviceProfileSelector
+LogPluginManager: Mounting plugin PropertyAccessEditor
+LogPluginManager: Mounting plugin PhysXVehicles
+LogPluginManager: Mounting plugin CableComponent
+LogPluginManager: Mounting plugin AudioSynesthesia
+LogPluginManager: Mounting plugin ArchVisCharacter
+LogPluginManager: Mounting plugin WebMMoviePlayer
+LogPluginManager: Mounting plugin OnlineSubsystem
+LogPluginManager: Mounting plugin OnlineSubsystemNull
+LogPluginManager: Mounting plugin OnlineSubsystemUtils
+LogPluginManager: Mounting plugin VariantManagerContent
+LogPluginManager: Mounting plugin LauncherChunkInstaller
+LogPluginManager: Mounting plugin DatasmithContent
+LogPluginManager: Mounting plugin GeometryCache
+LogPluginManager: Mounting plugin GeometryCollectionPlugin
+LogPluginManager: Mounting plugin PythonScriptPlugin
+LogPluginManager: Mounting plugin GeometryProcessing
+LogPluginManager: Mounting plugin CharacterAI
+LogPluginManager: Mounting plugin AutomationUtils
+LogPluginManager: Mounting plugin ChaosClothEditor
+LogPluginManager: Mounting plugin PlatformCrypto
+LogPluginManager: Mounting plugin PluginUtils
+LogPluginManager: Mounting plugin BackChannel
+LogPluginManager: Mounting plugin RenderDocPlugin
+LogPluginManager: Mounting plugin ChaosNiagara
+LogPluginManager: Mounting plugin MotoSynth
+LogPluginManager: Mounting plugin AnimationSharing
+LogPluginManager: Mounting plugin ChaosEditor
+LogPluginManager: Mounting plugin AlembicImporter
+LogPluginManager: Mounting plugin ChaosSolverPlugin
+LogPluginManager: Mounting plugin PlanarCut
+LogPluginManager: Mounting plugin ChaosCloth
+LogPluginManager: Mounting plugin EnvironmentQueryEditor
+LogPluginManager: Mounting plugin AISupport
+LogPluginManager: Mounting plugin AssetManagerEditor
+LogPluginManager: Mounting plugin EditorScriptingUtilities
+LogPluginManager: Mounting plugin GeometryMode
+LogPluginManager: Mounting plugin SpeedTreeImporter
+LogPluginManager: Mounting plugin FacialAnimation
+LogPluginManager: Mounting plugin Carla
+LogPluginManager: Mounting plugin HoudiniEngine
+LogPluginManager: Mounting plugin StreetMap
+LogPluginManager: Mounting plugin CarlaTools
+LogInit: Using libcurl 7.65.3-DEV
+LogInit:  - built for x86_64-unknown-linux-gnu
+LogInit:  - supports SSL with OpenSSL/1.1.1c
+LogInit:  - supports HTTP deflate (compression) using libz 1.2.8
+LogInit:  - other features:
+LogInit:      CURL_VERSION_SSL
+LogInit:      CURL_VERSION_LIBZ
+LogInit:      CURL_VERSION_IPV6
+LogInit:      CURL_VERSION_ASYNCHDNS
+LogInit:      CURL_VERSION_LARGEFILE
+LogInit:      CURL_VERSION_TLSAUTH_SRP
+LogInit:  CurlRequestOptions (configurable via config and command line):
+LogInit:  - bVerifyPeer = true  - Libcurl will verify peer certificate
+LogInit:  - bUseHttpProxy = false  - Libcurl will NOT use HTTP proxy
+LogInit:  - bDontReuseConnections = false  - Libcurl will reuse connections
+LogInit:  - MaxHostConnections = 16  - Libcurl will limit the number of connections to a host
+LogInit:  - LocalHostAddr = Default
+LogInit:  - BufferSize = 65536
+LogOnline: OSS: Creating online subsystem instance for: NULL
+LogOnline: OSS: TryLoadSubsystemAndSetDefault: Loaded subsystem for module [NULL]
+LogInit: Build: ++UE4+Release-4.26-CL-0
+LogInit: Engine Version: 4.26.2-0+++UE4+Release-4.26
+LogInit: Compatible Engine Version: 4.26.0-0+++UE4+Release-4.26
+LogInit: Net CL: 0
+LogInit: OS: GenericOSVersionLabel (GenericOSSubVersionLabel), CPU: Intel(R) Xeon(R) Gold 6148 CPU @ 2.40GHz, GPU: GenericGPUBrand
+LogInit: Compiled (64-bit): Apr 15 2024 03:54:18
+LogInit: Compiled with Clang: 10.0.1 
+LogInit: Build Configuration: Debug
+LogInit: Branch Name: ++UE4+Release-4.26
+LogInit: Command Line:  -nosound -RenderOffScreen -quality-level=Epic -prefernvidia -carla-rpc-port=0 -carla-streaming-port=0 -carla-secondary-port=0
+LogInit: Base Directory: /home/scenariogen/carla/CarlaUE4/Binaries/Linux/
+LogInit: Allocator: binned2
+LogInit: Installed Engine Build: 0
+LogDevObjectVersion: Number of dev versions registered: 29
+LogDevObjectVersion:   Dev-Blueprints (B0D832E4-1F89-4F0D-ACCF-7EB736FD4AA2): 10
+LogDevObjectVersion:   Dev-Build (E1C64328-A22C-4D53-A36C-8E866417BD8C): 0
+LogDevObjectVersion:   Dev-Core (375EC13C-06E4-48FB-B500-84F0262A717E): 4
+LogDevObjectVersion:   Dev-Editor (E4B068ED-F494-42E9-A231-DA0B2E46BB41): 40
+LogDevObjectVersion:   Dev-Framework (CFFC743F-43B0-4480-9391-14DF171D2073): 37
+LogDevObjectVersion:   Dev-Mobile (B02B49B5-BB20-44E9-A304-32B752E40360): 3
+LogDevObjectVersion:   Dev-Networking (A4E4105C-59A1-49B5-A7C5-40C4547EDFEE): 0
+LogDevObjectVersion:   Dev-Online (39C831C9-5AE6-47DC-9A44-9C173E1C8E7C): 0
+LogDevObjectVersion:   Dev-Physics (78F01B33-EBEA-4F98-B9B4-84EACCB95AA2): 4
+LogDevObjectVersion:   Dev-Platform (6631380F-2D4D-43E0-8009-CF276956A95A): 0
+LogDevObjectVersion:   Dev-Rendering (12F88B9F-8875-4AFC-A67C-D90C383ABD29): 44
+LogDevObjectVersion:   Dev-Sequencer (7B5AE74C-D270-4C10-A958-57980B212A5A): 12
+LogDevObjectVersion:   Dev-VR (D7296918-1DD6-4BDD-9DE2-64A83CC13884): 3
+LogDevObjectVersion:   Dev-LoadTimes (C2A15278-BFE7-4AFE-6C17-90FF531DF755): 1
+LogDevObjectVersion:   Private-Geometry (6EACA3D4-40EC-4CC1-B786-8BED09428FC5): 3
+LogDevObjectVersion:   Dev-AnimPhys (29E575DD-E0A3-4627-9D10-D276232CDCEA): 17
+LogDevObjectVersion:   Dev-Anim (AF43A65D-7FD3-4947-9873-3E8ED9C1BB05): 15
+LogDevObjectVersion:   Dev-ReflectionCapture (6B266CEC-1EC7-4B8F-A30B-E4D90942FC07): 1
+LogDevObjectVersion:   Dev-Automation (0DF73D61-A23F-47EA-B727-89E90C41499A): 1
+LogDevObjectVersion:   FortniteMain (601D1886-AC64-4F84-AA16-D3DE0DEAC7D6): 43
+LogDevObjectVersion:   FortniteRelease (E7086368-6B23-4C58-8439-1B7016265E91): 1
+LogDevObjectVersion:   Dev-Enterprise (9DFFBCD6-494F-0158-E221-12823C92A888): 10
+LogDevObjectVersion:   Dev-Niagara (F2AED0AC-9AFE-416F-8664-AA7FFA26D6FC): 1
+LogDevObjectVersion:   Dev-Destruction (174F1F0B-B4C6-45A5-B13F-2EE8D0FB917D): 10
+LogDevObjectVersion:   Dev-Physics-Ext (35F94A83-E258-406C-A318-09F59610247C): 40
+LogDevObjectVersion:   Dev-PhysicsMaterial-Chaos (B68FC16E-8B1B-42E2-B453-215C058844FE): 1
+LogDevObjectVersion:   Dev-CineCamera (B2E18506-4273-CFC2-A54E-F4BB758BBA07): 1
+LogDevObjectVersion:   Dev-VirtualProduction (64F58936-FD1B-42BA-BA96-7289D5D0FA4E): 1
+LogDevObjectVersion:   Dev-MediaFramework (6F0ED827-A609-4895-9C91-998D90180EA4): 2
+LogInit: Presizing for max 2097152 objects, including 1 objects not considered by GC, pre-allocating 0 bytes for permanent pool.
+LogConfig: Applying CVar settings from Section [/Script/Engine.StreamingSettings] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Engine.ini]
+LogConfig: Setting CVar [[s.MinBulkDataSizeForAsyncLoading:131072]]
+LogConfig: Setting CVar [[s.AsyncLoadingThreadEnabled:0]]
+LogConfig: Setting CVar [[s.EventDrivenLoaderEnabled:1]]
+LogConfig: Setting CVar [[s.WarnIfTimeLimitExceeded:0]]
+LogConfig: Setting CVar [[s.TimeLimitExceededMultiplier:1.5]]
+LogConfig: Setting CVar [[s.TimeLimitExceededMinTime:0.005]]
+LogConfig: Setting CVar [[s.UseBackgroundLevelStreaming:1]]
+LogConfig: Setting CVar [[s.PriorityAsyncLoadingExtraTime:15.0]]
+LogConfig: Setting CVar [[s.LevelStreamingActorsUpdateTimeLimit:5.0]]
+LogConfig: Setting CVar [[s.PriorityLevelStreamingActorsUpdateExtraTime:5.0]]
+LogConfig: Setting CVar [[s.LevelStreamingComponentsRegistrationGranularity:10]]
+LogConfig: Setting CVar [[s.UnregisterComponentsTimeLimit:1.0]]
+LogConfig: Setting CVar [[s.LevelStreamingComponentsUnregistrationGranularity:5]]
+LogConfig: Setting CVar [[s.FlushStreamingOnExit:1]]
+LogStreaming: Display: Async Loading initialized: Event Driven Loader: true, Async Loading Thread: false, Async Post Load: true
+LogInit: Object subsystem initialized
+LogConfig: Setting CVar [[con.DebugEarlyDefault:1]]
+LogConfig: Setting CVar [[r.setres:1280x720]]
+LogConfig: Setting CVar [[fx.NiagaraAllowRuntimeScalabilityChanges:1]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[con.DebugEarlyDefault:1]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.setres:1280x720]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[fx.NiagaraAllowRuntimeScalabilityChanges:1]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Applying CVar settings from Section [/Script/Engine.RendererSettings] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Engine.ini]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.GPUCrashDebugging:0]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.DefaultFeature.MotionBlur:1]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.BasePassOutputsVelocity:1]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.BasePassForceOutputsVelocity:0]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.AllowStaticLighting:1]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.DiscardUnusedQuality:1]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.DefaultFeature.Bloom:0]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.DefaultFeature.AmbientOcclusion:0]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.DefaultFeature.AmbientOcclusionStaticFraction:0]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.DefaultFeature.AutoExposure:0]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.CustomDepth:3]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.Streaming.PoolSize:4000]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.TextureStreaming:1]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.GenerateMeshDistanceFields:1]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.DistanceFieldBuild.EightBit:0]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.DistanceFieldBuild.Compress:0]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.DistanceFields.AtlasSizeXY:1024]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.DistanceFields.AtlasSizeZ:2048]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.DefaultFeature.AutoExposure.ExtendDefaultLuminanceRange:1]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.DefaultFeature.AntiAliasing:2]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Setting CVar [[r.VirtualTextures:1]]
+[2024.04.17-12.25.42:273][  0]LogConfig: Applying CVar settings from Section [/Script/Engine.RendererOverrideSettings] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Engine.ini]
+[2024.04.17-12.25.42:274][  0]LogConfig: Applying CVar settings from Section [/Script/Engine.StreamingSettings] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Engine.ini]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[s.MinBulkDataSizeForAsyncLoading:131072]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[s.AsyncLoadingThreadEnabled:0]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[s.EventDrivenLoaderEnabled:1]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[s.WarnIfTimeLimitExceeded:0]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[s.TimeLimitExceededMultiplier:1.5]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[s.TimeLimitExceededMinTime:0.005]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[s.UseBackgroundLevelStreaming:1]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[s.PriorityAsyncLoadingExtraTime:15.0]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[s.LevelStreamingActorsUpdateTimeLimit:5.0]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[s.PriorityLevelStreamingActorsUpdateExtraTime:5.0]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[s.LevelStreamingComponentsRegistrationGranularity:10]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[s.UnregisterComponentsTimeLimit:1.0]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[s.LevelStreamingComponentsUnregistrationGranularity:5]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[s.FlushStreamingOnExit:1]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Applying CVar settings from Section [/Script/Engine.GarbageCollectionSettings] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Engine.ini]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[gc.MaxObjectsNotConsideredByGC:1]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[gc.SizeOfPermanentObjectPool:0]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[gc.FlushStreamingOnGC:0]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[gc.NumRetriesBeforeForcingGC:10]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[gc.AllowParallelGC:1]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[gc.TimeBetweenPurgingPendingKillObjects:61.1]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[gc.MaxObjectsInEditor:25165824]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[gc.IncrementalBeginDestroyEnabled:1]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[gc.CreateGCClusters:1]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[gc.MinGCClusterSize:5]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[gc.ActorClusteringEnabled:0]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[gc.BlueprintClusteringEnabled:0]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[gc.UseDisregardForGCOnDedicatedServers:0]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Setting CVar [[gc.MultithreadedDestructionEnabled:1]]
+[2024.04.17-12.25.42:274][  0]LogConfig: Applying CVar settings from Section [/Script/Engine.NetworkSettings] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Engine.ini]
+[2024.04.17-12.25.42:275][  0]LogInit: Initializing SDL.
+[2024.04.17-12.25.42:275][  0]LogInit: Hinting SDL to use 'dummy' video driver.
+[2024.04.17-12.25.42:280][  0]LogInit: Initialized SDL 2.0.12 revision: 13609 (hg-13609:34cc7d3b69d3) (compiled against 2.0.12)
+[2024.04.17-12.25.42:280][  0]LogInit: Using SDL video driver 'dummy'
+[2024.04.17-12.25.42:280][  0]LogInit: Display metrics:
+[2024.04.17-12.25.42:281][  0]LogInit:   PrimaryDisplayWidth: 1024
+[2024.04.17-12.25.42:281][  0]LogInit:   PrimaryDisplayHeight: 768
+[2024.04.17-12.25.42:281][  0]LogInit:   PrimaryDisplayWorkAreaRect:
+[2024.04.17-12.25.42:281][  0]LogInit:     Left=0, Top=0, Right=1024, Bottom=768
+[2024.04.17-12.25.42:281][  0]LogInit:   VirtualDisplayRect:
+[2024.04.17-12.25.42:281][  0]LogInit:     Left=0, Top=0, Right=1024, Bottom=768
+[2024.04.17-12.25.42:281][  0]LogInit:   TitleSafePaddingSize: X=0.000 Y=0.000 Z=0.000 W=0.000
+[2024.04.17-12.25.42:281][  0]LogInit:   ActionSafePaddingSize: X=0.000 Y=0.000 Z=0.000 W=0.000
+[2024.04.17-12.25.42:281][  0]LogInit:   Number of monitors: 1
+[2024.04.17-12.25.42:281][  0]LogInit:     Monitor 0
+[2024.04.17-12.25.42:281][  0]LogInit:       Name: 0
+[2024.04.17-12.25.42:281][  0]LogInit:       ID: display0
+[2024.04.17-12.25.42:281][  0]LogInit:       NativeWidth: 1024
+[2024.04.17-12.25.42:281][  0]LogInit:       NativeHeight: 768
+[2024.04.17-12.25.42:281][  0]LogInit:       bIsPrimary: true
+[2024.04.17-12.25.42:281][  0]LogConfig: Applying CVar settings from Section [ViewDistanceQuality@3] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Scalability.ini]
+[2024.04.17-12.25.42:281][  0]LogConfig: Setting CVar [[r.SkeletalMeshLODBias:0]]
+[2024.04.17-12.25.42:281][  0]LogConfig: Setting CVar [[r.ViewDistanceScale:1.0]]
+[2024.04.17-12.25.42:281][  0]LogConfig: Applying CVar settings from Section [AntiAliasingQuality@3] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Scalability.ini]
+[2024.04.17-12.25.42:281][  0]LogConfig: Setting CVar [[r.PostProcessAAQuality:4]]
+[2024.04.17-12.25.42:281][  0]LogConfig: Applying CVar settings from Section [ShadowQuality@3] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Scalability.ini]
+[2024.04.17-12.25.42:281][  0]LogConfig: Setting CVar [[r.LightFunctionQuality:1]]
+[2024.04.17-12.25.42:281][  0]LogConfig: Setting CVar [[r.ShadowQuality:5]]
+[2024.04.17-12.25.42:281][  0]LogConfig: Setting CVar [[r.Shadow.CSM.MaxCascades:10]]
+[2024.04.17-12.25.42:281][  0]LogConfig: Setting CVar [[r.Shadow.MaxResolution:2048]]
+[2024.04.17-12.25.42:281][  0]LogConfig: Setting CVar [[r.Shadow.MaxCSMResolution:2048]]
+[2024.04.17-12.25.42:281][  0]LogConfig: Setting CVar [[r.Shadow.RadiusThreshold:0.01]]
+[2024.04.17-12.25.42:281][  0]LogConfig: Setting CVar [[r.Shadow.DistanceScale:1.0]]
+[2024.04.17-12.25.42:281][  0]LogConfig: Setting CVar [[r.Shadow.CSM.TransitionScale:1.0]]
+[2024.04.17-12.25.42:281][  0]LogConfig: Setting CVar [[r.Shadow.PreShadowResolutionFactor:1.0]]
+[2024.04.17-12.25.42:281][  0]LogConfig: Setting CVar [[r.DistanceFieldShadowing:1]]
+[2024.04.17-12.25.42:281][  0]LogConfig: Setting CVar [[r.DistanceFieldAO:1]]
+[2024.04.17-12.25.42:281][  0]LogConfig: Setting CVar [[r.AOQuality:2]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.VolumetricFog:1]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.VolumetricFog.GridPixelSize:8]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.VolumetricFog.GridSizeZ:128]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.VolumetricFog.HistoryMissSupersampleCount:4]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.LightMaxDrawDistanceScale:1]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.CapsuleShadows:1]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Applying CVar settings from Section [PostProcessQuality@3] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Scalability.ini]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.MotionBlurQuality:4]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.AmbientOcclusionMipLevelFactor:0.4]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.AmbientOcclusionMaxQuality:100]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.AmbientOcclusionLevels:-1]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.AmbientOcclusionRadiusScale:1.0]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.DepthOfFieldQuality:2]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.RenderTargetPoolMin:400]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.LensFlareQuality:2]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.SceneColorFringeQuality:1]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.EyeAdaptationQuality:2]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.BloomQuality:5]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.FastBlurThreshold:100]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.Upscale.Quality:3]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.Tonemapper.GrainQuantization:1]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.LightShaftQuality:1]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.Filter.SizeScale:1]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.Tonemapper.Quality:5]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.DOF.Gather.AccumulatorQuality:1        ; higher gathering accumulator quality]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.DOF.Gather.PostfilterMethod:1          ; Median3x3 postfilering method]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.DOF.Gather.EnableBokehSettings:0       ; no bokeh simulation when gathering]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.DOF.Gather.RingCount:4                 ; medium number of samples when gathering]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.DOF.Scatter.ForegroundCompositing:1    ; additive foreground scattering]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.DOF.Scatter.BackgroundCompositing:2    ; additive background scattering]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.DOF.Scatter.EnableBokehSettings:1      ; bokeh simulation when scattering]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.DOF.Scatter.MaxSpriteRatio:0.1         ; only a maximum of 10% of scattered bokeh]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.DOF.Recombine.Quality:1                ; cheap slight out of focus]]
+[2024.04.17-12.25.42:282][  0]LogConfig: Setting CVar [[r.DOF.Recombine.EnableBokehSettings:0    ; no bokeh simulation on slight out of focus]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.DOF.TemporalAAQuality:1                ; more stable temporal accumulation]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.DOF.Kernel.MaxForegroundRadius:0.025]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.DOF.Kernel.MaxBackgroundRadius:0.025]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Applying CVar settings from Section [TextureQuality@3] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Scalability.ini]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.Streaming.MipBias:0]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.Streaming.AmortizeCPUToGPUCopy:0]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.Streaming.MaxNumTexturesToStreamPerFrame:0]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.Streaming.Boost:1]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.MaxAnisotropy:8]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.VT.MaxAnisotropy:8]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.Streaming.LimitPoolSizeToVRAM:0]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.Streaming.PoolSize:1000]]
+[2024.04.17-12.25.42:283][  0]LogConsoleManager: Warning: Setting the console variable 'r.Streaming.PoolSize' with 'SetByScalability' was ignored as it is lower priority than the previous 'SetByProjectSetting'. Value remains '4000'
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.Streaming.MaxEffectiveScreenSize:0]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Applying CVar settings from Section [EffectsQuality@3] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Scalability.ini]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.TranslucencyLightingVolumeDim:64]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.RefractionQuality:2]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.SSR.Quality:3]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.SSR.HalfResSceneColor:0]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.SceneColorFormat:4]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.DetailMode:2]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.TranslucencyVolumeBlur:1]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.MaterialQualityLevel:1 ; High quality]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.AnisotropicMaterials:1]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.SSS.Scale:1]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.SSS.SampleSet:2]]
+[2024.04.17-12.25.42:283][  0]LogConfig: Setting CVar [[r.SSS.Quality:1]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[r.SSS.HalfRes:0]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[r.SSGI.Quality:3]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[r.EmitterSpawnRateScale:1.0]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[r.ParticleLightQuality:2]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.AerialPerspectiveLUT.FastApplyOnOpaque:1 ; Always have FastSkyLUT 1 in this case to avoid wrong sky]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.AerialPerspectiveLUT.SampleCountMaxPerSlice:4]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.AerialPerspectiveLUT.DepthResolution:16.0]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.FastSkyLUT:1]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.FastSkyLUT.SampleCountMin:4.0]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.FastSkyLUT.SampleCountMax:128.0]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.SampleCountMin:4.0]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.SampleCountMax:128.0]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.TransmittanceLUT.UseSmallFormat:0]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.TransmittanceLUT.SampleCount:10.0]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.MultiScatteringLUT.SampleCount:15.0]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[fx.Niagara.QualityLevel:3]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Applying CVar settings from Section [FoliageQuality@3] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Scalability.ini]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[foliage.DensityScale:1.0]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[grass.DensityScale:1.0]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Applying CVar settings from Section [ShadingQuality@3] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Scalability.ini]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[r.HairStrands.SkyLighting.IntegrationType:2]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[r.HairStrands.SkyAO.SampleCount:4]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[r.HairStrands.Visibility.MSAA.SamplePerPixel:4]]
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[r.HairStrands.Interpolation.UseSingleGuide:0]]
+[2024.04.17-12.25.42:284][  0]LogLinux: Selected Device Profile: [LinuxNoEditor]
+[2024.04.17-12.25.42:284][  0]LogInit: Applying CVar settings loaded from the selected device profile: [LinuxNoEditor]
+[2024.04.17-12.25.42:284][  0]LogHAL: Display: Platform has ~ 4 GB [269509124096 / 4294967296 / 251], which maps to Smallest [LargestMinGB=32, LargerMinGB=12, DefaultMinGB=8, SmallerMinGB=6, SmallestMinGB=0)
+[2024.04.17-12.25.42:284][  0]LogConfig: Setting CVar [[r.RHICmdBypass:0]]
+[2024.04.17-12.25.42:285][  0]LogInit: Going up to parent DeviceProfile [Linux]
+[2024.04.17-12.25.42:285][  0]LogInit: Going up to parent DeviceProfile []
+[2024.04.17-12.25.42:285][  0]LogConfig: Applying CVar settings from Section [ViewDistanceQuality@3] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Scalability.ini]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.SkeletalMeshLODBias:0]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.ViewDistanceScale:1.0]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Applying CVar settings from Section [AntiAliasingQuality@3] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Scalability.ini]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.PostProcessAAQuality:4]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Applying CVar settings from Section [ShadowQuality@3] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Scalability.ini]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.LightFunctionQuality:1]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.ShadowQuality:5]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.Shadow.CSM.MaxCascades:10]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.Shadow.MaxResolution:2048]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.Shadow.MaxCSMResolution:2048]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.Shadow.RadiusThreshold:0.01]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.Shadow.DistanceScale:1.0]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.Shadow.CSM.TransitionScale:1.0]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.Shadow.PreShadowResolutionFactor:1.0]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.DistanceFieldShadowing:1]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.DistanceFieldAO:1]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.AOQuality:2]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.VolumetricFog:1]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.VolumetricFog.GridPixelSize:8]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.VolumetricFog.GridSizeZ:128]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.VolumetricFog.HistoryMissSupersampleCount:4]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.LightMaxDrawDistanceScale:1]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.CapsuleShadows:1]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Applying CVar settings from Section [PostProcessQuality@3] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Scalability.ini]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.MotionBlurQuality:4]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.AmbientOcclusionMipLevelFactor:0.4]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.AmbientOcclusionMaxQuality:100]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.AmbientOcclusionLevels:-1]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.AmbientOcclusionRadiusScale:1.0]]
+[2024.04.17-12.25.42:285][  0]LogConfig: Setting CVar [[r.DepthOfFieldQuality:2]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.RenderTargetPoolMin:400]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.LensFlareQuality:2]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.SceneColorFringeQuality:1]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.EyeAdaptationQuality:2]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.BloomQuality:5]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.FastBlurThreshold:100]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.Upscale.Quality:3]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.Tonemapper.GrainQuantization:1]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.LightShaftQuality:1]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.Filter.SizeScale:1]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.Tonemapper.Quality:5]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.DOF.Gather.AccumulatorQuality:1        ; higher gathering accumulator quality]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.DOF.Gather.PostfilterMethod:1          ; Median3x3 postfilering method]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.DOF.Gather.EnableBokehSettings:0       ; no bokeh simulation when gathering]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.DOF.Gather.RingCount:4                 ; medium number of samples when gathering]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.DOF.Scatter.ForegroundCompositing:1    ; additive foreground scattering]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.DOF.Scatter.BackgroundCompositing:2    ; additive background scattering]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.DOF.Scatter.EnableBokehSettings:1      ; bokeh simulation when scattering]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.DOF.Scatter.MaxSpriteRatio:0.1         ; only a maximum of 10% of scattered bokeh]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.DOF.Recombine.Quality:1                ; cheap slight out of focus]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.DOF.Recombine.EnableBokehSettings:0    ; no bokeh simulation on slight out of focus]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.DOF.TemporalAAQuality:1                ; more stable temporal accumulation]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.DOF.Kernel.MaxForegroundRadius:0.025]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.DOF.Kernel.MaxBackgroundRadius:0.025]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Applying CVar settings from Section [TextureQuality@3] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Scalability.ini]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.Streaming.MipBias:0]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.Streaming.AmortizeCPUToGPUCopy:0]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.Streaming.MaxNumTexturesToStreamPerFrame:0]]
+[2024.04.17-12.25.42:286][  0]LogConfig: Setting CVar [[r.Streaming.Boost:1]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.MaxAnisotropy:8]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.VT.MaxAnisotropy:8]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.Streaming.LimitPoolSizeToVRAM:0]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.Streaming.PoolSize:1000]]
+[2024.04.17-12.25.42:287][  0]LogConsoleManager: Warning: Setting the console variable 'r.Streaming.PoolSize' with 'SetByScalability' was ignored as it is lower priority than the previous 'SetByProjectSetting'. Value remains '4000'
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.Streaming.MaxEffectiveScreenSize:0]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Applying CVar settings from Section [EffectsQuality@3] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Scalability.ini]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.TranslucencyLightingVolumeDim:64]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.RefractionQuality:2]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.SSR.Quality:3]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.SSR.HalfResSceneColor:0]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.SceneColorFormat:4]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.DetailMode:2]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.TranslucencyVolumeBlur:1]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.MaterialQualityLevel:1 ; High quality]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.AnisotropicMaterials:1]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.SSS.Scale:1]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.SSS.SampleSet:2]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.SSS.Quality:1]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.SSS.HalfRes:0]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.SSGI.Quality:3]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.EmitterSpawnRateScale:1.0]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.ParticleLightQuality:2]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.AerialPerspectiveLUT.FastApplyOnOpaque:1 ; Always have FastSkyLUT 1 in this case to avoid wrong sky]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.AerialPerspectiveLUT.SampleCountMaxPerSlice:4]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.AerialPerspectiveLUT.DepthResolution:16.0]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.FastSkyLUT:1]]
+[2024.04.17-12.25.42:287][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.FastSkyLUT.SampleCountMin:4.0]]
+[2024.04.17-12.25.42:288][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.FastSkyLUT.SampleCountMax:128.0]]
+[2024.04.17-12.25.42:288][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.SampleCountMin:4.0]]
+[2024.04.17-12.25.42:288][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.SampleCountMax:128.0]]
+[2024.04.17-12.25.42:288][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.TransmittanceLUT.UseSmallFormat:0]]
+[2024.04.17-12.25.42:288][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.TransmittanceLUT.SampleCount:10.0]]
+[2024.04.17-12.25.42:288][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.MultiScatteringLUT.SampleCount:15.0]]
+[2024.04.17-12.25.42:288][  0]LogConfig: Setting CVar [[fx.Niagara.QualityLevel:3]]
+[2024.04.17-12.25.42:288][  0]LogConfig: Applying CVar settings from Section [FoliageQuality@3] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Scalability.ini]
+[2024.04.17-12.25.42:288][  0]LogConfig: Setting CVar [[foliage.DensityScale:1.0]]
+[2024.04.17-12.25.42:288][  0]LogConfig: Setting CVar [[grass.DensityScale:1.0]]
+[2024.04.17-12.25.42:288][  0]LogConfig: Applying CVar settings from Section [ShadingQuality@3] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Scalability.ini]
+[2024.04.17-12.25.42:288][  0]LogConfig: Setting CVar [[r.HairStrands.SkyLighting.IntegrationType:2]]
+[2024.04.17-12.25.42:288][  0]LogConfig: Setting CVar [[r.HairStrands.SkyAO.SampleCount:4]]
+[2024.04.17-12.25.42:288][  0]LogConfig: Setting CVar [[r.HairStrands.Visibility.MSAA.SamplePerPixel:4]]
+[2024.04.17-12.25.42:288][  0]LogConfig: Setting CVar [[r.HairStrands.Interpolation.UseSingleGuide:0]]
+[2024.04.17-12.25.42:288][  0]LogConfig: Applying CVar settings from Section [Startup] File [../../../Engine/Config/ConsoleVariables.ini]
+[2024.04.17-12.25.42:289][  0]LogConfig: Setting CVar [[net.UseAdaptiveNetUpdateFrequency:0]]
+[2024.04.17-12.25.42:289][  0]LogConfig: Setting CVar [[p.chaos.AllowCreatePhysxBodies:1]]
+[2024.04.17-12.25.42:289][  0]LogConfig: Setting CVar [[fx.SkipVectorVMBackendOptimizations:1]]
+[2024.04.17-12.25.42:289][  0]LogConfig: Applying CVar settings from Section [ConsoleVariables] File [../../../CarlaUE4/Saved/Config/LinuxNoEditor/Engine.ini]
+[2024.04.17-12.25.42:289][  0]LogConfig: Setting CVar [[g.TimeoutForBlockOnRenderFence:60000]]
+[2024.04.17-12.25.42:289][  0]LogInit: Unix hardware info:
+[2024.04.17-12.25.42:289][  0]LogInit:  - we are not the first instance of this executable
+[2024.04.17-12.25.42:289][  0]LogInit:  - this process' id (pid) is 1613118, parent process' id (ppid) is 1613088
+[2024.04.17-12.25.42:289][  0]LogInit:  - we are not running under debugger
+[2024.04.17-12.25.42:289][  0]LogInit:  - machine network name is 'g0311.ll.unc.edu'
+[2024.04.17-12.25.42:289][  0]LogInit:  - user name is 'abol' (abol)
+[2024.04.17-12.25.42:289][  0]LogInit:  - we're logged in remotely
+[2024.04.17-12.25.42:289][  0]LogInit:  - we're running with rendering
+[2024.04.17-12.25.42:289][  0]LogInit:  - CPU: GenuineIntel 'Intel(R) Xeon(R) Gold 6148 CPU @ 2.40GHz' (signature: 0x50654)
+[2024.04.17-12.25.42:289][  0]LogInit:  - Number of physical cores available for the process: 16
+[2024.04.17-12.25.42:289][  0]LogInit:  - Number of logical cores available for the process: 16
+[2024.04.17-12.25.42:289][  0]LogInit:  - Cache line size: 64
+[2024.04.17-12.25.42:289][  0]LogInit:  - Memory allocator used: binned2
+[2024.04.17-12.25.42:289][  0]LogInit:  - This binary is optimized with LTO: no, PGO: no, instrumented for PGO data collection: no
+[2024.04.17-12.25.42:289][  0]LogInit:  - This is an internal build.
+[2024.04.17-12.25.42:289][  0]LogCore: Benchmarking clocks:
+[2024.04.17-12.25.42:289][  0]LogCore:  - CLOCK_MONOTONIC (id=1) can sustain 50807350 (50807K, 51M) calls per second without zero deltas.
+[2024.04.17-12.25.42:290][  0]LogCore:  - CLOCK_MONOTONIC_RAW (id=4) can sustain 49044679 (49045K, 49M) calls per second without zero deltas.
+[2024.04.17-12.25.42:290][  0]LogCore:  - CLOCK_MONOTONIC_COARSE (id=6) can sustain 123948625 (123949K, 124M) calls per second with 99.999185% zero deltas.
+[2024.04.17-12.25.42:290][  0]LogCore: Selected clock_id 1 (CLOCK_MONOTONIC) since it is the fastest support clock without zero deltas.
+[2024.04.17-12.25.42:290][  0]LogInit: Unix-specific commandline switches:
+[2024.04.17-12.25.42:290][  0]LogInit:  -ansimalloc - use malloc()/free() from libc (useful for tools like valgrind and electric fence)
+[2024.04.17-12.25.42:290][  0]LogInit:  -jemalloc - use jemalloc for all memory allocation
+[2024.04.17-12.25.42:290][  0]LogInit:  -binnedmalloc - use binned malloc  for all memory allocation
+[2024.04.17-12.25.42:290][  0]LogInit:  -filemapcachesize=NUMBER - set the size for case-sensitive file mapping cache
+[2024.04.17-12.25.42:290][  0]LogInit:  -useksm - uses kernel same-page mapping (KSM) for mapped memory (OFF)
+[2024.04.17-12.25.42:290][  0]LogInit:  -ksmmergeall - marks all mmap'd memory pages suitable for KSM (OFF)
+[2024.04.17-12.25.42:290][  0]LogInit:  -preloadmodulesymbols - Loads the main module symbols file into memory (OFF)
+[2024.04.17-12.25.42:290][  0]LogInit:  -sigdfl=SIGNAL - Allows a specific signal to be set to its default handler rather then ignoring the signal
+[2024.04.17-12.25.42:290][  0]LogInit:  -httpproxy=ADDRESS:PORT - redirects HTTP requests to a proxy (only supported if compiled with libcurl)
+[2024.04.17-12.25.42:290][  0]LogInit:  -reuseconn - allow libcurl to reuse HTTP connections (only matters if compiled with libcurl)
+[2024.04.17-12.25.42:290][  0]LogInit:  -virtmemkb=NUMBER - sets process virtual memory (address space) limit (overrides VirtualMemoryLimitInKB value from .ini)
+[2024.04.17-12.25.42:290][  0]LogInit:  - Physical RAM available (not considering process quota): 251 GB (257023 MB, 263192504 KB, 269509124096 bytes)
+[2024.04.17-12.25.42:290][  0]LogInit:  - VirtualMemoryAllocator pools will grow at scale 1.4
+[2024.04.17-12.25.42:290][  0]LogInit:  - MemoryRangeDecommit() will be a no-op (re-run with -vmapoolevict to change)
+[2024.04.17-12.25.42:302][  0]LogInit: Physics initialised using underlying interface: PhysX
+[2024.04.17-12.25.42:303][  0]LogInit: Using OS detected language (en-US).
+[2024.04.17-12.25.42:303][  0]LogInit: Using OS detected locale (en-US).
+[2024.04.17-12.25.42:305][  0]LogTextLocalizationManager: No specific localization for 'en-US' exists, so the 'en' localization will be used.
+[2024.04.17-12.25.42:356][  0]LogHAL: Warning: Splash screen image not found.
+[2024.04.17-12.25.42:367][  0]LogSlate: New Slate User Created.  User Index 0, Is Virtual User: 0
+[2024.04.17-12.25.42:367][  0]LogSlate: Slate User Registered.  User Index 0, Is Virtual User: 0
+[2024.04.17-12.25.42:373][  0]LogInit: Using SDL_WINDOW_VULKAN
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: - Found 4 instance layers
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_LAYER_INTEL_nullhw
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_LAYER_MESA_device_select
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_LAYER_MESA_overlay
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_LAYER_NV_optimus
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: - Found 20 instance extensions
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_EXT_acquire_drm_display
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_EXT_acquire_xlib_display
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_EXT_debug_report
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_EXT_debug_utils
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_EXT_direct_mode_display
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_EXT_display_surface_counter
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_EXT_swapchain_colorspace
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_KHR_device_group_creation
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_KHR_display
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_KHR_external_fence_capabilities
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_KHR_external_memory_capabilities
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_KHR_external_semaphore_capabilities
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_KHR_get_display_properties2
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_KHR_get_physical_device_properties2
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_KHR_get_surface_capabilities2
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_KHR_surface
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_KHR_surface_protected_capabilities
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_KHR_wayland_surface
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_KHR_xcb_surface
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_KHR_xlib_surface
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: Not using instance layers
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: Using instance extensions
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_KHR_external_memory_capabilities
+[2024.04.17-12.25.42:917][  0]LogVulkanRHI: Display: * VK_KHR_get_physical_device_properties2
+[2024.04.17-12.25.42:946][  0]LogRHI: Warning: Failed to find entry point for vkDestroySurfaceKHR
+[2024.04.17-12.25.42:946][  0]LogRHI: Warning: Failed to find entry point for vkGetPhysicalDeviceSurfaceSupportKHR
+[2024.04.17-12.25.42:946][  0]LogRHI: Warning: Failed to find entry point for vkGetPhysicalDeviceSurfaceCapabilitiesKHR
+[2024.04.17-12.25.42:946][  0]LogRHI: Warning: Failed to find entry point for vkGetPhysicalDeviceSurfaceFormatsKHR
+[2024.04.17-12.25.42:946][  0]LogRHI: Warning: Failed to find entry point for vkGetPhysicalDeviceSurfacePresentModesKHR
+[2024.04.17-12.25.42:958][  0]LogVulkanRHI: Display: Found 1 device(s)
+Ensure condition failed: VendorId != EGpuVendorId::Unknown [File:/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/VulkanRHI/Private/VulkanDevice.cpp] [Line: 182] 
+
+[2024.04.17-12.25.42:960][  0]LogCore: 0x0000000012a2d8dc Dladdr: 0.689911ms Open: 0.434687ms Search: 0.093374ms
+[2024.04.17-12.25.42:961][  0]LogCore: 0x0000000012a2b624 Dladdr: 0.593615ms Open: 0.190934ms Search: 0.083825ms
+[2024.04.17-12.25.42:962][  0]LogCore: 0x000000000d57fb5d Dladdr: 0.697777ms Open: 0.151351ms Search: 0.089693ms
+[2024.04.17-12.25.42:963][  0]LogCore: 0x000000000d632cb7 Dladdr: 0.694703ms Open: 0.146658ms Search: 0.086839ms
+[2024.04.17-12.25.42:964][  0]LogCore: 0x000000000d630598 Dladdr: 0.690958ms Open: 0.175308ms Search: 0.078254ms
+[2024.04.17-12.25.42:965][  0]LogCore: 0x000000000d630180 Dladdr: 0.692372ms Open: 0.149239ms Search: 0.074391ms
+[2024.04.17-12.25.42:966][  0]LogCore: 0x000000000d7c7a4e Dladdr: 0.690588ms Open: 0.154049ms Search: 0.084222ms
+[2024.04.17-12.25.42:967][  0]LogCore: 0x0000000005507a76 Dladdr: 0.704487ms Open: 0.154877ms Search: 0.087655ms
+[2024.04.17-12.25.42:968][  0]LogCore: 0x00000000054fdb43 Dladdr: 0.698985ms Open: 0.139099ms Search: 0.086303ms
+[2024.04.17-12.25.42:969][  0]LogCore: 0x00000000054fdb0e Dladdr: 0.699081ms Open: 0.153849ms Search: 0.081506ms
+[2024.04.17-12.25.42:970][  0]LogCore: 0x00000000055009fc Dladdr: 0.694170ms Open: 0.153920ms Search: 0.082759ms
+[2024.04.17-12.25.42:971][  0]LogCore: 0x00000000111be75d Dladdr: 0.685575ms Open: 0.145146ms Search: 0.082554ms
+[2024.04.17-12.25.42:972][  0]LogCore: 0x0000000005518b85 Dladdr: 0.698369ms Open: 0.150235ms Search: 0.095143ms
+[2024.04.17-12.25.42:972][  0]LogCore: 0x00007fd921874d8f Dladdr: 0.020700ms Open: 0.150655ms Search: 0.001686ms
+[2024.04.17-12.25.42:972][  0]LogCore: 0x00007fd921874e3f Dladdr: 0.015724ms Open: 0.131103ms Search: 0.001251ms
+[2024.04.17-12.25.42:974][  0]LogCore: 0x00000000054fc028 Dladdr: 0.683870ms Open: 0.213598ms Search: 0.080070ms
+[2024.04.17-12.25.42:974][  0]LogStats: FPlatformStackWalk::StackWalkAndDump -  0.015 s
+[2024.04.17-12.25.42:975][  0]LogOutputDevice: Error: === Handled ensure: ===
+[2024.04.17-12.25.42:975][  0]LogOutputDevice: Error: 
+[2024.04.17-12.25.42:975][  0]LogOutputDevice: Error: Ensure condition failed: VendorId != EGpuVendorId::Unknown [File:/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/VulkanRHI/Private/VulkanDevice.cpp] [Line: 182]
+[2024.04.17-12.25.42:975][  0]LogOutputDevice: Error: 
+[2024.04.17-12.25.42:975][  0]LogOutputDevice: Error: Stack: 
+[2024.04.17-12.25.42:975][  0]LogOutputDevice: Error: [Callstack] 0x0000000012a2d8dd CarlaUE4-Linux-Debug!FVulkanDevice::FVulkanDevice(FVulkanDynamicRHI*, VkPhysicalDevice_T*)::$_231::operator()() const [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/VulkanRHI/Private/VulkanDevice.cpp:182]
+[2024.04.17-12.25.42:975][  0]LogOutputDevice: Error: [Callstack] 0x0000000012a2b625 CarlaUE4-Linux-Debug!DispatchCheckVerify<bool, FVulkanDevice::FVulkanDevice(FVulkanDynamicRHI*, VkPhysicalDevice_T*)::$_231>(bool, FVulkanDevice::FVulkanDevice(FVulkanDynamicRHI*, VkPhysicalDevice_T*)::$_231&&) [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Core/Public/Misc/AssertionMacros.h:164]
+[2024.04.17-12.25.42:975][  0]LogOutputDevice: Error: [Callstack] 0x000000000d57fb5e CarlaUE4-Linux-Debug!FVulkanDevice::FVulkanDevice(FVulkanDynamicRHI*, VkPhysicalDevice_T*) [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/VulkanRHI/Private/VulkanDevice.cpp:182]
+[2024.04.17-12.25.42:975][  0]LogOutputDevice: Error: [Callstack] 0x000000000d632cb8 CarlaUE4-Linux-Debug!FVulkanDynamicRHI::SelectAndInitDevice() [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/VulkanRHI/Private/VulkanRHI.cpp:551]
+[2024.04.17-12.25.42:975][  0]LogOutputDevice: Error: [Callstack] 0x000000000d630599 CarlaUE4-Linux-Debug!FVulkanDynamicRHI::InitInstance() [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/VulkanRHI/Private/VulkanRHI.cpp:694]
+[2024.04.17-12.25.42:976][  0]LogOutputDevice: Error: [Callstack] 0x000000000d630181 CarlaUE4-Linux-Debug!FVulkanDynamicRHI::Init() [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/VulkanRHI/Private/VulkanRHI.cpp:241]
+[2024.04.17-12.25.42:976][  0]LogOutputDevice: Error: [Callstack] 0x000000000d7c7a4f CarlaUE4-Linux-Debug!RHIInit(bool) [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/RHI/Private/DynamicRHI.cpp:228]
+[2024.04.17-12.25.42:976][  0]LogOutputDevice: Error: [Callstack] 0x0000000005507a77 CarlaUE4-Linux-Debug!FEngineLoop::PreInitPreStartupScreen(char16_t const*) [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Launch/Private/LaunchEngineLoop.cpp:2555]
+[2024.04.17-12.25.42:976][  0]LogOutputDevice: Error: [Callstack] 0x00000000054fdb44 CarlaUE4-Linux-Debug!FEngineLoop::PreInit(char16_t const*) [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Launch/Private/LaunchEngineLoop.cpp:3584]
+[2024.04.17-12.25.42:976][  0]LogOutputDevice: Error: [Callstack] 0x00000000054fdb0f CarlaUE4-Linux-Debug!EnginePreInit(char16_t const*) [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Launch/Private/Launch.cpp:42]
+[2024.04.17-12.25.42:976][  0]LogOutputDevice: Error: [Callstack] 0x00000000055009fd CarlaUE4-Linux-Debug!GuardedMain(char16_t const*) [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Launch/Private/Launch.cpp:127]
+[2024.04.17-12.25.42:976][  0]LogOutputDevice: Error: [Callstack] 0x00000000111be75e CarlaUE4-Linux-Debug!CommonUnixMain(int, char**, int (*)(char16_t const*), void (*)()) [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Unix/UnixCommonStartup/Private/UnixCommonStartup.cpp:264]
+[2024.04.17-12.25.42:976][  0]LogOutputDevice: Error: [Callstack] 0x0000000005518b86 CarlaUE4-Linux-Debug!main [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Launch/Private/Linux/LaunchLinux.cpp:16]
+[2024.04.17-12.25.42:976][  0]LogOutputDevice: Error: [Callstack] 0x00007fd921874d90 libc.so.6!UnknownFunction(0x29d8f)
+[2024.04.17-12.25.42:976][  0]LogOutputDevice: Error: [Callstack] 0x00007fd921874e40 libc.so.6!__libc_start_main(+0x7f)
+[2024.04.17-12.25.42:976][  0]LogOutputDevice: Error: [Callstack] 0x00000000054fc029 CarlaUE4-Linux-Debug!_start()
+[2024.04.17-12.25.42:976][  0]LogOutputDevice: Error: 
+[2024.04.17-12.25.42:981][  0]LogStats:                SubmitErrorReport -  0.000 s
+[2024.04.17-12.25.43:019][  0]LogStats:                    SendNewReport -  0.038 s
+[2024.04.17-12.25.43:019][  0]LogStats:             FDebug::EnsureFailed -  0.061 s
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: Device 0: llvmpipe (LLVM 15.0.7, 256 bits)
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: - API 1.3.255(0x4030ff) Driver 0x1 VendorId 0x10005
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: - DeviceID 0x0 Type CPU
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: - Max Descriptor Sets Bound 8 Timestamps 1
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: - Device Properties driverName: llvmpipe
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: - Device Properties driverInfo: Mesa 23.2.1-1ubuntu3.1~22.04.2 (LLVM 15.0.7)
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: -    Found device layer VK_LAYER_MESA_device_select
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: -    Found device extension VK_ARM_rasterization_order_attachment_access
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_4444_formats
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_attachment_feedback_loop_dynamic_state
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_attachment_feedback_loop_layout
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_border_color_swizzle
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_calibrated_timestamps
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_color_write_enable
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_conditional_rendering
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_custom_border_color
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_depth_clip_control
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_depth_clip_enable
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_depth_range_unrestricted
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_descriptor_buffer
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_descriptor_indexing
+[2024.04.17-12.25.43:020][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_dynamic_rendering_unused_attachments
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_extended_dynamic_state
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_extended_dynamic_state2
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_extended_dynamic_state3
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_external_memory_host
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_graphics_pipeline_library
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_host_query_reset
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_image_2d_view_of_3d
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_image_robustness
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_image_sliced_view_of_3d
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_index_type_uint8
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_inline_uniform_block
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_line_rasterization
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_memory_budget
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_memory_priority
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_mesh_shader
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_multi_draw
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_multisampled_render_to_single_sampled
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_mutable_descriptor_type
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_non_seamless_cube_map
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_pageable_device_local_memory
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_pipeline_creation_cache_control
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_pipeline_creation_feedback
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_post_depth_coverage
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_primitive_topology_list_restart
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_primitives_generated_query
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_private_data
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_provoking_vertex
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_rasterization_order_attachment_access
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_robustness2
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_sampler_filter_minmax
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_scalar_block_layout
+[2024.04.17-12.25.43:021][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_separate_stencil_usage
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_shader_atomic_float
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_shader_atomic_float2
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_shader_demote_to_helper_invocation
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_shader_object
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_shader_stencil_export
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_shader_subgroup_ballot
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_shader_subgroup_vote
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_shader_viewport_index_layer
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_subgroup_size_control
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_texel_buffer_alignment
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_transform_feedback
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_vertex_attribute_divisor
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_EXT_vertex_input_dynamic_state
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_GOOGLE_decorate_string
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_GOOGLE_hlsl_functionality1
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_16bit_storage
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_8bit_storage
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_bind_memory2
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_buffer_device_address
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_copy_commands2
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_create_renderpass2
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_dedicated_allocation
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_depth_stencil_resolve
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_descriptor_update_template
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_device_group
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_draw_indirect_count
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_driver_properties
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_dynamic_rendering
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_external_fence
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_external_memory
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_external_memory_fd
+[2024.04.17-12.25.43:022][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_external_semaphore
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_format_feature_flags2
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_get_memory_requirements2
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_image_format_list
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_imageless_framebuffer
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_incremental_present
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_maintenance1
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_maintenance2
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_maintenance3
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_maintenance4
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_multiview
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_pipeline_library
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_push_descriptor
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_relaxed_block_layout
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_sampler_mirror_clamp_to_edge
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_separate_depth_stencil_layouts
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_shader_atomic_int64
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_shader_clock
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_shader_draw_parameters
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_shader_float16_int8
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_shader_float_controls
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_shader_integer_dot_product
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_shader_non_semantic_info
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_shader_subgroup_extended_types
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_shader_terminate_invocation
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_spirv_1_4
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_storage_buffer_storage_class
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_swapchain
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_swapchain_mutable_format
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_synchronization2
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_timeline_semaphore
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_uniform_buffer_standard_layout
+[2024.04.17-12.25.43:023][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_variable_pointers
+[2024.04.17-12.25.43:024][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_vulkan_memory_model
+[2024.04.17-12.25.43:024][  0]LogVulkanRHI: Display: -    Found device extension VK_KHR_zero_initialize_workgroup_memory
+[2024.04.17-12.25.43:024][  0]LogVulkanRHI: Display: -    Found device extension VK_NV_device_generated_commands
+[2024.04.17-12.25.43:024][  0]LogVulkanRHI: Display: Using Device 0: Geometry 1 Tessellation 1 BufferAtomic64 1
+[2024.04.17-12.25.43:024][  0]LogVulkanRHI: Display: Found 1 Queue Families
+[2024.04.17-12.25.43:024][  0]LogVulkanRHI: Display: Initializing Queue Family 0: 1 queues Gfx Compute Xfer
+[2024.04.17-12.25.43:147][  0]LogVulkanRHI: Display: Using device layers
+[2024.04.17-12.25.43:147][  0]LogVulkanRHI: Display: Using device extensions
+[2024.04.17-12.25.43:147][  0]LogVulkanRHI: Display: * VK_KHR_driver_properties
+[2024.04.17-12.25.43:147][  0]LogVulkanRHI: Display: * VK_KHR_get_memory_requirements2
+[2024.04.17-12.25.43:147][  0]LogVulkanRHI: Display: * VK_KHR_dedicated_allocation
+[2024.04.17-12.25.43:147][  0]LogVulkanRHI: Display: * VK_KHR_swapchain
+[2024.04.17-12.25.43:147][  0]LogVulkanRHI: Display: * VK_KHR_maintenance1
+[2024.04.17-12.25.43:147][  0]LogVulkanRHI: Display: * VK_KHR_maintenance2
+[2024.04.17-12.25.43:147][  0]LogVulkanRHI: Display: * VK_EXT_memory_budget
+[2024.04.17-12.25.43:147][  0]LogVulkanRHI: Display: * VK_EXT_scalar_block_layout
+[2024.04.17-12.25.43:147][  0]LogVulkanRHI: Display: * VK_EXT_memory_priority
+[2024.04.17-12.25.43:147][  0]LogVulkanRHI: Display: * VK_KHR_shader_atomic_int64
+[2024.04.17-12.25.43:147][  0]LogVulkanRHI: Display: * VK_KHR_image_format_list
+[2024.04.17-12.25.43:147][  0]LogVulkanRHI: Display: 1 Device Memory Heaps; Max memory allocations -1
+[2024.04.17-12.25.43:147][  0]LogVulkanRHI: Display:  0: Flags 0x1 Size 269509124096 (257023.94 MB) GPU
+[2024.04.17-12.25.43:148][  0]LogVulkanRHI: Display: 1 Device Memory Types (Not unified)
+[2024.04.17-12.25.43:148][  0]LogVulkanRHI: Display:  0: Flags 0x0000f Heap  0  Local HostVisible HostCoherent HostCached     
+[2024.04.17-12.25.43:148][  0]LogVulkanRHI: Display: Host Allocation Percentage   0.00% -          0.00MB /    0.000MB
+[2024.04.17-12.25.43:148][  0]LogVulkanRHI: Display: Memory Budget
+[2024.04.17-12.25.43:148][  0]LogVulkanRHI: Display: 	         | Usage                     | Budget          | Size            |
+[2024.04.17-12.25.43:148][  0]LogVulkanRHI: Display: 	---------|---------------------------------------------------------------|
+[2024.04.17-12.25.43:148][  0]LogVulkanRHI: Display: 	 HEAP 00 |  22.37% /     57487.516mb |    257023.930mb |    257023.930mb |
+[2024.04.17-12.25.43:148][  0]LogVulkanRHI: Display: 	---------|---------------------------------------------------------------|
+[2024.04.17-12.25.43:149][  0]LogVulkanRHI: Display: FVulkanPipelineStateCacheManager: Binary pipeline cache '../../../CarlaUE4/Saved/VulkanPSO.cache.10005.0' not found.
+[2024.04.17-12.25.43:245][  0]LogRHI: Texture pool is 179916 MB (70% of 257023 MB)
+[2024.04.17-12.25.43:245][  0]LogRendererCore: Ray tracing is disabled. Reason: r.RayTracing=0.
+[2024.04.17-12.25.43:317][  0]LogSlate: Using FreeType 2.10.0
+[2024.04.17-12.25.43:319][  0]LogSlate: SlateFontServices - WITH_FREETYPE: 1, WITH_HARFBUZZ: 1
+[2024.04.17-12.25.43:355][  0]LogInit: Using OS detected language (en-US).
+[2024.04.17-12.25.43:355][  0]LogInit: Using OS detected locale (en-US).
+[2024.04.17-12.25.43:355][  0]LogTextLocalizationManager: No localization for 'en-US' exists, so 'en' will be used for the language.
+[2024.04.17-12.25.43:355][  0]LogTextLocalizationManager: No localization for 'en-US' exists, so 'en' will be used for the locale.
+[2024.04.17-12.25.43:355][  0]LogSlate: FontCache flush requested. Reason: Culture for localization was changed
+[2024.04.17-12.25.43:355][  0]LogSlate: FontCache flush requested. Reason: Culture for localization was changed
+[2024.04.17-12.25.43:358][  0]LogTextLocalizationManager: Compacting localization data took   2.14ms
+[2024.04.17-12.25.43:615][  0]LogAssetRegistry: FAssetRegistry took 0.2560 seconds to start up
+[2024.04.17-12.25.43:896][  0]LogStreaming: Display: FlushAsyncLoading: 1 QueuedPackages, 0 AsyncPackages
+[2024.04.17-12.25.43:897][  0]LogPackageLocalizationCache: Processed 23 localized package path(s) for 1 prioritized culture(s) in 0.000252 seconds
+[2024.04.17-12.25.43:925][  0]LogSerialization: Display: AllowBulkDataInIoStore: 'true'
+[2024.04.17-12.25.43:926][  0]LogLinux: Selected Device Profile: [LinuxNoEditor]
+[2024.04.17-12.25.43:928][  0]LogInit: Active device profile: [0x7fd743491e40][0x7fd746277630 49] LinuxNoEditor
+[2024.04.17-12.25.43:928][  0]LogInit: Profiles: [0x7fd743491b40][0x7fd7462789e0 49] Linux, [0x7fd743491e40][0x7fd746277630 49] LinuxNoEditor, 
+[2024.04.17-12.25.43:971][  0]LogNetVersion: CarlaUE4 1.0.0, NetCL: 0, EngineNetVer: 16, GameNetVer: 0 (Checksum: 4188588438)
+[2024.04.17-12.25.44:108][  0]LogStreaming: Error: Couldn't find file for package /Game/Carla/Static/GenericMaterials/Ground/SimpleRoad/CheapRoad requested by async loading code. NameToLoad: /Game/Carla/Static/GenericMaterials/Ground/SimpleRoad/CheapRoad
+[2024.04.17-12.25.44:108][  0]LogStreaming: Error: Found 0 dependent packages...
+[2024.04.17-12.25.44:109][  0]LogStreaming: Error: Couldn't find file for package /Game/Carla/Static/GenericMaterials/Ground/SimpleRoad/CheapSideWalkCurb requested by async loading code. NameToLoad: /Game/Carla/Static/GenericMaterials/Ground/SimpleRoad/CheapSideWalkCurb
+[2024.04.17-12.25.44:109][  0]LogStreaming: Error: Found 0 dependent packages...
+[2024.04.17-12.25.44:109][  0]LogStreaming: Error: Couldn't find file for package /Game/Carla/Static/GenericMaterials/Ground/SimpleRoad/CheapSideWalk_00 requested by async loading code. NameToLoad: /Game/Carla/Static/GenericMaterials/Ground/SimpleRoad/CheapSideWalk_00
+[2024.04.17-12.25.44:110][  0]LogStreaming: Error: Found 0 dependent packages...
+[2024.04.17-12.25.44:110][  0]LogStreaming: Error: Couldn't find file for package /Game/Carla/Static/GenericMaterials/Ground/SimpleRoad/CheapLaneMarking requested by async loading code. NameToLoad: /Game/Carla/Static/GenericMaterials/Ground/SimpleRoad/CheapLaneMarking
+[2024.04.17-12.25.44:110][  0]LogStreaming: Error: Found 0 dependent packages...
+[2024.04.17-12.25.44:111][  0]LogStreaming: Error: Couldn't find file for package /Game/Carla/Static/GenericMaterials/WetPavement/WetPavement_Complex_Road_N2 requested by async loading code. NameToLoad: /Game/Carla/Static/GenericMaterials/WetPavement/WetPavement_Complex_Road_N2
+[2024.04.17-12.25.44:111][  0]LogStreaming: Error: Found 0 dependent packages...
+[2024.04.17-12.25.44:112][  0]LogStreaming: Error: Couldn't find file for package /Game/Carla/Static/GenericMaterials/WetPavement/WetPavement_Complex_Concrete requested by async loading code. NameToLoad: /Game/Carla/Static/GenericMaterials/WetPavement/WetPavement_Complex_Concrete
+[2024.04.17-12.25.44:112][  0]LogStreaming: Error: Found 0 dependent packages...
+[2024.04.17-12.25.44:113][  0]LogStreaming: Error: Couldn't find file for package /Game/Carla/Static/GenericMaterials/Ground/SideWalks/SidewalkN4/WetPavement_SidewalkN4 requested by async loading code. NameToLoad: /Game/Carla/Static/GenericMaterials/Ground/SideWalks/SidewalkN4/WetPavement_SidewalkN4
+[2024.04.17-12.25.44:113][  0]LogStreaming: Error: Found 0 dependent packages...
+[2024.04.17-12.25.44:114][  0]LogStreaming: Error: Couldn't find file for package /Game/Carla/Static/GenericMaterials/LaneMarking/Lanemarking requested by async loading code. NameToLoad: /Game/Carla/Static/GenericMaterials/LaneMarking/Lanemarking
+[2024.04.17-12.25.44:114][  0]LogStreaming: Error: Found 0 dependent packages...
+[2024.04.17-12.25.44:115][  0]LogCarla: == CARLA Settings ==============================================================
+[2024.04.17-12.25.44:115][  0]LogCarla: Last settings file loaded: 
+[2024.04.17-12.25.44:115][  0]LogCarla: [CARLA/Server]
+[2024.04.17-12.25.44:115][  0]LogCarla: RPC Port = 0
+[2024.04.17-12.25.44:115][  0]LogCarla: Streaming Port = 0
+[2024.04.17-12.25.44:115][  0]LogCarla: Secondary Port = 0
+[2024.04.17-12.25.44:115][  0]LogCarla: Synchronous Mode = Disabled
+[2024.04.17-12.25.44:115][  0]LogCarla: Rendering = Enabled
+[2024.04.17-12.25.44:115][  0]LogCarla: [CARLA/QualitySettings]
+[2024.04.17-12.25.44:115][  0]LogCarla: Quality Level = Low
+[2024.04.17-12.25.44:115][  0]LogCarla: ================================================================================
+[2024.04.17-12.25.44:408][  0]LogAudioCaptureCore: Display: No Audio Capture implementations found. Audio input will be silent.
+[2024.04.17-12.25.44:408][  0]LogAudioCaptureCore: Display: No Audio Capture implementations found. Audio input will be silent.
+[2024.04.17-12.25.44:485][  0]LogMoviePlayer: Initializing movie player
+[2024.04.17-12.25.44:745][  0]LogSlate: InvalidateAllWidgets triggered.  All widgets were invalidated
+[2024.04.17-12.25.44:745][  0]LogSlate: Slate font cache was flushed
+[2024.04.17-12.25.44:768][  0]LogUObjectArray: 16136 objects as part of root set at end of initial load.
+[2024.04.17-12.25.44:768][  0]LogUObjectArray: 26 objects are not in the root set, but can never be destroyed because they are in the DisregardForGC set.
+[2024.04.17-12.25.44:768][  0]LogUObjectAllocator: 3476120 out of 0 bytes used by permanent object pool.
+[2024.04.17-12.25.44:768][  0]LogUObjectArray: CloseDisregardForGC: 16136/16136 objects in disregard for GC pool
+[2024.04.17-12.25.44:774][  0]LogEngine: Initializing Engine...
+[2024.04.17-12.25.44:775][  0]LogStats: UGameplayTagsManager::InitializeManager -  0.000 s
+[2024.04.17-12.25.44:870][  0]LogInit: Initializing FReadOnlyCVARCache
+[2024.04.17-12.25.44:870][  0]LogNetVersion: Set ProjectVersion to 0.9.15. Version Checksum will be recalculated on next use.
+[2024.04.17-12.25.44:870][  0]LogInit: Texture streaming: Enabled
+[2024.04.17-12.25.44:871][  0]LogCarla: == CARLA Settings ==============================================================
+[2024.04.17-12.25.44:871][  0]LogCarla: Last settings file loaded: 
+[2024.04.17-12.25.44:871][  0]LogCarla: [CARLA/Server]
+[2024.04.17-12.25.44:871][  0]LogCarla: RPC Port = 0
+[2024.04.17-12.25.44:871][  0]LogCarla: Streaming Port = 0
+[2024.04.17-12.25.44:872][  0]LogCarla: Secondary Port = 0
+[2024.04.17-12.25.44:872][  0]LogCarla: Synchronous Mode = Disabled
+[2024.04.17-12.25.44:872][  0]LogCarla: Rendering = Enabled
+[2024.04.17-12.25.44:872][  0]LogCarla: [CARLA/QualitySettings]
+[2024.04.17-12.25.44:872][  0]LogCarla: Quality Level = Low
+[2024.04.17-12.25.44:872][  0]LogCarla: ================================================================================
+[2024.04.17-12.25.44:872][  0]LogInit: PhysX workers from thread pool: 15
+[2024.04.17-12.25.44:875][  0]LogSlate: Updating window title bar state: overlay mode, drag disabled, window buttons hidden, title bar hidden
+[2024.04.17-12.25.44:875][  0]LogInit: Display: Game Engine Initialized.
+[2024.04.17-12.25.44:876][  0]LogInit: Display: Starting Game.
+[2024.04.17-12.25.44:876][  0]LogNet: Browse: /Game/Carla/Maps/Town05?Name=Player
+[2024.04.17-12.25.44:876][  0]LogLoad: LoadMap: /Game/Carla/Maps/Town05?Name=Player
+[2024.04.17-12.25.44:876][  0]LogWorld: BeginTearingDown for /Temp/Untitled_24
+[2024.04.17-12.25.44:882][  0]LogWorld: UWorld::CleanupWorld for Untitled, bSessionEnded=true, bCleanupResources=true
+[2024.04.17-12.25.44:882][  0]LogSlate: InvalidateAllWidgets triggered.  All widgets were invalidated
+[2024.04.17-12.25.44:893][  0]LogUObjectHash: Compacting FUObjectHashTables data took   5.28ms
+[2024.04.17-12.25.45:639][  0]LogStreaming: Error: Couldn't find file for package /Game/Carla/Static/GenericMaterials/Metal/M_Aluminium_2 requested by async loading code. NameToLoad: /Game/Carla/Static/GenericMaterials/Metal/M_Aluminium_2
+[2024.04.17-12.25.45:639][  0]LogStreaming: Error: Found 1 dependent packages...
+[2024.04.17-12.25.45:639][  0]LogStreaming: Error:   /Game/Carla/Static/Static/SM_Fountain_03
+[2024.04.17-12.25.45:907][  0]LogStreaming: Error: Couldn't find file for package /Game/Carla/Static/Building/Materials/Block06/M_Block06StairsWall_2 requested by async loading code. NameToLoad: /Game/Carla/Static/Building/Materials/Block06/M_Block06StairsWall_2
+[2024.04.17-12.25.45:907][  0]LogStreaming: Error: Found 1 dependent packages...
+[2024.04.17-12.25.45:907][  0]LogStreaming: Error:   /Game/Carla/Static/Building/Materials/Block06/SM_Block06Roof
+[2024.04.17-12.25.48:831][  0]LogInit: PhysX workers from thread pool: 15
+[2024.04.17-12.25.48:833][  0]LogAIModule: Creating AISystem for world Town05
+[2024.04.17-12.25.56:462][  0]LogLoad: Game class is 'CarlaGameMode_C'
+[2024.04.17-12.25.56:855][  0]LogWorld: Bringing World /Game/Carla/Maps/Town05.Town05 up for play (max tick rate 0) at 2024.04.17-08.25.56
+[2024.04.17-12.25.56:859][  0]LogCarlaServer: Initialized CarlaServer: Ports(rpc=0, streaming=41225, secondary=0)
+[2024.04.17-12.25.56:859][  0]LogCarla: FCommandLine  -nosound -RenderOffScreen -quality-level=Epic -prefernvidia -carla-rpc-port=0 -carla-streaming-port=0 -carla-secondary-port=0
+[2024.04.17-12.25.56:859][  0]LogCarla: FCarlaServer AsyncRun 38, RPCThreads 12, StreamingThreads 12, SecondaryThreads 12
+[2024.04.17-12.25.58:335][  0]LogTemp: Loaded OpenDrive file '/home/scenariogen/carla/CarlaUE4/Content/Carla/Maps/OpenDrive/Town05.xodr'
+[2024.04.17-12.25.58:647][  0]LogCarla: There are 302 SpawnPoints in the map
+[2024.04.17-12.25.58:654][  0]LogWorld: Bringing up level for play took: 2.188036
+[2024.04.17-12.25.58:729][  0]LogCarla: Warning: Light Id overlapping
+[2024.04.17-12.25.58:729][  0]LogCarla: Warning: Light Id overlapping
+[2024.04.17-12.25.58:729][  0]LogCarla: Warning: Light Id overlapping
+[2024.04.17-12.25.58:729][  0]LogCarla: Warning: Light Id overlapping
+[2024.04.17-12.25.58:729][  0]LogCarla: Warning: Light Id overlapping
+[2024.04.17-12.25.58:729][  0]LogCarla: Warning: Light Id overlapping
+[2024.04.17-12.25.58:729][  0]LogCarla: Warning: Light Id overlapping
+[2024.04.17-12.25.58:730][  0]LogBlueprintUserMessages: [BP_Sky_2] Altitude: 45.0
+[2024.04.17-12.25.58:730][  0]LogBlueprintUserMessages: [BP_Sky_2] Fog: 3.0
+[2024.04.17-12.25.58:730][  0]LogBlueprintUserMessages: [BP_Sky_2] Level: 
+[2024.04.17-12.25.58:759][  0]LogBlueprintUserMessages: [BP_Sky_2] Altitude: 45.0
+[2024.04.17-12.25.58:759][  0]LogBlueprintUserMessages: [BP_Sky_2] Fog: 3.0
+[2024.04.17-12.25.58:759][  0]LogBlueprintUserMessages: [BP_Sky_2] Level: 
+[2024.04.17-12.25.59:277][  0]LogCore: Error: FVector contains NaN: X=-inf Y=-inf Z=-inf
+[2024.04.17-12.25.59:284][  0]LogCarlaServer: New episode 'Town05' started
+[2024.04.17-12.25.59:284][  0]LogBlueprintUserMessages: [BP_Sky_2] Altitude: 45.0
+[2024.04.17-12.25.59:284][  0]LogBlueprintUserMessages: [BP_Sky_2] Fog: 3.0
+[2024.04.17-12.25.59:284][  0]LogBlueprintUserMessages: [BP_Sky_2] Level: 
+[2024.04.17-12.25.59:427][  0]LogLoad: Took 14.550564 seconds to LoadMap(/Game/Carla/Maps/Town05)
+[2024.04.17-12.25.59:579][  0]LogSlate: Took 0.000907 seconds to synchronously load lazily loaded font '../../../Engine/Content/Slate/Fonts/Roboto-Regular.ttf' (155K)
+[2024.04.17-12.25.59:582][  0]Warning:  applied to a non-external Texture2D sampler. This may work by chance on some platforms but is not portable. Please change sampler type to 'External'. Parameter 'EmissiveMap' (slot 1) in material 'M_BuildingMaterial'
+[2024.04.17-12.25.59:582][  0]LogInit: Display: Engine is initialized. Leaving FEngineLoop::Init()
+[2024.04.17-12.25.59:582][  0]LogLoad: (Engine Initialization) Total time: 17.93 seconds
+[2024.04.17-12.25.59:582][  0]LogInit: First time updating LLM stats...
+Ensure condition failed: SingleShaderBindings.GetParameterMapInfo().LooseParameterBuffers.Num() == 0 [File:/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Renderer/Private/PrimitiveSceneInfo.cpp] [Line: 326] 
+Cached Mesh Draw command uses loose parameters.  This will break dynamic instancing in performance critical pass.  Use Uniform Buffers instead.
+[2024.04.17-12.26.00:373][  0]LogCore: 0x0000000012923490 Dladdr: 0.627528ms Open: 0.193673ms Search: 0.094332ms
+[2024.04.17-12.26.00:373][  0]LogCore: 0x0000000012923034 Dladdr: 0.602202ms Open: 0.172047ms Search: 0.082546ms
+[2024.04.17-12.26.00:373][  0]LogCore: 0x0000000008eb6599 Dladdr: 0.702999ms Open: 0.158744ms Search: 0.083943ms
+[2024.04.17-12.26.00:375][  0]LogCore: 0x0000000008eccd80 Dladdr: 0.698922ms Open: 0.135114ms Search: 0.088147ms
+[2024.04.17-12.26.00:375][  0]LogCore: 0x0000000008ecccdc Dladdr: 0.701549ms Open: 0.137441ms Search: 0.080334ms
+[2024.04.17-12.26.00:378][  0]LogCore: 0x0000000005719864 Dladdr: 0.706908ms Open: 0.129456ms Search: 0.081830ms
+[2024.04.17-12.26.00:378][  0]LogCore: 0x0000000008ecc07c Dladdr: 0.697284ms Open: 0.167790ms Search: 0.081861ms
+[2024.04.17-12.26.00:378][  0]LogCore: 0x0000000008ecc7b6 Dladdr: 0.701122ms Open: 0.144580ms Search: 0.083749ms
+[2024.04.17-12.26.00:381][  0]LogCore: 0x0000000008ecc669 Dladdr: 0.700705ms Open: 0.246045ms Search: 0.080785ms
+[2024.04.17-12.26.00:381][  0]LogCore: 0x00000000073c536e Dladdr: 0.698724ms Open: 0.147558ms Search: 0.087926ms
+[2024.04.17-12.26.00:383][  0]LogCore: 0x00000000073c5095 Dladdr: 0.696944ms Open: 0.531450ms Search: 0.078459ms
+[2024.04.17-12.26.00:383][  0]LogCore: 0x00000000073c490a Dladdr: 0.699868ms Open: 0.138074ms Search: 0.075225ms
+[2024.04.17-12.26.00:386][  0]LogCore: 0x00000000073c4c47 Dladdr: 0.696999ms Open: 0.169407ms Search: 0.075385ms
+[2024.04.17-12.26.00:386][  0]LogCore: 0x00000000073c47b1 Dladdr: 0.695526ms Open: 0.171565ms Search: 0.077636ms
+[2024.04.17-12.26.00:386][  0]LogCore: 0x00000000074a3cbb Dladdr: 0.694791ms Open: 0.203326ms Search: 0.085455ms
+[2024.04.17-12.26.00:388][  0]LogCore: 0x000000000745c761 Dladdr: 0.693197ms Open: 0.253355ms Search: 0.084264ms
+[2024.04.17-12.26.00:388][  0]LogCore: 0x00007fd9218dfac2 Dladdr: 0.029912ms Open: 0.215592ms Search: 0.005080ms
+[2024.04.17-12.26.00:388][  0]LogCore: 0x00007fd921970a03 Dladdr: 0.029610ms Open: 0.114729ms Search: 0.001175ms
+[2024.04.17-12.26.00:388][  0]LogStats: FPlatformStackWalk::StackWalkAndDump -  0.017 s
+[2024.04.17-12.26.00:388][  0]LogOutputDevice: Error: === Handled ensure: ===
+[2024.04.17-12.26.00:388][  0]LogOutputDevice: Error: 
+[2024.04.17-12.26.00:388][  0]LogOutputDevice: Error: Ensure condition failed: SingleShaderBindings.GetParameterMapInfo().LooseParameterBuffers.Num() == 0 [File:/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Renderer/Private/PrimitiveSceneInfo.cpp] [Line: 326]
+[2024.04.17-12.26.00:388][  0]LogOutputDevice: Error: Cached Mesh Draw command uses loose parameters.  This will break dynamic instancing in performance critical pass.  Use Uniform Buffers instead.
+[2024.04.17-12.26.00:388][  0]LogOutputDevice: Error: Stack: 
+[2024.04.17-12.26.00:388][  0]LogOutputDevice: Error: [Callstack] 0x0000000012923491 CarlaUE4-Linux-Debug!FPrimitiveSceneInfo::CacheMeshDrawCommands(FRHICommandListImmediate&, FScene*, TArrayView<FPrimitiveSceneInfo*, int> const&)::$_1::operator()(int) const::'lambda1'()::operator()() const [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Renderer/Private/PrimitiveSceneInfo.cpp:326]
+[2024.04.17-12.26.00:388][  0]LogOutputDevice: Error: [Callstack] 0x0000000012923035 CarlaUE4-Linux-Debug!bool DispatchCheckVerify<bool, FPrimitiveSceneInfo::CacheMeshDrawCommands(FRHICommandListImmediate&, FScene*, TArrayView<FPrimitiveSceneInfo*, int> const&)::$_1::operator()(int) const::'lambda1'()>(FPrimitiveSceneInfo::CacheMeshDrawCommands(FRHICommandListImmediate&, FScene*, TArrayView<FPrimitiveSceneInfo*, int> const&)::$_1::operator()(int) const::'lambda1'()&&) const [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Core/Public/Misc/AssertionMacros.h:164]
+[2024.04.17-12.26.00:388][  0]LogOutputDevice: Error: [Callstack] 0x0000000008eb659a CarlaUE4-Linux-Debug!FPrimitiveSceneInfo::CacheMeshDrawCommands(FRHICommandListImmediate&, FScene*, TArrayView<FPrimitiveSceneInfo*, int> const&)::$_1::operator()(int) const [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Renderer/Private/PrimitiveSceneInfo.cpp:326]
+[2024.04.17-12.26.00:388][  0]LogOutputDevice: Error: [Callstack] 0x0000000008eccd81 CarlaUE4-Linux-Debug!decltype(Forward<FPrimitiveSceneInfo::CacheMeshDrawCommands(FRHICommandListImmediate&, FScene*, TArrayView<FPrimitiveSceneInfo*, int> const&)::$_1&>(fp)(Forward<int>(fp0))) Invoke<FPrimitiveSceneInfo::CacheMeshDrawCommands(FRHICommandListImmediate&, FScene*, TArrayView<FPrimitiveSceneInfo*, int> const&)::$_1&, int>(FPrimitiveSceneInfo::CacheMeshDrawCommands(FRHICommandListImmediate&, FScene*, TArrayView<FPrimitiveSceneInfo*, int> const&)::$_1&&&, int&&) [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Core/Public/Templates/Invoke.h:51]
+[2024.04.17-12.26.00:388][  0]LogOutputDevice: Error: [Callstack] 0x0000000008ecccdd CarlaUE4-Linux-Debug!UE4Function_Private::TFunctionRefCaller<FPrimitiveSceneInfo::CacheMeshDrawCommands(FRHICommandListImmediate&, FScene*, TArrayView<FPrimitiveSceneInfo*, int> const&)::$_1, void (int)>::Call(void*, int&) [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Core/Public/Templates/Function.h:548]
+[2024.04.17-12.26.00:388][  0]LogOutputDevice: Error: [Callstack] 0x0000000005719865 CarlaUE4-Linux-Debug!UE4Function_Private::TFunctionRefBase<UE4Function_Private::FFunctionRefStoragePolicy, void (int)>::operator()(int) const [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Core/Public/Templates/Function.h:676]
+[2024.04.17-12.26.00:388][  0]LogOutputDevice: Error: [Callstack] 0x0000000008ecc07d CarlaUE4-Linux-Debug!ParallelForImpl::TParallelForData<FPrimitiveSceneInfo::CacheMeshDrawCommands(FRHICommandListImmediate&, FScene*, TArrayView<FPrimitiveSceneInfo*, int> const&)::$_1>::Process(int, TSharedRef<ParallelForImpl::TParallelForData<FPrimitiveSceneInfo::CacheMeshDrawCommands(FRHICommandListImmediate&, FScene*, TArrayView<FPrimitiveSceneInfo*, int> const&)::$_1>, (ESPMode)1>&, ENamedThreads::Type, bool) [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Core/Public/Async/ParallelFor.h:179]
+[2024.04.17-12.26.00:388][  0]LogOutputDevice: Error: [Callstack] 0x0000000008ecc7b7 CarlaUE4-Linux-Debug!ParallelForImpl::TParallelForTask<FPrimitiveSceneInfo::CacheMeshDrawCommands(FRHICommandListImmediate&, FScene*, TArrayView<FPrimitiveSceneInfo*, int> const&)::$_1>::DoTask(ENamedThreads::Type, TRefCountPtr<FGraphEvent> const&) [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Core/Public/Async/ParallelFor.h:134]
+[2024.04.17-12.26.00:388][  0]LogOutputDevice: Error: [Callstack] 0x0000000008ecc66a CarlaUE4-Linux-Debug!TGraphTask<ParallelForImpl::TParallelForTask<FPrimitiveSceneInfo::CacheMeshDrawCommands(FRHICommandListImmediate&, FScene*, TArrayView<FPrimitiveSceneInfo*, int> const&)::$_1> >::ExecuteTask(TArray<FBaseGraphTask*, TSizedDefaultAllocator<32> >&, ENamedThreads::Type) [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Core/Public/Async/TaskGraphInterfaces.h:886]
+[2024.04.17-12.26.00:388][  0]LogOutputDevice: Error: [Callstack] 0x00000000073c536f CarlaUE4-Linux-Debug!FBaseGraphTask::Execute(TArray<FBaseGraphTask*, TSizedDefaultAllocator<32> >&, ENamedThreads::Type) [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Core/Public/Async/TaskGraphInterfaces.h:524]
+[2024.04.17-12.26.00:389][  0]LogOutputDevice: Error: [Callstack] 0x00000000073c5096 CarlaUE4-Linux-Debug!FTaskThreadAnyThread::ProcessTasks() [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Core/Private/Async/TaskGraph.cpp:1065]
+[2024.04.17-12.26.00:389][  0]LogOutputDevice: Error: [Callstack] 0x00000000073c490b CarlaUE4-Linux-Debug!FTaskThreadAnyThread::ProcessTasksUntilQuit(int) [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Core/Private/Async/TaskGraph.cpp:887]
+[2024.04.17-12.26.00:389][  0]LogOutputDevice: Error: [Callstack] 0x00000000073c4c48 CarlaUE4-Linux-Debug!FTaskThreadBase::Run() [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Core/Private/Async/TaskGraph.cpp:540]
+[2024.04.17-12.26.00:389][  0]LogOutputDevice: Error: [Callstack] 0x00000000073c47b2 CarlaUE4-Linux-Debug!FTaskThreadAnyThread::Run() [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Core/Private/Async/TaskGraph.cpp:965]
+[2024.04.17-12.26.00:389][  0]LogOutputDevice: Error: [Callstack] 0x00000000074a3cbc CarlaUE4-Linux-Debug!FRunnableThreadPThread::Run() [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Core/Private/HAL/PThreadRunnableThread.cpp:25]
+[2024.04.17-12.26.00:389][  0]LogOutputDevice: Error: [Callstack] 0x000000000745c762 CarlaUE4-Linux-Debug!FRunnableThreadPThread::_ThreadProc(void*) [/home/scenariogen/CarlaUnreal/Engine/Source/Runtime/Core/Private/HAL/PThreadRunnableThread.h:185]
+[2024.04.17-12.26.00:389][  0]LogOutputDevice: Error: [Callstack] 0x00007fd9218dfac3 libc.so.6!UnknownFunction(0x94ac2)
+[2024.04.17-12.26.00:389][  0]LogOutputDevice: Error: [Callstack] 0x00007fd921970a04 libc.so.6!clone(+0x43)
+[2024.04.17-12.26.00:389][  0]LogOutputDevice: Error: 
+[2024.04.17-12.26.00:389][  0]LogStats:                SubmitErrorReport -  0.000 s
+[2024.04.17-12.26.00:430][  0]LogStats:                    SendNewReport -  0.041 s
+[2024.04.17-12.26.00:430][  0]LogStats:             FDebug::EnsureFailed -  0.059 s
+[2024.04.17-12.26.00:527][  0]LogRenderer: Reallocating scene render targets to support 856x640 Format 10 NumSamples 1 (Frame:1).
+[2024.04.17-12.26.03:443][  0]LogStaticMesh: Allocated 1024x836x128 distance field atlas = 209.0Mb, with 338 objects containing 163.3Mb backing data
+slurmstepd: error: *** JOB 36262013 ON g0311 CANCELLED AT 2024-04-17T09:25:41 DUE TO TIME LIMIT ***

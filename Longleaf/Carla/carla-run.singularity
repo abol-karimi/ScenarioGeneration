@@ -1,0 +1,13 @@
+Bootstrap: localimage
+From: carla-build.sif
+
+%runscript
+    /home/scenariogen/carla/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Debug \
+        CarlaUE4 \
+        -nosound \
+        -RenderOffScreen \
+        -quality-level=Epic \
+        -prefernvidia \
+        -carla-rpc-port=0 \
+        -carla-streaming-port=0 \
+        -carla-secondary-port=0
