@@ -3,7 +3,7 @@
 #SBATCH -o "%j-%N-%x.txt"
 #SBATCH -p volta-gpu
 #SBATCH --nodes=1
-#SBATCH --nodelist=g0301,g0304,g0305,g0311,g0313
+#SBATCH --exclude=g0301,g0304,g0305,g0311,g0313
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
 #SBATCH --qos gpu_access
