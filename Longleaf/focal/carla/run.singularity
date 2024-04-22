@@ -1,8 +1,8 @@
 Bootstrap: localimage
-From: carla-build.sif
+From: build.sif
 
 %runscript
-    /home/scenariogen/carla/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Debug \
+    /home/scenariogen/carla/CarlaUE4/Binaries/Linux/${CARLA_BINARY} \
         CarlaUE4 \
         -nosound \
         -RenderOffScreen \
