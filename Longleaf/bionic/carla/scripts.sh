@@ -5,26 +5,12 @@ ScenariogenDependencies=/users/a/b/abol
 CARLA_Dist_Shipping=/work/users/a/b/abol/bionic/carla/Dist/CARLA_Shipping_0.9.15-169-g063cc9d90/LinuxNoEditor
 CARLA_Dist_Debug=/work/users/a/b/abol/bionic/carla/Dist/CARLA_Debug_0.9.15-169-g063cc9d90/LinuxNoEditor
 
-CARLA_Binary_Shipping=CarlaUE4-Linux-Shipping
-CARLA_Binary_Debug=CarlaUE4-Linux-Debug
-
-# select a Carla version
-CARLA_Dist=$CARLA_Dist_Debug
-CARLA_Binary=$CARLA_Binary_Debug
+# select a Carla version (Debug or Shipping)
+CARLA_Dist=$CARLA_Dist_Shipping
+CARLA_Binary=CarlaUE4-Linux-Shipping
 
 
 build_images() {
-        # --bind $ScenariogenDependencies/ScenarioGeneration/Longleaf/bionic/Vulkan-Loader:/home/scenariogen/Vulkan-Loader \
-    apptainer build \
-        --force \
-        base.sif \
-        base.singularity
-
-    apptainer build \
-        --force \
-        vulkaninfo.sif \
-        vulkaninfo.singularity
-    
     apptainer build \
         --force \
         build.sif \

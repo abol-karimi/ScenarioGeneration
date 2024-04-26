@@ -1,10 +1,7 @@
-Bootstrap: localimage
-From: base.sif
+Bootstrap: docker
+From: nvidia/vulkan:1.1.121-cuda-10.1--ubuntu18.04
 
 %runscript
-    echo LD_LIBRARY_PATH: $LD_LIBRARY_PATH
-    ls $LD_LIBRARY_PATH
-    echo VK_ICD_FILENAMES: $VK_ICD_FILENAMES
     /home/scenariogen/carla/CarlaUE4/Binaries/Linux/${CARLA_Binary} \
         CarlaUE4 \
         -RenderOffScreen \
@@ -12,6 +9,12 @@ From: base.sif
         -nosound \
         -carla-rpc-port=0 \
         -carla-streaming-port=0 \
-        -carla-secondary-port=0 \
         -carla-secondary-port=0
 
+%setup
+    mkdir -p ${SINGULARITY_ROOTFS}/home/scenariogen/carla
+
+%post
+    # https://github.com/carla-simulator/carla/blob/0.9.15/Util/Docker/Release.Dockerfile
+    apt-key adv --fetch-keys "https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub"
+    packages='libsdl2-2.0 xserver-xorg libvulkan1 libomp5' && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y $packages --no-install-recommends
