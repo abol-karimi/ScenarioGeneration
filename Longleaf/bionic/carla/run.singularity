@@ -1,0 +1,17 @@
+Bootstrap: localimage
+From: base.sif
+
+%runscript
+    echo LD_LIBRARY_PATH: $LD_LIBRARY_PATH
+    ls $LD_LIBRARY_PATH
+    echo VK_ICD_FILENAMES: $VK_ICD_FILENAMES
+    /home/scenariogen/carla/CarlaUE4/Binaries/Linux/${CARLA_Binary} \
+        CarlaUE4 \
+        -RenderOffScreen \
+        -quality-level=${QualityLevel} \
+        -nosound \
+        -carla-rpc-port=0 \
+        -carla-streaming-port=0 \
+        -carla-secondary-port=0 \
+        -carla-secondary-port=0
+

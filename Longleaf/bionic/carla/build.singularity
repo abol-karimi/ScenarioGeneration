@@ -1,0 +1,27 @@
+Bootstrap: localimage
+From: base.sif
+
+%runscript
+
+    export DEBIAN_FRONTEND=noninteractive
+
+
+    if [ -n "${BUILD_UE4+x}" ]; then
+        cd /home/scenariogen/CarlaUnreal
+        ./Setup.sh
+        ./GenerateProjectFiles.sh
+        make
+    fi
+
+    if [ -n "${UPDATE_CARLA+x}" ]; then
+        export UE4_ROOT=/home/scenariogen/CarlaUnreal
+        cd /home/scenariogen/carla
+        ./Update.sh
+    fi
+
+    if [ -n "${BUILD_CARLA+x}" ]; then
+        export UE4_ROOT=/home/scenariogen/CarlaUnreal
+        cd /home/scenariogen/carla
+        make PythonAPI ARGS="--python-version=3.8"
+        make package ARGS="--config=$CARLA_CONFIG --no-zip"
+    fi
