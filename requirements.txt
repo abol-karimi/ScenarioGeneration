@@ -7,3 +7,4 @@ cachetools
 more-itertools
 sympy
 tqdm
+setproctitle

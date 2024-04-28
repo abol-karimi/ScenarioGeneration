@@ -1,5 +1,4 @@
-#!/usr/bin/env python3.8
-
+#!/usr/bin/env python
 import setproctitle
 import argparse
 from pathlib import Path

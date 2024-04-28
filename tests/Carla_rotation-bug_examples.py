@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.8
+#!/usr/bin/env python3
 import carla
 
 def draw_transform(world, translation=carla.Location(), rotation=carla.Rotation()):

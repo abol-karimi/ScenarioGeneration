@@ -13,7 +13,7 @@
 #SBATCH -t 3-00:03:00
 #SBATCH --array=0-1
 
-singularity run \
+apptainer run \
     --nv \
     --bind $1/CARLA_0.9.15:/home/scenariogen/carla \
     --bind $1/Scenic_10-03-2023:/home/scenariogen/Scenic \

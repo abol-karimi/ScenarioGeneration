@@ -1,4 +1,3 @@
-import sys
 import jsonpickle
 from pathlib import Path
 from typing import Any
@@ -86,7 +85,7 @@ def atheris_target(config, SUT, mutator):
                       config['seeds-folder'],
                     ]
   atheris.instrument_all()
-  atheris.Setup(sys.argv + libfuzzer_config,
+  atheris.Setup(libfuzzer_config,
                 SUT,
                 custom_mutator=mutator)
   atheris.Fuzz()

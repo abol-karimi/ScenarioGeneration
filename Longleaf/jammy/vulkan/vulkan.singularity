@@ -1,0 +1,29 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%runscript
+    ls /usr/*
+    # strings /usr/lib64/libvulkan.so.1 | grep "^1\.[0-9]\+\.[0-9]\+"    
+    # export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64
+    # export VK_ICD_FILENAMES=/usr/share/vulkan/icd.d
+    # "$@"
+
+%setup
+    mkdir -p ${SINGULARITY_ROOTFS}/home/scenariogen/ScenarioGeneration
+
+%post -c /bin/bash
+    ls /usr/*
+
+    # apt-get update -q
+    # apt-get install -y \
+    #     binutils
+
+    # strings /usr/lib64/libvulkan.so.1 | grep "^1\.[0-9]\+\.[0-9]\+"
+
+    # wget -qO- https://packages.lunarg.com/lunarg-signing-key-pub.asc | tee /etc/apt/trusted.gpg.d/lunarg.asc
+    # wget -qO /etc/apt/sources.list.d/lunarg-vulkan-1.3.280-jammy.list https://packages.lunarg.com/vulkan/1.3.280/lunarg-vulkan-1.3.280-jammy.list
+    # apt-get update
+    # apt-get install -y \
+    #     vulkan-sdk \
+    #     nvidia-driver-545
+

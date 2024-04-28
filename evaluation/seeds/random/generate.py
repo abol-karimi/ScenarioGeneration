@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.8
+#!/usr/bin/env python3
 from scenariogen.core.seed_generators import random as random_seed_generator
 from evaluation.configs import coverage_config
 

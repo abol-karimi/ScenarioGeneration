@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.8
+#!/usr/bin/env python3
 
 from experiments.PCGF.experiment import get_config as PCGF_get_config
 import experiments.runner

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.8
+#!/usr/bin/env python3
 
 from scenariogen.predicates.utils import predicates_of_logic_program
 from scenariogen.core.coverages.coverage import PredicateCoverage

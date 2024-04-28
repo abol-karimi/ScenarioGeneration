@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=carla-focal
-#SBATCH -o "%j-%N.txt"
+#SBATCH -o "%j-%N.log"
 #SBATCH -p volta-gpu
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
@@ -21,7 +21,7 @@ echo `scontrol show jobid $SLURM_JOB_ID -dd | grep IDX` && \
 nvidia-smi && \
 export CARLA_DIST=carla/Dist/CARLA_Shipping_0.9.15-168-g20a4a4618-dirty/LinuxNoEditor && \
 export CARLA_BINARY=CarlaUE4-Linux-Shipping && \
-singularity run \
+apptainer run \
     --nv \
     --bind ${ScenariogenDependencies}/${CARLA_DIST}:/home/scenariogen/carla \
     ${ScenariogenDependencies}/ScenarioGeneration/Longleaf/focal/carla/run.sif

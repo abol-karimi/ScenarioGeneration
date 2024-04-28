@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.8
+#!/usr/bin/env python3
 """
 Research question:
   Does guiding input generation using code-coverage improve the predicate-coverage?

@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=scenariogen-build
-#SBATCH -o "%j-%N-%x.txt"
+#SBATCH -o "%j-%N-%x.log"
 #SBATCH -p volta-gpu
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
@@ -11,7 +11,7 @@
 #SBATCH -t 1:00:00
 
 export CARLA_Jammy_Dist=/work/users/a/b/abol/jammy/carla/Dist/CARLA_Shipping_0.9.15-169-g063cc9d90/LinuxNoEditor && \
-singularity build \
+apptainer build \
     --force \
     --nv \
     --build-arg ScenariogenDependencies=/users/a/b/abol \

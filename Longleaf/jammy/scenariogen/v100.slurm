@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name="v100"
-#SBATCH -o "%x-%j-%N.txt"
+#SBATCH -o "%x-%j-%N.log"
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=10

@@ -11,7 +11,7 @@ build_image() {
 
     image=${SLURM_JOB_PARTITION}_${image}
     
-    singularity build \
+    apptainer build \
         --force \
         --nv \
         --build-arg driver=$1 \
@@ -33,7 +33,7 @@ run_carla() {
     
     CARLA_Jammy_Dist=/work/users/a/b/abol/jammy/carla/Dist/CARLA_Shipping_0.9.15-169-g063cc9d90/LinuxNoEditor && \
     ScenariogenDependencies=/users/a/b/abol && \
-    singularity run \
+    apptainer run \
         --nv \
         --bind ${CARLA_Jammy_Dist}:/home/scenariogen/carla \
         ${ScenariogenDependencies}/ScenarioGeneration/Longleaf/jammy/carla/${image}.sif \
@@ -52,7 +52,7 @@ run_carla() {
 
 
 clean_ue4() {
-    singularity run \
+    apptainer run \
         --nv \
         --env DEBIAN_FRONTEND=noninteractive \
         --bind /work/users/a/b/abol/jammy/CarlaUnreal:/home/scenariogen/CarlaUnreal \
@@ -65,7 +65,7 @@ clean_ue4() {
 
 
 build_ue4() {
-    singularity run \
+    apptainer run \
         --nv \
         --bind /work/users/a/b/abol/jammy/CarlaUnreal:/home/scenariogen/CarlaUnreal \
         ${ScenariogenDependencies}/ScenarioGeneration/Longleaf/jammy/carla/image.sif \
@@ -77,7 +77,7 @@ build_ue4() {
 }
 
 build_carla() {
-    singularity run \
+    apptainer run \
         --nv \
         --bind /work/users/a/b/abol/jammy/CarlaUnreal:/home/scenariogen/CarlaUnreal \
         --bind /work/users/a/b/abol/jammy/carla:/home/scenariogen/carla \
@@ -90,7 +90,7 @@ build_carla() {
 }
 
 rebuild_carla() {
-    singularity run \
+    apptainer run \
         --nv \
         --bind /work/users/a/b/abol/jammy/CarlaUnreal:/home/scenariogen/CarlaUnreal \
         --bind /work/users/a/b/abol/jammy/carla:/home/scenariogen/carla \

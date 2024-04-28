@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.8
+#!/usr/bin/env python3
 import matplotlib.pyplot as plt
 import argparse
 from scenariogen.core.mscatter import mscatter

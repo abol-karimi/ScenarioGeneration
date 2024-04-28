@@ -1,5 +1,5 @@
 
-#!/usr/bin/env python3.8
+#!/usr/bin/env python3
 
 from scenariogen.core.coverages.coverage import Statement, StatementCoverage, StatementSetCoverage, Predicate, PredicateCoverage
 

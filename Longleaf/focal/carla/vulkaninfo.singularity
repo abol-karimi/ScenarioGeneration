@@ -1,0 +1,9 @@
+Bootstrap: localimage
+From: base.sif
+
+%runscript
+    vulkaninfo
+
+%post
+    apt-get update -q
+    apt-get install -y vulkan-tools

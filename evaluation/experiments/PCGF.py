@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.8
+#!/usr/bin/env python3
 """
 Research question:
   Does prioritizing seeds based on their predicate-coverage improve the fuzzing performance?

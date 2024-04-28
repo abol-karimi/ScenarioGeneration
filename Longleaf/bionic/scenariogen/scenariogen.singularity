@@ -1,0 +1,128 @@
+Bootstrap: localimage
+From: ../carla/run.sif
+
+%runscript
+    export CARLA_ROOT='/home/scenariogen/carla'
+    carla_egg=carla-0.9.15-py3.8-linux-x86_64.egg
+    export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/dist/${carla_egg}:$PYTHONPATH
+    export PYTHONPATH=${CARLA_ROOT}/PythonAPI/examples/:$PYTHONPATH
+    export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/:$PYTHONPATH
+    export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/agents/:$PYTHONPATH
+    . /home/scenariogen/.venv/bin/activate
+    cd /home/scenariogen/ScenarioGeneration
+    "$@"
+
+
+%environment
+    # ScenarioGeneneration
+    export PYTHONPATH=/home/scenariogen/ScenarioGeneration/src:$PYTHONPATH
+    export PYTHONPATH=/home/scenariogen/ScenarioGeneration:$PYTHONPATH
+    export PATH=/home/scenariogen/ScenarioGeneration/:$PATH
+    export PATH=/home/scenariogen/ScenarioGeneration/src/scenariogen/scripts:$PATH
+    export PATH=/home/scenariogen/ScenarioGeneration/src/scenariogen/scripts/carla:$PATH
+    export PATH=/home/scenariogen/ScenarioGeneration/src/scenariogen/scripts/newtonian:$PATH
+    export PATH=/home/scenariogen/z3/bin:$PATH
+
+    # ScenarioComplexity
+    export PYTHONPATH=/home/scenariogen/ScenarioComplexity/src:$PYTHONPATH
+    export PYTHONPATH=/home/scenariogen/ScenarioComplexity:$PYTHONPATH
+    export PATH=$PATH:/home/scenariogen/ScenarioComplexity/src/complexgen/scripts
+
+    # TF++ AV agent
+    export WORK_DIR=/home/scenariogen/carla_garage_fork
+    export SCENARIO_RUNNER_ROOT=${WORK_DIR}/scenario_runner
+    export LEADERBOARD_ROOT=${WORK_DIR}/leaderboard
+    export PYTHONPATH=${WORK_DIR}:$PYTHONPATH
+    export PYTHONPATH=${WORK_DIR}/team_code:$PYTHONPATH
+    export PYTHONPATH=${SCENARIO_RUNNER_ROOT}:$PYTHONPATH
+    export PYTHONPATH=${LEADERBOARD_ROOT}:$PYTHONPATH
+
+
+%files
+    # Scenic
+    {{ScenariogenDependencies}}/Scenic_04-10-2024 /home/scenariogen/Scenic
+
+    # Clingo: Dependency of Scenariogen and ScenarioComplexity
+    {{ScenariogenDependencies}}/clingo-5.6.2 /home/scenariogen/clingo-source
+
+    # ScenarioComplexity
+    {{ScenariogenDependencies}}/ScenarioComplexity/requirements.txt /home/scenariogen/ScenarioComplexity/requirements.txt
+
+    # TF++ Carla Leaderboard agent
+    {{ScenariogenDependencies}}/carla_garage_fork/scenario_runner/requirements.txt /home/scenariogen/carla_garage_fork/scenario_runner/requirements.txt
+    {{ScenariogenDependencies}}/carla_garage_fork/leaderboard/requirements.txt /home/scenariogen/carla_garage_fork/leaderboard/requirements.txt
+    {{ScenariogenDependencies}}/carla_garage_fork/team_code/requirements.txt /home/scenariogen/carla_garage_fork/team_code/requirements.txt
+
+    # ScenarioGeneration
+    {{ScenariogenDependencies}}/ScenarioGeneration/requirements.txt /home/scenariogen/ScenarioGeneration/requirements.txt
+
+    # Z3 Solver
+    {{ScenariogenDependencies}}/z3-4.12.6-x64-glibc-2.35 /home/scenariogen/z3
+
+
+%post
+    export DEBIAN_FRONTEND=noninteractive
+
+    apt-get update
+    apt-get install -y \
+        software-properties-common
+
+    # python 3.8
+    add-apt-repository ppa:deadsnakes/ppa -y
+    apt-get update
+    apt-get install -y \
+        python3-pip \
+        python3.8 \
+        python3.8-dev \
+        python3.8-venv
+    python3.8 -m pip install --user distro
+
+    # venv for scenariogen
+    cd /home/scenariogen
+    python3.8 -m venv .venv
+    . .venv/bin/activate
+
+    # carla PythonAPI
+    export CARLA_ROOT='/home/scenariogen/carla'
+    carla_egg=carla-0.9.15-py3.8-linux-x86_64.egg
+    export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/dist/${carla_egg}:$PYTHONPATH
+
+    #--- Scenic 3 ---
+    pip install --upgrade pip
+    apt-get install -y python3-tk
+    pip install -e /home/scenariogen/Scenic
+
+    #--- ScenarioGeneration ---
+    pip install -r /home/scenariogen/ScenarioGeneration/requirements.txt
+    # Clingo with Python support
+    pip install --upgrade cmake
+    pip install cffi
+    cmake -H/home/scenariogen/clingo-source -B/home/scenariogen/clingo-build \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/home/scenariogen/clingo-install \
+        -DCLINGO_BUILD_APPS=ON \
+        -DCLINGO_BUILD_SHARED=ON \
+        -DCLINGO_BUILD_WITH_PYTHON=ON \
+        -DCLINGO_PYTHON_VERSION:LIST="3.8;EXACT" \
+        -DPython_ROOT=/home/scenariogen/.venv \
+        -DPYCLINGO_INSTALL_DIR=/home/scenariogen/.venv/lib/python3.8/site-packages
+    cmake --build /home/scenariogen/clingo-build --parallel 32
+    cmake --build /home/scenariogen/clingo-build --target install
+
+    rm -rf /home/scenariogen/clingo-source
+    rm -rf /home/scenariogen/clingo-build
+
+    #--- ScenarioComplexity ---
+    pip install -r /home/scenariogen/ScenarioComplexity/requirements.txt
+
+    #--- TF++ Carla Leaderboard agent ---
+    pip install -r /home/scenariogen/carla_garage_fork/scenario_runner/requirements.txt
+    pip install -r /home/scenariogen/carla_garage_fork/leaderboard/requirements.txt
+    pip install -r /home/scenariogen/carla_garage_fork/team_code/requirements.txt
+
+    # for code coverage evaluation
+    pip install pyinstrument coverage
+
+    apt-get install -y \
+        libjpeg8 \
+        libtiff5

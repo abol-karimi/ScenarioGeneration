@@ -4,36 +4,43 @@ from datetime import timedelta
 
 generators = ['PCGF', 'Random']
 randomizer_seeds = [0, 1, 2, 3, 4]
-trial_timeout = timedelta(minutes=10)
-slurm_timeout = trial_timeout + timedelta(minutes=5)
-scenariogen_dependencies = '/users/a/b/abol'
+trial_timeout = timedelta(hours=12)
+slurm_timeout = trial_timeout + timedelta(minutes=30)
+ScenariogenDependencies = '/users/a/b/abol'
+CARLA_Dist = '/work/users/a/b/abol/bionic/carla/Dist/CARLA_Shipping_0.9.15-169-g063cc9d90/LinuxNoEditor'
 
 for generator, randomizer_seed in product(generators, randomizer_seeds):
     cmd = f'''
-        srun \
+        sbatch \
         --job-name={generator}_{randomizer_seed} \
-        --cpus-per-task=12 \
-        -o %N-%x-%j.out \
-        --gres=gpu:1 \
-        -p volta-gpu \
-        --mem=16G \
-        -t {str(slurm_timeout)} \
+        -o "%x-%j-%N.log" \
+        --nodes=1 \
+        --ntasks=1 \
+        --cpus-per-task=8 \
+        --mem=10G \
         --qos gpu_access \
-        singularity run --nv \
-        --env carla_egg=carla-0.9.15-py3.7-linux-x86_64.egg \
-        --bind {scenariogen_dependencies}/CARLA_0.9.15:/home/scenariogen/carla \
-        --bind {scenariogen_dependencies}/Scenic_10-03-2023:/home/scenariogen/Scenic \
-        --bind {scenariogen_dependencies}/ScenarioGeneration:/home/scenariogen/ScenarioGeneration \
-        --bind {scenariogen_dependencies}/ScenarioComplexity:/home/scenariogen/ScenarioComplexity \
-        --bind {scenariogen_dependencies}/z3-4.12.6-x64-glibc-2.35:/home/scenariogen/z3 \
-        --bind {scenariogen_dependencies}/carla_garage_fork:/home/scenariogen/carla_garage_fork \
-        {scenariogen_dependencies}/ScenarioGeneration/Singularity/scenariogen.sif \
-        evaluation/experiments/RQ1/trial.py \
-        --generator {generator} \
-        --ego TFPP \
-        --randomizer-seed {randomizer_seed} \
-        --coverage traffic-rules \
-        --seconds {trial_timeout.seconds}
+        -p volta-gpu \
+        --gres=gpu:tesla_v100-sxm2-16gb:1 \
+        -t {str(slurm_timeout)} \
+        --wrap="\
+            module add apptainer/1.3.0-1; \
+            apptainer run \
+                --nv \
+                --cleanenv \
+                --bind {CARLA_Dist}:/home/scenariogen/carla \
+                --bind {ScenariogenDependencies}/Scenic_04-10-2024:/home/scenariogen/Scenic \
+                --bind {ScenariogenDependencies}/ScenarioGeneration:/home/scenariogen/ScenarioGeneration \
+                --bind {ScenariogenDependencies}/ScenarioComplexity:/home/scenariogen/ScenarioComplexity \
+                --bind {ScenariogenDependencies}/z3-4.12.6-x64-glibc-2.35:/home/scenariogen/z3 \
+                --bind {ScenariogenDependencies}/carla_garage_fork:/home/scenariogen/carla_garage_fork \
+                {ScenariogenDependencies}/ScenarioGeneration/Longleaf/bionic/scenariogen/scenariogen.sif \
+                    evaluation/experiments/RQ1/trial.py \
+                        --generator {generator} \
+                        --ego TFPP \
+                        --randomizer-seed {randomizer_seed} \
+                        --coverage traffic-rules \
+                        --seconds {trial_timeout.seconds}
+            "
     '''
     subprocess.Popen(cmd, shell=True)
 

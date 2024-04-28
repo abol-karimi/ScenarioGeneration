@@ -48,7 +48,7 @@ From: python.sif
         -DCLINGO_BUILD_WITH_PYTHON=ON \
         -DCLINGO_PYTHON_VERSION:LIST="3.8;EXACT" \
         -DPython_ROOT=/home/scenariogen/.venv \
-    -DPYCLINGO_INSTALL_DIR=/home/scenariogen/.venv/lib/python3.8/site-packages
+        -DPYCLINGO_INSTALL_DIR=/home/scenariogen/.venv/lib/python3.8/site-packages
     cmake --build /home/scenariogen/clingo-build
     cmake --build /home/scenariogen/clingo-build --target install
 
@@ -102,7 +102,6 @@ From: python.sif
     export PYTHONPATH=${CARLA_ROOT}/PythonAPI/examples/:$PYTHONPATH
     export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/:$PYTHONPATH
     export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/agents/:$PYTHONPATH
-    export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/dist/${carla_egg}:$PYTHONPATH
     . /home/scenariogen/.venv/bin/activate
     cd /home/scenariogen/ScenarioGeneration
     "$@"

@@ -150,11 +150,9 @@ def simulation_service(connection, log_queue, sync_lock):
             logger.info('Starting the Carla server...')
             carlaUE4_options = ["CarlaUE4",
                                 "-nosound",
-                                "-prefernvidia",
                                 f"-carla-rpc-port={CarlaDataProvider.get_rpc_port()}",
                                 f"-carla-streaming-port={CarlaDataProvider.get_streaming_port()}",
                                 f"-carla-secondary-port={CarlaDataProvider.get_secondary_port()}",
-                                # "-ini:[/Script/Engine.RendererSettings]:r.GraphicsAdapter=2"
                                 ]
             carlaUE4_options.append('' if config['render-spectator'] or config['render-ego'] else '-RenderOffScreen')
             carla_server_process = subprocess.Popen(["/home/scenariogen/carla/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Shipping"]+carlaUE4_options,
@@ -163,18 +161,24 @@ def simulation_service(connection, log_queue, sync_lock):
                                                     stdout=subprocess.PIPE,
                                                     stderr=subprocess.STDOUT
                                                    )
-            logger.info('Waiting 15 seconds for Carla to start...')
-            time.sleep(15)
+            logger.info('Waiting 10 seconds for Carla process to start...')
+            time.sleep(10)
+            logger.info('Assuming Carla process started...')
 
             log_thread = threading.Thread(target=log_carla_output,
                                           args=(carla_server_process,),
                                           daemon=True)
             log_thread.start()
 
+            logger.info('Waiting 10 seconds for Carla to load map...')
+            time.sleep(10)
+            logger.info('Assuming Carla finished loading the map...')
+
             if not carla_server_process.poll() is None:
               logger.error(f'Carla crashed immediately with exit code {carla_server_process.returncode}!')
 
           if simulator is None:
+            logger.info('Connecting to the Carla simulator...')
             simulator = CarlaSimulator(carla_map=config['carla-map'],
                                        map_path=config['map'],
                                        timestep=config['timestep'],

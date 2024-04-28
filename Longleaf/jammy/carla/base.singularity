@@ -7,19 +7,8 @@ From: ubuntu:22.04
 %setup
     mkdir -p ${SINGULARITY_ROOTFS}/home/scenariogen/CarlaUnreal
     mkdir -p ${SINGULARITY_ROOTFS}/home/scenariogen/carla
-    
-    # driver should be either an apt package or the absolute path of a runfile
-    driver={{driver}}
-    base=$(basename $driver)
-    if [[ $base == *.run ]]; then
-        mkdir -p ${SINGULARITY_ROOTFS}/home/scenariogen/nvidia
-        cp $driver ${SINGULARITY_ROOTFS}/home/scenariogen/nvidia/$base
-        chmod a+x ${SINGULARITY_ROOTFS}/home/scenariogen/nvidia/$base
-    fi
 
-
-%post -c /bin/bash
-
+%post
     export DEBIAN_FRONTEND=noninteractive
 
     # System requirements
@@ -29,6 +18,7 @@ From: ubuntu:22.04
     wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|apt-key add
 
     # Ubuntu 22.04
+    apt-add-repository "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy main"
     apt-get update -q
     apt-get install -y \
         build-essential \
@@ -37,7 +27,6 @@ From: ubuntu:22.04
         g++ \
         cmake \
         ninja-build \
-        libvulkan1 \
         python3 \
         python3-dev \
         python3-pip \
@@ -62,26 +51,3 @@ From: ubuntu:22.04
 
     # to speed up the Update.sh script for downloading Carla assets
     apt-get install -y aria2
-
-    # to use vulkaninfo
-    apt-get install -y vulkan-tools
-
-    # https://download.nvidia.com/XFree86/Linux-x86_64/
-    # https://packages.ubuntu.com/jammy/allpackages?format=txt.gz
-    driver={{driver}}
-    base=$(basename "$driver")
-    if [[ $base == *.run ]]; then
-        apt-get install -y kmod
-        cd /home/scenariogen/nvidia
-        ./$base \
-            --ui=none \
-            --no-questions
-            # --dkms \
-            # --kernel-name=5.15.0-105-generic
-            # --no-systemd \
-            # --install-libglvnd
-            # --no-install-libglvnd \
-            # --no-opengl-files \
-    else
-        apt-get install -y $driver
-    fi

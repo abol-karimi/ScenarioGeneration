@@ -10,7 +10,7 @@
 #SBATCH -t 00:10:00
 
 
-singularity run \
+apptainer run \
     --nv \
     --bind ${ScenariogenDependencies}/carla/Dist/CARLA_Shipping_0.9.15-168-g20a4a4618-dirty/LinuxNoEditor:/home/scenariogen/carla \
     --bind ${ScenariogenDependencies}/Scenic_04-10-2024:/home/scenariogen/Scenic \

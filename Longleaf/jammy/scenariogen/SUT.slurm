@@ -20,7 +20,7 @@ echo `scontrol show jobid $SLURM_JOB_ID -dd | grep IDX` && \
 nvidia-smi && \
 export CARLA_Jammy_Dist=/work/users/a/b/abol/jammy/carla/Dist/CARLA_Shipping_0.9.15-169-g063cc9d90/LinuxNoEditor && \
 export ScenariogenDependencies=/users/a/b/abol && \
-singularity run \
+apptainer run \
 --nv \
 --env CARLA_BINARY=CarlaUE4-Linux-Shipping \
 --bind ${CARLA_Jammy_Dist}:/home/scenariogen/carla \

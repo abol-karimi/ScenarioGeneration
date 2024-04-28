@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.8
+#!/usr/bin/env python3
 
 from scenic.domains.driving.roads import Network
 from scenariogen.core.utils import geometry_atoms

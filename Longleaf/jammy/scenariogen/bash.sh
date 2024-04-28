@@ -1,6 +1,6 @@
 dependencies=/users/a/b/abol
 
-singularity run \
+apptainer run \
 --nv \
 --bind $CARLA_Jammy_ROOT:/home/scenariogen/carla \
 --bind $dependencies/Scenic_04-10-2024:/home/scenariogen/Scenic \

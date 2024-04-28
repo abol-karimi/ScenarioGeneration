@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.8
+#!/usr/bin/env python3
 
 import scenic
 scenic.setDebuggingOptions(verbosity=1, fullBacktrace=True)
