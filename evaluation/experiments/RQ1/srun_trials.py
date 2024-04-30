@@ -2,17 +2,16 @@ import subprocess
 from itertools import product
 from datetime import timedelta
 
-generators = ['PCGF', 'Random', 'Atheris']
+generators = ['Atheris']
 randomizer_seeds = [0, 1, 2, 3, 4]
 trials = product(generators, randomizer_seeds)
-# trials = (('PCGF', 0),
-#           ('PCGF', 2),
-#           ('PCGF', 4),
-#           ('Random', 0),
-#           ('Random', 1),
-#           )
-# trials = (('Atheris', 0),
-#           )
+# trials = (
+    # ('PCGF', 0),
+    # ('PCGF', 2),
+    # ('PCGF', 4),
+    # ('Random', 0),
+    # ('Random', 1),
+#   )
 trial_timeout = timedelta(hours=12)
 slurm_timeout = trial_timeout + timedelta(minutes=30)
 ScenariogenDependencies = '/users/a/b/abol'

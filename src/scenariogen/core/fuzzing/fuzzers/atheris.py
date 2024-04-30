@@ -6,6 +6,7 @@ from random import Random
 import atheris
 import setproctitle
 import logging
+import sys
 
 # This project
 from scenariogen.core.fuzzing.runner import SUTRunner
