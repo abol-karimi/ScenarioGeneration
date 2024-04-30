@@ -23,7 +23,7 @@ from scenic.core.dynamics import GuardViolation
 from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
 
 from scenariogen.core.utils import ordinal, get_free_port
-from scenariogen.core.logging.client import configure_logger
+from scenariogen.core.logging.client import configure_logger, TextIOBaseToLog
 
 
 @dataclass(frozen=True)
@@ -72,19 +72,6 @@ def log_carla_output(carla_process):
     logger.info(line)
 
 
-class LoggerWriter:
-  def __init__(self, level):
-    self.level = level
-
-  def write(self, message):
-    m = message.strip()
-    if m != '':
-      self.level(m)
-
-  def flush(self):
-    self.level(sys.stderr)
-
-
 def simulation_service(connection, log_queue, sync_lock):
   """Reads scenario config from connection, then writes sim_result to connection.
   Runs as a separate process to isolate the main process from crashes in Scenic, VUT, or Carla.
@@ -95,8 +82,9 @@ def simulation_service(connection, log_queue, sync_lock):
 
   configure_logger(log_queue)
   logger = logging.getLogger(f'{__name__}.sim-service')
-  sys.stdout = LoggerWriter(logger.debug)
-  sys.stderr = LoggerWriter(logger.warning)
+  # capture stdout and stderr to the logs as well
+  sys.stdout = TextIOBaseToLog(logger.debug)
+  sys.stderr = TextIOBaseToLog(logger.warning)
 
   carla_server_process = None
   simulator = None

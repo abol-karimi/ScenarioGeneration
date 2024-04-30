@@ -5,10 +5,12 @@ import multiprocessing
 from random import Random
 import atheris
 import setproctitle
-
+import logging
 
 # This project
 from scenariogen.core.fuzzing.runner import SUTRunner
+import scenariogen.core.logging.server as log_server
+from scenariogen.core.logging.client import configure_logger, TextIOBaseToLog
 
 
 #----------------------------------------------
@@ -72,9 +74,14 @@ class SUTCallback:
 #------------------------------------
 #---------- Atheris wrapper ---------
 #------------------------------------
-def atheris_target(config, SUT, mutator):
-  setproctitle.setproctitle('Atheris target')
-  print('\n\n\nmax-total-time: ', config['max-total-time'], '\n\n')
+def atheris_target(config, SUT, mutator, log_queue):
+  setproctitle.setproctitle('AtherisTarget')
+  configure_logger(log_queue)
+  logger = logging.getLogger(f'{__name__}.atheris_target')
+  # capture stdout and stderr to the logs as well
+  sys.stdout = TextIOBaseToLog(logger.debug)
+  sys.stderr = TextIOBaseToLog(logger.warning)
+
   libfuzzer_config = [f"-max_total_time={config['max-total-time']}",
                       f"-artifact_prefix={Path(config['bugs-folder'])}/",
                       f"-max_len={config['max-seed-length']}",
@@ -124,7 +131,8 @@ class AtherisFuzzer:
     p = ctx.Process(target=atheris_target,
                     args=(self.config,
                           self.SUT,
-                          self.mutator),
+                          self.mutator,
+                          log_server.queue),
                     name='Atheris')
     p.start()
     p.join()
