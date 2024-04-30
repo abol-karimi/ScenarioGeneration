@@ -4,10 +4,26 @@ import threading
 import logging
 import logging.config
 import logging.handlers
+from logging.handlers import RotatingFileHandler
 logging_level = logging.DEBUG
 
 queue = None
 thread = None
+
+
+class IncrementingRotatingFileHandler(RotatingFileHandler):
+    def doRollover(self):
+        self.stream.close()
+        root, ext = os.path.splitext(self.baseFilename)
+        i = 1
+        while True:
+            new_file = f"{root}_{i}{ext}"
+            if not os.path.exists(new_file):
+                os.rename(self.baseFilename, new_file)
+                break
+            i += 1
+        self.mode = 'w'
+        self.stream = self._open()
 
 
 def logger_thread(q):
@@ -38,11 +54,11 @@ def start(filename, filemode):
         },
         'handlers': {
             'file': {
-                'class': 'logging.handlers.RotatingFileHandler',
+                'class': 'scenariogen.core.logging.server.IncrementingRotatingFileHandler',
                 'filename': filename,
                 'mode': filemode,
                 'maxBytes': 10*1024*1024, # 10MB
-                'backupCount': 100, # 100 files
+                'backupCount': 1000, # 1000 files
                 'formatter': 'detailed',
             },
         },

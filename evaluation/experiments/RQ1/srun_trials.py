@@ -2,14 +2,23 @@ import subprocess
 from itertools import product
 from datetime import timedelta
 
-generators = ['PCGF', 'Random']
+generators = ['PCGF', 'Random', 'Atheris']
 randomizer_seeds = [0, 1, 2, 3, 4]
+trials = product(generators, randomizer_seeds)
+# trials = (('PCGF', 0),
+#           ('PCGF', 2),
+#           ('PCGF', 4),
+#           ('Random', 0),
+#           ('Random', 1),
+#           )
+# trials = (('Atheris', 0),
+#           )
 trial_timeout = timedelta(hours=12)
 slurm_timeout = trial_timeout + timedelta(minutes=30)
 ScenariogenDependencies = '/users/a/b/abol'
 CARLA_Dist = '/work/users/a/b/abol/bionic/carla/Dist/CARLA_Shipping_0.9.15-169-g063cc9d90/LinuxNoEditor'
 
-for generator, randomizer_seed in product(generators, randomizer_seeds):
+for generator, randomizer_seed in trials:
     cmd = f'''
         sbatch \
         --job-name={generator}_{randomizer_seed} \
@@ -17,7 +26,7 @@ for generator, randomizer_seed in product(generators, randomizer_seeds):
         --nodes=1 \
         --ntasks=1 \
         --cpus-per-task=8 \
-        --mem=10G \
+        --mem=20G \
         --qos gpu_access \
         -p volta-gpu \
         --gres=gpu:tesla_v100-sxm2-16gb:1 \
@@ -25,6 +34,8 @@ for generator, randomizer_seed in product(generators, randomizer_seeds):
         --wrap="\
             module add apptainer/1.3.0-1; \
             apptainer run \
+                --net \
+                --network=none \
                 --nv \
                 --cleanenv \
                 --bind {CARLA_Dist}:/home/scenariogen/carla \

@@ -39,7 +39,10 @@ if __name__ == '__main__':
     trial_output_path = Path(trial_output_folder)
     trial_output_path.mkdir(parents=True, exist_ok=True)
 
-    log_server.start(f'{trial_output_folder}/trial.log', filemode='w')
+    trial_log_path = trial_output_path / 'logs'
+    trial_log_path.mkdir(parents=True, exist_ok=True)
+
+    log_server.start(trial_log_path / 'trial.log', filemode='w')
 
     gen_config = experiment.get_config(args.ego,
                                        args.coverage,

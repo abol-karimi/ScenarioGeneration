@@ -255,38 +255,32 @@ class SUTRunner:
           if sync_lock.acquire(timeout=30):
             logger.info('Simulation service started!')
           else:
-            logger.warning('Simulation service did not start within 30 seconds.')
+            sync_lock.release()
+            logger.warning('Simulation service did not start within 30 seconds. Terminating the service...')
+            cls.server_process.terminate()
+            cls.server_process = None
 
         elif not cls.server_process.is_alive():
           cls.crashes += 1
           logger.warning(f"Simulation service crashed for the {ordinal(cls.crashes)} time! Restarting the service...")
           cls.server_process.close()
           cls.client_conn.close()
-          cls.server_conn.close()      
-          cls.client_conn, cls.server_conn = cls.ctx.Pipe(duplex=True)
-          cls.server_process = cls.ctx.Process(target=simulation_service,
-                                               name='sim-service',
-                                               args=(cls.server_conn, log_server.queue, sync_lock),
-                                               daemon=True)
-          sync_lock.acquire()
-          cls.server_process.start()
-          if sync_lock.acquire(timeout=30):
-            logger.info('Simulation service started!')
-          else:
-            logger.warning('Simulation service did not start within 30 seconds.')
+          cls.server_conn.close()
+          cls.server_process = None
         
-        logger.info('Sending a request to the simulation service...')
-        cls.client_conn.send(config)
+        else:
+          logger.info('Sending a request to the simulation service...')
+          cls.client_conn.send(config)
 
-        logger.info(f'Waiting for simulation result from the simulation service...')
-        while cls.server_process.is_alive():
-          if cls.client_conn.poll(10):
-            sim_result = cls.client_conn.recv()
-            if sim_result:
-              logger.info(f'Simulation completed successfully.')
-            else:
-              logger.info(f'Simulation rejected fuzz-input with hash ', config['fuzz-input'].hexdigest)
-            return sim_result
+          logger.info(f'Waiting for simulation result from the simulation service...')
+          while cls.server_process.is_alive():
+            if cls.client_conn.poll(10):
+              sim_result = cls.client_conn.recv()
+              if sim_result:
+                logger.info(f'Simulation completed successfully.')
+              else:
+                logger.info(f'Simulation rejected fuzz-input with hash ', config['fuzz-input'].hexdigest)
+              return sim_result
       except Exception as e:
         logger.exception(f'Failed to run the scenario due to exception {e}. Retrying...')
 

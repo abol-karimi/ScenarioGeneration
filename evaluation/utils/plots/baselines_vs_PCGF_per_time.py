@@ -21,7 +21,7 @@ def plot_curves(config, axes, coverage_types):
   with open(config['coverage-file'], 'r') as f:
     result = jsonpickle.decode(f.read())
 
-  elapsed_time = tuple(t/60 for t in result['elapsed-time'])
+  elapsed_time = tuple(t/3600 for t in result['elapsed-time'])
   fill_alpha = .2
 
   for ax, cov_type in zip(axes, coverage_types):
@@ -46,7 +46,7 @@ def plot(plot_config):
     ax = fig_coverage.add_subplot(len(coverage_types), 1, i+1)
     ax.set_ylabel(f'{coverage_type}s')
     axes.append(ax)
-  axes[-1].set_xlabel('Wall-clock time (minutes)')
+  axes[-1].set_xlabel('Wall-clock time (hours)')
 
   for generator in plot_config['generators']:
     config = plot_config[generator]
