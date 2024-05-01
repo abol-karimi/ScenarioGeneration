@@ -6,11 +6,11 @@ import time
 import setproctitle
 import signal
 import ctypes
-import torch
 from queue import Queue, Empty
 from dataclasses import dataclass
 from typing import Any
 import logging
+import traceback
 
 import scenic
 scenic.setDebuggingOptions(verbosity=0, fullBacktrace=True)
@@ -195,11 +195,6 @@ def simulation_service(connection, log_queue, sync_lock):
         logger.exception(f'Failed to simulate the scenario due to exception {e}. Returning a None result...')
         connection.send(None)
         break
-      except torch.cuda.OutOfMemoryError as e:
-        logger.exception(f'Failed to simulate the scenario due to exception {e}. Will close Carla and the simulation service, then try again...')
-        carla_server_process.terminate()
-        torch.cuda.empty_cache()
-        exit(1)
       except Exception as e:
         run_callbacks(cleanup_callbacks)
         simulator.world.tick()
@@ -270,6 +265,7 @@ class SUTRunner:
                 logger.info(f'Simulation rejected fuzz-input with hash ', config['fuzz-input'].hexdigest)
               return sim_result
       except Exception as e:
+        traceback.print_exc()
         logger.exception(f'Failed to run the scenario due to exception {e}. Retrying...')
 
 

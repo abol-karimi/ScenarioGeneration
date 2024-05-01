@@ -1,6 +1,7 @@
 import logging
 import logging.handlers
 import scenariogen.core.logging.server as log_server
+import sys
 
 def configure_logger(queue):
     logging.captureWarnings(True)
@@ -22,3 +23,6 @@ class TextIOBaseToLog:
 
   def flush(self):
     self.level(sys.stderr)
+  
+  def isatty(self):
+    return False
