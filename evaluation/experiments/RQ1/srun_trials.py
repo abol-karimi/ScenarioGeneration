@@ -17,6 +17,8 @@ CARLA_Dist = '/work/users/a/b/abol/bionic/carla/Dist/CARLA_Shipping_0.9.15-169-g
 for generator, randomizer_seed in trials:
     cmd = f'''
         sbatch \
+        --mail-type=FAIL \
+        --mail-user=ak@cs.unc.edu \
         --job-name={generator}_{randomizer_seed} \
         -o "%x-%j-%N.log" \
         --nodes=1 \
