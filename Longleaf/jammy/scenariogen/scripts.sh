@@ -43,8 +43,7 @@ run_carla() {
             CarlaUE4 \
             -nosound \
             -RenderOffScreen \
-            -quality-level=Low \
-            -prefernvidia \
+            -quality-level=Epic \
             -carla-rpc-port=0 \
             -carla-streaming-port=0 \
             -carla-secondary-port=0"    

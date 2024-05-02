@@ -6,7 +6,6 @@ From: ubuntu:22.04
         CarlaUE4 \
         -nosound \
         -RenderOffScreen \
-        -prefernvidia \
         -quality-level=Epic \
         -carla-rpc-port=0 \
         -carla-streaming-port=0 \

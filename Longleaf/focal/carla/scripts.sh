@@ -58,7 +58,7 @@ run_carla() {
         --nv \
         --bind ${CARLA_Dist}:/home/scenariogen/carla \
         --env CARLA_Binary=$CARLA_Binary \
-        --env QualityLevel=Low \
+        --env QualityLevel=Epic \
         --bind /usr/share/vulkan:/usr/share/vulkan \
         --env VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/nvidia_icd.x86_64.json \
         run.sif

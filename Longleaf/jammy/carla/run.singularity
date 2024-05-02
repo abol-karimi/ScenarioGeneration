@@ -10,7 +10,6 @@ From: base.sif
         -nosound \
         -RenderOffScreen \
         -quality-level=${QualityLevel} \
-        -prefernvidia \
         -carla-rpc-port=0 \
         -carla-streaming-port=0 \
         -carla-secondary-port=0 \

@@ -39,7 +39,7 @@ run_carla() {
         --cleanenv \
         --bind ${CARLA_Dist}:/home/scenariogen/carla \
         --env CARLA_Binary=$CARLA_Binary \
-        --env QualityLevel=Low \
+        --env QualityLevel=Epic \
         run.sif
 }
 
@@ -62,7 +62,7 @@ sbatch_run_carla() {
                 --cleanenv \
                 --bind ${CARLA_Dist}:/home/scenariogen/carla \
                 --env CARLA_Binary=$CARLA_Binary \
-                --env QualityLevel=Low \
+                --env QualityLevel=Epic \
                 run.sif"
 }
 
