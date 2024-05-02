@@ -22,7 +22,7 @@ def plot_curves(config, axes, coverage_types):
     result = jsonpickle.decode(f.read())
 
   elapsed_time = tuple(t/3600 for t in result['elapsed-time'])
-  fill_alpha = .2
+  fill_alpha = .1
 
   for ax, cov_type in zip(axes, coverage_types):
     ax.plot(elapsed_time, result[f'{cov_type}_median'], config['color'], label=config['label'])

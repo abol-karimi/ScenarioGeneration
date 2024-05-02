@@ -3,12 +3,8 @@ from itertools import product
 from datetime import timedelta
 
 generators = ['Random', 'Atheris', 'PCGF']
-randomizer_seeds = [0, 1, 2, 3, 4]
+randomizer_seeds = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 trials = product(generators, randomizer_seeds)
-# trials = (
-#     ('PCGF', 0),
-#     ('PCGF', 2),
-#   )
 trial_timeout = timedelta(hours=12)
 slurm_timeout = trial_timeout + timedelta(minutes=30)
 ScenariogenDependencies = '/users/a/b/abol'
