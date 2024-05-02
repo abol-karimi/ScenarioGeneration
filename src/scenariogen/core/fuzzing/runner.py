@@ -24,7 +24,7 @@ from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
 
 from scenariogen.core.utils import ordinal, get_free_port
 from scenariogen.core.logging.client import configure_logger, TextIOBaseToLog
-
+import scenariogen.core.logging.server as log_server
 
 @dataclass(frozen=True)
 class SimResult:
@@ -212,44 +212,43 @@ def simulation_service(connection, log_queue, sync_lock):
 
 class SUTRunner:
   ctx = multiprocessing.get_context('spawn')
-  client_conn, server_conn = ctx.Pipe(duplex=True)
   server_process = None
   crashes = 0
  
+  @classmethod
+  def start_simulation_service(cls):
+    logger = logging.getLogger(__name__)
+    logger.info(f"Starting the simulation service...")
+    sync_lock = cls.ctx.Lock()
+    cls.client_conn, cls.server_conn = cls.ctx.Pipe(duplex=True)
+    cls.server_process = cls.ctx.Process(target=simulation_service,
+                                          args=(cls.server_conn, log_server.queue, sync_lock),
+                                          name='sim-service',
+                                          daemon=True)
+    sync_lock.acquire()
+    cls.server_process.start()
+    sync_lock.acquire()
+    sync_lock.release()
+
   @classmethod
   def run(cls, config):
     """ Runs the scenario.
     Keeps retrying if the simulation server process exits with an error.
     """
-    import scenariogen.core.logging.server as log_server
-    logger = logging.getLogger(__name__)
+    # The first time this method is called, server_process is run for the first time
+    if cls.server_process is None:
+      cls.start_simulation_service()
 
+    logger = logging.getLogger(__name__)
     while True:
       try:
-        if cls.server_process is None:
-          logger.info(f"Starting the simulation service...")
-          sync_lock = cls.ctx.Lock()
-          cls.server_process = cls.ctx.Process(target=simulation_service,
-                                               args=(cls.server_conn, log_server.queue, sync_lock),
-                                               name='sim-service',
-                                               daemon=True)
-          sync_lock.acquire()
-          cls.server_process.start()
-          if sync_lock.acquire(timeout=30):
-            logger.info('Simulation service started!')
-          else:
-            sync_lock.release()
-            logger.warning('Simulation service did not start within 30 seconds. Terminating the service...')
-            cls.server_process.terminate()
-            cls.server_process = None
-
-        elif not cls.server_process.is_alive():
+        if not cls.server_process.is_alive():
           cls.crashes += 1
           logger.warning(f"Simulation service crashed for the {ordinal(cls.crashes)} time! Restarting the service...")
           cls.server_process.close()
           cls.client_conn.close()
           cls.server_conn.close()
-          cls.server_process = None
+          cls.start_simulation_service()
         
         else:
           logger.info('Sending a request to the simulation service...')
