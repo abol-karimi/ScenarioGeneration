@@ -10,7 +10,6 @@ from queue import Queue, Empty
 from dataclasses import dataclass
 from typing import Any
 import logging
-import traceback
 
 import scenic
 scenic.setDebuggingOptions(verbosity=0, fullBacktrace=True)
@@ -117,7 +116,7 @@ def simulation_service(connection, log_queue, sync_lock):
         logger.exception(f'Failed to create the initial scene due to AssertionError. Stopping the simulation service...')
         exit(1)
       except Exception as e:
-        logger.exception(f'Failed to create the initial scene due to an unexpected exception of type {type(e)}: {e}. Returning a None result...')
+        logger.exception(f'Failed to create the initial scene due to {type(e)}. Returning a None result...', exc_info=True)
         connection.send(None)
         break
 
@@ -192,13 +191,13 @@ def simulation_service(connection, log_queue, sync_lock):
       except (SimulationCreationError, GuardViolation) as e:
         run_callbacks(cleanup_callbacks)
         simulator.world.tick()
-        logger.exception(f'Failed to simulate the scenario due to exception {e}. Returning a None result...')
+        logger.exception(f'Failed to simulate the scenario due to {type(e)}. Returning a None result...', exc_info=True)
         connection.send(None)
         break
       except Exception as e:
         run_callbacks(cleanup_callbacks)
         simulator.world.tick()
-        logger.exception(f'Failed to simulate the scenario due to unexpected exception {e}. Will try again...')
+        logger.exception(f'Failed to simulate the scenario due to {type(e)}. Will try again...', exc_info=True)
       else:
         run_callbacks(cleanup_callbacks)
         simulator.world.tick()
@@ -264,8 +263,7 @@ class SUTRunner:
                 logger.info(f'Simulation rejected fuzz-input with hash ', config['fuzz-input'].hexdigest)
               return sim_result
       except Exception as e:
-        traceback.print_exc()
-        logger.exception(f'Failed to run the scenario due to exception {e}. Retrying...')
+        logger.exception(f'Failed to run the scenario due to exception {e}. Retrying...', exc_info=True)
 
 
 
