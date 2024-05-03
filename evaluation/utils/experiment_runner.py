@@ -71,25 +71,8 @@ def run(config):
   # Decide to resume or start
   if generator_state_path.is_file():
     # resume
-    fuzz_input_files = set((fuzz_inputs_path).glob('*'))
-    with open(results_file_path, 'r') as f:
-      results = jsonpickle.decode(f.read())
-    merged_results = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements']},
-                            results)
-    results_fuzz_input_files = reduce(lambda i1,i2: i1.union(i2),
-                                      [m['new-fuzz-input-files'] for m in merged_results['measurements']])
-    if results_fuzz_input_files != fuzz_input_files:
-      logger.error(f'''Cannot resume experiment: the fuzz_input_files in the folder do not match the fuzz_input_files of results.json!
-                      results_fuzz_input_files - fuzz_input_files: {results_fuzz_input_files - fuzz_input_files}
-                      fuzz_input_files - results_fuzz_input_files: {fuzz_input_files - results_fuzz_input_files}
-                    ''')
-      exit(1)
-   
-    past_fuzz_input_files = results_fuzz_input_files
-    past_coverage_files = reduce(lambda i1,i2: i1.union(i2),
-                                      [m['new-coverage-files'] for m in merged_results['measurements']])
-    with open(f"{config['output-folder']}/generator-state.json", 'r') as f:
-      generator_state = jsonpickle.decode(f.read())
+    logger.error('Resume is disabled. Please clean up the previous results first.')
+    exit(1)
     
   else:
     # start
