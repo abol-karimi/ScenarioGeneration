@@ -1,11 +1,13 @@
+#!/usr/bin/env python3
+
 import subprocess
 from itertools import product
 from datetime import timedelta
 
-generators = ['Random', 'Atheris', 'PCGF']
-randomizer_seeds = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+generators = ('Random', 'Atheris', 'PCGF')
+randomizer_seeds = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
 trials = product(generators, randomizer_seeds)
-trial_timeout = timedelta(hours=12)
+trial_timeout = timedelta(hours=24)
 slurm_timeout = trial_timeout + timedelta(minutes=30)
 ScenariogenDependencies = '/users/a/b/abol'
 CARLA_Dist = '/work/users/a/b/abol/bionic/carla/Dist/CARLA_Shipping_0.9.15-169-g063cc9d90/LinuxNoEditor'
@@ -24,7 +26,7 @@ for generator, randomizer_seed in trials:
         --qos gpu_access \
         -p volta-gpu \
         --gres=gpu:tesla_v100-sxm2-16gb:1 \
-        -t {str(slurm_timeout)} \
+        -t {slurm_timeout.days}-{slurm_timeout.seconds//3600}:{(slurm_timeout.seconds%3600)//60}:{slurm_timeout.seconds%60} \
         --wrap="\
             module add apptainer/1.3.0-1; \
             apptainer run \
