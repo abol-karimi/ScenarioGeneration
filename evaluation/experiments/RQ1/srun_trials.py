@@ -4,8 +4,8 @@ import subprocess
 from itertools import product
 from datetime import timedelta
 
-generators = ('Random', 'Atheris', 'PCGF')
-randomizer_seeds = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+generators = ('Random', 'PCGF', )
+randomizer_seeds = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
 trials = product(generators, randomizer_seeds)
 trial_timeout = timedelta(hours=24)
 slurm_timeout = trial_timeout + timedelta(minutes=30)
@@ -46,7 +46,7 @@ for generator, randomizer_seed in trials:
                         --ego TFPP \
                         --randomizer-seed {randomizer_seed} \
                         --coverage traffic-rules \
-                        --seconds {trial_timeout.seconds}
+                        --seconds {trial_timeout.total_seconds()}
             "
     '''
     subprocess.Popen(cmd, shell=True)

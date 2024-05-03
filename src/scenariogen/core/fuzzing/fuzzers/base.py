@@ -1,5 +1,5 @@
 import time
-
+import logging
 
 class Fuzzer:
   def __init__(self, config):
@@ -20,11 +20,14 @@ class Fuzzer:
   def runs(self, fuzzer_state=None):
     start_time = time.time()
 
+    logger = logging.getLogger(f'{self.__class__.__module__}.{self.__class__.__name__}')
+    logger.debug(f"Running {type(self).__name__} for {self.config['max-total-time']} seconds...")
+
     if fuzzer_state:
+      logger.debug('Setting the state of the fuzzer...')
       self.set_state(fuzzer_state)
 
     while time.time()-start_time < self.config['max-total-time']:
       self.run()
-
     
     return self.get_state()

@@ -114,7 +114,8 @@ def simulation_service(connection, log_queue, sync_lock):
         scene, _ = scenario.generate(maxIterations=1)
       except AssertionError:
         logger.exception(f'Failed to create the initial scene due to AssertionError. Stopping the simulation service...')
-        exit(1)
+        logging.shutdown()
+        return
       except Exception as e:
         logger.exception(f'Failed to create the initial scene due to {type(e)}. Returning a None result...', exc_info=True)
         connection.send(None)

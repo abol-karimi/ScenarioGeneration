@@ -5,7 +5,6 @@ import logging
 import logging.config
 import logging.handlers
 from logging.handlers import RotatingFileHandler
-logging_level = logging.DEBUG
 
 queue = None
 thread = None
@@ -27,9 +26,13 @@ class IncrementingRotatingFileHandler(RotatingFileHandler):
 
 
 def logger_thread(q):
+    server_logger = logging.getLogger(__name__)
+    server_logger.info('Log-server thread started!')
+
     while True:
         record = q.get()
         if record is None:
+            server_logger.info('Stopping the log-server thread...')
             break
         logger = logging.getLogger(record.name)
         logger.handle(record)
@@ -78,3 +81,7 @@ def stop():
 
     queue.put(None)
     thread.join()
+
+    logger = logging.getLogger(__name__)
+    logger.info('Shutting down the log server...')
+    logging.shutdown()

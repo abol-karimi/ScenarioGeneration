@@ -57,11 +57,9 @@ try:
     if sim_result is None:
         raise RuntimeError('Simulation rejected.')
 except NonegoCollisionError as err:
-    print(f'Collision between nonego {err.nonego} and actor {err.other}, discarding the simulation.')
-    exit()
+    raise RuntimeError(f'Collision between nonego {err.nonego} and actor {err.other}, discarding the simulation.')
 except SimulationCreationError:
-    print('Failed to create scenario.')
-    exit()
+    raise RuntimeError('Failed to create scenario.')
 else:
     # Save the seed
     scenario_path = Path(args.complexgen_scenario_path)

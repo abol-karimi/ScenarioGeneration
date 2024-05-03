@@ -61,7 +61,7 @@ if __name__ == '__main__':
     
     if sim_result is None:
       print('Simulation rejected.')
-      exit(1)
+      raise RuntimeError('Simulation rejected!')
     
     # Save the seed
     scenario_file = Path(args.scenario_file)

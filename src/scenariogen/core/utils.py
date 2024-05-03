@@ -208,7 +208,7 @@ def route_from_turns(network, init_lane, turns):
         manuevers = tuple(filter(lambda m: m.type == turn, current_lane.maneuvers))
         if len(manuevers) == 0:
             print('The expected turn not available at the intersection!')
-            exit(1)
+            raise RuntimeError('The expected turn not available at the intersection!')
         current_lane = manuevers[0].connectingLane
         route.append(current_lane.uid)
     while not current_lane.maneuvers[0].intersection:

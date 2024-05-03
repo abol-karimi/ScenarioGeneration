@@ -78,7 +78,7 @@ def run(config):
   if generator_state_path.is_file():
     # resume
     logger.error('Resume is disabled. Please clean up the previous results first.')
-    exit(1)
+    return
     
   else:
     # start
@@ -116,7 +116,7 @@ def run(config):
   start_time = time.time()
   p.start()
 
-  while p.is_alive(): # the generator is expected to exit after config['max-total-time']
+  while p.is_alive(): # the generator is expected to return after config['max-total-time']
     p.join(measurement_period-(time.time()-start_time-measurements[-1]['elapsed-time']))
     measure_progress(fuzz_inputs_path,
                       past_fuzz_input_files,
@@ -127,4 +127,6 @@ def run(config):
                       results_file_path,
                       results,
                       config)
+  
+  logger.info(f'Generator process exited with code: {p.exitcode}')
 
