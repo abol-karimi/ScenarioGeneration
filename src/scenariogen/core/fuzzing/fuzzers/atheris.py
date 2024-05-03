@@ -78,7 +78,7 @@ class SUTCallback:
 def atheris_target(config, SUT, mutator, log_queue):
   setproctitle.setproctitle('AtherisTarget')
   configure_logger(log_queue)
-  logger = logging.getLogger(f'{__name__}.atheris_target')
+  logger = logging.getLogger(f'{__name__}.target')
   # capture stdout and stderr to the logs as well
   sys.stdout = TextIOBaseToLog(logger.debug)
   sys.stderr = TextIOBaseToLog(logger.warning)

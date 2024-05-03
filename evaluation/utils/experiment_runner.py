@@ -5,14 +5,20 @@ import time
 import multiprocessing
 import setproctitle
 import logging
+import sys
 
 from scenariogen.core.fuzzing.fuzzers.atheris import AtherisFuzzer
-from scenariogen.core.logging.client import configure_logger
+from scenariogen.core.logging.client import configure_logger, TextIOBaseToLog
+import scenariogen.core.logging.server as log_server
 
 
 def generator_process_target(config, generator_state, log_queue):
   setproctitle.setproctitle(config['generator'].__name__)
   configure_logger(log_queue)
+  logger = logging.getLogger(f'{__name__}.target')
+  # capture stdout and stderr to the logs as well
+  sys.stdout = TextIOBaseToLog(logger.debug)
+  sys.stderr = TextIOBaseToLog(logger.warning)
   
   if config['generator'] is AtherisFuzzer:
     atheris_output_path = Path(config['atheris-output-folder'])
@@ -102,7 +108,6 @@ def run(config):
   
   logger.info(f"Now running experiment: {config['output-folder']}")
 
-  import scenariogen.core.logging.server as log_server
   ctx = multiprocessing.get_context('spawn')
   p = ctx.Process(target=generator_process_target,
                   args=(config, generator_state, log_server.queue),
