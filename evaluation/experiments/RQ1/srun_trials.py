@@ -3,16 +3,21 @@
 import subprocess
 from itertools import product
 from datetime import timedelta
+import os
 
-generators = ('Random', 'PCGF', )
+generators = ('Random', 'Atheris', 'PCGF', )
+egos = ('autopilot', 'TFPP', )
 randomizer_seeds = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
-trials = product(generators, randomizer_seeds)
+trials = product(generators, egos, randomizer_seeds)
 trial_timeout = timedelta(hours=24)
 slurm_timeout = trial_timeout + timedelta(minutes=30)
-ScenariogenDependencies = '/users/a/b/abol'
-CARLA_Dist = '/work/users/a/b/abol/bionic/carla/Dist/CARLA_Shipping_0.9.15-169-g063cc9d90/LinuxNoEditor'
+ScenariogenDependencies = os.environ.get('STORE_BASE_DIR')
+CARLA_Dist = f"{os.environ.get('STORE_BASE_DIR')}/bionic/carla/Dist/CARLA_Shipping_0.9.15-169-g063cc9d90/LinuxNoEditor"
+SCENIC_Version='Scenic_04-10-2024'
+Z3_Version='z3-4.12.6-x64-glibc-2.35'
+Ubuntu_Dist='bionic'
 
-for generator, randomizer_seed in trials:
+for generator, ego, randomizer_seed in trials:
     cmd = f'''
         sbatch \
         --mail-type=FAIL \
@@ -35,15 +40,15 @@ for generator, randomizer_seed in trials:
                 --nv \
                 --cleanenv \
                 --bind {CARLA_Dist}:/home/scenariogen/carla \
-                --bind {ScenariogenDependencies}/Scenic_04-10-2024:/home/scenariogen/Scenic \
+                --bind {ScenariogenDependencies}/{SCENIC_Version}:/home/scenariogen/Scenic \
                 --bind {ScenariogenDependencies}/ScenarioGeneration:/home/scenariogen/ScenarioGeneration \
                 --bind {ScenariogenDependencies}/ScenarioComplexity:/home/scenariogen/ScenarioComplexity \
-                --bind {ScenariogenDependencies}/z3-4.12.6-x64-glibc-2.35:/home/scenariogen/z3 \
+                --bind {ScenariogenDependencies}/{Z3_Version}:/home/scenariogen/z3 \
                 --bind {ScenariogenDependencies}/carla_garage_fork:/home/scenariogen/carla_garage_fork \
-                {ScenariogenDependencies}/ScenarioGeneration/Longleaf/bionic/scenariogen/scenariogen.sif \
+                {ScenariogenDependencies}/ScenarioGeneration/Apptainer/images/scenariogen-{Ubuntu_Dist}.sif \
                     evaluation/experiments/RQ1/trial.py \
                         --generator {generator} \
-                        --ego TFPP \
+                        --ego {ego} \
                         --randomizer-seed {randomizer_seed} \
                         --coverage traffic-rules \
                         --seconds {trial_timeout.total_seconds()}

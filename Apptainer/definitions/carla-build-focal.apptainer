@@ -43,9 +43,5 @@ From: ubuntu:20.04
     pip3 install --user distro
     pip3 install --user wheel auditwheel
 
-    # (535.171.04-0ubuntu0.20.04.1) [restricted] [security] NVIDIA driver metapackage
-    apt-get install -y nvidia-driver-535
-
     # to speed up the Update.sh script for downloading Carla assets
     apt-get install -y aria2
-

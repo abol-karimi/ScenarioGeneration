@@ -4,6 +4,11 @@ From: ubuntu:18.04
 %runscript
     export DEBIAN_FRONTEND=noninteractive
 
+    if [ -n "${CLEAN_UE4+x}" ]; then
+        cd /home/scenariogen/CarlaUnreal
+        make ARGS='-clean'
+    fi
+
     if [ -n "${BUILD_UE4+x}" ]; then
         cd /home/scenariogen/CarlaUnreal
         ./Setup.sh
@@ -20,9 +25,18 @@ From: ubuntu:18.04
     if [ -n "${BUILD_CARLA+x}" ]; then
         export UE4_ROOT=/home/scenariogen/CarlaUnreal
         cd /home/scenariogen/carla
-        make PythonAPI ARGS="--python-version=3.8"
-        make package ARGS="--config=$CARLA_CONFIG --no-zip"
+        make PythonAPI ARGS='--python-version=3.8'
+        make package ARGS="--config=$CARLA_BUILD_CONFIG --no-zip"
     fi
+
+    if [ -n "${REBUILD_CARLA+x}" ]; then
+        export UE4_ROOT=/home/scenariogen/CarlaUnreal
+        cd /home/scenariogen/carla
+        make clean
+        make PythonAPI ARGS='--python-version=3.8'
+        make package ARGS="--config=$CARLA_BUILD_CONFIG --no-zip"
+    fi
+
 
 %setup
     mkdir -p ${SINGULARITY_ROOTFS}/home/scenariogen/CarlaUnreal

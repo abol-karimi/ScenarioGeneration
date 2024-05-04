@@ -13,5 +13,5 @@ apptainer run \
     --bind ${ScenariogenDependencies}/ScenarioComplexity:/home/scenariogen/ScenarioComplexity \
     --bind ${ScenariogenDependencies}/z3-4.12.6-x64-glibc-2.35:/home/scenariogen/z3 \
     --bind ${ScenariogenDependencies}/carla_garage_fork:/home/scenariogen/carla_garage_fork \
-    ${ScenariogenDependencies}/ScenarioGeneration/Longleaf/bionic/scenariogen/scenariogen.sif \
+    ${ScenariogenDependencies}/ScenarioGeneration/Apptainer/images/scenariogen.sif \
         evaluation/experiments/RQ1/average.py

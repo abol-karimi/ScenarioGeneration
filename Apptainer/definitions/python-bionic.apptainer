@@ -1,5 +1,5 @@
-Bootstrap: localimage
-From: carla.sif
+Bootstrap: docker
+From: ubuntu:18.04
 
 %setup
     mkdir -p ${SINGULARITY_ROOTFS}/home/scenariogen/python
