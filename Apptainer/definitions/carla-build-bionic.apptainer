@@ -2,7 +2,6 @@ Bootstrap: docker
 From: ubuntu:18.04
 
 %runscript
-    export DEBIAN_FRONTEND=noninteractive
 
     if [ -n "${CLEAN_UE4+x}" ]; then
         cd /home/scenariogen/CarlaUnreal
@@ -22,6 +21,12 @@ From: ubuntu:18.04
         ./Update.sh
     fi
 
+    if [ -n "${CLEAN_CARLA+x}" ]; then
+        export UE4_ROOT=/home/scenariogen/CarlaUnreal
+        cd /home/scenariogen/carla
+        make clean
+    fi
+
     if [ -n "${BUILD_CARLA+x}" ]; then
         export UE4_ROOT=/home/scenariogen/CarlaUnreal
         cd /home/scenariogen/carla
@@ -29,18 +34,19 @@ From: ubuntu:18.04
         make package ARGS="--config=$CARLA_BUILD_CONFIG --no-zip"
     fi
 
-    if [ -n "${REBUILD_CARLA+x}" ]; then
+    if [ -n "${BUILD_RSS+x}" ]; then
         export UE4_ROOT=/home/scenariogen/CarlaUnreal
         cd /home/scenariogen/carla
-        make clean
-        make PythonAPI ARGS='--python-version=3.8'
-        make package ARGS="--config=$CARLA_BUILD_CONFIG --no-zip"
+        make LibCarla.client.rss ARGS='--python-version=3.8'
+        make PythonAPI.rss ARGS='--python-version=3.8'
+        make package.rss ARGS="--config=$CARLA_BUILD_CONFIG --no-zip"
     fi
 
 
 %setup
     mkdir -p ${SINGULARITY_ROOTFS}/home/scenariogen/CarlaUnreal
     mkdir -p ${SINGULARITY_ROOTFS}/home/scenariogen/carla
+
 
 %post
     export DEBIAN_FRONTEND=noninteractive
@@ -68,12 +74,31 @@ From: ubuntu:18.04
         python3.8 \
         python3.8-dev \
         python3.8-venv
-    pip install --user distro &&
-    pip3 install --user distro &&
-    python3.8 -m pip install --user distro &&
+
+    # To build RSS
+    apt-get install -y libgtest-dev libpython-dev libpugixml-dev libtbb-dev
+    apt-get install -y castxml
 
     # To install PythonAPI
-    pip install --user setuptools &&
-    pip3 install --user -Iv setuptools==47.3.1 &&
-    pip install --user wheel &&
-    pip3 install --user wheel auditwheel
+    pip install --upgrade pip
+    pip3 install --upgrade pip
+
+    pip install setuptools &&
+    pip3 install -Iv setuptools==47.3.1 &&
+    pip install distro &&
+    pip3 install distro &&
+    pip install wheel &&
+    pip3 install wheel auditwheel
+
+    # to build PythonAPI for python 3.8
+    python3.8 -m pip install --upgrade pip
+
+    python3.8 -m pip install -Iv setuptools==47.3.1 &&
+    python3.8 -m pip install distro &&
+    python3.8 -m pip install wheel auditwheel
+
+    # To build RSS
+    pip3 install -U colcon-common-extensions
+    pip3 install pygccxml pyplusplus
+    python3.8 -m pip install -U colcon-common-extensions
+    python3.8 -m pip install pygccxml pyplusplus

@@ -28,11 +28,19 @@ SCENIC_Version=${Local_SCENIC_Version}
 build_image() {
     apptainer build \
         --force \
+        --warn-unused-build-args \
         --build-arg CARLA_egg=${CARLA_egg} \
         --build-arg Scenariogen_Dependencies=${Scenariogen_Dependencies} \
         --build-arg SCENIC_Version=${SCENIC_Version} \
         images/$1.sif \
         definitions/$1.apptainer
+}
+
+build_shell() {
+    apptainer shell \
+        --bind ${CarlaUnreal}:/home/scenariogen/CarlaUnreal \
+        --bind ${CARLA_SRC}:/home/scenariogen/carla \
+        images/carla-build-$1.sif
 }
 
 clean_ue4() {
@@ -49,6 +57,22 @@ build_ue4() {
         images/carla-build-$1.sif
 }
 
+clean_carla() {
+    apptainer run \
+        --bind ${CarlaUnreal}:/home/scenariogen/CarlaUnreal \
+        --bind ${CARLA_SRC}:/home/scenariogen/carla \
+        --env CLEAN_CARLA=T \
+        images/carla-build-$1.sif
+}
+
+update_carla() {
+    apptainer run \
+        --bind ${CarlaUnreal}:/home/scenariogen/CarlaUnreal \
+        --bind ${CARLA_SRC}:/home/scenariogen/carla \
+        --env UPDATE_CARLA=T \
+        images/carla-build-$1.sif
+}
+
 build_carla() {
     apptainer run \
         --bind ${CarlaUnreal}:/home/scenariogen/CarlaUnreal \
@@ -58,11 +82,11 @@ build_carla() {
         images/carla-build-$1.sif
 }
 
-rebuild_carla() {
+build_rss() {
     apptainer run \
         --bind ${CarlaUnreal}:/home/scenariogen/CarlaUnreal \
         --bind ${CARLA_SRC}:/home/scenariogen/carla \
-        --env REBUILD_CARLA=T \
+        --env BUILD_RSS=T \
         --env CARLA_BUILD_CONFIG=$2 \
         images/carla-build-$1.sif
 }
@@ -102,7 +126,6 @@ sbatch_run_carla() {
 SUT() {
     apptainer run \
         --nv \
-        --cleanenv \
         --bind ${CARLA_Dist}:/home/scenariogen/carla \
         --env CARLA_egg=${CARLA_egg} \
         --bind ${Scenariogen_Dependencies}/${SCENIC_Version}:/home/scenariogen/Scenic \
@@ -110,8 +133,9 @@ SUT() {
         --bind ${Scenariogen_Dependencies}/carla_garage_fork:/home/scenariogen/carla_garage_fork \
         images/scenariogen-$1.sif \
             SUT.py evaluation/seeds/random/seeds/1d6da581c30402e94a8c94b1ef2b40a1cde442f2 \
-                --ego-module evaluation.agents.TFPP \
-                --coverage-module traffic-rules
+                --ego-module evaluation.agents.BehaviorAgent \
+                --coverage-module traffic-rules \
+                --render-spectator
 }
 
 sbatch_SUT() {
