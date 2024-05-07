@@ -29,5 +29,7 @@ class Fuzzer:
 
     while time.time()-start_time < self.config['max-total-time']:
       self.run()
-    
+
+    logger.info('Fuzzer reached max-total-time. Returning the state of the fuzzer...')
+        
     return self.get_state()

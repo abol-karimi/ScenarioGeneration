@@ -93,7 +93,7 @@ def simulation_service(connection, log_queue, sync_lock):
     try:
       config = connection.recv()
     except EOFError:
-      logger.exception(f'Client closed the connection. Ending the simulation service...')
+      logger.warning(f'Client closed the connection. Ending the simulation service...')
       connection.close()
       break
     else:
@@ -113,11 +113,13 @@ def simulation_service(connection, log_queue, sync_lock):
                                           mode2D=True)
         scene, _ = scenario.generate(maxIterations=1)
       except AssertionError:
-        logger.exception(f'Failed to create the initial scene due to AssertionError. Stopping the simulation service...')
+        logger.exception(f'Failed to create the initial scene:', exc_info=True)
+        logger.info('Stopping the simulation service...')
         logging.shutdown()
         return
       except Exception as e:
-        logger.exception(f'Failed to create the initial scene due to {type(e)}. Returning a None result...', exc_info=True)
+        logger.exception(f'Failed to create the initial scene:', exc_info=True)
+        logger.info('Returning a None result...')
         connection.send(None)
         break
 
@@ -192,13 +194,15 @@ def simulation_service(connection, log_queue, sync_lock):
       except (SimulationCreationError, GuardViolation) as e:
         run_callbacks(cleanup_callbacks)
         simulator.world.tick()
-        logger.exception(f'Failed to simulate the scenario due to {type(e)}. Returning a None result...', exc_info=True)
+        logger.exception(f'Failed to simulate the scenario:', exc_info=True)
+        logger.info('Returning a None result...')
         connection.send(None)
         break
       except Exception as e:
         run_callbacks(cleanup_callbacks)
         simulator.world.tick()
-        logger.exception(f'Failed to simulate the scenario due to {type(e)}. Will try again...', exc_info=True)
+        logger.exception(f'Failed to simulate the scenario:', exc_info=True)
+        logger.info('Will try again...')
       else:
         run_callbacks(cleanup_callbacks)
         simulator.world.tick()
@@ -228,6 +232,7 @@ class SUTRunner:
     sync_lock.acquire()
     cls.server_process.start()
     sync_lock.acquire()
+    # By now, the cls.server_process has started and we may call its is_alive()
     sync_lock.release()
 
   @classmethod
@@ -261,10 +266,11 @@ class SUTRunner:
               if sim_result:
                 logger.info(f'Simulation completed successfully.')
               else:
-                logger.info(f'Simulation rejected fuzz-input with hash ', config['fuzz-input'].hexdigest)
+                logger.info(f"Simulation rejected fuzz-input with hash {config['fuzz-input'].hexdigest}")
               return sim_result
-      except Exception as e:
-        logger.exception(f'Failed to run the scenario due to exception {e}. Retrying...', exc_info=True)
+      except Exception:
+        logger.exception(f'Failed to run the scenario:', exc_info=True)
+        logger.info('Retrying...')
 
 
 

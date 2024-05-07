@@ -6,7 +6,7 @@ from datetime import timedelta
 import os
 
 generators = ('Random', 'Atheris', 'PCGF', )
-egos = ('autopilot', 'TFPP', )
+egos = ('autopilot', 'TFPP', 'BehaviorAgent')
 randomizer_seeds = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
 trials = product(generators, egos, randomizer_seeds)
 trial_timeout = timedelta(hours=24)
@@ -27,7 +27,7 @@ for generator, ego, randomizer_seed in trials:
         --nodes=1 \
         --ntasks=1 \
         --cpus-per-task=8 \
-        --mem=20G \
+        --mem=32G \
         --qos gpu_access \
         -p volta-gpu \
         --gres=gpu:tesla_v100-sxm2-16gb:1 \
