@@ -123,6 +123,17 @@ sbatch_run_carla() {
                 images/carla-run-$1.sif"
 }
 
+scenariogen_shell() {
+    apptainer shell \
+        --nv \
+        --bind ${CARLA_Dist}:/home/scenariogen/carla \
+        --env CARLA_egg=${CARLA_egg} \
+        --bind ${Scenariogen_Dependencies}/${SCENIC_Version}:/home/scenariogen/Scenic \
+        --bind ${Scenariogen_Dependencies}/ScenarioGeneration:/home/scenariogen/ScenarioGeneration \
+        --bind ${Scenariogen_Dependencies}/carla_garage_fork:/home/scenariogen/carla_garage_fork \
+        images/scenariogen-$1.sif
+}
+
 SUT() {
     apptainer run \
         --nv \
@@ -132,7 +143,7 @@ SUT() {
         --bind ${Scenariogen_Dependencies}/ScenarioGeneration:/home/scenariogen/ScenarioGeneration \
         --bind ${Scenariogen_Dependencies}/carla_garage_fork:/home/scenariogen/carla_garage_fork \
         images/scenariogen-$1.sif \
-            SUT.py evaluation/seeds/random/seeds/1d6da581c30402e94a8c94b1ef2b40a1cde442f2 \
+            SUT.py evaluation/seeds/random/seeds/231d7d343f2b9d6c269f57cbfb439fa4e721aed3 \
                 --ego-module evaluation.agents.BehaviorAgent \
                 --coverage-module traffic-rules \
                 --render-spectator

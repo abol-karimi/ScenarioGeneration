@@ -5,6 +5,7 @@ param config = None
 config = globalParameters.config
 
 # imports
+import logging
 from collections import namedtuple
 import carla
 from leaderboard.envs.sensor_interface import SensorReceivedNoData
@@ -17,6 +18,7 @@ from scenariogen.simulators.carla.utils import (signal_to_vehicleLightState,
                                                 maneuverType_to_Autopilot_turn,
                                                 interpolate_trajectory
                                                 )
+from scenariogen.simulators.carla.utils import plan_from_route
 import scenariogen.simulators.carla.visualization as visualization
 from scenariogen.interfaces.leaderboard.agent import LeaderboardAgent
 
@@ -92,26 +94,37 @@ behavior BehaviorAgentReachDestination(dest, aggressiveness='normal', debug=Fals
   print(f'Car {self.name} reached its destination.')
 
 
-behavior BehaviorAgentFollowWaypoints(waypoints, aggressiveness):
-  agent = BehaviorAgent(self.carlaActor, behavior=aggressiveness)
-  carla_world = simulation().world
+behavior BehaviorAgentFollowRoute(route, init_progress_ratio, waypoint_separation=4.0, aggressiveness='normal', debug=False):
+  logger = logging.getLogger(__name__)
+ 
+  agent = BehaviorAgent(self.carlaActor,
+                        behavior=aggressiveness,
+                        opt_dict={},
+                        map_inst=simulation().map)
 
-  for wp in waypoints:
-    agent.set_destination(scenicToCarlaLocation(wp, world=carla_world))
-    while not agent.done():
-      self.carlaActor.apply_control(agent.run_step())
-      wait
+  plan = plan_from_route(simulation().world, simulation().map, network, route, init_progress_ratio, waypoint_separation)
+  agent.set_global_plan(plan, stop_waypoint_creation=True, clean_queue=True)
 
-  print(f'Car {self.name} reached its last waypoint.')
+  if debug:
+    for wp, _ in plan:
+      visualization.draw_point(simulation().world,
+                                carlaToScenicPosition(wp.transform.location),
+                                None,
+                                size=0.2,
+                                color=carla.Color(255, 0, 0),
+                                lifetime=60)
 
+  while not agent.done():
+    control = agent.run_step(debug=debug)
+    self.carlaActor.apply_control(control)
+    wait
+
+  logger.info(f'Car {self.name} reached its last waypoint. Stopping the car...')
   take SetThrottleAction(0), SetBrakeAction(1), SetSteerAction(0)
 
 
-behavior BehaviorAgentRSSFollowWaypoints(waypoints, aggressiveness):
-  agent = BehaviorAgent(self.carlaActor, behavior=aggressiveness)
-  carla_world = simulation().world
-
-  # TODO
+# behavior BehaviorAgentRSSFollowRoute(waypoints, aggressiveness):
+#   # TODO
 
 
 behavior LeaderboardAgentBehavior(agent_path, agent_config, track, keypoints, debug=False):

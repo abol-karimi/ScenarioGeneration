@@ -217,6 +217,15 @@ def route_from_turns(network, init_lane, turns):
     return route
 
 
+def maneuvers_from_route(route_lanes):
+    maneuvers = []
+    for li, lii in pairwise(route_lanes):
+        maneuver = tuple(filter(lambda m: m.connectingLane == lii or m.endLane == lii, li.maneuvers))[0]
+        maneuvers.append(maneuver)
+
+    return maneuvers
+
+
 def turns_from_route(route_lanes):
     turns = []
     for li, lii in pairwise(route_lanes):

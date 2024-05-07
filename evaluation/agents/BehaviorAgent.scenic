@@ -8,9 +8,10 @@ if config['simulator'] != 'carla':
 model scenic.simulators.carla.model
 
 # imports
-from scenariogen.simulators.carla.behaviors import BehaviorAgentReachDestination
-   
-ego_lanes = [network.elements[l] for l in config['ego_route']]
-ego_centerline = PolylineRegion.unionAll([l.centerline for l in ego_lanes])
+from scenariogen.simulators.carla.behaviors import BehaviorAgentFollowRoute
 
-ego_behavior = BehaviorAgentReachDestination(ego_centerline[-1], debug=True)
+
+ego_behavior = BehaviorAgentFollowRoute(
+                  config['ego_route'],
+                  config['ego_init_progress_ratio'],
+                  debug=True)
