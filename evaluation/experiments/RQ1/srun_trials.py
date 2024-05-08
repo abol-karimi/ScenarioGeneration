@@ -6,13 +6,14 @@ from datetime import timedelta
 import os
 
 generators = ('Random', 'Atheris', 'PCGF', )
-egos = ('autopilot', 'TFPP', 'BehaviorAgent')
+egos = ('BehaviorAgent', )
 randomizer_seeds = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
 trials = product(generators, egos, randomizer_seeds)
 trial_timeout = timedelta(hours=24)
 slurm_timeout = trial_timeout + timedelta(minutes=30)
 ScenariogenDependencies = os.environ.get('STORE_BASE_DIR')
-CARLA_Dist = f"{os.environ.get('STORE_BASE_DIR')}/bionic/carla/Dist/CARLA_Shipping_0.9.15-169-g063cc9d90/LinuxNoEditor"
+CARLA_Dist = f"{os.environ.get('WORK_BASE_DIR')}/bionic/carla/Dist/CARLA_Shipping_0.9.15-169-g063cc9d90/LinuxNoEditor"
+# CARLA_Dist = f"{os.environ.get('WORK_BASE_DIR')}/CARLA_0.9.15"
 SCENIC_Version='Scenic_04-10-2024'
 Z3_Version='z3-4.12.6-x64-glibc-2.35'
 Ubuntu_Dist='bionic'
@@ -22,12 +23,12 @@ for generator, ego, randomizer_seed in trials:
         sbatch \
         --mail-type=FAIL \
         --mail-user=ak@cs.unc.edu \
-        --job-name={generator}_{randomizer_seed} \
-        -o "%x-%j-%N.log" \
+        --job-name={generator}_{ego}_{randomizer_seed} \
+        -o "%x_%j_%N.log" \
         --nodes=1 \
         --ntasks=1 \
         --cpus-per-task=8 \
-        --mem=32G \
+        --mem=40G \
         --qos gpu_access \
         -p volta-gpu \
         --gres=gpu:tesla_v100-sxm2-16gb:1 \

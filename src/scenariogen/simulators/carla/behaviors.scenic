@@ -5,7 +5,6 @@ param config = None
 config = globalParameters.config
 
 # imports
-import logging
 from collections import namedtuple
 import carla
 from leaderboard.envs.sensor_interface import SensorReceivedNoData
@@ -95,8 +94,6 @@ behavior BehaviorAgentReachDestination(dest, aggressiveness='normal', debug=Fals
 
 
 behavior BehaviorAgentFollowRoute(route, init_progress_ratio, waypoint_separation=4.0, aggressiveness='normal', debug=False):
-  logger = logging.getLogger(__name__)
- 
   agent = BehaviorAgent(self.carlaActor,
                         behavior=aggressiveness,
                         opt_dict={},
@@ -119,7 +116,6 @@ behavior BehaviorAgentFollowRoute(route, init_progress_ratio, waypoint_separatio
     self.carlaActor.apply_control(control)
     wait
 
-  logger.info(f'Car {self.name} reached its last waypoint. Stopping the car...')
   take SetThrottleAction(0), SetBrakeAction(1), SetSteerAction(0)
 
 

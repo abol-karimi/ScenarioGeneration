@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # Longleaf
-Loneleaf_CarlaUnreal=${WORK_BASE_DIR}/bionic/CarlaUnreal
+Longleaf_CarlaUnreal=${WORK_BASE_DIR}/bionic/CarlaUnreal
+Longleaf_CARLA_SRC=${WORK_BASE_DIR}/bionic/carla
 Longleaf_CARLA_Dist_Shipping=${WORK_BASE_DIR}/bionic/carla/Dist/CARLA_Shipping_0.9.15-169-g063cc9d90/LinuxNoEditor
+Longleaf_CARLA_Dist_Binary=${WORK_BASE_DIR}/CARLA_0.9.15
 Longleaf_CARLA_Dist_Debug=${WORK_BASE_DIR}/bionic/carla/Dist/CARLA_Debug_0.9.15-169-g063cc9d90/LinuxNoEditor
-Longleaf_CARLA_egg=carla-0.9.15-py3.8-linux-x86_64.egg
 Longleaf_Scenariogen_Dependencies=${STORE_BASE_DIR}
 Longleaf_SCENIC_Version=Scenic_04-10-2024
 
@@ -12,18 +13,21 @@ Longleaf_SCENIC_Version=Scenic_04-10-2024
 Local_CarlaUnreal=/media/ak/Files/CarlaUnreal
 Local_CARLA_SRC=/media/ak/Files/carla
 Local_CARLA_Dist_Shipping=/media/ak/Files/CARLA_0.9.15
-Local_CARLA_egg=carla-0.9.15-py3.7-linux-x86_64.egg
 Local_Scenariogen_Dependencies=/home/ak
 Local_SCENIC_Version=Scenic_05-03-2024
 
+# CARLA egg version
+CARLA_egg_38=carla-0.9.15-py3.8-linux-x86_64.egg
+CARLA_egg_37=carla-0.9.15-py3.7-linux-x86_64.egg
+
 # select a version
-CarlaUnreal=${Local_CarlaUnreal}
-CARLA_SRC=${Local_CARLA_SRC}
-CARLA_Dist=${Local_CARLA_Dist_Shipping}
+CarlaUnreal=${Longleaf_CarlaUnreal}
+CARLA_SRC=${Longleaf_CARLA_SRC}
+CARLA_Dist=${Longleaf_CARLA_Dist_Shipping}
 CARLA_Binary=CarlaUE4-Linux-Shipping
-CARLA_egg=${Local_CARLA_egg}
-Scenariogen_Dependencies=${Local_Scenariogen_Dependencies}
-SCENIC_Version=${Local_SCENIC_Version}
+CARLA_egg=${CARLA_egg_38}
+Scenariogen_Dependencies=${Longleaf_Scenariogen_Dependencies}
+SCENIC_Version=${Longleaf_SCENIC_Version}
 
 build_image() {
     apptainer build \
@@ -127,7 +131,6 @@ scenariogen_shell() {
     apptainer shell \
         --nv \
         --bind ${CARLA_Dist}:/home/scenariogen/carla \
-        --env CARLA_egg=${CARLA_egg} \
         --bind ${Scenariogen_Dependencies}/${SCENIC_Version}:/home/scenariogen/Scenic \
         --bind ${Scenariogen_Dependencies}/ScenarioGeneration:/home/scenariogen/ScenarioGeneration \
         --bind ${Scenariogen_Dependencies}/carla_garage_fork:/home/scenariogen/carla_garage_fork \
@@ -138,7 +141,6 @@ SUT() {
     apptainer run \
         --nv \
         --bind ${CARLA_Dist}:/home/scenariogen/carla \
-        --env CARLA_egg=${CARLA_egg} \
         --bind ${Scenariogen_Dependencies}/${SCENIC_Version}:/home/scenariogen/Scenic \
         --bind ${Scenariogen_Dependencies}/ScenarioGeneration:/home/scenariogen/ScenarioGeneration \
         --bind ${Scenariogen_Dependencies}/carla_garage_fork:/home/scenariogen/carla_garage_fork \
