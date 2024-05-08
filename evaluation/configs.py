@@ -34,7 +34,7 @@ def ego_violations_coverage_filter(cov):
 
 def get_experiment_config(gen_ego, gen_coverage, randomizer_seed, seeds_folder, max_total_time, output_folder):
 
-  if gen_ego in {'TFPP', 'autopilot', None}:
+  if gen_ego in {'TFPP', 'autopilot', 'BehaviorAgent', 'BehaviorAgentRSS', None}:
     simulator = 'carla'
   elif gen_ego == 'intersectionAgent':
     simulator = 'newtonian'
