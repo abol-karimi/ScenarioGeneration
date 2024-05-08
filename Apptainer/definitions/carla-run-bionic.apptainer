@@ -2,10 +2,10 @@ Bootstrap: docker
 From: nvidia/vulkan:1.1.121-cuda-10.1--ubuntu18.04
 
 %runscript
-    /home/scenariogen/carla/CarlaUE4/Binaries/Linux/${CARLA_Binary} \
+    /home/scenariogen/carla/CarlaUE4/Binaries/Linux/${CARLA_BINARY} \
         CarlaUE4 \
         -RenderOffScreen \
-        -quality-level=${QualityLevel} \
+        -quality-level=${QUALITY_LEVEL} \
         -nosound \
         -carla-rpc-port=0 \
         -carla-streaming-port=0 \

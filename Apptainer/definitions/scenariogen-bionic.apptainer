@@ -9,7 +9,7 @@ From: images/carla-run-bionic.sif
 
 %environment
     export CARLA_ROOT='/home/scenariogen/carla'
-    export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/dist/{{CARLA_egg}}:$PYTHONPATH
+    export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/dist/{{CARLA_EGG}}:$PYTHONPATH
     export PYTHONPATH=${CARLA_ROOT}/PythonAPI/examples/:$PYTHONPATH
     export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/:$PYTHONPATH
     export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/agents/:$PYTHONPATH
@@ -40,24 +40,24 @@ From: images/carla-run-bionic.sif
 
 %files
     # Scenic
-    {{Scenariogen_Dependencies}}/{{SCENIC_Version}} /home/scenariogen/Scenic
+    {{SCENARIOGEN_DEPENDENCIES}}/{{SCENIC_VERSION}} /home/scenariogen/Scenic
 
     # Clingo: Dependency of Scenariogen and ScenarioComplexity
-    {{Scenariogen_Dependencies}}/clingo-5.6.2 /home/scenariogen/clingo-source
+    {{SCENARIOGEN_DEPENDENCIES}}/clingo-5.6.2 /home/scenariogen/clingo-source
 
     # ScenarioComplexity
-    {{Scenariogen_Dependencies}}/ScenarioComplexity/requirements.txt /home/scenariogen/ScenarioComplexity/requirements.txt
+    {{SCENARIOGEN_DEPENDENCIES}}/ScenarioComplexity/requirements.txt /home/scenariogen/ScenarioComplexity/requirements.txt
 
     # TF++ Carla Leaderboard agent
-    {{Scenariogen_Dependencies}}/carla_garage_fork/scenario_runner/requirements.txt /home/scenariogen/carla_garage_fork/scenario_runner/requirements.txt
-    {{Scenariogen_Dependencies}}/carla_garage_fork/leaderboard/requirements.txt /home/scenariogen/carla_garage_fork/leaderboard/requirements.txt
-    {{Scenariogen_Dependencies}}/carla_garage_fork/team_code/requirements.txt /home/scenariogen/carla_garage_fork/team_code/requirements.txt
+    {{SCENARIOGEN_DEPENDENCIES}}/carla_garage_fork/scenario_runner/requirements.txt /home/scenariogen/carla_garage_fork/scenario_runner/requirements.txt
+    {{SCENARIOGEN_DEPENDENCIES}}/carla_garage_fork/leaderboard/requirements.txt /home/scenariogen/carla_garage_fork/leaderboard/requirements.txt
+    {{SCENARIOGEN_DEPENDENCIES}}/carla_garage_fork/team_code/requirements.txt /home/scenariogen/carla_garage_fork/team_code/requirements.txt
 
     # ScenarioGeneration
-    {{Scenariogen_Dependencies}}/ScenarioGeneration/requirements.txt /home/scenariogen/ScenarioGeneration/requirements.txt
+    {{SCENARIOGEN_DEPENDENCIES}}/ScenarioGeneration/requirements.txt /home/scenariogen/ScenarioGeneration/requirements.txt
 
     # Z3 Solver
-    {{Scenariogen_Dependencies}}/z3-4.12.6-x64-glibc-2.35 /home/scenariogen/z3
+    {{SCENARIOGEN_DEPENDENCIES}}/z3-4.12.6-x64-glibc-2.35 /home/scenariogen/z3
 
 
 %post
@@ -84,7 +84,7 @@ From: images/carla-run-bionic.sif
 
     # carla PythonAPI
     export CARLA_ROOT='/home/scenariogen/carla'
-    export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/dist/{{CARLA_egg}}:$PYTHONPATH
+    export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/dist/{{CARLA_EGG}}:$PYTHONPATH
 
     #--- Scenic 3 ---
     pip install --upgrade pip
