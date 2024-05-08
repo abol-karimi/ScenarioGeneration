@@ -2,17 +2,18 @@ Bootstrap: localimage
 From: images/carla-run-bionic.sif
 
 %runscript
-    export CARLA_ROOT='/home/scenariogen/carla'
-    export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/dist/${CARLA_egg}:$PYTHONPATH
-    export PYTHONPATH=${CARLA_ROOT}/PythonAPI/examples/:$PYTHONPATH
-    export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/:$PYTHONPATH
-    export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/agents/:$PYTHONPATH
     . /home/scenariogen/.venv/bin/activate
     cd /home/scenariogen/ScenarioGeneration
     "$@"
 
 
 %environment
+    export CARLA_ROOT='/home/scenariogen/carla'
+    export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/dist/{{CARLA_egg}}:$PYTHONPATH
+    export PYTHONPATH=${CARLA_ROOT}/PythonAPI/examples/:$PYTHONPATH
+    export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/:$PYTHONPATH
+    export PYTHONPATH=${CARLA_ROOT}/PythonAPI/carla/agents/:$PYTHONPATH
+
     # ScenarioGeneneration
     export PYTHONPATH=/home/scenariogen/ScenarioGeneration/src:$PYTHONPATH
     export PYTHONPATH=/home/scenariogen/ScenarioGeneration:$PYTHONPATH
@@ -74,7 +75,7 @@ From: images/carla-run-bionic.sif
         python3.8 \
         python3.8-dev \
         python3.8-venv
-    python3.8 -m pip install --user distro
+    python3.8 -m pip install distro
 
     # venv for scenariogen
     cd /home/scenariogen
