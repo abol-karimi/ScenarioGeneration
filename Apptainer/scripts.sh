@@ -15,13 +15,12 @@ else
 fi
 
 
-# choice of CARLA
-CARLA_BUILD_TYPE=Shipping
+# choice of CARLA (comment out the one you don't want to use)
 CARLA_BUILD_NUMBER=0.9.15-169-g063cc9d90 # Longleaf
 CARLA_BUILD_NUMBER=0.9.15-187-g7a540559a # Local
 CARLA_EGG=carla-0.9.15-py3.8-linux-x86_64.egg
 
-# choice of SCENIC
+# choice of SCENIC (comment out the one you don't want to use)
 SCENIC_VERSION=Scenic_04-10-2024 # Longleaf
 SCENIC_VERSION=Scenic_05-03-2024 # Local
 
@@ -29,8 +28,8 @@ SCENIC_VERSION=Scenic_05-03-2024 # Local
 # template variables
 CarlaUnreal=${WORK_BASE_DIR}/${BASE_IMAGE}/CarlaUnreal
 CARLA_SRC=${WORK_BASE_DIR}/${BASE_IMAGE}/carla
-CARLA_DIST=${WORK_BASE_DIR}/${BASE_IMAGE}/carla/Dist/CARLA_${CARLA_BUILD_TYPE}_${CARLA_BUILD_NUMBER}/LinuxNoEditor
-CARLA_BINARY=CarlaUE4-Linux-${CARLA_BUILD_TYPE}
+CARLA_DIST=${WORK_BASE_DIR}/${BASE_IMAGE}/carla/Dist/CARLA_${CARLA_BUILD_CONFIG}_${CARLA_BUILD_NUMBER}/LinuxNoEditor
+CARLA_BINARY=CarlaUE4-Linux-${CARLA_BUILD_CONFIG}
 SCENARIOGEN_DEPENDENCIES=${STORE_BASE_DIR}
 
 
