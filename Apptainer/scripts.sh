@@ -1,15 +1,15 @@
 #!/bin/bash
 
 # choice of base image for the containers (bionic, focal, jammy)
-if [[ $# -gt 1 ]]; then
-    BASE_IMAGE_DIST=$2
+if [[ $# -gt 2 ]]; then
+    BASE_IMAGE_DIST=$3
 else
     BASE_IMAGE_DIST=bionic
 fi
 
 # choice of build config for CARLA (Debug, Shipping)
-if [[ $# -gt 2 ]]; then
-    CARLA_BUILD_CONFIG=$3
+if [[ $# -gt 3 ]]; then
+    CARLA_BUILD_CONFIG=$4
 else
     CARLA_BUILD_CONFIG=Shipping
 fi
