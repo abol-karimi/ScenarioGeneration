@@ -15,18 +15,20 @@ if __name__ == '__main__':
     parser.add_argument('--generator', choices=['PCGF', 'Atheris', 'Random'], default='PCGF',
                         help='the test-case generator')
     parser.add_argument('--ego',
-                        help='the scenic file containing the ego scenario')
+                        help='the agent under test. Its performance is used as a feedback to generate more test-cases.')
     parser.add_argument('--randomizer-seed', type=int, default=0,
                         help='PRNG seed for the trial')
-    parser.add_argument('--seeds-folder', default='evaluation/seeds/random/seeds',
+    parser.add_argument('--seeds-folder', required=True,
                         help='Fuzzing seeds folder')
     parser.add_argument('--coverage',
                         help='the scenic file containing coverage monitor')
-    parser.add_argument('--seconds', type=float, default=60,
-                        help='number of seconds to run the scenario')
+    parser.add_argument('--seconds', type=float, required=True,
+                        help='number of seconds to run the trial')
+    parser.add_argument('--output-folder', required=True,
+                        help='the base folder to store the results (fuzz-inputs, coverage, logs, etc.)')
     args = parser.parse_args()
 
-    setproctitle.setproctitle(f'{args.generator}_{args.randomizer_seed}')
+    setproctitle.setproctitle(f'RQ1_{args.generator}_{args.ego}_{args.randomizer_seed}')
 
     g2e = {'PCGF': PCGF_experiment,
            'Atheris': Atheris_experiment,
@@ -35,8 +37,7 @@ if __name__ == '__main__':
     experiment = g2e[args.generator]
 
     # Run the experiment
-    trial_output_folder = f"evaluation/results/RQ1/{args.generator}/{args.ego}_{args.coverage}_{args.randomizer_seed}"
-    trial_output_path = Path(trial_output_folder)
+    trial_output_path = Path(args.output_folder)
     trial_output_path.mkdir(parents=True, exist_ok=True)
 
     trial_log_path = trial_output_path / 'logs'
@@ -49,7 +50,7 @@ if __name__ == '__main__':
                                        args.randomizer_seed,
                                        args.seeds_folder,
                                        args.seconds,
-                                       trial_output_folder)
+                                       args.output_folder)
     evaluation.utils.experiment_runner.run(gen_config)
 
     log_server.stop()

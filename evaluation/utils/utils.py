@@ -11,7 +11,7 @@ from evaluation.configs import SUT_config, coverage_config
 
 
 def get_test_config(gen_config, test_ego, test_coverage, max_total_time):
-  if test_ego in {'TFPP', 'autopilot'}:
+  if test_ego in {'TFPP', 'autopilot', 'BehaviorAgent', 'BehaviorAgentRSS'}:
     simulator = 'carla'
   elif test_ego in {'intersectionAgent'}:
     simulator = 'newtonian'

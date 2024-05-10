@@ -3,9 +3,6 @@ import os
 import jsonpickle
 from pathlib import Path
 
-import scenic
-scenic.setDebuggingOptions(verbosity=1, fullBacktrace=True)
-
 from scenariogen.core.fuzzing.runner import SUTRunner
 
 

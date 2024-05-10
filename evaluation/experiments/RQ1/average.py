@@ -7,7 +7,6 @@ import evaluation.experiments.PCGF as PCGF_experiment
 import evaluation.experiments.Random as Random_experiment
 import evaluation.utils.experiment_runner
 from evaluation.utils.utils import get_test_config
-import evaluation.utils.events_to_coverage
 import evaluation.utils.average_coverage
 from evaluation.configs import ego_violations_coverage_filter
 
@@ -15,7 +14,7 @@ from evaluation.configs import ego_violations_coverage_filter
 if __name__ == '__main__':
 
   generators = ('PCGF', 'Atheris', 'Random')
-  trial_seeds = (0, 1, 2, 3, 4)
+  trial_seeds = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
   gen_ego = 'TFPP'
   gen_coverage = 'traffic-rules'
   test_ego = gen_ego
@@ -41,7 +40,7 @@ if __name__ == '__main__':
       'max-total-time': max_total_time,
       'output-file': f'{output_folder}/{gen}/{cov_filter}-coverage.json',
       'coverage-filter': filter_to_func[cov_filter],
-    } for gen, cov_filter in product(generators, coverage_filters)
+    } for gen, cov_filter in product(generators, filter_to_func)
   ] 
 
   # Average the trials
