@@ -43,12 +43,13 @@ def get_experiment_config(ego, coverage, randomizer_seed, seeds_folder, max_tota
 
   config = {
     'output-folder': output_folder,
-    'results-file': f'{output_folder}/{ego}_{coverage}/results.json',
+    'results-file': f'{output_folder}/results.json',
     'seeds-folder': seeds_folder,
-    'fuzz-inputs-folder': f"{output_folder}/fuzz-inputs",
-    'events-folder': f"{output_folder}/{ego}_{coverage}/events",
-    'coverages-folder': f"{output_folder}/{ego}_{coverage}/coverages",
-    'bugs-folder': f"{output_folder}/{ego}_{coverage}/bugs",
+    'fuzz-inputs-folder': f'{output_folder}/fuzz-inputs',
+    'events-folder': f'{output_folder}/events',
+    'coverages-folder': f'{output_folder}/coverages',
+    'bugs-folder': f'{output_folder}/bugs',
+    'logs-folder': f'{output_folder}/logs',
     'SUT-config': {**SUT_config,
                   'ego-module': f'evaluation.agents.{ego}' if ego else None,
                   'simulator': simulator,
@@ -59,6 +60,7 @@ def get_experiment_config(ego, coverage, randomizer_seed, seeds_folder, max_tota
     'randomizer-seed': randomizer_seed,
     'max-seed-length': 1e+6, # 1 MB
     'max-mutations-per-fuzz': 10,
+    'measurement-period': 60, # seconds
     'max-total-time': max_total_time, # seconds
   }
 

@@ -19,30 +19,36 @@ class SeedTester:
     return None
 
   def input_eval(self, seed):
-    try:
-      sim_result = SUTRunner.run({**self.config['SUT-config'],
-                               **self.config['coverage-config'],
-                               **seed.config,
-                               'fuzz-input': seed,
-                              })
-    except Exception as e:
-      print(f'Exception of type {type(e)} in SeedTester: {e}')
+    sim_result = SUTRunner.run({**self.config['SUT-config'],
+                              **self.config['coverage-config'],
+                              **seed.config,
+                              'fuzz-input': seed,
+                            })
+    if (not sim_result is None) and 'coverage' in sim_result.records:
+      # For debugging purposes, save events
+      with open(Path(self.config['events-folder'])/f'{seed.hexdigest}.json', 'w') as f:
+        f.write(jsonpickle.encode(sim_result.records['events'], indent=1))
+
+      return sim_result.records['coverage']
     else:
-      if not sim_result is None and not sim_result.records['events'] is None:
-        return sim_result.records['events']
+      return None
 
-    return None
-
-  def run(self):
+  def gen_input(self):
     seed_path = self.seed_paths[self.seed_index]
     with open(seed_path, 'r') as f:
       seed = jsonpickle.decode(f.read())
     self.seed_index += 1
 
-    events = self.input_eval(seed)
-    if events:
-      with open(Path(self.config['events-folder'])/seed_path.name, 'w') as f:
-        f.write(jsonpickle.encode(events, indent=1))
+    return seed
+    
+  def run(self):
+    seed = self.gen_input()
+    statement_coverage = self.input_eval(seed)
+    if not statement_coverage is None: # if fuzz-input is valid
+      with open(Path(self.config['fuzz-inputs-folder'])/f'{seed.hexdigest}.json', 'wb') as f:
+        f.write(seed.bytes)
+      with open(Path(self.config['coverages-folder'])/f'{seed.hexdigest}.json', 'w') as f:
+        f.write(jsonpickle.encode(statement_coverage, indent=1))
 
   def runs(self, generator_state):
     start_time = time.time()
