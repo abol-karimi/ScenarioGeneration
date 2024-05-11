@@ -17,19 +17,18 @@ import matplotlib.pyplot as plt
 #   axes.plot(interval, (len(predicate_coverage_space),)*2, 'r--', label='Predicate-Coverage Space')
 
 
-def plot_curves(config, axes, coverage_types):
-  with open(config['coverage-file'], 'r') as f:
+def plot_curves(coverage_file, color, label, axes, coverage_types, fill_alpha=.1):
+  with open(coverage_file, 'r') as f:
     result = jsonpickle.decode(f.read())
 
   elapsed_time = tuple(t/3600 for t in result['elapsed-time'])
-  fill_alpha = .1
 
   for ax, cov_type in zip(axes, coverage_types):
-    ax.plot(elapsed_time, result[f'{cov_type}_median'], config['color'], label=config['label'])
-    ax.fill_between(elapsed_time, result[f'{cov_type}_min'], result[f'{cov_type}_max'], facecolor=config['color'], alpha=fill_alpha)
+    ax.plot(elapsed_time, result[f'{cov_type}_median'], color, label=label)
+    ax.fill_between(elapsed_time, result[f'{cov_type}_min'], result[f'{cov_type}_max'], facecolor=color, alpha=fill_alpha)
 
 
-def plot(plot_config):
+def plot(coverage_files, colors, labels, coverage_types, output_file):
   fig_coverage = plt.figure(layout='constrained')
 
   # Empty axes used as a container of subplots
@@ -40,20 +39,18 @@ def plot(plot_config):
   ax.spines['right'].set_color('none')
   ax.tick_params(labelcolor='w', top=False, bottom=False, left=False, right=False)
 
-  coverage_types = plot_config['coverage-types']
   axes = []
-  for i, coverage_type in enumerate(plot_config['coverage-types']):
+  for i, coverage_type in enumerate(coverage_types):
     ax = fig_coverage.add_subplot(len(coverage_types), 1, i+1)
     ax.set_ylabel(f'{coverage_type}s')
     axes.append(ax)
   axes[-1].set_xlabel('Wall-clock time (hours)')
 
-  for generator in plot_config['generators']:
-    config = plot_config[generator]
-    print(f'Now plotting: ', config['coverage-file'])
-    plot_curves(config, axes, coverage_types)
+  for coverage_file, color, label in zip(coverage_files, colors, labels):
+    print(f'Now plotting: ', coverage_file)
+    plot_curves(coverage_file, color, label, axes, coverage_types)
 
   # plot_predicate_coverage_space(ax4, (0, 4*60), 'TFPP', 'traffic', 'traffic-rules')
 
   axes[-1].legend()
-  fig_coverage.savefig(plot_config['output-file'])
+  fig_coverage.savefig(output_file)

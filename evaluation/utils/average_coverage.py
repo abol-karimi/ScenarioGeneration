@@ -27,8 +27,8 @@ def trials_samples_max(trials_samples):
   return tuple(max([trials_samples[i][j] for i in range(trials_num)]) for j in range(samples_num))
 
 
-def report(trials, coverage_filter, output_file):
-  ts = np.arange(0, trials[0]['max-total-time'], 30)
+def report(results_files, total_seconds, coverage_filter, output_file):
+  ts = np.arange(0, total_seconds, 30)
 
   fuzz_inputs_num_trials_samples = []
   statementSet_trials_samples = []
@@ -36,8 +36,8 @@ def report(trials, coverage_filter, output_file):
   predicateSet_trials_samples = []
   predicate_trials_samples = []
 
-  for test_config in trials:
-    trial_samples = sample_trial(test_config, ts, coverage_filter)
+  for results_file in results_files:
+    trial_samples = sample_trial(results_file, ts, coverage_filter)
 
     fuzz_inputs_num_trials_samples.append(trial_samples['fuzz-inputs-num'])
     statementSet_trials_samples.append(trial_samples['statementSet'])

@@ -75,8 +75,8 @@ def piecewise_constant_numpy(ts, xs, ys):
   return tuple(map(float, arr))
 
 
-def sample_trial(test_config, ts, coverage_filter):
-  results_file_path = Path(test_config['results-file'])
+def sample_trial(results_file, ts, coverage_filter):
+  results_file_path = Path(results_file)
 
   print(f'Loading {results_file_path} ...')
   with open(results_file_path, 'r') as f:
