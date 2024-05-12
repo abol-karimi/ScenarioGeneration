@@ -75,55 +75,67 @@ def piecewise_constant_numpy(ts, xs, ys):
   return tuple(map(float, arr))
 
 
-def sample_trial(results_file, ts, coverage_filter):
+def measure_new_StatementSetCoverage(measurement, coverage_filter):
+  new_StatementSetCoverage_items = []
+  for coverage_file in measurement['new-coverage-files']:
+    with open(coverage_file, 'r') as f:
+      new_StatementSetCoverage_items.append(coverage_filter(jsonpickle.decode(f.read())))
+  return StatementSetCoverage(new_StatementSetCoverage_items)
+
+
+def sample_trial(results_file, ts, coverage_filter, interpolate=piecewise_constant_numpy):
   results_file_path = Path(results_file)
 
   print(f'Loading {results_file_path} ...')
   with open(results_file_path, 'r') as f:
     results = jsonpickle.decode(f.read())
+  print(f'Finished loading {results_file_path}.')
 
   measurements = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements']}, results)['measurements']
   elapsed_times = tuple(m['elapsed-time'] for m in measurements)
 
+  # Total number of generated test-cases as a function of time
   fuzz_input_files = [m['new-fuzz-input-files'] for m in measurements]
-
-  statementSet_coverages = []
-  for m in measurements:
-    new_statement_coverages = []
-    for coverage_file in m['new-coverage-files']:
-      with open(coverage_file, 'r') as f:
-        statement_coverage = coverage_filter(jsonpickle.decode(f.read()))
-        new_statement_coverages.append(statement_coverage)
-    statementSet_coverages.append(StatementSetCoverage(new_statement_coverages))
-
-  predicateSet_coverages = tuple(c.cast_to(PredicateSetCoverage) for c in statementSet_coverages)
-  statement_coverages = tuple(c.cast_to(StatementCoverage) for c in statementSet_coverages)
-  predicate_coverages = tuple(c.cast_to(PredicateCoverage) for c in statement_coverages)
-
   fuzz_input_files_acc = [fuzz_input_files[0]]
-  statementSet_acc = [statementSet_coverages[0]]
-  predicateSet_acc = [predicateSet_coverages[0]]
-  statement_acc = [statement_coverages[0]]
-  predicate_acc = [predicate_coverages[0]]
   for i in range(1, len(measurements)):
     fuzz_input_files_acc.append(fuzz_input_files_acc[-1].union(fuzz_input_files[i]))
-    statementSet_acc.append(statementSet_acc[-1] + statementSet_coverages[i])
-    predicateSet_acc.append(predicateSet_acc[-1] + predicateSet_coverages[i])
-    statement_acc.append(statement_acc[-1] + statement_coverages[i])
-    predicate_acc.append(predicate_acc[-1] + predicate_coverages[i])
-  
-  interpolate = piecewise_constant_numpy
-  interpolator = interpolate.__name__
-
-  print(f'Sampling trial using interpolator {interpolator}...')
   fuzz_inputs_num_samples = interpolate(ts, elapsed_times, tuple(len(c) for c in fuzz_input_files_acc))
-  statementSet_samples = interpolate(ts, elapsed_times, tuple(len(c) for c in statementSet_acc))
-  statement_samples = interpolate(ts, elapsed_times, tuple(len(c) for c in statement_acc))
-  predicateSet_samples = interpolate(ts, elapsed_times, tuple(len(c) for c in predicateSet_acc))
-  predicate_samples = interpolate(ts, elapsed_times, tuple(len(c) for c in predicate_acc))
+
+
+  samples_StatementSetCoverage = []
+  samples_StatementCoverage = []
+  samples_PredicateSetCoverage = []
+  samples_PredicateCoverage = []
+  next_sample_idx = 0
+  sum_StatementSetCoverage = StatementSetCoverage([])
+  sum_PredicateSetCoverage = PredicateSetCoverage([])
+  sum_StatementCoverage = StatementCoverage([])
+  sum_PredicateCoverage = PredicateCoverage([])
+  for m in measurements:
+    t_measured = m['elapsed-time']
+    if t_measured < ts[next_sample_idx]:
+      new_StatementSetCoverage = measure_new_StatementSetCoverage(m, coverage_filter)
+      new_PredicateSetCoverage = new_StatementSetCoverage.cast_to(PredicateSetCoverage)
+      new_StatementCoverage = new_StatementSetCoverage.cast_to(StatementCoverage)
+      new_PredicateCoverage = new_StatementCoverage.cast_to(PredicateCoverage)
+      sum_StatementSetCoverage = sum_StatementSetCoverage + new_StatementSetCoverage
+      sum_PredicateSetCoverage = sum_PredicateSetCoverage + new_PredicateSetCoverage
+      sum_StatementCoverage = sum_StatementCoverage + new_StatementCoverage
+      sum_PredicateCoverage = sum_PredicateCoverage + new_PredicateCoverage
+      continue
+    
+    while next_sample_idx < len(ts) and ts[next_sample_idx] <= t_measured:
+      samples_StatementSetCoverage.append(len(sum_StatementSetCoverage))
+      samples_PredicateSetCoverage.append(len(sum_PredicateSetCoverage))
+      samples_StatementCoverage.append(len(sum_StatementCoverage))
+      samples_PredicateCoverage.append(len(sum_PredicateCoverage))
+      next_sample_idx += 1
+    
+    if next_sample_idx >= len(ts):
+      break
 
   return {'fuzz-inputs-num': fuzz_inputs_num_samples,
-          'statementSet': statementSet_samples,
-          'statement': statement_samples,
-          'predicateSet': predicateSet_samples,
-          'predicate': predicate_samples}
+          'statementSet': samples_StatementSetCoverage,
+          'predicateSet': samples_PredicateSetCoverage,
+          'statement': samples_StatementCoverage,
+          'predicate': samples_PredicateCoverage}
