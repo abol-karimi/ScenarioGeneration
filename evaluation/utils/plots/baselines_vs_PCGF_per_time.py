@@ -17,11 +17,11 @@ import matplotlib.pyplot as plt
 #   axes.plot(interval, (len(predicate_coverage_space),)*2, 'r--', label='Predicate-Coverage Space')
 
 
-def plot_curves(coverage_file, color, label, axes, coverage_types, fill_alpha=.1):
+def plot_curves(coverage_file, color, label, axes, coverage_types, t_unit_sec=3600, fill_alpha=.1):
   with open(coverage_file, 'r') as f:
     result = jsonpickle.decode(f.read())
 
-  elapsed_time = tuple(t/3600 for t in result['elapsed-time'])
+  elapsed_time = tuple(t/t_unit_sec for t in result['elapsed-time'])
 
   for ax, cov_type in zip(axes, coverage_types):
     ax.plot(elapsed_time, result[f'{cov_type}_median'], color, label=label)

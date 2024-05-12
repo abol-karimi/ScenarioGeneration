@@ -22,7 +22,7 @@ def main():
     trial_seeds = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
     coverages = ('traffic-rules', )
     trial_timeout = timedelta(hours=24)
-    measurement_period = timedelta(hours=1)
+    sampling_period = timedelta(minutes=10)
     RQ1_folder = f'evaluation/results/RQ1'
     coverage_filters = (
         ('all', identity),
@@ -50,7 +50,7 @@ def main():
                                                     trial_timeout.total_seconds(),
                                                     filter_func,
                                                     average_file,
-                                                    measurement_period.total_seconds()),
+                                                    sampling_period.total_seconds()),
                                             name=average_file,
                                             daemon=False
                                             )
