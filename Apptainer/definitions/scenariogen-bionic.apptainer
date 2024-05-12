@@ -125,3 +125,6 @@ From: images/carla-run-bionic.sif
     apt-get install -y \
         libjpeg8 \
         libtiff5
+    
+    # faster backend for jsonpickle
+    pip install --upgrade orjson
