@@ -2,11 +2,16 @@
 
 from itertools import product
 from datetime import timedelta
-import multiprocessing
 from pathlib import Path
-import time
+from pyinstrument import Profiler
 
-import evaluation.utils.average_coverage as average_coverage
+import orjson
+import jsonpickle
+jsonpickle.load_backend('orjson')
+jsonpickle.set_preferred_backend('orjson')
+
+
+import evaluation.utils.average_coverage_uniprocess as average_coverage
 from evaluation.configs import ego_violations_coverage_filter
 
 
@@ -32,9 +37,6 @@ def main():
     # dependent variables
     experiments = product(generators, egos, coverages)
 
-    spawn_ctx = multiprocessing.get_context('spawn')
-    processes = []
-
     for exp, cov_filter in product(experiments, coverage_filters):
         generator, ego, coverage = exp
         filter_name, filter_func = cov_filter
@@ -45,24 +47,18 @@ def main():
         if SKIP_EXISTING and Path(average_file).is_file():
             continue
 
-        report_process = spawn_ctx.Process(target=average_coverage.report,
-                                            args=(results_files,
-                                                    trial_timeout.total_seconds(),
-                                                    filter_func,
-                                                    average_file,
-                                                    measurement_period.total_seconds()),
-                                            name=average_file,
-                                            daemon=False
-                                            )
-        report_process.start()
-        processes.append(report_process)
-
-        while sum(1 for p in processes if p.is_alive()) > 3:
-            time.sleep(10)
+        average_coverage.report(results_files,
+                                trial_timeout.total_seconds(),
+                                filter_func,
+                                average_file,
+                                measurement_period.total_seconds())
+        break
     
-    for p in processes:
-        p.join()
-        print(f'{p.name} exited with code {p.exitcode}.')
-
 if __name__ == '__main__':
+    profiler = Profiler()
+    profiler.start()
+
     main()
+
+    profiler.stop()
+    profiler.write_html('average_uniprocess_orjson_iterative.html')
