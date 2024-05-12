@@ -5,7 +5,7 @@ from pathlib import Path
 
 import evaluation.experiments.Test as Test_experiment
 import evaluation.utils.experiment_runner
-import scenariogen.core.logging.server as log_server
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
