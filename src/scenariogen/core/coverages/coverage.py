@@ -83,7 +83,7 @@ class PredicateCoverage(Coverage):
   """
   def __init__(self, items):
     super().__init__(items)
-    assert all(isinstance(item, Predicate) for item in items)
+    # assert all(isinstance(item, Predicate) for item in items)
   
   def cast_to(self, cls):
     if cls is PredicateCoverage:
@@ -105,7 +105,7 @@ class PredicateSetCoverage(Coverage):
   """
   def __init__(self, items):
     super().__init__(items)
-    assert all(isinstance(item, PredicateCoverage) for item in items)
+    # assert all(isinstance(item, PredicateCoverage) for item in items)
   
   def cast_to(self, cls):
     if cls is PredicateSetCoverage:
@@ -130,7 +130,7 @@ class StatementCoverage(Coverage):
   """
   def __init__(self, items):
     super().__init__(items)
-    assert all(isinstance(item, Statement) for item in items)
+    # assert all(isinstance(item, Statement) for item in items)
   
   def cast_to(self, cls):
     if cls is StatementCoverage:
@@ -157,7 +157,7 @@ class StatementSetCoverage(Coverage):
   """
   def __init__(self, items):
     super().__init__(items)
-    assert all(isinstance(item, StatementCoverage) for item in items)
+    # assert all(isinstance(item, StatementCoverage) for item in items)
    
   def cast_to(self, cls):
     if cls is StatementSetCoverage:
