@@ -10,8 +10,8 @@ from evaluation.utils.utils import get_test_config
 import evaluation.utils.events_to_coverage
 import evaluation.utils.average_coverage
 import evaluation.utils.plots
-import evaluation.utils.plots.baselines_vs_PCGF_per_time
-import evaluation.utils.plots.baselines_vs_PCGF_per_fuzz_input
+import evaluation.utils.plots.coverage_per_time
+import evaluation.utils.plots.coverage_per_fuzz_input
 from evaluation.configs import ego_violations_coverage_filter
 
 
@@ -104,7 +104,7 @@ if __name__ == '__main__':
                   'color': 'r',
                   'label': 'Random',
                   },
-      'plotter': evaluation.utils.plots.baselines_vs_PCGF_per_time,
+      'plotter': evaluation.utils.plots.coverage_per_time,
       'output-file': f'{output_folder}/baselines-vs-PCGF_per-time.png',
     },
     {
@@ -122,7 +122,7 @@ if __name__ == '__main__':
                   'color': 'r',
                   'label': 'Random',
                   },
-      'plotter': evaluation.utils.plots.baselines_vs_PCGF_per_time,
+      'plotter': evaluation.utils.plots.coverage_per_time,
       'output-file': f'{output_folder}/baselines-vs-PCGF_violations_per-time.png',
     },
     {
@@ -140,7 +140,7 @@ if __name__ == '__main__':
                   'color': 'r',
                   'label': 'Random',
                   },
-      'plotter': evaluation.utils.plots.baselines_vs_PCGF_per_fuzz_input,
+      'plotter': evaluation.utils.plots.coverage_per_fuzz_input,
       'output-file': f'{output_folder}/baselines-vs-PCGF_per-fuzz-input.png',
     },
     {
@@ -158,7 +158,7 @@ if __name__ == '__main__':
                   'color': 'r',
                   'label': 'Random',
                   },
-      'plotter': evaluation.utils.plots.baselines_vs_PCGF_per_fuzz_input,
+      'plotter': evaluation.utils.plots.coverage_per_fuzz_input,
       'output-file': f'{output_folder}/baselines-vs-PCGF_violations_per-fuzz-input.png',
     },
   ]

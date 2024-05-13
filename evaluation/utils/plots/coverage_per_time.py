@@ -17,18 +17,18 @@ import matplotlib.pyplot as plt
 #   axes.plot(interval, (len(predicate_coverage_space),)*2, 'r--', label='Predicate-Coverage Space')
 
 
-def plot_curves(coverage_file, color, label, axes, coverage_types, t_unit_sec=3600, fill_alpha=.1):
+def plot_curves(coverage_file, color, label, axes, coverage_types, kwds):
   with open(coverage_file, 'r') as f:
     result = jsonpickle.decode(f.read())
 
-  elapsed_time = tuple(t/t_unit_sec for t in result['elapsed-time'])
+  elapsed_time = tuple(t/kwds['t_unit_sec'] for t in result['elapsed-time'])
 
   for ax, cov_type in zip(axes, coverage_types):
     ax.plot(elapsed_time, result[f'{cov_type}_median'], color, label=label)
-    ax.fill_between(elapsed_time, result[f'{cov_type}_min'], result[f'{cov_type}_max'], facecolor=color, alpha=fill_alpha)
+    ax.fill_between(elapsed_time, result[f'{cov_type}_min'], result[f'{cov_type}_max'], facecolor=color, alpha=kwds['fill_alpha'])
 
 
-def plot(coverage_files, colors, labels, coverage_types, output_file):
+def plot(coverage_files, colors, labels, coverage_types, output_file, kwds):
   # fig_coverage = plt.figure(layout='constrained')
   fig_coverage = plt.figure(layout='tight')
 
@@ -50,7 +50,7 @@ def plot(coverage_files, colors, labels, coverage_types, output_file):
 
   for coverage_file, color, label in zip(coverage_files, colors, labels):
     print(f'Now plotting: ', coverage_file)
-    plot_curves(coverage_file, color, label, axes, coverage_types)
+    plot_curves(coverage_file, color, label, axes, coverage_types, kwds)
 
   # plot_predicate_coverage_space(ax4, (0, 4*60), 'TFPP', 'traffic', 'traffic-rules')
 

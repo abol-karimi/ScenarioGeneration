@@ -18,16 +18,20 @@ import matplotlib.pyplot as plt
 #   axes.plot(interval, (len(predicate_coverage_space),)*2, 'r--', label='Predicate-Coverage Space')
 
 
-def plot_curves(coverage_file, color, label, axes, coverage_types, fill_alpha=.1):
+def plot_curves(coverage_file, color, label, axes, coverage_types, kwds):
   with open(coverage_file, 'r') as f:
     result = jsonpickle.decode(f.read())
 
   for ax, cov_type in zip(axes, coverage_types):
     ax.plot(result['fuzz-inputs-num_median'], result[f'{cov_type}_median'], color, label=label)
-    ax.fill_between(result['fuzz-inputs-num_median'], result[f'{cov_type}_min'], result[f'{cov_type}_max'], facecolor=color, alpha=fill_alpha)
+    ax.fill_between(result['fuzz-inputs-num_median'],
+                    result[f'{cov_type}_min'],
+                    result[f'{cov_type}_max'],
+                    facecolor=color,
+                    alpha=kwds['fill_alpha'])
 
 
-def plot(coverage_files, colors, labels, coverage_types, output_file):
+def plot(coverage_files, colors, labels, coverage_types, output_file, kwds):
   # fig_coverage = plt.figure(layout='constrained')
   fig_coverage = plt.figure(layout='tight')
 
@@ -49,7 +53,7 @@ def plot(coverage_files, colors, labels, coverage_types, output_file):
 
   for coverage_file, color, label in zip(coverage_files, colors, labels):
     print(f'Now plotting: ', coverage_file)
-    plot_curves(coverage_file, color, label, axes, coverage_types)
+    plot_curves(coverage_file, color, label, axes, coverage_types, kwds)
 
   axes[-1].legend()
   fig_coverage.savefig(output_file)

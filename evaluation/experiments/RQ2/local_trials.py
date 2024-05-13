@@ -5,7 +5,7 @@ from itertools import product, permutations
 from datetime import timedelta
 import os
 
-generators = ('Random', 'PCGF', )
+generators = ('PCGF', 'Random')
 egos = ('autopilot', 'BehaviorAgent', 'TFPP')
 randomizer_seeds = (0, 1, )
 coverages = ('traffic-rules', )

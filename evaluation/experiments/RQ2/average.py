@@ -41,9 +41,9 @@ def main():
     for exp, cov_filter in product(experiments, coverage_filters):
         generator, (gen_ego, test_ego), coverage = exp
         filter_name, filter_func = cov_filter
-        results_files = [f'{RQ2_folder}/{generator}_{gen_ego}_{coverage}/{trial_seed}/{test_ego}/results.json'
+        results_files = [f'{RQ2_folder}/{generator}_{gen_ego}_{coverage}/{test_ego}/{trial_seed}/results.json'
                         for trial_seed in trial_seeds]
-        average_file = f'{RQ2_folder}/{generator}_{gen_ego}_{coverage}/{filter_name}-coverage.json'
+        average_file = f'{RQ2_folder}/{generator}_{gen_ego}_{coverage}/{test_ego}/{filter_name}-coverage.json'
 
         if SKIP_EXISTING and Path(average_file).is_file():
             continue
