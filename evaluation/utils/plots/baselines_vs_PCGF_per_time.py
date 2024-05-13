@@ -29,10 +29,12 @@ def plot_curves(coverage_file, color, label, axes, coverage_types, t_unit_sec=36
 
 
 def plot(coverage_files, colors, labels, coverage_types, output_file):
-  fig_coverage = plt.figure(layout='constrained')
+  # fig_coverage = plt.figure(layout='constrained')
+  fig_coverage = plt.figure(layout='tight')
 
   # Empty axes used as a container of subplots
   ax = fig_coverage.add_subplot(111)
+  ax.set_title(output_file)
   ax.spines['top'].set_color('none')
   ax.spines['bottom'].set_color('none')
   ax.spines['left'].set_color('none')
