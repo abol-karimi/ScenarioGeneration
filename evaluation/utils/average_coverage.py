@@ -8,6 +8,7 @@ import statistics
 import setproctitle
 import multiprocessing
 import time
+import traceback
 
 from evaluation.utils.utils import sample_trial
 

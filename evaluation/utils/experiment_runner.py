@@ -65,8 +65,8 @@ def measure_progress(fuzz_inputs_path,
 
 def run(config):
   output_path = Path(config['output-folder'])
-  if output_path.is_dir():
-    logging.error('Output-folder already exists, cannot continue.')
+  if any(True for _ in output_path.iterdir()):
+    logging.error(f'Output directory is not empty, cannot continue.')
     return
 
   results_file_path = Path(config['results-file'])
