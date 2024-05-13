@@ -1,13 +1,17 @@
 #!/bin/bash
 
-# choice of CARLA (comment out the one you don't want to use)
-CARLA_BUILD_NUMBER=0.9.15-169-g063cc9d90 # Longleaf
-# CARLA_BUILD_NUMBER=0.9.15-187-g7a540559a # Local
-CARLA_EGG=carla-0.9.15-py3.8-linux-x86_64.egg
+# choice of CARLA and SCENIC
+if [ -z "$SLURM_JOB_ID" ]; then
+    # Local
+    CARLA_BUILD_NUMBER=0.9.15-187-g7a540559a
+    SCENIC_VERSION=Scenic_05-03-2024
+else
+    # HPC cluster
+    CARLA_BUILD_NUMBER=0.9.15-169-g063cc9d90
+    SCENIC_VERSION=Scenic_04-10-2024
+fi
 
-# choice of SCENIC (comment out the one you don't want to use)
-SCENIC_VERSION=Scenic_04-10-2024 # Longleaf
-# SCENIC_VERSION=Scenic_05-03-2024 # Local
+CARLA_EGG=carla-0.9.15-py3.8-linux-x86_64.egg
 
 
 build_image() {
