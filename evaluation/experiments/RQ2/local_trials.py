@@ -24,7 +24,7 @@ for generator, (gen_ego, test_ego), randomizer_seed, coverage in trials:
             --seeds-folder evaluation/results/RQ1/{generator}_{gen_ego}_{coverage}/{randomizer_seed}/fuzz-inputs \
             --coverage {coverage} \
             --seconds {trial_timeout.total_seconds()} \
-            --output-folder evaluation/results/RQ2/{generator}_{gen_ego}_{coverage}/{randomizer_seed}/{test_ego}
+            --output-folder evaluation/results/RQ2/{generator}_{gen_ego}_{coverage}/{test_ego}/{randomizer_seed}
     '''
     completed_proc = subprocess.run(cmd, shell=True)
     print(f'Completed trial {generator}_{gen_ego}_{coverage}_{randomizer_seed}_{test_ego} with exit code: {completed_proc.returncode}')
