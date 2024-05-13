@@ -65,7 +65,7 @@ def measure_progress(fuzz_inputs_path,
 
 def run(config):
   output_path = Path(config['output-folder'])
-  if output_path.is_file():
+  if output_path.is_dir():
     logging.error('Output-folder already exists, cannot continue.')
     return
 
