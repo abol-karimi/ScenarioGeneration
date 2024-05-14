@@ -9,7 +9,7 @@ generators = ('PCGF', 'Random')
 egos = ('autopilot', 'BehaviorAgent', 'TFPP')
 randomizer_seeds = (0, 1, )
 coverages = ('traffic-rules', )
-trial_timeout = timedelta(minutes=10) # the same as the time budget for generating the test cases
+trial_timeout = timedelta(minutes=10)
 
 # For RQ2, we only vary the ego between the test-case-generation trials and
 # and the test-case-execution trials.
