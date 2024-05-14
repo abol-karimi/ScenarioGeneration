@@ -69,4 +69,4 @@ if __name__ == '__main__':
     
     for p in processes:
         p.join()
-        print(f'{p.name} exited with exitcode {p.exitcode} .')
+        print(f'{p.name} exited with exitcode {p.exitcode}.')

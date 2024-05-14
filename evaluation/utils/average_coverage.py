@@ -56,6 +56,12 @@ def sample_trial_process(results_file,
     predicateSet_trials_samples.put(trial_samples['predicateSet'])
     predicate_trials_samples.put(trial_samples['predicate'])
 
+    fuzz_inputs_num_trials_samples.close()
+    statementSet_trials_samples.close()
+    statement_trials_samples.close()
+    predicateSet_trials_samples.close()
+    predicate_trials_samples.close()
+
 
 def report(results_files, total_seconds, coverage_filter, output_file, period):
     setproctitle.setproctitle(output_file)
@@ -72,7 +78,7 @@ def report(results_files, total_seconds, coverage_filter, output_file, period):
 
     for results_file in results_files:
         sampler_process = multiprocessing.Process(target=sample_trial_process,
-                                                args=(results_file,
+                                                    args=(results_file,
                                                         ts, 
                                                         coverage_filter,
                                                         fuzz_inputs_num_trials_samples_queue,
@@ -81,8 +87,8 @@ def report(results_files, total_seconds, coverage_filter, output_file, period):
                                                         predicateSet_trials_samples_queue,
                                                         predicate_trials_samples_queue
                                                         ),
-                                                name=f'{results_file}'
-                                                )
+                                                    name=f'{results_file}'
+                                                    )
         sampler_process.start()
         processes.append(sampler_process)
     
@@ -96,14 +102,22 @@ def report(results_files, total_seconds, coverage_filter, output_file, period):
             break
         else:
             time.sleep(10)
+    
+    trials_num = len(results_files)
+    fuzz_inputs_num_trials_samples = [fuzz_inputs_num_trials_samples_queue.get() for _ in range(trials_num)]
+    statementSet_trials_samples = [statementSet_trials_samples_queue.get() for _ in range(trials_num)]
+    statement_trials_samples = [statement_trials_samples_queue.get() for _ in range(trials_num)]
+    predicateSet_trials_samples = [predicateSet_trials_samples_queue.get() for _ in range(trials_num)]
+    predicate_trials_samples = [predicate_trials_samples_queue.get() for _ in range(trials_num)]
 
-    fuzz_inputs_num_trials_samples = [fuzz_inputs_num_trials_samples_queue.get() for i in range(fuzz_inputs_num_trials_samples_queue.qsize())]
-    statementSet_trials_samples = [statementSet_trials_samples_queue.get() for i in range(statementSet_trials_samples_queue.qsize())]
-    statement_trials_samples = [statement_trials_samples_queue.get() for i in range(statement_trials_samples_queue.qsize())]
-    predicateSet_trials_samples = [predicateSet_trials_samples_queue.get() for i in range(predicateSet_trials_samples_queue.qsize())]
-    predicate_trials_samples = [predicate_trials_samples_queue.get() for i in range(predicate_trials_samples_queue.qsize())]
-
-
+    # We average the trials up to the time of the shortest trial
+    sample_size = min(len(trial_samples) for trial_samples in fuzz_inputs_num_trials_samples)
+    ts = ts[:sample_size]
+    fuzz_inputs_num_trials_samples = [samples[:sample_size] for samples in fuzz_inputs_num_trials_samples]
+    statementSet_trials_samples = [samples[:sample_size] for samples in statementSet_trials_samples]
+    statement_trials_samples = [samples[:sample_size] for samples in statement_trials_samples]
+    predicateSet_trials_samples = [samples[:sample_size] for samples in predicateSet_trials_samples]
+    predicate_trials_samples = [samples[:sample_size] for samples in predicate_trials_samples]
 
     result = {
         'elapsed-time': tuple(map(float, ts)),

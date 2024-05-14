@@ -22,8 +22,8 @@ def main():
     egos = ('autopilot', 'BehaviorAgent', 'TFPP')
     trial_seeds = (0, 1, )
     coverages = ('traffic-rules', )
-    trial_timeout = timedelta(minutes=10)
-    sampling_period = timedelta(minutes=2)
+    report_max_time = timedelta(minutes=10)
+    sampling_period = timedelta(minutes=1)
     RQ2_folder = f'evaluation/results/RQ2'
     coverage_filters = (
         ('all', identity),
@@ -50,7 +50,7 @@ def main():
 
         report_process = spawn_ctx.Process(target=average_coverage.report,
                                             args=(results_files,
-                                                    trial_timeout.total_seconds(),
+                                                    report_max_time.total_seconds(),
                                                     filter_func,
                                                     average_file,
                                                     sampling_period.total_seconds()),
