@@ -80,7 +80,7 @@ if __name__ == '__main__':
                                 **fuzz_input.config,
                                 'fuzz-input': fuzz_input,
                                 })
-    if sim_result is None:       
+    if sim_result is None:
         raise RuntimeError('sim_result is None!')
     
     print(f'len(trajectory): {len(sim_result.trajectory)}')

@@ -10,24 +10,29 @@ from random import Random
 from scenariogen.core.fuzzing.mutators import StructureAwareMutator
 from scenariogen.core.fuzzing.schedules import AFLFastSchedule
 from scenariogen.core.fuzzing.fuzzers.counting import CountingPredicateSetFuzzer
-from evaluation.configs import get_experiment_config
+from evaluation.configs import get_experiment_config, get_SUT_config, get_coverage_config
 
 
-def get_config(gen_ego, gen_coverage, randomizer_seed, seeds_folder, max_total_time, output_folder):
-  config = get_experiment_config(gen_ego, gen_coverage, randomizer_seed, seeds_folder, max_total_time, output_folder)
-  
-  config_randomizer = Random(randomizer_seed)
-  config_seed_range = 1000
-  mutator_seed = config_randomizer.randrange(config_seed_range)
-  schedule_seed = config_randomizer.randrange(config_seed_range)
+def get_config(ego, coverage, randomizer_seed, seeds_folder, max_total_time, output_folder):
+    experiment_config = get_experiment_config(randomizer_seed, seeds_folder, max_total_time, output_folder)
+    SUT_config = get_SUT_config(ego)
+    coverage_config = get_coverage_config(coverage)
 
-  PCGF_config = {
-    'generator': CountingPredicateSetFuzzer,
-    'mutator-config': {
-      'mutator': StructureAwareMutator(mutator_seed),
-      'max-mutations-per-fuzz': config['max-mutations-per-fuzz'],
-     },
-    'schedule': AFLFastSchedule(schedule_seed, 5),
-  }
+    config_randomizer = Random(randomizer_seed)
+    config_seed_range = 1000
+    mutator_seed = config_randomizer.randrange(config_seed_range)
+    schedule_seed = config_randomizer.randrange(config_seed_range)
 
-  return {**config, **PCGF_config}
+    generator_config = {
+        'generator': CountingPredicateSetFuzzer,
+        'mutator-config': {
+            'mutator': StructureAwareMutator(mutator_seed),
+            'max-mutations-per-fuzz': experiment_config['max-mutations-per-fuzz'],
+        },
+        'schedule': AFLFastSchedule(schedule_seed, 5),
+    }
+
+    return {**experiment_config,
+            'SUT-config': SUT_config,
+            'coverage-config': coverage_config,
+            **generator_config}

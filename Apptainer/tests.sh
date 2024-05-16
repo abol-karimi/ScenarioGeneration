@@ -1,7 +1,8 @@
 #!/bin/bash
 
 ./scripts.sh scenariogen_run bionic Shipping \
-    SUT.py evaluation/seeds/random/seeds/231d7d343f2b9d6c269f57cbfb439fa4e721aed3 \
-                    --ego-module evaluation.agents.BehaviorAgent \
-                    --coverage-module traffic-rules \
-                    --render-spectator
+    SUT.py evaluation/seeds/random/seeds/2a831beb5b9f48baf42f0801df9bdeee15d61b17 \
+        --simulator newtonian
+
+# 1d6da581c30402e94a8c94b1ef2b40a1cde442f2
+# 2a831beb5b9f48baf42f0801df9bdeee15d61b17

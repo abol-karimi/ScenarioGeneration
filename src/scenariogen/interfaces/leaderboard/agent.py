@@ -5,7 +5,6 @@ import importlib
 import os
 import carla
 import logging
-logger = logging.getLogger(__name__)
 
 from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
 from srunner.scenariomanager.timer import GameTime
@@ -75,6 +74,7 @@ class LeaderboardAgent(object):
         self.world.on_tick(self.on_scenic_tick)
 
     def cleanup(self):
+        logger = logging.getLogger(__name__)
         self._agent_wrapper.cleanup()
         try:
             if self.agent_instance:

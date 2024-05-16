@@ -7,8 +7,6 @@ import setproctitle
 import signal
 import ctypes
 from queue import Queue, Empty
-from dataclasses import dataclass
-from typing import Any
 import logging
 
 import scenic
@@ -23,23 +21,7 @@ from scenariogen.core.utils import ordinal, get_free_port
 from scenariogen.core.logging.client import configure_logger, TextIOBaseToLog
 import scenariogen.core.logging.server as log_server
 
-@dataclass(frozen=True)
-class SimResult:
-    trajectory : Any = None
-    finalState : Any = None
-    terminationType : Any = None
-    terminationReason : Any = None
-    records : Any = None
-
-    @classmethod
-    def from_simulation(cls, simulation):
-        result = simulation.result
-        return cls(result.trajectory,
-                result.finalState,
-                result.terminationType,
-                result.terminationReason,
-                result.records)
-
+from .types import SimResult
 
 libc = ctypes.CDLL("libc.so.6")
 def set_pdeathsig(sig):

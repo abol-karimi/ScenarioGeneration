@@ -15,3 +15,9 @@ To tell UE4 to use a particular VGA adapter:
 https://www.aditiashenoy.com/posts/blog3_nvidiacudasing/
 System specification:
 `uname -m && cat /etc/*release`
+
+To get the number of CPUs running a user's processes:
+`ps -o psr= -u <username> | sort | uniq | wc -l`
+
+To get the amount of memory currently used by all of processes of a user:
+`ps -u abol -o rss= | awk '{ sum+=$1 } END { print sum/1024 }'`

@@ -47,16 +47,17 @@ class RandomSeedGenerator(Fuzzer):
     self.coverage_seen = state['coverage-seen']
     self.random.setstate(state['random-state'])
 
-  def input_eval(self, fuzz_input):
-    sim_result = SUTRunner.run({**self.config['SUT-config'],
-                                **self.config['coverage-config'],
+  def input_eval(self, fuzz_input, SUT_config, coverage_config, save_events=True):
+    sim_result = SUTRunner.run({**SUT_config,
+                                **coverage_config,
                                 **fuzz_input.config,
                                 'fuzz-input': fuzz_input,
                                 })
     if (not sim_result is None) and 'coverage' in sim_result.records:
       # For debugging purposes, save events
-      with open(Path(self.config['events-folder'])/f'{fuzz_input.hexdigest}.json', 'w') as f:
-        f.write(jsonpickle.encode(sim_result.records['events'], indent=1))
+      if save_events:
+        with open(Path(self.config['events-folder'])/f'{fuzz_input.hexdigest}.json', 'w') as f:
+            f.write(jsonpickle.encode(sim_result.records['events'], indent=1))
 
       return sim_result.records['coverage']
     else:
@@ -92,7 +93,7 @@ class RandomSeedGenerator(Fuzzer):
 
   def run(self):
     fuzz_input = self.gen_input()
-    statement_coverage = self.input_eval(fuzz_input)
+    statement_coverage = self.input_eval(fuzz_input, self.config['coverage-config'])
     if (not statement_coverage is None) and not statement_coverage in self.coverage_seen:
       self.coverage_seen = self.coverage_seen + StatementSetCoverage([statement_coverage])
       

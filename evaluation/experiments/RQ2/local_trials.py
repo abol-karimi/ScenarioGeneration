@@ -27,5 +27,5 @@ for generator, (gen_ego, test_ego), randomizer_seed, coverage in trials:
             --output-folder evaluation/results/RQ2/{generator}_{gen_ego}_{coverage}/{test_ego}/{randomizer_seed}
     '''
     completed_proc = subprocess.run(cmd, shell=True)
-    print(f'Completed trial {generator}_{gen_ego}_{coverage}_{randomizer_seed}_{test_ego} with exit code: {completed_proc.returncode}')
+    print(f'Completed trial {generator}_{gen_ego}_{coverage}_{test_ego}_{randomizer_seed} with exit code: {completed_proc.returncode}')
 

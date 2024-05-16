@@ -18,16 +18,17 @@ class SeedTester:
   def get_state(self):
     return None
 
-  def input_eval(self, seed):
-    sim_result = SUTRunner.run({**self.config['SUT-config'],
-                              **self.config['coverage-config'],
-                              **seed.config,
-                              'fuzz-input': seed,
-                            })
+  def input_eval(self, seed, SUT_config, coverage_config, save_events=True):
+    sim_result = SUTRunner.run({**SUT_config,
+                                **coverage_config,
+                                **seed.config,
+                                'fuzz-input': seed,
+                                })
     if (not sim_result is None) and 'coverage' in sim_result.records:
       # For debugging purposes, save events
-      with open(Path(self.config['events-folder'])/f'{seed.hexdigest}.json', 'w') as f:
-        f.write(jsonpickle.encode(sim_result.records['events'], indent=1))
+      if save_events:
+        with open(Path(self.config['events-folder'])/f'{seed.hexdigest}.json', 'w') as f:
+            f.write(jsonpickle.encode(sim_result.records['events'], indent=1))
 
       return sim_result.records['coverage']
     else:
@@ -43,7 +44,7 @@ class SeedTester:
     
   def run(self):
     seed = self.gen_input()
-    statement_coverage = self.input_eval(seed)
+    statement_coverage = self.input_eval(seed, self.config['SUT-config'], self.config['coverage-config'])
     if not statement_coverage is None: # if fuzz-input is valid
       with open(Path(self.config['fuzz-inputs-folder'])/f'{seed.hexdigest}.json', 'wb') as f:
         f.write(seed.bytes)
