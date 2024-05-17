@@ -20,4 +20,8 @@ To get the number of CPUs running a user's processes:
 `ps -o psr= -u <username> | sort | uniq | wc -l`
 
 To get the amount of memory currently used by all of processes of a user:
-`ps -u abol -o rss= | awk '{ sum+=$1 } END { print sum/1024 }'`
+`ps -u <username> -o rss= | awk '{ sum+=$1 } END { print sum/1024 }'`
+
+
+T get the memory usage for recent jobs:
+`sacct -u <username> --format=JobID,JobName,MaxRSS --starttime=$(date -d "5 days ago" '+%Y-%m -%d') --starttime=$(date -d "2 days ago" '+%Y-%m-%d') | sort -k3 -n -r | head -n 10`

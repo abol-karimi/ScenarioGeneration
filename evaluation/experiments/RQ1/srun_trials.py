@@ -29,14 +29,14 @@ for experiment, ego, randomizer_seed, coverage in trials:
         --mail-type=FAIL \
         --mail-user=ak@cs.unc.edu \
         --job-name=RQ1_{experiment}_{ego}_{randomizer_seed}_{coverage} \
-        -o "%x_%j_%N.log" \
+        -o "{STORE_BASE_DIR}/ScenarioGeneration/evaluation/results/RQ1/sbatch-logs/%x_%j_%N.log" \
         --nodes=1 \
         --ntasks=1 \
         --cpus-per-task=8 \
         --mem=40G \
         --qos gpu_access \
         -p volta-gpu \
-        --gres=gpu:tesla_v100-sxm2-16gb:1 \
+        --gres=gpu:1 \
         -t {dd}-{hh}:{mm}:{ss} \
         --wrap="\
             module add apptainer/1.3.0-1; \

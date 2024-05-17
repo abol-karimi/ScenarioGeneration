@@ -100,7 +100,7 @@ sbatch_run_carla() {
     --mem=5G \
     --qos gpu_access \
     -p volta-gpu \
-    --gres=gpu:tesla_v100-sxm2-16gb:1 \
+    --gres=gpu:1 \
     -t 01:00:00 \
     --wrap="module add apptainer/1.3.0-1; \
             apptainer run \
@@ -142,7 +142,7 @@ sbatch_SUT() {
     --mem=10G \
     --qos gpu_access \
     -p volta-gpu \
-    --gres=gpu:tesla_v100-sxm2-16gb:1 \
+    --gres=gpu:1 \
     -t 01:00:00 \
     --wrap="module add apptainer/1.3.0-1; \
             apptainer run \
