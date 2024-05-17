@@ -17,8 +17,8 @@ test_coverages = ('trivial', )
 test_dir = f'evaluation/results/RQ3'
 
 seeds_folder = 'evaluation/seeds/random/seeds'
-randomizer_seeds = (0, 1)
-trial_timeout = timedelta(minutes=10)
+randomizer_seeds = (2, 3)
+trial_timeout = timedelta(hours=2)
 
 # dependent variables
 baselines = tuple(product(baseline_egos, baseline_coverages))
@@ -26,8 +26,9 @@ tests = tuple(product(test_egos, test_coverages))
 trials = tuple(product(baselines, tests, randomizer_seeds))
 STORE_BASE_DIR = os.environ.get('STORE_BASE_DIR')
 
-for baseline, test, trial in trials:
-    (baseline_ego, baseline_coverage), (test_ego, test_coverage), randomizer_seed = trial
+for baseline, test, randomizer_seed in trials:
+    baseline_ego, baseline_coverage = baseline
+    test_ego, test_coverage = test
     cmd = f'''
         {STORE_BASE_DIR}/ScenarioGeneration/Apptainer/scripts.sh scenariogen_run bionic Shipping \
             evaluation/experiments/RQ3/trial.py \
