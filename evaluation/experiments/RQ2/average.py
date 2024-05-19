@@ -18,12 +18,12 @@ def identity(x):
 def main():
     SKIP_EXISTING = False
 
-    generators = ('PCGF', 'Random')
+    generators = ('Atheris', 'PCGF', 'Random')
     egos = ('autopilot', 'BehaviorAgent', 'TFPP')
-    trial_seeds = (0, 1, )
+    trial_seeds = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
     coverages = ('traffic-rules', )
-    report_max_time = timedelta(minutes=10)
-    sampling_period = timedelta(minutes=1)
+    report_max_time = timedelta(hours=24)
+    sampling_period = timedelta(minutes=10)
     RQ2_folder = f'evaluation/results/RQ2'
     coverage_filters = (
         ('all', identity),

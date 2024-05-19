@@ -29,9 +29,9 @@ def main():
     test_dir = f'evaluation/results/RQ3'
 
 
-    trial_seeds = (0, 1, )
-    trial_timeout = timedelta(minutes=10)
-    sampling_period = timedelta(minutes=1)
+    trial_seeds = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+    trial_timeout = timedelta(hours=24)
+    sampling_period = timedelta(minutes=10)
     coverage_filters = (
         ('all', identity),
         ('violations', ego_violations_coverage_filter),

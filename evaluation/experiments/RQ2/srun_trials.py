@@ -30,7 +30,7 @@ for generator, (gen_ego, test_ego), randomizer_seed, coverage in trials:
         sbatch \
         --mail-type=FAIL \
         --mail-user=ak@cs.unc.edu \
-        --job-name=RQ2_{generator}_{gen_ego}_{coverage}_{randomizer_seed}_{test_ego} \
+        --job-name=RQ2_{generator}_{gen_ego}_{test_ego}_{coverage}_{randomizer_seed} \
         -o "{STORE_BASE_DIR}/ScenarioGeneration/evaluation/results/RQ2/sbatch-logs/%x_%j_%N.log" \
         --nodes=1 \
         --ntasks=1 \

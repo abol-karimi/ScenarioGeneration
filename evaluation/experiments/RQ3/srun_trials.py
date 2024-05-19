@@ -23,9 +23,9 @@ trial_timeout = timedelta(hours=24)
 timeout_buffer = timedelta(minutes=30)
 
 # dependent variables
-baselines = product(baseline_egos, baseline_coverages)
-tests = product(test_egos, test_coverages)
-trials = product(baselines, tests, randomizer_seeds)
+baselines = tuple(product(baseline_egos, baseline_coverages))
+tests = tuple(product(test_egos, test_coverages))
+trials = tuple(product(baselines, tests, randomizer_seeds))
 
 slurm_timeout = trial_timeout + timeout_buffer
 dd = slurm_timeout.days
@@ -34,8 +34,9 @@ mm = (slurm_timeout.seconds%3600)//60
 ss = slurm_timeout.seconds%60
 STORE_BASE_DIR = os.environ.get('STORE_BASE_DIR')
 
-for baseline, test, trial in trials:
-    (baseline_ego, baseline_coverage), (test_ego, test_coverage), randomizer_seed = trial
+for baseline, test, randomizer_seed in trials:
+    baseline_ego, baseline_coverage = baseline
+    test_ego, test_coverage = test
     cmd = f'''
         sbatch \
         --mail-type=FAIL \

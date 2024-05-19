@@ -10,19 +10,19 @@ import time
 from evaluation.utils.utils import sample_trial
 
 
-def trials_samples_median(trials_samples):
+def trials_samples_stats(trials_samples):
     trials_num = len(trials_samples)
     samples_num = len(trials_samples[0])
     return tuple(statistics.median([trials_samples[i][j] for i in range(trials_num)]) for j in range(samples_num))
 
 
-def trials_samples_min(trials_samples):
+def trials_samples_stats(trials_samples):
     trials_num = len(trials_samples)
     samples_num = len(trials_samples[0])
     return tuple(min([trials_samples[i][j] for i in range(trials_num)]) for j in range(samples_num))
 
 
-def trials_samples_max(trials_samples):
+def trials_samples_stats(trials_samples):
     trials_num = len(trials_samples)
     samples_num = len(trials_samples[0])
     return tuple(max([trials_samples[i][j] for i in range(trials_num)]) for j in range(samples_num))
@@ -48,21 +48,21 @@ def report(results_files, total_seconds, coverage_filter, output_file, period):
     
     result = {
         'elapsed-time': tuple(map(float, ts)),
-        'fuzz-inputs-num_median': trials_samples_median(fuzz_inputs_num_trials_samples),
-        'fuzz-inputs-num_min': trials_samples_min(fuzz_inputs_num_trials_samples),
-        'fuzz-inputs-num_max': trials_samples_max(fuzz_inputs_num_trials_samples),
-        'statementSet_median': trials_samples_median(statementSet_trials_samples),
-        'statementSet_min': trials_samples_min(statementSet_trials_samples),
-        'statementSet_max': trials_samples_max(statementSet_trials_samples),
-        'statement_median': trials_samples_median(statement_trials_samples),
-        'statement_min': trials_samples_min(statement_trials_samples),
-        'statement_max': trials_samples_max(statement_trials_samples),
-        'predicateSet_median': trials_samples_median(predicateSet_trials_samples),
-        'predicateSet_min': trials_samples_min(predicateSet_trials_samples),
-        'predicateSet_max': trials_samples_max(predicateSet_trials_samples),
-        'predicate_median': trials_samples_median(predicate_trials_samples),
-        'predicate_min': trials_samples_min(predicate_trials_samples),
-        'predicate_max': trials_samples_max(predicate_trials_samples),
+        'fuzz-inputs-num_median': trials_samples_stats(fuzz_inputs_num_trials_samples, statistics.median),
+        'fuzz-inputs-num_min': trials_samples_stats(fuzz_inputs_num_trials_samples, min),
+        'fuzz-inputs-num_max': trials_samples_stats(fuzz_inputs_num_trials_samples, max),
+        'statementSet_median': trials_samples_stats(statementSet_trials_samples, statistics.median),
+        'statementSet_min': trials_samples_stats(statementSet_trials_samples, min),
+        'statementSet_max': trials_samples_stats(statementSet_trials_samples, max),
+        'statement_median': trials_samples_stats(statement_trials_samples, statistics.median),
+        'statement_min': trials_samples_stats(statement_trials_samples, min),
+        'statement_max': trials_samples_stats(statement_trials_samples, max),
+        'predicateSet_median': trials_samples_stats(predicateSet_trials_samples, statistics.median),
+        'predicateSet_min': trials_samples_stats(predicateSet_trials_samples, min),
+        'predicateSet_max': trials_samples_stats(predicateSet_trials_samples, max),
+        'predicate_median': trials_samples_stats(predicate_trials_samples, statistics.median),
+        'predicate_min': trials_samples_stats(predicate_trials_samples, min),
+        'predicate_max': trials_samples_stats(predicate_trials_samples, max),
     }
 
     with open(output_file, 'w') as f:
