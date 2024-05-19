@@ -29,7 +29,7 @@ fig, axs = plt.subplots(len(curves))
 fig.suptitle('time-distance curves')
 for j, curve in enumerate(curves):
     curve.sample_size = args.resolution
-    axs[j].set_title(j)
+    axs[j].set_title(j, fontsize=10)
     t = [p[0] for p in curve.evalpts]
     d = [p[1] for p in curve.evalpts]
     axs[j].plot(t, d)

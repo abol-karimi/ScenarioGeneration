@@ -34,7 +34,7 @@ def plot(coverage_files, colors, labels, coverage_types, output_file, kwds):
 
   # Empty axes used as a container of subplots
   ax = fig_coverage.add_subplot(111)
-  ax.set_title(output_file)
+  ax.set_title(output_file, fontsize=10)
   ax.spines['top'].set_color('none')
   ax.spines['bottom'].set_color('none')
   ax.spines['left'].set_color('none')

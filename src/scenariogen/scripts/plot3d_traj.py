@@ -25,7 +25,7 @@ sample_size = args.resolution
 fig = plt.figure()
 fig.suptitle('spacetime trajectories')
 ax3d = fig.add_subplot(211, projection='3d')
-ax3d.set_title('3D')
+ax3d.set_title('3D', fontsize=10)
 ax3d.view_init(elev=90, azim=0, roll=0)
 for i, spline in enumerate(splines):
   spline.sample_size = sample_size

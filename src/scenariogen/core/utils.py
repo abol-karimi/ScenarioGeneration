@@ -77,7 +77,7 @@ def seed_from_sim(sim_result, timestep, degree=3, plot_splines=False):
         if plot_splines:
             fig, axs = plt.subplots(2)
             fig.suptitle(f'Car {name}')
-            axs[0].set_title('xy-plain')
+            axs[0].set_title('xy-plain', fontsize=10)
             axs[0].set_aspect('equal', adjustable='box')
             axs[0].plot(tuple(-y for y in ys), xs, 'go')
             sample = splev(ds_increasing, (t, c, k))
@@ -106,7 +106,7 @@ def seed_from_sim(sim_result, timestep, degree=3, plot_splines=False):
                        )
         
         if plot_splines:
-            axs[1].set_title('td-plain')
+            axs[1].set_title('td-plain', fontsize=10)
             axs[1].plot(ts, ds, 'go')
             sample = splev(ts, (t, c, k))
             axs[1].plot(sample[0], sample[1], 'r-')

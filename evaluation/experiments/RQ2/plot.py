@@ -9,7 +9,7 @@ import evaluation.utils.plots.coverage_per_fuzz_input
 
 if __name__ == '__main__':
 
-    generators = ('PCGF', 'Random')
+    generators = ('Atheris', 'PCGF', 'Random')
     egos = ('autopilot', 'BehaviorAgent', 'TFPP')
     coverages = ('traffic-rules', )
     RQ1_dir = f'evaluation/results/RQ1'
@@ -46,7 +46,7 @@ if __name__ == '__main__':
         coverage_files = (f'{RQ1_dir}/{generator}_{gen_ego}_{coverage}/{coverage_filter}-coverage.json', ) \
                         + tuple(f'{RQ2_dir}/{generator}_{gen_ego}_{coverage}/{test_ego}/{coverage_filter}-coverage.json'
                                 for test_ego in test_egos)
-        output_file = f'{RQ2_dir}/{gen_ego}_{coverage}_{coverage_filter}_{normalizer}.png'
+        output_file = f'{RQ2_dir}/{generator}_{gen_ego}_{coverage}_{coverage_filter}_{normalizer}.png'
         
         # plot visuals
         colors = ('g', 'r', 'b')
