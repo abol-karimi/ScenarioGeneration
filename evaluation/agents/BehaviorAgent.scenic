@@ -14,4 +14,4 @@ from scenariogen.simulators.carla.behaviors import BehaviorAgentFollowRoute
 ego_behavior = BehaviorAgentFollowRoute(
                   config['ego_route'],
                   config['ego_init_progress_ratio'],
-                  debug=False)
+                  debug=config['render-spectator'])

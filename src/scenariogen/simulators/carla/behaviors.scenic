@@ -8,14 +8,14 @@ config = globalParameters.config
 from collections import namedtuple
 import carla
 from leaderboard.envs.sensor_interface import SensorReceivedNoData
+from leaderboard.utils.route_manipulation import location_route_to_gps, _get_latlon_ref as get_latlon_ref
 from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
 
 # from rss.rss_sensor import RssSensor
 from agents.navigation.behavior_agent import BehaviorAgent
 from scenic.simulators.carla.utils.utils import scenicToCarlaLocation, carlaToScenicPosition
 from scenariogen.simulators.carla.utils import (signal_to_vehicleLightState, 
-                                                maneuverType_to_Autopilot_turn,
-                                                interpolate_trajectory
+                                                maneuverType_to_Autopilot_turn,                                                
                                                 )
 from scenariogen.simulators.carla.utils import plan_from_route
 import scenariogen.simulators.carla.visualization as visualization
@@ -123,7 +123,14 @@ behavior BehaviorAgentFollowRoute(route, init_progress_ratio, waypoint_separatio
 #   # TODO
 
 
-behavior LeaderboardAgentBehavior(agent_path, agent_config, track, keypoints, debug=False):
+behavior LeaderboardAgentFollowRouteBehavior(
+            agent_path,
+            agent_config,
+            track,
+            route,
+            init_progress_ratio,
+            waypoint_separation=4.0,
+            debug=False):
   Args = namedtuple('Args',
                     ['host',
                       'port',
@@ -140,8 +147,10 @@ behavior LeaderboardAgentBehavior(agent_path, agent_config, track, keypoints, de
                       'scenario_config'
                     ]
                   )
-  keypoints_carla = tuple(scenicToCarlaLocation(kp, world=simulation().world) for kp in keypoints)
-  gps_route, route = interpolate_trajectory(simulation().map, keypoints_carla)
+  plan = plan_from_route(simulation().world, simulation().map, network, route, init_progress_ratio, waypoint_separation)
+  plan_leaderboard = tuple((p[0].transform, p[1]) for p in plan)
+  lat_ref, lon_ref = get_latlon_ref(simulation().world)
+  gps_plan = location_route_to_gps(plan_leaderboard, lat_ref, lon_ref)
   args = Args(host='127.0.0.1',
         port=CarlaDataProvider.get_rpc_port(),
         traffic_manager_port=CarlaDataProvider.get_traffic_manager_port(),
@@ -151,8 +160,8 @@ behavior LeaderboardAgentBehavior(agent_path, agent_config, track, keypoints, de
         agent=agent_path,
         agent_config=agent_config,
         track=track,
-        route=route,
-        gps_route=gps_route,
+        route=plan_leaderboard,
+        gps_route=gps_plan,
         debug=debug,
         scenario_config=config
         )

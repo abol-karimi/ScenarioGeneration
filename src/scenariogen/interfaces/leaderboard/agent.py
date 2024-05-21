@@ -11,7 +11,7 @@ from srunner.scenariomanager.timer import GameTime
 
 from leaderboard.autoagents.agent_wrapper import AgentWrapperFactory, validate_sensor_configuration
 
-from .utils import draw_waypoints
+from .utils import draw_plan
 
 sensors_to_icons = {
     'sensor.camera.rgb':        'carla_camera',
@@ -38,12 +38,12 @@ class LeaderboardAgent(object):
         self.world = args.world
 
         if args.debug:
-            draw_waypoints(args.world,
-                           args.scenario_config['steps']*args.scenario_config['timestep'],
-                           args.route,
-                           vertical_shift=0.1,
-                           size=0.1,
-                           downsample=10)
+            draw_plan(args.world,
+                        args.scenario_config['steps']*args.scenario_config['timestep'],
+                        args.route,
+                        vertical_shift=0.1,
+                        size=0.1,
+                        downsample=10)
         
         # TODO condition this on TF++ agent
         if not os.environ.get("DIRECT"):

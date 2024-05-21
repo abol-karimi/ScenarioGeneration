@@ -57,7 +57,7 @@ def fulfill_request(config, carla_server_process, simulator, connection):
     while True:
         try:
             cleanup_callbacks = Queue()
-            scenario = scenic.scenarioFromFile(f"src/scenariogen/simulators/{config['simulator']}/SUT.scenic",
+            scenario = scenic.scenarioFromFile(f"src/scenariogen/simulators/carla/SUT.scenic",
                                                 params= {'map': config['map'],
                                                         'weather': config['weather'],
                                                         'config': config,

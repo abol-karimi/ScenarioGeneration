@@ -11,4 +11,4 @@ model scenic.simulators.newtonian.driving_model
 from scenariogen.simulators.newtonian.behaviors import IntersectionBehavior
 
 ego_lanes = [network.elements[l] for l in config['ego_route']]
-ego_behavior =  IntersectionBehavior(ego_lanes, target_speed=8, arrival_distance=8)
+ego_behavior = IntersectionBehavior(ego_lanes, target_speed=3, turn_speed=2, arrival_distance=config['arrival_distance'])

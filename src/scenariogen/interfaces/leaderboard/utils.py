@@ -1,11 +1,12 @@
 import carla
 from agents.navigation.local_planner import RoadOption
 
-def draw_waypoints(world, lifetime, waypoints, vertical_shift, size, downsample=1):
+
+def draw_plan(world, lifetime, plan, vertical_shift, size, downsample=1):
     """
     Draw a list of waypoints at a certain height given in vertical_shift.
     """
-    for i, w in enumerate(waypoints):
+    for i, w in enumerate(plan):
         if i % downsample != 0:
             continue
 
@@ -26,7 +27,7 @@ def draw_waypoints(world, lifetime, waypoints, vertical_shift, size, downsample=
 
         world.debug.draw_point(wp, size=size, color=color, life_time=lifetime)
 
-    world.debug.draw_point(waypoints[0][0].location + carla.Location(z=vertical_shift), size=2*size,
+    world.debug.draw_point(plan[0][0].location + carla.Location(z=vertical_shift), size=2*size,
                                 color=carla.Color(0, 0, 128), life_time=lifetime)
-    world.debug.draw_point(waypoints[-1][0].location + carla.Location(z=vertical_shift), size=2*size,
+    world.debug.draw_point(plan[-1][0].location + carla.Location(z=vertical_shift), size=2*size,
                                 color=carla.Color(128, 128, 128), life_time=lifetime)

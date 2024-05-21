@@ -24,7 +24,7 @@ from scenariogen.core.utils import extend_lane_backward, extend_lane_forward
 import random
 from scenariogen.simulators.carla.behaviors import AutopilotRouteBehavior
 from scenariogen.simulators.carla.utils import maneuverType_to_Autopilot_turn
-from scenariogen.simulators.carla.behaviors import LeaderboardAgentBehavior
+from scenariogen.simulators.carla.behaviors import LeaderboardAgentFollowRouteBehavior
 
 with open('src/scenariogen/simulators/carla/blueprint2dims_cars.json', 'r') as f:
   blueprint2dims = jsonpickle.decode(f.read())
@@ -70,7 +70,7 @@ scenario SeedScenario():
     agent_config = '/home/scenariogen/carla_garage_fork/pretrained_models/leaderboard/tfpp_wp_all_0'
     track = 'SENSORS'
     keypoints = (p[0]@p[1], p_end[0]@p_end[1])
-    ego_behavior = LeaderboardAgentBehavior(agent, agent_config, track, keypoints, debug=False)
+    ego_behavior = LeaderboardAgentFollowRouteBehavior(agent, agent_config, track, keypoints, debug=False)
 
     car = new Car at p[0]@p[1], facing p[2],
       with name 'ego',
