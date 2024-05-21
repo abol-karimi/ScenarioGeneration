@@ -48,7 +48,7 @@ for experiment, ego, randomizer_seed, coverage in trials:
                     --seeds-folder {seeds_folder} \
                     --coverage {coverage} \
                     --seconds {trial_timeout.total_seconds()} \
-                    --output-folder evaluation/results/RQ1/{experiment}/{ego}_{coverage}_{randomizer_seed} \
+                    --output-folder evaluation/results/RQ1/{experiment}_{ego}_{coverage}/{randomizer_seed} \
                     --process-name RQ1_{experiment}_{ego}_{randomizer_seed}
             "
     '''
