@@ -24,6 +24,10 @@ if __name__ == '__main__':
     }
 
     # plot visuals
+    plot_kwds = {
+        'fill_alpha': 0.1,
+        't_unit_sec': 60,
+    }   
     colors = {
         'PCGF': 'g',
         'Atheris': 'b',
@@ -57,11 +61,11 @@ if __name__ == '__main__':
                                                     (colors[g] for g in generators),
                                                     (labels[g] for g in generators),
                                                     coverage_types,
-                                                    output_file),
+                                                    output_file,
+                                                    plot_kwds),
                                                 name=output_file,
                                                 daemon=False
                                                 )
-
         plot_process.start()
         processes.append(plot_process)
     

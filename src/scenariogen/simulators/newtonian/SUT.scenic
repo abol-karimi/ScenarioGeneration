@@ -25,7 +25,7 @@ if config['ego-module']:
 # The given config dictionary should always have the 'coverage-module' key
 if config['coverage-module']:
     coverage_module = importlib.import_module(f"scenariogen.core.coverages.{config['coverage-module']}")
-    coverage_monitor = importlib.import_module(f"scenariogen.core.coverages.{config['coverage-module']}.monitor")
+    coverage_monitor = importlib.import_module(f"scenariogen.core.coverages.{config['coverage-module']}.monitor_newtonian")
     coverage_events = []
 
 import jsonpickle
