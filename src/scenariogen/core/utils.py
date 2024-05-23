@@ -277,17 +277,6 @@ def extend_lane_backward(lane, length, random):
     return ext
 
 
-def signal_from_lanes(lanes):
-    signal = []
-    for i in range(len(lanes)-2):
-        dist = sum(lanes[j].centerline.length for j in range(i))
-        maneuver_type = ManeuverType.guessTypeFromLanes(lanes[i], lanes[i+2], lanes[i+1])
-        sig = SignalType.from_maneuver_type(maneuver_type)
-        signal.append((dist, sig))
-
-    return tuple(signal)
-
-
 def ordinal(n):
     if 11 <= (n % 100) <= 13:
         suffix = 'th'
