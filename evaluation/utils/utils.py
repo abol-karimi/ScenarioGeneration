@@ -52,7 +52,7 @@ def measure_new_StatementSetCoverage(measurement, coverage_filter):
     return StatementSetCoverage(new_StatementSetCoverage_items)
 
 
-def sample_trial(results_file, ts, coverage_filter, interpolate=piecewise_constant_numpy):
+def sample_trial(results_file, ts, coverage_filter):
     results_file_path = Path(results_file)
 
     print(f'Loading {results_file_path} ...')

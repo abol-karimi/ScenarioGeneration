@@ -40,11 +40,11 @@ def sample_trial_process(results_file,
     else:
         print(f'Finished sampling {results_file}')
 
-    fuzz_inputs_num_trials_samples.put(trial_samples['fuzz-inputs-num'])
-    statementSet_trials_samples.put(trial_samples['statementSet'])
-    statement_trials_samples.put(trial_samples['statement'])
-    predicateSet_trials_samples.put(trial_samples['predicateSet'])
-    predicate_trials_samples.put(trial_samples['predicate'])
+    fuzz_inputs_num_trials_samples.put({results_file: trial_samples['fuzz-inputs-num']})
+    statementSet_trials_samples.put({results_file: trial_samples['statementSet']})
+    statement_trials_samples.put({results_file: trial_samples['statement']})
+    predicateSet_trials_samples.put({results_file: trial_samples['predicateSet']})
+    predicate_trials_samples.put({results_file: trial_samples['predicate']})
 
     fuzz_inputs_num_trials_samples.close()
     statementSet_trials_samples.close()
@@ -93,12 +93,24 @@ def report(results_files, total_seconds, coverage_filter, output_file, period):
         else:
             time.sleep(10)
     
-    trials_num = len(results_files)
-    fuzz_inputs_num_trials_samples = [fuzz_inputs_num_trials_samples_queue.get() for _ in range(trials_num)]
-    statementSet_trials_samples = [statementSet_trials_samples_queue.get() for _ in range(trials_num)]
-    statement_trials_samples = [statement_trials_samples_queue.get() for _ in range(trials_num)]
-    predicateSet_trials_samples = [predicateSet_trials_samples_queue.get() for _ in range(trials_num)]
-    predicate_trials_samples = [predicate_trials_samples_queue.get() for _ in range(trials_num)]
+    fuzz_inputs_num_trials_samples = {}
+    statementSet_trials_samples = {}
+    statement_trials_samples = {}
+    predicateSet_trials_samples = {}
+    predicate_trials_samples = {}
+    for _ in results_files:
+        fuzz_inputs_num_trials_samples.update(fuzz_inputs_num_trials_samples_queue.get())
+        statementSet_trials_samples.update(statementSet_trials_samples_queue.get())
+        statement_trials_samples.update(statement_trials_samples_queue.get())
+        predicateSet_trials_samples.update(predicateSet_trials_samples_queue.get())
+        predicate_trials_samples.update(predicate_trials_samples_queue.get())
+
+    fuzz_inputs_num_trials_samples = [fuzz_inputs_num_trials_samples[f] for f in results_files]
+    statementSet_trials_samples = [statementSet_trials_samples[f] for f in results_files]
+    statement_trials_samples = [statement_trials_samples[f] for f in results_files]
+    predicateSet_trials_samples = [predicateSet_trials_samples[f] for f in results_files]
+    predicate_trials_samples = [predicate_trials_samples[f] for f in results_files]
+
 
     # We average the trials up to the time of the shortest trial
     sample_size = min(len(trial_samples) for trial_samples in fuzz_inputs_num_trials_samples)
