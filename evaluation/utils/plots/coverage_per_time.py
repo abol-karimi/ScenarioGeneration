@@ -6,53 +6,40 @@ import jsonpickle
 import matplotlib.pyplot as plt
 
 
-# def plot_predicate_coverage_space(axes, interval, gen_ego, gen_coverage, test_coverage):
-#   fuzz_inputs_path = Path(f'experiments/{experiment_type}/gen_{gen_ego}_{gen_coverage}/fuzz-inputs')
-#   with open(tuple(fuzz_inputs_path.glob('*'))[0], 'r') as f:
-#     seed = jsonpickle.decode(f.read())
-  
-#   coverage_module = importlib.import_module(f'scenariogen.core.coverages.{test_coverage}')
-#   predicate_coverage_space = coverage_module.coverage_space(seed.config)
-
-#   axes.plot(interval, (len(predicate_coverage_space),)*2, 'r--', label='Predicate-Coverage Space')
-
-
 def plot_curves(coverage_file, color, label, axes, coverage_types, kwds):
-  with open(coverage_file, 'r') as f:
-    result = jsonpickle.decode(f.read())
+    with open(coverage_file, 'r') as f:
+        result = jsonpickle.decode(f.read())
 
-  elapsed_time = tuple(t/kwds['t_unit_sec'] for t in result['elapsed-time'])
+    elapsed_time = tuple(t/kwds['t_unit_sec'] for t in result['elapsed-time'])
 
-  for ax, cov_type in zip(axes, coverage_types):
-    ax.plot(elapsed_time, result[f'{cov_type}_median'], color, label=label)
-    ax.fill_between(elapsed_time, result[f'{cov_type}_min'], result[f'{cov_type}_max'], facecolor=color, alpha=kwds['fill_alpha'])
+    for ax, cov_type in zip(axes, coverage_types):
+        ax.plot(elapsed_time, result[f'{cov_type}_median'], color, label=label)
+        ax.fill_between(elapsed_time, result[f'{cov_type}_min'], result[f'{cov_type}_max'], facecolor=color, alpha=kwds['fill_alpha'])
 
 
 def plot(coverage_files, colors, labels, coverage_types, output_file, kwds):
-  # fig_coverage = plt.figure(layout='constrained')
-  fig_coverage = plt.figure(layout='tight')
+    # fig_coverage = plt.figure(layout='constrained')
+    fig_coverage = plt.figure(layout='tight')
 
-  # Empty axes used as a container of subplots
-  ax = fig_coverage.add_subplot(111)
-  ax.set_title(output_file, fontsize=10)
-  ax.spines['top'].set_color('none')
-  ax.spines['bottom'].set_color('none')
-  ax.spines['left'].set_color('none')
-  ax.spines['right'].set_color('none')
-  ax.tick_params(labelcolor='w', top=False, bottom=False, left=False, right=False)
+    # Empty axes used as a container of subplots
+    ax = fig_coverage.add_subplot(111)
+    ax.set_title(output_file, fontsize=10)
+    ax.spines['top'].set_color('none')
+    ax.spines['bottom'].set_color('none')
+    ax.spines['left'].set_color('none')
+    ax.spines['right'].set_color('none')
+    ax.tick_params(labelcolor='w', top=False, bottom=False, left=False, right=False)
 
-  axes = []
-  for i, coverage_type in enumerate(coverage_types):
-    ax = fig_coverage.add_subplot(len(coverage_types), 1, i+1)
-    ax.set_ylabel(f'{coverage_type}s')
-    axes.append(ax)
-  axes[-1].set_xlabel('Wall-clock time (hours)')
+    axes = []
+    for i, coverage_type in enumerate(coverage_types):
+        ax = fig_coverage.add_subplot(len(coverage_types), 1, i+1)
+        ax.set_ylabel(f'{coverage_type}s')
+        axes.append(ax)
+    axes[-1].set_xlabel('Wall-clock time (hours)')
 
-  for coverage_file, color, label in zip(coverage_files, colors, labels):
-    print(f'Now plotting: ', coverage_file)
-    plot_curves(coverage_file, color, label, axes, coverage_types, kwds)
+    for coverage_file, color, label in zip(coverage_files, colors, labels):
+        print(f'Now plotting: ', coverage_file)
+        plot_curves(coverage_file, color, label, axes, coverage_types, kwds)
 
-  # plot_predicate_coverage_space(ax4, (0, 4*60), 'TFPP', 'traffic', 'traffic-rules')
-
-  axes[-1].legend()
-  fig_coverage.savefig(output_file)
+    axes[-1].legend()
+    fig_coverage.savefig(output_file)
