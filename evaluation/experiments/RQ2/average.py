@@ -7,7 +7,7 @@ from pathlib import Path
 import time
 import os
 
-import evaluation.utils.average_coverage as average_coverage
+import evaluation.utils.aggregate_trials as aggregate_trials
 from evaluation.configs import ego_violations_coverage_filter
 
 
@@ -48,7 +48,7 @@ def main():
         if SKIP_EXISTING and Path(average_file).is_file():
             continue
 
-        report_process = spawn_ctx.Process(target=average_coverage.report,
+        report_process = spawn_ctx.Process(target=aggregate_trials.report,
                                             args=(results_files,
                                                     report_max_time.total_seconds(),
                                                     filter_func,

@@ -65,11 +65,11 @@ def sample_trial(results_file, ts, coverage_filter):
     # but I'm keeping the multi-stage results format in case needed in the future)
     measurements = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements']}, results)['measurements']
 
-    samples_fuzz_inputs_num = []
-    samples_StatementSetCoverage = []
-    samples_StatementCoverage = []
-    samples_PredicateSetCoverage = []
-    samples_PredicateCoverage = []
+    samples_fuzz_inputs = []
+    samples_StatementSetCoverages = []
+    samples_StatementCoverages = []
+    samples_PredicateSetCoverages = []
+    samples_PredicateCoverages = []
     measurement_idx = 0
     sum_fuzz_inputs = set()
     sum_StatementSetCoverage = StatementSetCoverage([])
@@ -95,14 +95,14 @@ def sample_trial(results_file, ts, coverage_filter):
             break
     
         # Record the sum as the sample
-        samples_fuzz_inputs_num.append(len(sum_fuzz_inputs))
-        samples_StatementSetCoverage.append(len(sum_StatementSetCoverage))
-        samples_PredicateSetCoverage.append(len(sum_PredicateSetCoverage))
-        samples_StatementCoverage.append(len(sum_StatementCoverage))
-        samples_PredicateCoverage.append(len(sum_PredicateCoverage))
+        samples_fuzz_inputs.append(len(sum_fuzz_inputs))
+        samples_StatementSetCoverages.append(len(sum_StatementSetCoverage))
+        samples_PredicateSetCoverages.append(len(sum_PredicateSetCoverage))
+        samples_StatementCoverages.append(len(sum_StatementCoverage))
+        samples_PredicateCoverages.append(len(sum_PredicateCoverage))
     
-    return {'fuzz-inputs-num': samples_fuzz_inputs_num,
-            'statementSet': samples_StatementSetCoverage,
-            'predicateSet': samples_PredicateSetCoverage,
-            'statement': samples_StatementCoverage,
-            'predicate': samples_PredicateCoverage}
+    return {'FuzzInputs': samples_fuzz_inputs,
+            'StatementSets': samples_StatementSetCoverages,
+            'PredicateSets': samples_PredicateSetCoverages,
+            'Statements': samples_StatementCoverages,
+            'Predicates': samples_PredicateCoverages}

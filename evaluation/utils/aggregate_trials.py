@@ -4,7 +4,6 @@
 
 import jsonpickle
 import numpy as np
-import statistics
 import setproctitle
 import multiprocessing
 import time
@@ -13,22 +12,14 @@ import traceback
 from evaluation.utils.utils import sample_trial
 
 
-def trials_samples_stats(trials_samples, stat):
-    samples_num_max = max(len(s) for s in trials_samples)
-    stats = []
-    for i in range(samples_num_max):
-        stats.append(stat(s[i] for s in trials_samples if len(s) > i))
-    return tuple(stats)
-
-
 def sample_trial_process(results_file,
-                        ts,
-                        coverage_filter,
-                        fuzz_inputs_num_trials_samples,
-                        statementSet_trials_samples,
-                        statement_trials_samples,
-                        predicateSet_trials_samples,
-                        predicate_trials_samples):
+                            ts,
+                            coverage_filter,
+                            fuzz_inputs_num_trials_samples,
+                            statementSet_trials_samples,
+                            statement_trials_samples,
+                            predicateSet_trials_samples,
+                            predicate_trials_samples):
     setproctitle.setproctitle(results_file)
 
     try:
@@ -40,11 +31,11 @@ def sample_trial_process(results_file,
     else:
         print(f'Finished sampling {results_file}')
 
-    fuzz_inputs_num_trials_samples.put({results_file: trial_samples['fuzz-inputs-num']})
-    statementSet_trials_samples.put({results_file: trial_samples['statementSet']})
-    statement_trials_samples.put({results_file: trial_samples['statement']})
-    predicateSet_trials_samples.put({results_file: trial_samples['predicateSet']})
-    predicate_trials_samples.put({results_file: trial_samples['predicate']})
+    fuzz_inputs_num_trials_samples.put({results_file: trial_samples['FuzzInputs']})
+    statementSet_trials_samples.put({results_file: trial_samples['StatementSets']})
+    statement_trials_samples.put({results_file: trial_samples['Statements']})
+    predicateSet_trials_samples.put({results_file: trial_samples['PredicateSets']})
+    predicate_trials_samples.put({results_file: trial_samples['Predicates']})
 
     fuzz_inputs_num_trials_samples.close()
     statementSet_trials_samples.close()
@@ -112,7 +103,7 @@ def report(results_files, total_seconds, coverage_filter, output_file, period):
     predicate_trials_samples = [predicate_trials_samples[f] for f in results_files]
 
 
-    # We average the trials up to the time of the shortest trial
+    # We aggregate the trials up to the time of the shortest trial
     sample_size = min(len(trial_samples) for trial_samples in fuzz_inputs_num_trials_samples)
     ts = ts[:sample_size]
     fuzz_inputs_num_trials_samples = [samples[:sample_size] for samples in fuzz_inputs_num_trials_samples]
@@ -123,21 +114,11 @@ def report(results_files, total_seconds, coverage_filter, output_file, period):
 
     result = {
         'elapsed-time': tuple(map(float, ts)),
-        'fuzz-inputs-num_median': trials_samples_stats(fuzz_inputs_num_trials_samples, statistics.median),
-        'fuzz-inputs-num_min': trials_samples_stats(fuzz_inputs_num_trials_samples, min),
-        'fuzz-inputs-num_max': trials_samples_stats(fuzz_inputs_num_trials_samples, max),
-        'statementSet_median': trials_samples_stats(statementSet_trials_samples, statistics.median),
-        'statementSet_min': trials_samples_stats(statementSet_trials_samples, min),
-        'statementSet_max': trials_samples_stats(statementSet_trials_samples, max),
-        'statement_median': trials_samples_stats(statement_trials_samples, statistics.median),
-        'statement_min': trials_samples_stats(statement_trials_samples, min),
-        'statement_max': trials_samples_stats(statement_trials_samples, max),
-        'predicateSet_median': trials_samples_stats(predicateSet_trials_samples, statistics.median),
-        'predicateSet_min': trials_samples_stats(predicateSet_trials_samples, min),
-        'predicateSet_max': trials_samples_stats(predicateSet_trials_samples, max),
-        'predicate_median': trials_samples_stats(predicate_trials_samples, statistics.median),
-        'predicate_min': trials_samples_stats(predicate_trials_samples, min),
-        'predicate_max': trials_samples_stats(predicate_trials_samples, max),
+        'fuzz-inputs': fuzz_inputs_num_trials_samples,
+        'statementSets': statementSet_trials_samples,
+        'statements': statement_trials_samples,
+        'predicateSets': predicateSet_trials_samples,
+        'predicates': predicate_trials_samples,
     }
 
     with open(output_file, 'w') as f:

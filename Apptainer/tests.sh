@@ -2,8 +2,9 @@
 
 ./scripts.sh scenariogen_run bionic Shipping \
     SUT.py evaluation/seeds/random/seeds/4a27e66ba63fd3d4ce8f2d2ab76282ffeb3aafa6 \
-        --simulator newtonian \
-        --ego-module evaluation.agents.intersectionAgent \
+        --simulator carla \
+        --ego-module evaluation.agents.TFPP \
+        --coverage-module traffic-rules \
         --render-spectator
 
 # 1d6da581c30402e94a8c94b1ef2b40a1cde442f2

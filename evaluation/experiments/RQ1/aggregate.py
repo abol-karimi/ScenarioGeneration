@@ -5,9 +5,9 @@ from datetime import timedelta
 import multiprocessing
 from pathlib import Path
 import time
+import os
 
-import evaluation.utils.average_coverage as average_coverage
-from evaluation.configs import ego_violations_coverage_filter
+import evaluation.utils.aggregate_trials as aggregate_trials
 
 
 def identity(x):
@@ -25,39 +25,40 @@ def main():
     sampling_period = timedelta(minutes=10)
     RQ1_folder = f'evaluation/results/RQ1'
     coverage_filters = (
-        ('all', identity),
-        ('violations', ego_violations_coverage_filter),
+        ('all-coverage', identity),
     )
 
     # dependent variables
     experiments = product(generators, egos, coverages)
+    CPU_COUNT = len(os.sched_getaffinity(0))
+    MAX_AVG_JOBS = CPU_COUNT // len(trial_seeds)
 
     spawn_ctx = multiprocessing.get_context('spawn')
     processes = []
 
-    for exp, cov_filter in product(experiments, coverage_filters):
-        generator, ego, coverage = exp
+    for experiment, cov_filter in product(experiments, coverage_filters):
+        generator, ego, coverage = experiment
         filter_name, filter_func = cov_filter
         results_files = [f'{RQ1_folder}/{generator}_{ego}_{coverage}/{trial_seed}/results.json'
                         for trial_seed in trial_seeds]
-        average_file = f'{RQ1_folder}/{generator}_{ego}_{coverage}/{filter_name}-coverage.json'
+        aggregate_file = f'{RQ1_folder}/{generator}_{ego}_{coverage}/{filter_name}-coverage.json'
 
-        if SKIP_EXISTING and Path(average_file).is_file():
+        if SKIP_EXISTING and Path(aggregate_file).is_file():
             continue
 
-        report_process = spawn_ctx.Process(target=average_coverage.report,
+        report_process = spawn_ctx.Process(target=aggregate_trials.report,
                                             args=(results_files,
                                                     trial_timeout.total_seconds(),
                                                     filter_func,
-                                                    average_file,
+                                                    aggregate_file,
                                                     sampling_period.total_seconds()),
-                                            name=average_file,
+                                            name=aggregate_file,
                                             daemon=False
                                             )
         report_process.start()
         processes.append(report_process)
 
-        while sum(1 for p in processes if p.is_alive()) > 3:
+        while sum(1 for p in processes if p.is_alive()) > MAX_AVG_JOBS:
             time.sleep(10)
     
     for p in processes:

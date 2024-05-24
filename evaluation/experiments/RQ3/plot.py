@@ -5,7 +5,7 @@ import multiprocessing
 import matplotlib.cm as cm
 import numpy as np
 
-import evaluation.utils.plots.coverage_per_time
+import evaluation.utils.plots.time_series
 import evaluation.utils.plots.coverage_per_fuzz_input
 
 
@@ -33,7 +33,7 @@ if __name__ == '__main__':
     
     # for each normalizer, we have a dedicated plotter
     plotter = {
-        'per-time': evaluation.utils.plots.coverage_per_time,
+        'per-time': evaluation.utils.plots.time_series,
         'per-fuzz-input': evaluation.utils.plots.coverage_per_fuzz_input
     }
 
@@ -80,4 +80,4 @@ if __name__ == '__main__':
     
     for p in processes:
         p.join()
-        print(f'{p.name} exited with exitcode {p.exitcode} .')
+        print(f'{p.name} exited with exitcode {p.exitcode}.')
