@@ -10,8 +10,8 @@ monitor RejectOnAgentOverlapMonitor(overlap_threshold=1.0):
     logger.info(f'Monitoring agent-agent overlap with threshold {overlap_threshold} ...')
     while True:
         for a, b in combinations(simulation().agents, 2):
-            r1 = PolygonalRegion(polygon=a._boundingPolygon)
-            r2 = PolygonalRegion(polygon=b._boundingPolygon)
+            r1 = a.boundingPolygon
+            r2 = b.boundingPolygon
             if r1.intersect(r2).size >= overlap_threshold:
                 logger.info(f'Rejecting the simulation due to {a.name}-{b.name} overlap...')
                 require False

@@ -6,6 +6,26 @@ import multiprocessing
 import evaluation.utils.plots.time_series
 
 
+def fuzz_inputs(aggregate):
+    return aggregate['fuzz-inputs']
+
+
+def predicates(aggregate):
+    return aggregate['predicates']
+
+
+def predicateSets(aggregate):
+    return aggregate['predicateSets']
+
+
+def statements(aggregate):
+    return aggregate['statements']
+
+
+def statementSets(aggregate):
+    return aggregate['statementSets']
+
+
 def coverage_per_fuzz_input(aggregate, cov_type):
     metric = []
     for trials_statements, trials_inputs in zip(aggregate[cov_type], aggregate['fuzz-inputs']):
@@ -32,16 +52,16 @@ def statementSets_per_fuzz_input(aggregate):
 
 if __name__ == '__main__':
 
-    generators = ('PCGF', 'Random')
-    egos = ('autopilot', 'BehaviorAgent', 'TFPP')
+    generators = ('PCGF', 'Atheris', 'Random')
+    egos = ('autopilot', 'BehaviorAgent', 'intersectionAgent', 'TFPP')
     coverages = ('traffic-rules', )
     RQ1_folder = f'evaluation/results/RQ1'
 
     coverage_filters = ('all-coverage', )
 
     metrics = (
+        statements,
         statements_per_fuzz_input,
-        predicateSets_per_fuzz_input,
     )
     stats = (
         'range',
@@ -53,7 +73,7 @@ if __name__ == '__main__':
     # plot visuals
     plot_kwds = {
         'fill_alpha': 0.1,
-        't_unit_sec': 60,
+        't_unit_sec': 3600,
     }   
     colors = {
         'PCGF': 'g',
@@ -69,13 +89,10 @@ if __name__ == '__main__':
     # each (ego, coverage) combination is a trial for comparing the generators
     trials = product(egos, coverages)
 
-    # each trial's results can be plotted w.r.t to different assessment criteria
-    assessments = product(coverage_filters, metrics)
-
     spawn_ctx = multiprocessing.get_context('spawn')
     processes = []
 
-    # for each (trial, assessment) combination, we generate a separate figure;
+    # for each (trial, coverage_filter) combination, we generate a separate figure;
     # for each metric, we generate a separate subplot in the figure
     for trial, coverage_filter in product(trials, coverage_filters):
         ego, coverage = trial
