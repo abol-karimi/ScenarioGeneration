@@ -6,6 +6,7 @@ import multiprocessing
 import setproctitle
 import logging
 import sys
+from datetime import timedelta
 
 from scenariogen.core.fuzzing.fuzzers.atheris import AtherisFuzzer
 from scenariogen.core.logging.client import configure_logger, TextIOBaseToLog
@@ -114,7 +115,9 @@ def run(config):
     start_time = time.time()
     experiment_process.start()
 
-    while experiment_process.is_alive(): # the generator is expected to return after config['max-total-time']
+    # the experiment_process is expected to return after config['max-total-time']
+    # the experiment_process will be killed after config['kill-timeout']
+    while experiment_process.is_alive() and time.time()-start_time <= config['kill-timeout']:
         experiment_process.join(config['measurement-period']-(time.time()-start_time-measurements[-1]['elapsed-time']))
         measure_progress(fuzz_inputs_path,
                         past_fuzz_input_files,
@@ -125,8 +128,16 @@ def run(config):
                         results_file_path,
                         results,
                         config)
+    
+    if experiment_process.is_alive():
+        logger.info(f'Killing the experiment process since kill-timeout reached...')
+        experiment_process.kill()
+        log_server.stop()
+    elif time.time()-start_time <= config['max-total-time']:
+        logger.error(f'Experiment exited before max-total-time (after {timedelta(seconds=time.time()-start_time)}) with code: {experiment_process.exitcode} !')
+        log_server.stop()
+        raise RuntimeError('Experiment exitted too early!')
+    else:
+        logger.info('Experiment finished on time (between max-total-time and kill-timeout).')
+        log_server.stop()
 
-    logger.info(f'Experiment process exited with code: {experiment_process.exitcode}')
-
-    log_server.stop()
-    logging.info("Stopped experiment-runner's logger.")

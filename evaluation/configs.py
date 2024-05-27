@@ -48,6 +48,7 @@ def get_experiment_config(randomizer_seed, seeds_folder, max_total_time, output_
         'max-mutations-per-fuzz': 10,
         'measurement-period': 60, # seconds
         'max-total-time': max_total_time, # seconds
+        'kill-timeout': max_total_time + 15*60,
     }
 
     return config

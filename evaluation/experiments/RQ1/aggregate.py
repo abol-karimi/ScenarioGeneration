@@ -19,7 +19,7 @@ def identity(x):
 
 
 def main():
-    SKIP_EXISTING = False
+    SKIP_EXISTING = True
 
     generators = ('Atheris', 'PCGF', 'Random')
     egos = ('autopilot', 'BehaviorAgent', 'intersectionAgent', 'TFPP')
@@ -49,6 +49,7 @@ def main():
         aggregate_file = f'{RQ1_folder}/{generator}_{ego}_{coverage}/{filter_name}.json'
 
         if SKIP_EXISTING and Path(aggregate_file).is_file():
+            print(f'Skipping existing {aggregate_file}')
             continue
 
         report_process = spawn_ctx.Process(target=aggregate_trials.report,

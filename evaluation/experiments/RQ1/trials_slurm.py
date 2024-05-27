@@ -33,7 +33,7 @@ for experiment, ego, randomizer_seed, coverage in trials:
         --nodes=1 \
         --ntasks=1 \
         --cpus-per-task=8 \
-        --mem=60G \
+        --mem=100G \
         --qos gpu_access \
         -p volta-gpu \
         --gres=gpu:1 \
