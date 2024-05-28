@@ -44,12 +44,12 @@ def piecewise_constant_numpy(ts, xs, ys):
     return tuple(map(float, arr))
 
 
-def measure_new_StatementSetCoverage(measurement, coverage_filter):
-    new_StatementSetCoverage_items = []
-    for coverage_file in measurement['new-coverage-files']:
+def to_StatementSetCoverage(coverage_files, coverage_filter):
+    items = []
+    for coverage_file in coverage_files:
         with open(coverage_file, 'r') as f:
-            new_StatementSetCoverage_items.append(coverage_filter(jsonpickle.decode(f.read())))
-    return StatementSetCoverage(new_StatementSetCoverage_items)
+            items.append(coverage_filter(jsonpickle.decode(f.read())))
+    return StatementSetCoverage(items)
 
 
 def sample_trial(results_file, ts, coverage_filter):
@@ -80,7 +80,7 @@ def sample_trial(results_file, ts, coverage_filter):
         # Sum all the measurements up to the time of the next sample
         while measurement_idx < len(measurements) and measurements[measurement_idx]['elapsed-time'] <= t_sample:
             sum_fuzz_inputs.update(measurements[measurement_idx]['new-fuzz-input-files'])
-            new_StatementSetCoverage = measure_new_StatementSetCoverage(measurements[measurement_idx], coverage_filter)
+            new_StatementSetCoverage = to_StatementSetCoverage(measurements[measurement_idx]['new-coverage-files'], coverage_filter)
             new_PredicateSetCoverage = new_StatementSetCoverage.cast_to(PredicateSetCoverage)
             new_StatementCoverage = new_StatementSetCoverage.cast_to(StatementCoverage)
             new_PredicateCoverage = new_StatementCoverage.cast_to(PredicateCoverage)

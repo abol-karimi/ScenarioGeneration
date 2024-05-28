@@ -34,9 +34,7 @@ for experiment, ego, randomizer_seed, coverage in trials:
         --ntasks=1 \
         --cpus-per-task=8 \
         --mem=100G \
-        --qos gpu_access \
-        -p volta-gpu \
-        --gres=gpu:1 \
+        {'-p general' if ego == 'intersectionAgent' else '--qos gpu_access -p volta-gpu --gres=gpu:1'} \
         -t {dd}-{hh}:{mm}:{ss} \
         --wrap="\
             module add apptainer/1.3.0-1; \

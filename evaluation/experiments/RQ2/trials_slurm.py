@@ -6,7 +6,7 @@ from datetime import timedelta
 import os
 
 generators = ('Atheris', 'PCGF', 'Random', )
-egos = ('autopilot', 'BehaviorAgent', 'TFPP')
+egos = ('autopilot', 'BehaviorAgent', 'intersectionAgent', 'TFPP')
 randomizer_seeds = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
 coverages = ('traffic-rules', )
 trial_timeout = timedelta(hours=24)
@@ -18,7 +18,7 @@ slurm_timeout = trial_timeout + timeout_buffer
 # For RQ2, we only vary the ego 
 #  between the test-case-generation trials and
 #  and the test-case-execution trials.
-trials = product(generators, permutations(egos, r=2), randomizer_seeds, coverages)
+trials = tuple(product(generators, tuple(permutations(egos, r=2)), randomizer_seeds, coverages))
 dd = slurm_timeout.days
 hh = slurm_timeout.seconds//3600
 mm = (slurm_timeout.seconds%3600)//60
@@ -35,10 +35,8 @@ for generator, (gen_ego, test_ego), randomizer_seed, coverage in trials:
         --nodes=1 \
         --ntasks=1 \
         --cpus-per-task=8 \
-        --mem=40G \
-        --qos gpu_access \
-        -p volta-gpu \
-        --gres=gpu:1 \
+        --mem={20 if test_ego == 'intersectionAgent' else 30}G \
+        {'-p general' if test_ego == 'intersectionAgent' else '--qos gpu_access -p volta-gpu --gres=gpu:1'} \
         -t {dd}-{hh}:{mm}:{ss} \
         --wrap="\
             module add apptainer/1.3.0-1; \
