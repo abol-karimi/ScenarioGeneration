@@ -57,11 +57,16 @@ if __name__ == '__main__':
     coverages = ('traffic-rules', )
     RQ1_folder = f'evaluation/results/RQ1'
 
-    coverage_filters = ('all-coverage', )
+    coverage_filters = (
+        # 'all-coverage',
+        'ego-violations-coverage',
+        )
 
     metrics = (
-        statements,
-        statements_per_fuzz_input,
+        # statements,
+        # statements_per_fuzz_input,
+        predicateSets,
+        predicateSets_per_fuzz_input,
     )
     stats = (
         'range',

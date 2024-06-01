@@ -12,6 +12,7 @@ jsonpickle.load_backend('orjson')
 jsonpickle.set_preferred_backend('orjson')
 
 import evaluation.utils.aggregate_trials as aggregate_trials
+from evaluation.configs import ego_violations_coverage_filter
 
 
 def identity(x):
@@ -29,14 +30,15 @@ def main():
     sampling_period = timedelta(minutes=30)
     RQ1_folder = f'evaluation/results/RQ1'
     coverage_filters = (
-        ('all-coverage', identity),
+        # ('all-coverage', identity),
+        ('ego-violations-coverage', ego_violations_coverage_filter),
     )
 
     # dependent variables
     experiments = tuple(product(generators, egos, coverages))
-    # CPU_COUNT = len(os.sched_getaffinity(0))
-    # MAX_JOBS = CPU_COUNT // len(trial_seeds)
-    MAX_JOBS = 3 # when the memory becomes the bottleneck
+    CPU_COUNT = len(os.sched_getaffinity(0))
+    MAX_JOBS = CPU_COUNT // len(trial_seeds)
+    # MAX_JOBS = 1 # when memory becomes the bottleneck
 
     spawn_ctx = multiprocessing.get_context('spawn')
     processes = []
