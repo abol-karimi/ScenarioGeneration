@@ -41,4 +41,5 @@ class EntropicFuzzer(MutationFuzzer):
 
         if new_fuzz_candidate:
             self.schedule.DistributionNeedsUpdate = True
+            self.schedule.reset_coverage_frequency()
 

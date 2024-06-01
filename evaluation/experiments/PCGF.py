@@ -8,8 +8,9 @@ Research question:
 from random import Random
 
 from scenariogen.core.fuzzing.mutators import StructureAwareMutator
-from scenariogen.core.fuzzing.schedules import AFLFastSchedule
+from scenariogen.core.fuzzing.schedules.aflfast import AFLFastSchedule
 from scenariogen.core.fuzzing.fuzzers.counting import CountingPredicateSetFuzzer
+from scenariogen.core.coverages.coverage import PredicateCoverage, PredicateSetCoverage
 from evaluation.configs import get_experiment_config, get_SUT_config, get_coverage_config
 
 
@@ -30,6 +31,9 @@ def get_config(ego, coverage, randomizer_seed, seeds_folder, max_total_time, out
             'max-mutations-per-fuzz': experiment_config['max-mutations-per-fuzz'],
         },
         'schedule': AFLFastSchedule(schedule_seed, 5),
+        'feedback-types': (
+            PredicateSetCoverage,
+            )
     }
 
     return {**experiment_config,

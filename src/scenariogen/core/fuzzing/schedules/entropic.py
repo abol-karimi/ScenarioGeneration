@@ -155,5 +155,3 @@ class EntropicSchedule(PowerSchedule):
     
     def reset_coverage_frequency(self):
         self.feature_frequency = Counter()
-
-   

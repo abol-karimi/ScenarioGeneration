@@ -138,9 +138,6 @@ class MutationFuzzer(Fuzzer):
                 new_fuzz_candidate = self.instantiate_fuzz_candidate(fuzz_input, features)
                 self.fuzz_candidates.append(new_fuzz_candidate)
                 logger.info(f'The fuzz input with hash {fuzz_input.hexdigest} expanded the coverage! Added to fuzz candidates.')
-                
-                # Reset the global coverage frequencies
-                self.schedule.reset_coverage_frequency()
 
         return new_fuzz_candidate, statement_coverage
 
