@@ -5,12 +5,12 @@ from itertools import product
 from datetime import timedelta
 import os
 
-experiments = ('PCGF', 'Random')
-egos = ('autopilot', 'BehaviorAgent', 'TFPP')
+experiments = ('PGF', 'PCGF')
+egos = ('intersectionAgent', )
 seeds_folder = 'evaluation/seeds/random/seeds'
-randomizer_seeds = (0, 1, )
+randomizer_seeds = (2, 3, )
 coverages = ('traffic-rules', )
-trial_timeout = timedelta(minutes=10)
+trial_timeout = timedelta(minutes=20)
 
 # dependent variables
 trials = product(experiments, egos, randomizer_seeds, coverages)
