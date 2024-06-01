@@ -26,7 +26,7 @@ class RandomSeedGenerator(Fuzzer):
 
   def __init__(self, config):
     self.config = config
-    self.coverage_seen = StatementSetCoverage([])
+    self.feature_coverage = StatementSetCoverage([])
     self.random = Random(config['randomizer-seed'])  
 
     self.network = Network.fromFile(config['map'])
@@ -38,13 +38,13 @@ class RandomSeedGenerator(Fuzzer):
 
   def get_state(self):
     state = {
-      'coverage-seen': self.coverage_seen,
+      'coverage-seen': self.feature_coverage,
       'random-state': self.random.getstate(),
       }
     return state
 
   def set_state(self, state):
-    self.coverage_seen = state['coverage-seen']
+    self.feature_coverage = state['coverage-seen']
     self.random.setstate(state['random-state'])
 
   def input_eval(self, fuzz_input, SUT_config, coverage_config, save_events=True):
@@ -94,8 +94,8 @@ class RandomSeedGenerator(Fuzzer):
   def run(self):
     fuzz_input = self.gen_input()
     statement_coverage = self.input_eval(fuzz_input, self.config['coverage-config'])
-    if (not statement_coverage is None) and not statement_coverage in self.coverage_seen:
-      self.coverage_seen = self.coverage_seen + StatementSetCoverage([statement_coverage])
+    if (not statement_coverage is None) and not statement_coverage in self.feature_coverage:
+      self.feature_coverage = self.feature_coverage + StatementSetCoverage([statement_coverage])
       
       # Save the fuzz-input and its coverage to disk
       with open(Path(self.config['fuzz-inputs-folder'])/f'{fuzz_input.hexdigest}.json', 'wb') as f:
