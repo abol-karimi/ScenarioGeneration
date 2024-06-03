@@ -143,7 +143,7 @@ class InputCorpus:
         if len(self.RareFeatures) > self.NumberOfRarestFeatures and \
             self.FreqOfMostAbundantRareFeature > self.FeatureFrequencyThreshold:
 
-            extras = heapq.nlargest(len(self.RareFeatures) > self.NumberOfRarestFeatures,
+            extras = heapq.nlargest(len(self.RareFeatures) - self.NumberOfRarestFeatures,
                                     self.RareFeatures,
                                     key=lambda f: self.GlobalFeatureFreqs[f])
 
