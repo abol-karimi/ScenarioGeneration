@@ -58,8 +58,8 @@ if __name__ == '__main__':
     RQ1_folder = f'evaluation/results/RQ1'
 
     coverage_filters = (
-        'all-coverage',
-        # 'ego-violations-coverage',
+        # 'all-coverage',
+        'ego-violations-coverage',
         )
 
     metrics = (
@@ -87,8 +87,8 @@ if __name__ == '__main__':
         'Random': 'r',
     }
     labels = {
-        'PGF': 'Entropic',
-        'PCGF': 'AFLFast',
+        'PGF': 'PCGF-Entropic',
+        'PCGF': 'PCGF-AFLFast',
         'Atheris': 'Atheris',
         'Random': 'Random',
     }
@@ -105,7 +105,7 @@ if __name__ == '__main__':
         ego, coverage = trial
         aggregate_files = tuple(f'{RQ1_folder}/{g}_{ego}_{coverage}/{coverage_filter}.json'
                                 for g in generators)
-        output_file = f'{RQ1_folder}/{ego}_{coverage}_{coverage_filter}.png'
+        output_file = f'{RQ1_folder}/{ego}_{coverage}_{coverage_filter}_{tuple(m.__name__ for m in metrics)}.png'
 
         plot_process = multiprocessing.Process(
                             target=plotter.plot,
