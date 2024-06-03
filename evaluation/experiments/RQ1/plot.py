@@ -58,8 +58,8 @@ if __name__ == '__main__':
     RQ1_folder = f'evaluation/results/RQ1'
 
     coverage_filters = (
-        # 'all-coverage',
-        'ego-violations-coverage',
+        'all-coverage',
+        # 'ego-violations-coverage',
         )
 
     metrics = (
@@ -81,12 +81,14 @@ if __name__ == '__main__':
         't_unit_sec': 3600,
     }   
     colors = {
+        'PGF': 'c',
         'PCGF': 'g',
         'Atheris': 'b',
         'Random': 'r',
     }
     labels = {
-        'PCGF': 'PCGF',
+        'PGF': 'Entropic',
+        'PCGF': 'AFLFast',
         'Atheris': 'Atheris',
         'Random': 'Random',
     }

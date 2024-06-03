@@ -19,12 +19,12 @@ def identity(x):
 def main():
     SKIP_EXISTING = False
 
-    generators = ('PCGF', 'Random')
-    egos = ('autopilot', 'BehaviorAgent', 'TFPP')
-    trial_seeds = (0, 1, )
+    generators = ('PCGF', 'PGF')
+    egos = ('intersectionAgent', )
+    trial_seeds = (2, 3, )
     coverages = ('traffic-rules', )
-    trial_timeout = timedelta(minutes=10)
-    measurement_period = timedelta(minutes=2)
+    trial_timeout = timedelta(minutes=20)
+    measurement_period = timedelta(minutes=1)
     RQ1_folder = f'evaluation/results/RQ1'
     coverage_filters = (
         ('all-coverage', identity),

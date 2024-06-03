@@ -8,8 +8,7 @@ Research question:
 from random import Random
 
 from scenariogen.core.fuzzing.mutators import StructureAwareMutator
-from scenariogen.core.fuzzing.schedules.entropic import EntropicSchedule
-from scenariogen.core.fuzzing.fuzzers.entropic import EntropicFuzzer
+from scenariogen.core.fuzzing.fuzzers.entropic.fuzzer_loop import EntropicFuzzer
 from scenariogen.core.coverages.coverage import PredicateCoverage, PredicateSetCoverage
 from evaluation.configs import get_experiment_config, get_SUT_config, get_coverage_config
 
@@ -30,10 +29,9 @@ def get_config(ego, coverage, randomizer_seed, seeds_folder, max_total_time, out
             'mutator': StructureAwareMutator(mutator_seed),
             'max-mutations-per-fuzz': experiment_config['max-mutations-per-fuzz'],
         },
-        'schedule': EntropicSchedule(schedule_seed,
-                                        0xFF,  # FeatureFrequencyThreshold
-                                        100  # NumberOfRarestFeatures
-                                    ),
+        'schedule-seed': schedule_seed,
+        'FeatureFrequencyThreshold': 0xFF,
+        'NumberOfRarestFeatures': 100,
         'feedback-types': (
             PredicateCoverage,
             PredicateSetCoverage,

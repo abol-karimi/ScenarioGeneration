@@ -132,7 +132,7 @@ class MutationFuzzer(Fuzzer):
             if all(self.feature_frequency[f] > 0 for f in features):
                 # No new features were discovered, so the fuzz input is not added to the fuzz candidates.
                 # Update the global coverage frequencies
-                self.schedule.update_coverage_frequency(self.fuzz_candidates, features)
+                self.schedule.update_feature_frequency(self.fuzz_candidates, features, new_fuzz_candidate)
             else:
                 # Add the fuzz_input to the candidates
                 new_fuzz_candidate = self.instantiate_fuzz_candidate(fuzz_input, features)
