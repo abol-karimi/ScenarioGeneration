@@ -143,14 +143,14 @@ class InputCorpus:
         if len(self.RareFeatures) > self.NumberOfRarestFeatures and \
             self.FreqOfMostAbundantRareFeature > self.FeatureFrequencyThreshold:
 
-            extras = heapq.nlargest(len(self.RareFeatures) - self.NumberOfRarestFeatures,
-                                    self.RareFeatures,
-                                    key=lambda f: self.GlobalFeatureFreqs[f])
+            extras_plus_one = heapq.nlargest(len(self.RareFeatures) - self.NumberOfRarestFeatures + 1,
+                                            self.RareFeatures,
+                                            key=lambda f: self.GlobalFeatureFreqs[f])
 
-            while len(extras) > 0 and \
+            while len(extras_plus_one) > 1 and \
                     self.FreqOfMostAbundantRareFeature > self.FeatureFrequencyThreshold:
                 # Remove most abundant rare feature.
-                MostAbundantRareFeature = heapq.heappop(extras)
+                MostAbundantRareFeature = heapq.heappop(extras_plus_one)
                 self.RareFeatures.remove(MostAbundantRareFeature)
                 for II in self.Inputs:
                     if II.FeatureFreqs[MostAbundantRareFeature] > 0:
@@ -158,7 +158,7 @@ class InputCorpus:
                         II.NeedsEnergyUpdate = True
 
                 # Set 2nd most abundant as the new most abundant feature count.
-                self.FreqOfMostAbundantRareFeature = self.GlobalFeatureFreqs[extras[0]]
+                self.FreqOfMostAbundantRareFeature = self.GlobalFeatureFreqs[extras_plus_one[0]]
 
         # Add rare feature, handle collisions, and update energy.
         self.RareFeatures.add(feature)
