@@ -1,7 +1,11 @@
 #!/bin/bash
 
 # choice of CARLA and SCENIC
-if [ -z "$SLURM_JOB_ID" ]; then
+if [[ $(hostname) == *"login"* ]]; then
+    # HPC login node
+    CARLA_BUILD_NUMBER=0.9.15-169-g063cc9d90
+    SCENIC_VERSION=Scenic_04-10-2024
+elif [ -z "$SLURM_JOB_ID" ]; then
     # Local
     CARLA_BUILD_NUMBER=0.9.15-187-g7a540559a
     SCENIC_VERSION=Scenic_05-03-2024
