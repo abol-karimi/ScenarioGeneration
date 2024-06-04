@@ -106,3 +106,30 @@ def sample_trial(results_file, ts, coverage_filter):
             'PredicateSets': samples_PredicateSetCoverages,
             'Statements': samples_StatementCoverages,
             'Predicates': samples_PredicateCoverages}
+
+def sum_coverage(results_file, max_time, coverage_filter, coverage_type):
+    results_file_path = Path(results_file)
+
+    print(f'Loading {results_file_path} ...')
+    with open(results_file_path, 'r') as f:
+        results = jsonpickle.decode(f.read())
+    print(f'Finished loading {results_file_path}.')
+
+    # Consolidate multi-stage experiments' measurements 
+    # (as of now I'm using single-stage experiments due to the overhead of resuming from a previous experiment,
+    # but I'm keeping the multi-stage results format in case needed in the future)
+    measurements = reduce(lambda r1,r2: {'measurements': r1['measurements']+r2['measurements']}, results)['measurements']
+
+    if measurements[-1]['elapsed-time'] < max_time:
+        print(f'{multiprocessing.current_process().name}: The last measurement time is {measurements[-1]["elapsed-time"]} (requested max-time {max_time}).')
+
+    measurement_idx = 0
+    sum_coverage = coverage_type([])
+    # Sum all the measurements up to the time of the next sample
+    while measurement_idx < len(measurements) and measurements[measurement_idx]['elapsed-time'] <= max_time:
+        new_StatementSetCoverage = to_StatementSetCoverage(measurements[measurement_idx]['new-coverage-files'], coverage_filter)
+        new_coverage = new_StatementSetCoverage.cast_to(coverage_type)
+        sum_coverage = sum_coverage + new_coverage
+        measurement_idx += 1
+
+    return sum_coverage
