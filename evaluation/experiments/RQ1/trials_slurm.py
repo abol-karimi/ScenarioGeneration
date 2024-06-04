@@ -5,7 +5,7 @@ from itertools import product
 from datetime import timedelta
 import os
 
-experiments = ('Random', 'Atheris', 'PCGF', )
+experiments = ('Random', 'Atheris', 'PCGF', 'PGF', )
 egos = ('autopilot', 'BehaviorAgent', 'TFPP')
 seeds_folder = 'evaluation/seeds/random/seeds'
 randomizer_seeds = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
