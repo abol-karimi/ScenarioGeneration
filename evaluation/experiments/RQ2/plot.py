@@ -17,9 +17,9 @@ def predicateSets_percentage(comparison_trial):
 
 if __name__ == '__main__':
 
-    generators = ('Atheris', 'PCGF', 'Random')
-    # generators = ('Atheris', )
-    egos = ('autopilot', 'BehaviorAgent', 'intersectionAgent', 'TFPP')
+    # generators = ('Atheris', 'PCGF', 'Random')
+    generators = ('Atheris', 'Random')
+    egos = ('intersectionAgent', 'BehaviorAgent', 'autopilot', 'TFPP')
     coverages = ('traffic-rules', )
     RQ1_dir = f'evaluation/results/RQ1'
     RQ2_dir = f'evaluation/results/RQ2'
@@ -32,6 +32,9 @@ if __name__ == '__main__':
         predicateSets_percentage,
         # predicates_percentage,
     )
+    metric_name = {
+        predicateSets_percentage: 'Coverage-Percentage',
+    }
     stats = (
         min,
         statistics.median,
@@ -42,12 +45,13 @@ if __name__ == '__main__':
     colLabels = egos
     rowLabels = egos
     colors = {
-        'autopilot': "#1f77b4", 
-        'BehaviorAgent': "#ff7f0e", 
-        'intersectionAgent': "#2ca02c", 
-        'TFPP': "#d62728"
+        'intersectionAgent': (1, 0, 0, .5),
+        'autopilot': (0, 1, 0, .5),
+        'BehaviorAgent': (0, 0, 1, .5),
+        'TFPP': 'w'
     }
     plot_kwds = {
+        'fill_alpha': 0.5,
     }
 
     # For each (generator, coverage) combination we make a figure showing the coverage loss for each pair of (gen_ego, test_ego)
@@ -66,8 +70,10 @@ if __name__ == '__main__':
             (gen_ego, test_ego): f'{RQ2_dir}/{generator}_{gen_ego}_{coverage}/{test_ego}/{coverage_filter}-{coverage_type}-comparison.json'
             for gen_ego, test_ego in permutations(egos, r=2)
         }
-        output_file = f'{RQ2_dir}/{generator}_{coverage}_{coverage_filter}_{coverage_type}_{metric.__name__}.png'
+        output_file = f'{RQ2_dir}/{generator}_{coverage}_{coverage_filter}_{coverage_type}_{metric_name[metric]}.png'
         
+        plot_kwds['title'] = f'{generator}'
+        plot_kwds['ylabel'] = metric_name[metric]
         # plot visuals
         plot_process = multiprocessing.Process(target=plotter.plot,
                                                 args=(entries_files,
