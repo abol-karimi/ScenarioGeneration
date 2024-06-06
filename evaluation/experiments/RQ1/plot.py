@@ -52,22 +52,31 @@ def statementSets_per_fuzz_input(aggregate):
 
 if __name__ == '__main__':
 
-    generators = ('PCGF', 'Atheris', 'Random')
-    egos = ('autopilot', 'BehaviorAgent', 'intersectionAgent', 'TFPP')
+    # generators = ('PGF2', 'Atheris', 'Random', )
+    generators = ('PCGF', 'PGF2', 'PGF', )
+    egos = ('autopilot', 'intersectionAgent')
     coverages = ('traffic-rules', )
     RQ1_folder = f'evaluation/results/RQ1'
 
     coverage_filters = (
-        # 'all-coverage',
-        'ego-violations-coverage',
+        'all-coverage',
+        # 'ego-violations-coverage',
         )
 
     metrics = (
+        # statementSets,
+        # statementSets_per_fuzz_input,
         # statements,
         # statements_per_fuzz_input,
         predicateSets,
         predicateSets_per_fuzz_input,
+        # predicates,
+        # predicates_per_fuzz_input,
     )
+    metric_name = {
+        predicateSets: 'Predicate-Sets',
+        predicateSets_per_fuzz_input: 'Predicate-Sets-per-Fuzz-Input',
+    }
     stats = (
         'range',
         'median',
@@ -80,15 +89,19 @@ if __name__ == '__main__':
         'fill_alpha': 0.1,
         't_unit_sec': 3600,
     }   
-    colors = {
-        'PGF': 'c',
+    color = {
+        # for Predicate-Set-Coverage Guided vs baselines
+        'PGF2': 'r',
+        'Atheris': 'g',
+        'Random': 'b',
+        # for comparison of power schedules
         'PCGF': 'g',
-        'Atheris': 'b',
-        'Random': 'r',
+        'PGF': 'b',
     }
-    labels = {
-        'PGF': 'PCGF-Entropic',
+    label = {
         'PCGF': 'PCGF-AFLFast',
+        'PGF2': 'PCGF-Entropic',
+        'PGF': 'PCGF-Entropic-MixedFeedback',
         'Atheris': 'Atheris',
         'Random': 'Random',
     }
@@ -105,15 +118,18 @@ if __name__ == '__main__':
         ego, coverage = trial
         aggregate_files = tuple(f'{RQ1_folder}/{g}_{ego}_{coverage}/{coverage_filter}.json'
                                 for g in generators)
-        output_file = f'{RQ1_folder}/{ego}_{coverage}_{coverage_filter}_{tuple(m.__name__ for m in metrics)}.png'
-
+        labels = tuple(label[g] for g in generators)
+        metric_names = ",".join(metric_name[m] for m in metrics)
+        output_file = f'{RQ1_folder}/({",".join(labels)})_{ego}_{coverage}_{coverage_filter}_({metric_names}).png'
+        plot_kwds['title'] = f'{ego}_{coverage}_{coverage_filter}'
+        colors = tuple(color[g] for g in generators)
         plot_process = multiprocessing.Process(
                             target=plotter.plot,
                             args=(aggregate_files,
-                                    metrics,
+                                    {metric_name[m]:m for m in metrics},
                                     stats,
-                                    (colors[g] for g in generators),
-                                    (labels[g] for g in generators),
+                                    colors,
+                                    labels,
                                     plot_kwds,
                                     output_file,
                                     ),

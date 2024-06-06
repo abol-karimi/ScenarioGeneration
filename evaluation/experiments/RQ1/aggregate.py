@@ -30,15 +30,14 @@ def main():
     sampling_period = timedelta(minutes=30)
     RQ1_folder = f'evaluation/results/RQ1'
     coverage_filters = (
-        # ('all-coverage', identity),
-        ('ego-violations-coverage', ego_violations_coverage_filter),
+        ('all-coverage', identity),
+        # ('ego-violations-coverage', ego_violations_coverage_filter),
     )
 
     # dependent variables
     experiments = tuple(product(generators, egos, coverages))
     CPU_COUNT = len(os.sched_getaffinity(0))
     MAX_JOBS = CPU_COUNT // len(trial_seeds)
-    # MAX_JOBS = 1 # when memory becomes the bottleneck
 
     spawn_ctx = multiprocessing.get_context('spawn')
     processes = []
