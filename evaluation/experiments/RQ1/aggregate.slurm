@@ -9,8 +9,8 @@ sbatch \
     --ntasks=1 \
     --cpus-per-task=32 \
     --mem=256G \
-    -p general \
-    -t 3:00:00 \
+    --qos gpu_access -p a100-gpu --gres=gpu:1 \
+    -t 10:00:00 \
     --wrap="\
         module add apptainer/1.3.0-1; \
         ${STORE_BASE_DIR}/ScenarioGeneration/Apptainer/scripts.sh scenariogen_run bionic Shipping \
