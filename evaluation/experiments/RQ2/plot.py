@@ -1,64 +1,83 @@
 #!/usr/bin/env python3
 
-from itertools import product
+from itertools import product, permutations
 import multiprocessing
+import statistics
 
-import evaluation.utils.plots.time_series
-import evaluation.utils.plots.coverage_per_fuzz_input
+import evaluation.utils.plots.table
+from scenariogen.core.coverages.coverage import PredicateSetCoverage
+
+
+def predicateSets_percentage(comparison_trial):
+    gen_coverage, test_coverage = comparison_trial
+    num = len(test_coverage.cast_to(PredicateSetCoverage))
+    denom = len(gen_coverage.cast_to(PredicateSetCoverage))
+    return int(num / denom * 100)
 
 
 if __name__ == '__main__':
 
     generators = ('Atheris', 'PCGF', 'Random')
-    egos = ('autopilot', 'BehaviorAgent', 'TFPP')
+    # generators = ('Atheris', )
+    egos = ('autopilot', 'BehaviorAgent', 'intersectionAgent', 'TFPP')
     coverages = ('traffic-rules', )
     RQ1_dir = f'evaluation/results/RQ1'
     RQ2_dir = f'evaluation/results/RQ2'
 
-    coverage_filters = ('all', 'violations')
-    normalizers = ('per-time', 'per-fuzz-input')
+    coverage_filters = ('all-coverage', )
+    coverage_types = ('PredicateSetCoverage', )
+    metrics = (
+        # statementSets_percentage,
+        # statements_percentage,
+        predicateSets_percentage,
+        # predicates_percentage,
+    )
+    stats = (
+        min,
+        statistics.median,
+        max,
+    )
 
-    # for each normalizer, we have a dedicated plotter
-    plotter = {
-        'per-time': evaluation.utils.plots.time_series,
-        'per-fuzz-input': evaluation.utils.plots.coverage_per_fuzz_input
+    plotter = evaluation.utils.plots.table
+    colLabels = egos
+    rowLabels = egos
+    colors = {
+        'autopilot': "#1f77b4", 
+        'BehaviorAgent': "#ff7f0e", 
+        'intersectionAgent': "#2ca02c", 
+        'TFPP': "#d62728"
     }
-
     plot_kwds = {
-        'fill_alpha': 0.1,
-        't_unit_sec': 60,
     }
 
-    # each (generator, gen_ego, coverage) combination is a trial for studying the effect using a different ego for testing
-    experiments = product(generators, egos, coverages)
-
-    # each trial's results can be assessed with different metrics
-    assessments = product(normalizers, coverage_filters)
+    # For each (generator, coverage) combination we make a figure showing the coverage loss for each pair of (gen_ego, test_ego)
+    experiments = tuple(product(generators, coverages))
+    assessments = tuple(product(coverage_filters, coverage_types, metrics))
 
     spawn_ctx = multiprocessing.get_context('spawn')
     processes = []
 
-    # for each (trial, assessment) combination, we generate a separate figure;
-    # for each coverage type, we generate a separate subplot in the figure
-    coverage_types = ('statementSet', 'statement', 'predicateSet', 'predicate')
-    for (generator, gen_ego, coverage), (normalizer, coverage_filter) in product(experiments, assessments):
-        test_egos = tuple(e for e in egos if e != gen_ego)
-        coverage_files = (f'{RQ1_dir}/{generator}_{gen_ego}_{coverage}/{coverage_filter}-coverage.json', ) \
-                        + tuple(f'{RQ2_dir}/{generator}_{gen_ego}_{coverage}/{test_ego}/{coverage_filter}-coverage.json'
-                                for test_ego in test_egos)
-        output_file = f'{RQ2_dir}/{generator}_{gen_ego}_{coverage}_{coverage_filter}_{normalizer}.png'
+    # for each (experiment, assessment) combination, we generate a separate figure;
+    for experiment, assessment in product(experiments, assessments):
+        (generator, coverage) = experiment
+        (coverage_filter, coverage_type, metric) = assessment
+        
+        entries_files = {
+            (gen_ego, test_ego): f'{RQ2_dir}/{generator}_{gen_ego}_{coverage}/{test_ego}/{coverage_filter}-{coverage_type}-comparison.json'
+            for gen_ego, test_ego in permutations(egos, r=2)
+        }
+        output_file = f'{RQ2_dir}/{generator}_{coverage}_{coverage_filter}_{coverage_type}_{metric.__name__}.png'
         
         # plot visuals
-        colors = ('g', 'r', 'b')
-        labels = (f'{gen_ego} (gen)', ) + test_egos
-
-        plot_process = multiprocessing.Process(target=plotter[normalizer].plot,
-                                                args=(coverage_files,
+        plot_process = multiprocessing.Process(target=plotter.plot,
+                                                args=(entries_files,
+                                                        metric,
+                                                        stats,
                                                         colors,
-                                                        labels,
-                                                        coverage_types,
-                                                        output_file,
-                                                        plot_kwds
+                                                        colLabels,
+                                                        rowLabels,
+                                                        plot_kwds,
+                                                        output_file
                                                     ),
                                                 name=output_file,
                                                 daemon=False

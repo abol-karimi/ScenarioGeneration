@@ -1,0 +1,55 @@
+import jsonpickle
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+def plot(entries_files, metric, stats, colors, colLabels, rowLabels, plot_kwds, output_file):
+    # fig = plt.figure(layout='constrained')
+    fig = plt.figure(layout='tight')
+    ax = fig.add_subplot(111)
+    ax.set_title(output_file, fontsize=10)
+
+    data = []
+    for i, gen_ego in enumerate(colLabels):
+        col_data = []
+        x_start = i / len(colLabels)
+        x_end = (i+1) / len(colLabels)
+        x = np.linspace(x_start, x_end, len(rowLabels) + 1)
+        width = (x[1]-x[0])*.5
+        j = 1
+        for test_ego in rowLabels:
+            if test_ego == gen_ego:
+                col_data.append('')
+                continue
+
+            with open(entries_files[gen_ego, test_ego], 'r') as f:
+                comparison_trials = jsonpickle.decode(f.read())
+            metric_trials = tuple(metric(trial) for trial in comparison_trials)
+            cell_data = tuple(stat(metric_trials) for stat in stats)
+            col_data.append(cell_data)
+
+            # box plot of the cell data
+            bplot = ax.boxplot(metric_trials, positions=[x[j]], widths=[width], patch_artist=True)
+            for patch in bplot['boxes']:
+                patch.set_facecolor(colors[test_ego])
+
+            j += 1
+
+        data.append(col_data)
+
+
+    data_text = [
+        [', '.join(f'{int(d)}%' for d in cell_data) for cell_data in col]
+        for col in data
+    ]
+    table = ax.table(cellText=np.transpose(np.array(data_text)),
+                    rowLabels=rowLabels,
+                    colLabels=colLabels,
+                    rowColours=tuple(colors[l] for l in rowLabels),
+                    colColours=tuple(colors[l] for l in colLabels),
+                    )
+    plt.xticks([])
+    ax.set_xlim([0, 1])
+    fig.subplots_adjust(left=.2, bottom=.2)
+    fig.savefig(output_file)
+    
