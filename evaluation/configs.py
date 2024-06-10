@@ -32,6 +32,15 @@ def ego_violations_coverage_filter(cov):
     return StatementCoverage(statements)
 
 
+def ego_collisions_coverage_filter(cov):
+    statements = (s for s in cov.items if
+        (s.predicate.name == 'collidedWithAtTime' \
+        and s.args[0] == 'ego'
+        )
+    )
+    return StatementCoverage(statements)
+
+
 def get_experiment_config(randomizer_seed, seeds_folder, max_total_time, output_folder):
 
     config = {

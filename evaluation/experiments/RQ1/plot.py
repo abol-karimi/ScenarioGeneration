@@ -54,13 +54,14 @@ if __name__ == '__main__':
 
     # generators = ('PGF2', 'Atheris', 'Random', )
     generators = ('PCGF', 'PGF2', 'PGF', )
-    egos = ('autopilot', 'intersectionAgent')
+    egos = ('autopilot', 'BehaviorAgent', 'intersectionAgent', 'TFPP')
     coverages = ('traffic-rules', )
     RQ1_folder = f'evaluation/results/RQ1'
 
     coverage_filters = (
         'all-coverage',
         # 'ego-violations-coverage',
+        # 'ego-collisions-coverage',
         )
 
     metrics = (
@@ -74,6 +75,10 @@ if __name__ == '__main__':
         # predicates_per_fuzz_input,
     )
     metric_name = {
+        statementSets: 'Statement-Sets',
+        statementSets_per_fuzz_input: 'Statement-Sets-per-Fuzz-Input',
+        statements: 'Statements',
+        statements_per_fuzz_input: 'Statements-per-Fuzz-Input',
         predicateSets: 'Predicate-Sets',
         predicateSets_per_fuzz_input: 'Predicate-Sets-per-Fuzz-Input',
     }
@@ -88,6 +93,7 @@ if __name__ == '__main__':
     plot_kwds = {
         'fill_alpha': 0.1,
         't_unit_sec': 3600,
+        'layout': 'constrained',
     }   
     color = {
         # for Predicate-Set-Coverage Guided vs baselines
@@ -120,8 +126,8 @@ if __name__ == '__main__':
                                 for g in generators)
         labels = tuple(label[g] for g in generators)
         metric_names = ",".join(metric_name[m] for m in metrics)
-        output_file = f'{RQ1_folder}/({",".join(labels)})_{ego}_{coverage}_{coverage_filter}_({metric_names}).png'
-        plot_kwds['title'] = f'{ego}_{coverage}_{coverage_filter}'
+        output_file = f'{RQ1_folder}/({",".join(labels)})_{ego}_{coverage_filter}_({metric_names}).png'
+        # plot_kwds['title'] = f'{ego}_{coverage}_{coverage_filter}'
         colors = tuple(color[g] for g in generators)
         plot_process = multiprocessing.Process(
                             target=plotter.plot,

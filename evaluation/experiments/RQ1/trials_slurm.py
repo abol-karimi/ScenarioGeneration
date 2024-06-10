@@ -5,8 +5,8 @@ from itertools import product
 from datetime import timedelta
 import os
 
-experiments = ('Random', 'Atheris', 'PCGF', 'PGF', )
-egos = ('autopilot', 'BehaviorAgent', 'TFPP')
+experiments = ('PGF', )
+egos = ('intersectionAgent', )
 seeds_folder = 'evaluation/seeds/random/seeds'
 randomizer_seeds = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
 coverages = ('traffic-rules', )
@@ -33,7 +33,7 @@ for experiment, ego, randomizer_seed, coverage in trials:
         --nodes=1 \
         --ntasks=1 \
         --cpus-per-task=8 \
-        --mem=100G \
+        --mem=70G \
         {'-p general' if ego == 'intersectionAgent' else '--qos gpu_access -p volta-gpu --gres=gpu:1'} \
         -t {dd}-{hh}:{mm}:{ss} \
         --wrap="\

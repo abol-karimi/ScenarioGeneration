@@ -7,7 +7,8 @@ def plot(entries_files, metric, stats, colors, colLabels, rowLabels, kwds, outpu
     fig = plt.figure(layout='constrained', figsize=(5, 4), dpi=300)
     # fig = plt.figure(layout='tight', figsize=(4, 4), dpi=300)
     ax = fig.add_subplot(111)
-    ax.set_title(kwds['title'], fontsize=10)
+    if 'title' in kwds:
+        ax.set_title(kwds['title'], fontsize=10)
     ax.set_ylabel(kwds['ylabel'])
 
     data = []
@@ -46,8 +47,8 @@ def plot(entries_files, metric, stats, colors, colLabels, rowLabels, kwds, outpu
         for col in data
     ]
     table = ax.table(cellText=np.transpose(np.array(data_text)),
-                    rowLabels=rowLabels,
-                    colLabels=colLabels,
+                    rowLabels=tuple(rowLabels.values()),
+                    colLabels=tuple(colLabels.values()),
                     rowColours=tuple(colors[l] for l in rowLabels),
                     colColours=tuple(colors[l] for l in colLabels),
                     alpha=kwds['fill_alpha'],

@@ -28,7 +28,7 @@ def save_coverage_comparison(trials_files, comparison_file):
         f.write(jsonpickle.encode(tuple(trials_comparison), indent=1))
 
 def main():
-    SKIP_EXISTING = False
+    SKIP_EXISTING = True
 
     generators = ('Atheris', 'PCGF', 'Random')
     egos = ('autopilot', 'BehaviorAgent', 'intersectionAgent', 'TFPP')
@@ -60,6 +60,7 @@ def main():
 
         comparison_file = f'{RQ2_folder}/{generator}_{gen_ego}_{coverage}/{test_ego}/{filter_name}-{coverage_type.__name__}-comparison.json'
         if SKIP_EXISTING and Path(comparison_file).is_file():
+            print(f'Skipping existing {comparison_file}.')
             continue
 
         trials_files = tuple(

@@ -21,7 +21,7 @@ def save_coverage_sum(results_file, max_time, filter_func, coverage_type, covera
         f.write(jsonpickle.encode(sum_cov, indent=1))
 
 def main():
-    SKIP_EXISTING = False
+    SKIP_EXISTING = True
 
     generators = ('Atheris', 'PCGF', 'Random')
     egos = ('autopilot', 'BehaviorAgent', 'intersectionAgent', 'TFPP')

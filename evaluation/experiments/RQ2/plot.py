@@ -17,8 +17,8 @@ def predicateSets_percentage(comparison_trial):
 
 if __name__ == '__main__':
 
-    # generators = ('Atheris', 'PCGF', 'Random')
-    generators = ('Atheris', 'Random')
+    generators = ('Atheris', 'PCGF', 'Random')
+    # generators = ('Atheris', 'Random')
     egos = ('intersectionAgent', 'BehaviorAgent', 'autopilot', 'TFPP')
     coverages = ('traffic-rules', )
     RQ1_dir = f'evaluation/results/RQ1'
@@ -42,8 +42,18 @@ if __name__ == '__main__':
     )
 
     plotter = evaluation.utils.plots.table
-    colLabels = egos
-    rowLabels = egos
+    colLabel = {
+        'intersectionAgent': 'SCENIC agent',
+        'BehaviorAgent': 'BehaviorAgent',
+        'autopilot': 'Autopilot',
+        'TFPP': 'TF++',
+    }
+    rowLabel = {
+        'intersectionAgent': 'SCENIC agent',
+        'BehaviorAgent': 'BehaviorAgent',
+        'autopilot': 'Autopilot',
+        'TFPP': 'TF++',
+    }
     colors = {
         'intersectionAgent': (1, 0, 0, .5),
         'autopilot': (0, 1, 0, .5),
@@ -80,8 +90,8 @@ if __name__ == '__main__':
                                                         metric,
                                                         stats,
                                                         colors,
-                                                        colLabels,
-                                                        rowLabels,
+                                                        colLabel,
+                                                        rowLabel,
                                                         plot_kwds,
                                                         output_file
                                                     ),

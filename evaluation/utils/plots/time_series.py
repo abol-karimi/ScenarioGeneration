@@ -43,12 +43,13 @@ def plot_metrics(aggregate_file, metrics, stats, subplots, graph_color, graph_la
 
 
 def plot(aggregate_files, metrics, stats, colors, labels, kwds, output_file):
-    fig_coverage = plt.figure(layout='constrained', figsize=(4, 4), dpi=300)
+    fig_coverage = plt.figure(layout=kwds['layout'], figsize=(4, 4), dpi=300)
     # fig_coverage = plt.figure(layout='tight', figsize=(4, 4))
 
     # Empty axes used as a container of subplots
     ax = fig_coverage.add_subplot(111)
-    ax.set_title(kwds['title'], fontsize=10)
+    if 'title' in kwds:
+        ax.set_title(kwds['title'], fontsize=10)
     ax.spines['top'].set_color('none')
     ax.spines['bottom'].set_color('none')
     ax.spines['left'].set_color('none')
